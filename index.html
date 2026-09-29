@@ -93,6 +93,24 @@
     .stat strong { display: block; font-family: "Fraunces", serif; font-weight: 400; font-size: 1.7rem; color: var(--ink); line-height: 1.1; }
     .stat span { font-size: .75rem; color: var(--muted); }
 
+    /* ---------- Parallax / imágenes que se expanden ---------- */
+    .expand-band { padding: 0 0 40px; }
+    .expand-media {
+      position: relative; height: 82vh; min-height: 420px; overflow: hidden;
+      display: grid; place-items: center; text-align: center;
+      will-change: clip-path;
+    }
+    .expand-img {
+      position: absolute; inset: -12% 0; background: url("assets/arena.jpg") center / cover;
+      will-change: transform;
+    }
+    .expand-img::after { content: ""; position: absolute; inset: 0; background: rgba(248, 245, 240, .25); }
+    .expand-text {
+      position: relative; font-family: "Fraunces", serif; font-weight: 300;
+      font-size: clamp(2rem, 5vw, 3.8rem); line-height: 1.15; color: var(--ink); padding: 0 16px;
+    }
+    .expand-text em { font-style: italic; }
+
     /* ---------- ¿Te suena? ---------- */
     .pains { display: grid; grid-template-columns: 1fr 1fr; column-gap: 64px; }
     .pain { padding: 22px 0 22px 40px; border-bottom: 1px solid var(--line); position: relative; color: var(--text); }
@@ -105,8 +123,8 @@
 
     /* ---------- Quiénes somos ---------- */
     .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 96px; align-items: center; }
-    .about-visual { aspect-ratio: 4 / 5; background: url("assets/arena.jpg") center / cover; }
-    .about-visual .team, .about-visual .tag { display: none; }
+    .about-visual { aspect-ratio: 4 / 5; position: relative; overflow: hidden; will-change: clip-path; }
+    .about-img { position: absolute; inset: 0; background: url("assets/arena.jpg") center / cover; will-change: transform; }
     .about-text p { margin-bottom: 1rem; }
     .values { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 2rem; }
     .values span { font-size: .85rem; color: var(--ink); padding-bottom: 2px; border-bottom: 1px solid var(--sand); }
@@ -303,7 +321,7 @@
     <!-- ================= HERO ================= -->
     <section class="hero" id="inicio">
       <div class="container hero-grid">
-        <div class="reveal">
+        <div class="hero-text">
           <span class="eyebrow">Agencia de redes sociales</span>
           <h1>Creamos redes sociales que <em>enamoran y venden</em>.</h1>
           <p class="lead">Somos un equipo de mujeres especializadas en crear contenido para redes sociales. Diseñamos posts, reels y estrategias que convierten seguidores en clientes.</p>
@@ -312,7 +330,7 @@
             <a href="#casos" class="btn btn-outline">Ver antes y después</a>
           </div>
         </div>
-        <aside class="hero-card reveal">
+        <aside class="hero-card">
           <span class="gift">Regalo</span>
           <h3>Mentoría privada gratis</h3>
           <p>Agenda una llamada con nosotras y te regalamos una sesión de mentoría 1:1 para tu negocio.</p>
@@ -325,6 +343,14 @@
         </aside>
       </div>
     </section>
+
+    <!-- ================= IMAGEN QUE SE EXPANDE ================= -->
+    <div class="expand-band">
+      <div class="expand-media">
+        <div class="expand-img" aria-hidden="true"></div>
+        <p class="expand-text">Contenido que se siente<br><em>como tu marca</em></p>
+      </div>
+    </div>
 
     <!-- ================= ¿TE SUENA? ================= -->
     <section id="problema">
@@ -354,13 +380,8 @@
     <!-- ================= QUIÉNES SOMOS ================= -->
     <section id="quienes-somos">
       <div class="container about-grid">
-        <div class="about-visual reveal" aria-hidden="true">
-          <div class="team">
-            <div class="avatar">L</div>
-            <div class="avatar">M</div>
-            <div class="avatar">S</div>
-          </div>
-          <div class="tag">“Creemos en las redes con alma, estrategia y mucha cercanía.”</div>
+        <div class="about-visual" aria-hidden="true">
+          <div class="about-img"></div>
         </div>
         <div class="about-text reveal">
           <span class="eyebrow">Quiénes somos</span>
@@ -661,6 +682,8 @@
     </div>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script>
     // Menú móvil
     const toggle = document.querySelector('.menu-toggle');
@@ -694,6 +717,61 @@
     });
 
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Parallax con GSAP + ScrollTrigger.
+    // Si GSAP no carga o la persona prefiere menos movimiento, la web se ve igual pero estática.
+    if (window.gsap && window.ScrollTrigger) {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+        const scrub = { scrub: 1.2 };
+
+        // Portada: el texto sube más despacio que el scroll
+        gsap.to('.hero-text', {
+          yPercent: -18, opacity: .3, ease: 'none',
+          scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', ...scrub }
+        });
+        gsap.to('.hero-card', {
+          yPercent: -35, ease: 'none',
+          scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', ...scrub }
+        });
+
+        // Franja de arena: se expande hasta ocupar todo el ancho
+        gsap.fromTo('.expand-media',
+          { clipPath: 'inset(8% 16% 8% 16% round 18px)' },
+          { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none',
+            scrollTrigger: { trigger: '.expand-band', start: 'top 90%', end: 'center center', ...scrub } });
+        gsap.fromTo('.expand-img', { yPercent: -8, scale: 1.15 }, {
+          yPercent: 8, scale: 1, ease: 'none',
+          scrollTrigger: { trigger: '.expand-band', start: 'top bottom', end: 'bottom top', ...scrub }
+        });
+        gsap.from('.expand-text', {
+          y: 60, opacity: 0, ease: 'none',
+          scrollTrigger: { trigger: '.expand-band', start: 'top 70%', end: 'center center', ...scrub }
+        });
+
+        // Quiénes somos: la imagen se abre y hace zoom suave
+        gsap.fromTo('.about-visual',
+          { clipPath: 'inset(14% 14% 14% 14%)' },
+          { clipPath: 'inset(0% 0% 0% 0%)', ease: 'none',
+            scrollTrigger: { trigger: '.about-visual', start: 'top 95%', end: 'center 55%', ...scrub } });
+        gsap.fromTo('.about-img', { scale: 1.3, yPercent: -6 }, {
+          scale: 1, yPercent: 6, ease: 'none',
+          scrollTrigger: { trigger: '.about-visual', start: 'top bottom', end: 'bottom top', ...scrub }
+        });
+
+        // Casos: las capturas y vídeos crecen al entrar en pantalla
+        gsap.utils.toArray('.case').forEach(c => {
+          gsap.fromTo(c.querySelectorAll('.phone'), { scale: .86, opacity: .4 }, {
+            scale: 1, opacity: 1, ease: 'none', stagger: .08,
+            scrollTrigger: { trigger: c, start: 'top 90%', end: 'top 35%', ...scrub }
+          });
+          gsap.fromTo(c.querySelector('.case-video'), { yPercent: 12 }, {
+            yPercent: -6, ease: 'none',
+            scrollTrigger: { trigger: c, start: 'top bottom', end: 'bottom top', ...scrub }
+          });
+        });
+      });
+    }
   </script>
 </body>
 </html>
