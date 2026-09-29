@@ -1,0 +1,8 @@
+Archivos de los casos de éxito:
+
+  Caso 3 · Pizzería L'Orenga   caso3-antes.jpg, caso3-despues.jpg, caso3-video.mp4, caso3-poster.jpg
+  Caso 4 · Can Tallarina       caso4-video1/2/3.mp4, caso4-poster1/2/3.jpg
+  Caso 2 · Eat and Grow        caso2-feed.jpg, caso2-reels.jpg, caso2-video.mp4, caso2-poster.jpg
+
+Vídeos: .mp4 (H.264), verticales 9:16. Los textos y cifras de cada caso están en index.html
+(busca "Caso 2", "Caso 3", "Caso 4").
