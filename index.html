@@ -94,7 +94,7 @@
     .hero-card .btn:hover { background: none; color: var(--ink-soft); }
     .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 2.4rem; padding-top: 1.6rem; border-top: 1px solid var(--line); }
     .stat strong { display: block; font-family: "Fraunces", serif; font-weight: 400; font-size: 1.7rem; color: var(--ink); line-height: 1.1; }
-    .stat span { font-size: .75rem; color: var(--muted); }
+    .stat span { display: block; margin-top: 6px; font-size: .75rem; line-height: 1.4; color: var(--muted); }
 
     /* ---------- Parallax / imágenes que se expanden ---------- */
     .expand-band { padding: 0 16px 40px; }
@@ -185,6 +185,10 @@
     .stats-table .before { color: var(--muted); }
     .stats-table .after { color: var(--ink); font-weight: 600; }
     .growth { font-size: .8rem; font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
+    .case-result { padding: 24px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 1.2rem; }
+    .case-result strong { display: block; font-family: "Fraunces", serif; font-weight: 400; font-size: clamp(2.4rem, 5vw, 3.4rem); line-height: 1.05; color: var(--ink); }
+    .case-result span { color: var(--ink-soft); font-size: .95rem; }
+    .case-desc { font-size: .95rem; }
     .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .media-label { display: block; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
     .media-label.after { color: var(--ink); }
@@ -360,9 +364,9 @@
           <p>Agenda una llamada y analizamos tu cuenta de Instagram. Te damos ideas de contenido que pueden funcionar en tu nicho.</p>
           <a href="#agenda" class="btn btn-cream">Quiero mi asesoría →</a>
           <div class="stats">
-            <div class="stat"><strong>+120</strong><span>marcas</span></div>
-            <div class="stat"><strong>8</strong><span>años</span></div>
-            <div class="stat"><strong>+5M</strong><span>visualizaciones</span></div>
+            <div class="stat"><strong>+10K</strong><span>seguidores para un cliente</span></div>
+            <div class="stat"><strong>&lt;1 mes</strong><span>para hacer viral una pizzería</span></div>
+            <div class="stat"><strong>1 año</strong><span>creando contenido</span></div>
           </div>
         </aside>
       </div>
@@ -498,22 +502,17 @@
         <div class="section-head reveal">
           <span class="eyebrow">Casos de éxito</span>
           <h2>Antes y después de trabajar con nosotras</h2>
-          <p>Cuentas reales, estadísticas reales. Así cambian las redes de nuestras clientas cuando nos ponemos manos a la obra.</p>
+          <p>En solo un año, esto es lo que hemos conseguido con algunas de las marcas que confían en nosotras.</p>
         </div>
         <div class="cases">
           <!-- Caso 1: sube las capturas y el vídeo a assets/casos/ con estos nombres -->
           <article class="case reveal">
             <div class="case-info">
-              <span class="sector">Moda · Tienda online</span>
-              <h3>Tienda de moda sostenible</h3>
-              <p class="handle">@cuentacliente1 <span>· 6 meses</span></p>
-              <table class="stats-table">
-                <tr><th>Métrica</th><th>Antes</th><th>Después</th><th></th></tr>
-                <tr><td>Seguidores</td><td class="before">2.100</td><td class="after">20.300</td><td><span class="growth">+867%</span></td></tr>
-                <tr><td>Alcance mensual</td><td class="before">8.000</td><td class="after">310.000</td><td><span class="growth">x38</span></td></tr>
-                <tr><td>Interacción</td><td class="before">0,9%</td><td class="after">6,4%</td><td><span class="growth">+5,5 pts</span></td></tr>
-                <tr><td>Ventas desde IG</td><td class="before">12/mes</td><td class="after">95/mes</td><td><span class="growth">x8</span></td></tr>
-              </table>
+              <span class="sector">Hostelería · Cafetería</span>
+              <h3>Una cafetería recién abierta</h3>
+              <p class="handle">@cuentacliente1 <span>· Apertura</span></p>
+              <div class="case-result"><strong>Colas para entrar</strong><span>durante sus primeras semanas</span></div>
+              <p class="case-desc">Creamos el contenido de su apertura para que la gente tuviera ganas de ir desde el primer día.</p>
             </div>
             <div class="compare">
               <div><span class="media-label">Antes</span><div class="phone"><div class="placeholder"><b>+</b>Captura del perfil antes</div><img src="assets/casos/caso1-antes.jpg" alt="Captura del perfil antes" loading="lazy" onerror="this.remove()"></div></div>
@@ -524,16 +523,11 @@
           <!-- Caso 2: sube las capturas y el vídeo a assets/casos/ con estos nombres -->
           <article class="case reveal">
             <div class="case-info">
-              <span class="sector">Salud · Clínica</span>
-              <h3>Clínica de estética</h3>
-              <p class="handle">@cuentacliente2 <span>· 4 meses</span></p>
-              <table class="stats-table">
-                <tr><th>Métrica</th><th>Antes</th><th>Después</th><th></th></tr>
-                <tr><td>Seguidores</td><td class="before">3.400</td><td class="after">11.800</td><td><span class="growth">+247%</span></td></tr>
-                <tr><td>Alcance mensual</td><td class="before">5.500</td><td class="after">140.000</td><td><span class="growth">x25</span></td></tr>
-                <tr><td>Interacción</td><td class="before">1,2%</td><td class="after">5,1%</td><td><span class="growth">+3,9 pts</span></td></tr>
-                <tr><td>Reservas por DM</td><td class="before">15/mes</td><td class="after">48/mes</td><td><span class="growth">x3</span></td></tr>
-              </table>
+              <span class="sector">Crecimiento de cuenta</span>
+              <h3>Más de 10.000 seguidores nuevos</h3>
+              <p class="handle">@cuentacliente2 <span>· Crecimiento</span></p>
+              <div class="case-result"><strong>+10.000</strong><span>seguidores nuevos</span></div>
+              <p class="case-desc">Contenido constante y pensado para su público que hizo crecer la cuenta de forma real.</p>
             </div>
             <div class="compare">
               <div><span class="media-label">Antes</span><div class="phone"><div class="placeholder"><b>+</b>Captura del perfil antes</div><img src="assets/casos/caso2-antes.jpg" alt="Captura del perfil antes" loading="lazy" onerror="this.remove()"></div></div>
@@ -544,16 +538,11 @@
           <!-- Caso 3: sube las capturas y el vídeo a assets/casos/ con estos nombres -->
           <article class="case reveal">
             <div class="case-info">
-              <span class="sector">Formación · Online</span>
-              <h3>Academia de cursos online</h3>
-              <p class="handle">@cuentacliente3 <span>· 5 meses</span></p>
-              <table class="stats-table">
-                <tr><th>Métrica</th><th>Antes</th><th>Después</th><th></th></tr>
-                <tr><td>Seguidores TikTok</td><td class="before">400</td><td class="after">36.000</td><td><span class="growth">x90</span></td></tr>
-                <tr><td>Visualizaciones</td><td class="before">12.000</td><td class="after">2,4M</td><td><span class="growth">x200</span></td></tr>
-                <tr><td>Interacción</td><td class="before">2,0%</td><td class="after">8,7%</td><td><span class="growth">+6,7 pts</span></td></tr>
-                <tr><td>Alumnos nuevos</td><td class="before">20/mes</td><td class="after">130/mes</td><td><span class="growth">x6,5</span></td></tr>
-              </table>
+              <span class="sector">Hostelería · Pizzería</span>
+              <h3>Una pizzería que se hizo viral</h3>
+              <p class="handle">@cuentacliente3 <span>· Menos de 1 mes</span></p>
+              <div class="case-result"><strong>Viral</strong><span>en menos de un mes</span></div>
+              <p class="case-desc">Vídeos grabados y editados por nosotras que llevaron la pizzería a miles de personas.</p>
             </div>
             <div class="compare">
               <div><span class="media-label">Antes</span><div class="phone"><div class="placeholder"><b>+</b>Captura del perfil antes</div><img src="assets/casos/caso3-antes.jpg" alt="Captura del perfil antes" loading="lazy" onerror="this.remove()"></div></div>
