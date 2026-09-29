@@ -175,6 +175,18 @@
       padding: 56px 0; border-top: 1px solid var(--line);
     }
     .case:first-child { border-top: 0; padding-top: 0; }
+    .case.case-multi { grid-template-columns: 1fr 1.9fr; }
+    .case-facts { list-style: none; display: grid; gap: 14px; margin-top: 1.4rem; }
+    .case-facts li { display: grid; grid-template-columns: 84px 1fr; gap: 12px; align-items: baseline; }
+    .case-facts strong { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.5rem; color: var(--ink); }
+    .case-facts span { font-size: .9rem; color: var(--muted); }
+    .views {
+      position: absolute; left: 12px; bottom: 12px; z-index: 2; font-size: .75rem; font-weight: 500; color: var(--white);
+      background: rgba(31, 52, 88, .6); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      padding: 5px 10px; border-radius: 999px;
+    }
+    .case-videos { min-width: 0; }
+    .videos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .case .sector { display: block; font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: .6rem; }
     .case h3 { font-size: 1.6rem; }
     .case .handle { margin-bottom: 1.8rem; font-size: .9rem; }
@@ -200,6 +212,8 @@
     .reel-link b { width: 54px; height: 54px; border-radius: 50%; background: var(--ink); color: var(--white) !important; display: grid; place-items: center; font-size: 1rem !important; margin: 0 auto 10px; }
     .phone img { object-position: top; }
     .phone.reel-video { background: var(--ink); }
+    .phone:not(:has(video)) { background: var(--bg); }
+    .phone:not(:has(video)) .sound-toggle { display: none; }
     .sound-toggle {
       position: absolute; right: 12px; top: 12px; z-index: 2;
       font: inherit; font-size: .72rem; color: var(--white); cursor: pointer;
@@ -310,6 +324,7 @@
       .plans { grid-template-columns: 1fr; }
       .steps { grid-template-columns: 1fr 1fr; }
       .case { grid-template-columns: 1fr 1fr; }
+      .case.case-multi { grid-template-columns: 1fr; }
       .case-info { grid-column: 1 / -1; }
       .logos { grid-template-columns: repeat(3, 1fr); }
       .about-visual { aspect-ratio: 16 / 10; }
@@ -335,11 +350,14 @@
       form { padding: 24px; }
       .nav { padding: 0 8px 0 18px; }
       .case { grid-template-columns: 1fr; gap: 32px; }
+      .case.case-multi { grid-template-columns: 1fr; }
+      .videos-grid { grid-template-columns: repeat(3, minmax(200px, 1fr)); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; }
+      .videos-grid .phone { scroll-snap-align: start; }
       .case-video { max-width: 280px; width: 100%; }
       .stats-table { font-size: .82rem; }
       .stats-table td { padding-right: 6px; }
       .stats-table th:last-child, .stats-table td:last-child { display: none; }
-      .case-info, .compare { min-width: 0; }
+      .case-info, .compare, .case-videos { min-width: 0; }
       .logos { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
@@ -476,7 +494,7 @@
         </div>
         <div class="formats-head reveal">
           <h3>Formatos que creamos</h3>
-          <p>Siempre trabajamos según las necesidades de cada cliente.</p>
+          <p>Siempre trabajamos según las necesidades de cada cliente. Y si lo necesitas, también te ayudamos con la estrategia de venta: promociones, eventos y lanzamientos.</p>
         </div>
         <div class="services">
           <article class="service reveal">
@@ -543,6 +561,28 @@
                 <button type="button" class="sound-toggle" aria-label="Activar sonido">Activar sonido</button>
               </div>
               <a class="reel-fallback" href="https://www.instagram.com/reel/Dbn9ARJC-as/" target="_blank" rel="noopener">Ver en Instagram →</a>
+            </div>
+          </article>
+          <!-- Caso 4: pub de tardeo. Vídeos en assets/casos/caso4-video1.mp4, caso4-video2.mp4, caso4-video3.mp4 -->
+          <article class="case case-multi reveal">
+            <div class="case-info">
+              <span class="sector">Ocio · Pub de tardeo · Xaló</span>
+              <h3>Can Tallarina</h3>
+              <p class="handle">1 año confiando en nosotras</p>
+              <div class="case-result"><strong>0 €</strong><span>en publicidad</span></div>
+              <p class="case-desc">Antes pagaban publicidad para llenar sus tardeos. Ahora sus propios vídeos se hacen virales y ya no necesitan pagar anuncios. Además, les ayudamos con la estrategia de venta de sus eventos.</p>
+              <ul class="case-facts">
+                <li><strong>336K</strong><span>visualizaciones en un solo vídeo</span></li>
+                <li><strong>&lt;30 s</strong><span>en agotar 100 entradas a 1 € con un vídeo</span></li>
+              </ul>
+            </div>
+            <div class="case-videos">
+              <span class="media-label after">3 vídeos virales creados por Brisa</span>
+              <div class="videos-grid">
+                <div class="phone after reel-video"><div class="placeholder"><b>▶</b>Vídeo viral 1</div><span class="views">336 mil visualizaciones</span><video src="assets/casos/caso4-video1.mp4" poster="assets/casos/caso4-poster1.jpg" muted loop playsinline preload="metadata" data-autoplay onerror="this.remove()"></video><button type="button" class="sound-toggle" aria-label="Activar sonido">Activar sonido</button></div>
+                <div class="phone after reel-video"><div class="placeholder"><b>▶</b>Vídeo viral 2</div><span class="views">115 mil visualizaciones</span><video src="assets/casos/caso4-video2.mp4" poster="assets/casos/caso4-poster2.jpg" muted loop playsinline preload="metadata" data-autoplay onerror="this.remove()"></video><button type="button" class="sound-toggle" aria-label="Activar sonido">Activar sonido</button></div>
+                <div class="phone after reel-video"><div class="placeholder"><b>▶</b>Vídeo viral 3</div><span class="views">108 mil visualizaciones</span><video src="assets/casos/caso4-video3.mp4" poster="assets/casos/caso4-poster3.jpg" muted loop playsinline preload="metadata" data-autoplay onerror="this.remove()"></video><button type="button" class="sound-toggle" aria-label="Activar sonido">Activar sonido</button></div>
+              </div>
             </div>
           </article>
           <!-- Caso 1: sube las capturas y el vídeo a assets/casos/ con estos nombres -->
