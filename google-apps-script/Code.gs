@@ -89,10 +89,20 @@ function avisarPorEmail_(p) {
 
   MailApp.sendEmail({
     to: EMAIL_AVISO,
-    subject: 'Nuevo cliente potencial: ' + (limpiar_(p.nombre) || 'sin nombre') + (p.negocio ? ' (' + limpiar_(p.negocio) + ')' : ''),
+    subject: tipoDeCliente_(p.inversion) + ': ' + (limpiar_(p.nombre) || 'sin nombre') + (p.negocio ? ' (' + limpiar_(p.negocio) + ')' : ''),
+    name: 'Web Brisa Creative',
     htmlBody: html,
     replyTo: limpiar_(p.email) || EMAIL_AVISO,
   });
+}
+
+// Asunto del email según la inversión mensual que ha elegido en el formulario
+function tipoDeCliente_(inversion) {
+  const v = limpiar_(inversion);
+  if (v.indexOf('Menos de 300') === 0) return 'Cliente no potencial';
+  if (v.indexOf('De 300 a 600') === 0) return 'Cliente';
+  if (v.indexOf('De 600 a 1.000') === 0 || v.indexOf('Más de 1.000') === 0) return 'Cliente potencial';
+  return 'Cliente (inversión sin definir)';
 }
 
 function limpiar_(v) {
