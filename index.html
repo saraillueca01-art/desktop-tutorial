@@ -189,6 +189,16 @@
     .case-result strong { display: block; font-family: "Fraunces", serif; font-weight: 400; font-size: clamp(2.4rem, 5vw, 3.4rem); line-height: 1.05; color: var(--ink); }
     .case-result span { color: var(--ink-soft); font-size: .95rem; }
     .case-desc { font-size: .95rem; }
+    .case .handle a { color: var(--ink-soft); border-bottom: 1px solid var(--line); }
+    .case-quote {
+      margin-top: 1.4rem; padding: 20px 22px; background: var(--white); border-radius: 18px;
+      font-family: "Fraunces", serif; font-style: italic; font-size: 1.1rem; color: var(--ink); line-height: 1.45;
+    }
+    .case-quote cite { display: block; margin-top: .6rem; font-family: "Inter", sans-serif; font-style: normal; font-size: .78rem; color: var(--muted); }
+    .reel-link { display: grid; place-items: center; align-content: center; width: 100%; height: 100%; color: var(--ink); font-weight: 500; transition: background .2s; }
+    .reel-link:hover { background: var(--bg-alt); }
+    .reel-link b { width: 54px; height: 54px; border-radius: 50%; background: var(--ink); color: var(--white) !important; display: grid; place-items: center; font-size: 1rem !important; margin: 0 auto 10px; }
+    .phone img { object-position: top; }
     .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .media-label { display: block; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
     .media-label.after { color: var(--ink); }
@@ -505,6 +515,22 @@
           <p>En solo un año, esto es lo que hemos conseguido con algunas de las marcas que confían en nosotras.</p>
         </div>
         <div class="cases">
+          <!-- Caso 3: sube las capturas y el vídeo a assets/casos/ con estos nombres -->
+          <article class="case reveal">
+            <div class="case-info">
+              <span class="sector">Hostelería · Pizzería</span>
+              <h3>Pizzería L’Orenga</h3>
+              <p class="handle"><a href="https://www.instagram.com/pizzerialorenga/" target="_blank" rel="noopener">@pizzerialorenga</a> <span>· Menos de 1 mes</span></p>
+              <div class="case-result"><strong>Viral</strong><span>en menos de un mes</span></div>
+              <p class="case-desc">Pasamos de fotos sueltas sin estilo a un feed con identidad propia y vídeos grabados en el local que llevaron la pizzería a miles de personas.</p>
+              <blockquote class="case-quote">“Vienen clientes diciendo: ‘¡Ay, te he visto en este vídeo!’”<cite>— Pizzería L’Orenga</cite></blockquote>
+            </div>
+            <div class="compare">
+              <div><span class="media-label">Antes</span><div class="phone"><div class="placeholder"><b>+</b>Captura del perfil antes</div><img src="assets/casos/caso3-antes.jpg" alt="Captura del perfil antes" loading="lazy" onerror="this.remove()"></div></div>
+              <div><span class="media-label after">Después</span><div class="phone after"><div class="placeholder"><b>+</b>Captura del perfil después</div><img src="assets/casos/caso3-despues.jpg" alt="Captura del perfil después" loading="lazy" onerror="this.remove()"></div></div>
+            </div>
+            <div class="case-video"><span class="media-label after">Vídeo viral</span><div class="phone after"><a class="placeholder reel-link" href="https://www.instagram.com/reel/Dbn9ARJC-as/" target="_blank" rel="noopener"><b>▶</b>Ver el vídeo en Instagram</a><video src="assets/casos/caso3-video.mp4" controls muted playsinline preload="metadata" onerror="this.remove()"></video></div></div>
+          </article>
           <!-- Caso 1: sube las capturas y el vídeo a assets/casos/ con estos nombres -->
           <article class="case reveal">
             <div class="case-info">
@@ -534,21 +560,6 @@
               <div><span class="media-label after">Después</span><div class="phone after"><div class="placeholder"><b>+</b>Captura del perfil después</div><img src="assets/casos/caso2-despues.jpg" alt="Captura del perfil después" loading="lazy" onerror="this.remove()"></div></div>
             </div>
             <div class="case-video"><span class="media-label after">Reel creado por Brisa</span><div class="phone after"><div class="placeholder"><b>▶</b>Vídeo del caso</div><video src="assets/casos/caso2-video.mp4" controls muted playsinline preload="metadata" onerror="this.remove()"></video></div></div>
-          </article>
-          <!-- Caso 3: sube las capturas y el vídeo a assets/casos/ con estos nombres -->
-          <article class="case reveal">
-            <div class="case-info">
-              <span class="sector">Hostelería · Pizzería</span>
-              <h3>Una pizzería que se hizo viral</h3>
-              <p class="handle">@cuentacliente3 <span>· Menos de 1 mes</span></p>
-              <div class="case-result"><strong>Viral</strong><span>en menos de un mes</span></div>
-              <p class="case-desc">Vídeos grabados y editados por nosotras que llevaron la pizzería a miles de personas.</p>
-            </div>
-            <div class="compare">
-              <div><span class="media-label">Antes</span><div class="phone"><div class="placeholder"><b>+</b>Captura del perfil antes</div><img src="assets/casos/caso3-antes.jpg" alt="Captura del perfil antes" loading="lazy" onerror="this.remove()"></div></div>
-              <div><span class="media-label after">Después</span><div class="phone after"><div class="placeholder"><b>+</b>Captura del perfil después</div><img src="assets/casos/caso3-despues.jpg" alt="Captura del perfil después" loading="lazy" onerror="this.remove()"></div></div>
-            </div>
-            <div class="case-video"><span class="media-label after">Reel creado por Brisa</span><div class="phone after"><div class="placeholder"><b>▶</b>Vídeo del caso</div><video src="assets/casos/caso3-video.mp4" controls muted playsinline preload="metadata" onerror="this.remove()"></video></div></div>
           </article>
         </div>
         <div class="case-cta reveal">
