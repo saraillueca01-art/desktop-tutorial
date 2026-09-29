@@ -385,10 +385,16 @@
     }
     input:focus, select:focus, textarea:focus { outline: none; border-color: var(--ink-soft); }
     textarea { resize: vertical; min-height: 80px; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: end; }
     form .btn { width: 100%; margin-top: 8px; }
     .form-note { font-size: .78rem; color: var(--muted); text-align: center; }
-    .form-ok { display: none; border-radius: 14px; border: 1px solid var(--ink-soft); color: var(--ink); padding: 14px; font-size: .9rem; text-align: center; }
+    .form-ok { border-radius: 14px; border: 1px solid var(--ink-soft); background: var(--bg-alt); color: var(--ink); padding: 14px; font-size: .9rem; text-align: center; }
+    .form-ok.is-error { border-color: #b3261e; color: #b3261e; }
+    .qualify { border: 0; border-top: 1px solid var(--line); padding-top: 18px; display: grid; gap: 18px; min-width: 0; }
+    .qualify legend { font-family: "Fraunces", serif; font-size: 1.05rem; color: var(--ink); padding: 0; margin-bottom: 4px; float: left; width: 100%; }
+    .qualify-note { font-size: .8rem; color: var(--muted); line-height: 1.5; }
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+    form button[disabled] { opacity: .6; cursor: wait; }
 
     /* ---------- Footer ---------- */
     footer { border-top: 1px solid var(--line); padding: 48px 0 32px; }
@@ -872,7 +878,7 @@
         <div class="reveal agenda-copy">
           <span class="eyebrow">Agenda una llamada</span>
           <h2>Hablemos de tus redes… y llévate una asesoría gratis</h2>
-          <p>Reserva una llamada de 30 minutos sin compromiso. Conoceremos tu negocio y te diremos con total sinceridad cómo podemos ayudarte.</p>
+          <p>Déjanos tus datos y te escribimos por WhatsApp para agendar una llamada sin compromiso. Conoceremos tu negocio y te diremos con total sinceridad cómo podemos ayudarte.</p>
           <div class="bonus">
             <h3>En la asesoría gratis:</h3>
             <ul>
@@ -881,27 +887,54 @@
             </ul>
           </div>
         </div>
-        <form id="contact-form" class="reveal">
+        <!-- Pega en data-endpoint la URL de la aplicación web de Google Apps Script (ver CONECTAR-FORMULARIO.md) -->
+        <form id="contact-form" class="reveal" data-endpoint="">
           <h3>Reserva tu llamada</h3>
           <div class="row">
-            <label>Nombre<input type="text" name="nombre" required autocomplete="name"></label>
-            <label>Email<input type="email" name="email" required autocomplete="email"></label>
+            <label for="f-nombre">Nombre<input id="f-nombre" type="text" name="nombre" required autocomplete="name"></label>
+            <label for="f-telefono">Teléfono / WhatsApp<input id="f-telefono" type="tel" name="telefono" required autocomplete="tel" placeholder="600 000 000"></label>
           </div>
           <div class="row">
-            <label>Teléfono<input type="tel" name="telefono" autocomplete="tel"></label>
-            <label>Tu negocio<input type="text" name="negocio" placeholder="Nombre o @usuario"></label>
+            <label for="f-email">Email<input id="f-email" type="email" name="email" required autocomplete="email"></label>
+            <label for="f-negocio">Instagram de tu negocio<input id="f-negocio" type="text" name="negocio" required placeholder="@tunegocio"></label>
           </div>
-          <label>¿Cómo te gustaría trabajar?
-            <select name="servicio">
+          <label for="f-servicio">¿Cómo te gustaría trabajar?
+            <select id="f-servicio" name="servicio" required>
+              <option value="" disabled selected>Elige una opción</option>
               <option>Que lo hagáis todo (grabar, crear y subir)</option>
               <option>Que lo grabéis y creéis, y lo subo yo</option>
               <option>Aún no lo sé</option>
             </select>
           </label>
-          <label>Cuéntanos un poco más<textarea name="mensaje" placeholder="¿Cuál es tu mayor reto ahora mismo?"></textarea></label>
+          <fieldset class="qualify">
+            <legend>Para prepararte una propuesta realista</legend>
+            <label for="f-inversion">Inversión mensual pensada para tus redes
+              <select id="f-inversion" name="inversion" required>
+                <option value="" disabled selected>Elige una opción</option>
+                <option>Menos de 300 € al mes</option>
+                <option>De 300 a 600 € al mes</option>
+                <option>De 600 a 1.000 € al mes</option>
+                <option>Más de 1.000 € al mes</option>
+                <option>Aún no lo tengo claro</option>
+              </select>
+            </label>
+            <label for="f-facturacion">Facturación mensual aproximada de tu negocio
+              <select id="f-facturacion" name="facturacion" required>
+                <option value="" disabled selected>Elige una opción</option>
+                <option>Menos de 5.000 €</option>
+                <option>De 5.000 a 15.000 €</option>
+                <option>De 15.000 a 30.000 €</option>
+                <option>Más de 30.000 €</option>
+                <option>Prefiero no decirlo</option>
+              </select>
+            </label>
+            <p class="qualify-note">Es orientativo y confidencial. Solo lo usamos para proponerte la estrategia que mejor encaje con tu negocio.</p>
+          </fieldset>
+          <label for="f-mensaje">Cuéntanos un poco más (opcional)<textarea id="f-mensaje" name="mensaje" placeholder="¿Cuál es tu mayor reto ahora mismo?"></textarea></label>
+          <input class="hp" type="text" name="web" tabindex="-1" autocomplete="off" aria-hidden="true">
           <button type="submit" class="btn btn-primary">Quiero mi llamada + asesoría gratis</button>
-          <div class="form-ok" role="status">¡Gracias! Te escribiremos en menos de 24 h para agendar tu llamada.</div>
-          <p class="form-note">Sin compromiso. Tus datos están seguros con nosotras.</p>
+          <div class="form-ok" role="status" hidden></div>
+          <p class="form-note">Sin compromiso. Te escribimos por WhatsApp para elegir el día y la hora de la llamada.</p>
         </form>
       </div>
       </div>
@@ -944,14 +977,36 @@
     // Formulario: de momento abre el correo con los datos.
     // Sustituye por Calendly, Formspree o tu herramienta de reservas cuando la tengas.
     const form = document.getElementById('contact-form');
-    form.addEventListener('submit', e => {
+    const formOk = form.querySelector('.form-ok');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    form.addEventListener('submit', async e => {
       e.preventDefault();
-      const d = new FormData(form);
-      const body = [...d.entries()].map(([k, v]) => `${k}: ${v}`).join('\n');
-      window.location.href = 'mailto:brisacreativeagencia@gmail.com'
-        + '?subject=' + encodeURIComponent('Quiero agendar una llamada + asesoría gratis')
-        + '&body=' + encodeURIComponent(body);
-      form.querySelector('.form-ok').style.display = 'block';
+      const data = new FormData(form);
+      if (data.get('web')) return; // antispam
+      const endpoint = form.dataset.endpoint;
+      const nombre = (data.get('nombre') || '').toString().split(' ')[0];
+      if (!endpoint) {
+        // Mientras no esté conectado a Google: abre el correo con los datos
+        const body = [...data.entries()].filter(([k]) => k !== 'web').map(([k, v]) => `${k}: ${v}`).join('\n');
+        window.location.href = 'mailto:brisacreativeagencia@gmail.com'
+          + '?subject=' + encodeURIComponent('Nueva solicitud de llamada + asesoría gratis')
+          + '&body=' + encodeURIComponent(body);
+        return;
+      }
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Enviando…';
+      try {
+        await fetch(endpoint, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(data) });
+        form.reset();
+        formOk.textContent = `¡Gracias${nombre ? ', ' + nombre : ''}! Te escribiremos por WhatsApp en menos de 24 h para agendar la llamada.`;
+        formOk.classList.remove('is-error');
+      } catch (err) {
+        formOk.textContent = 'No se ha podido enviar. Revisa tu conexión o escríbenos a brisacreativeagencia@gmail.com.';
+        formOk.classList.add('is-error');
+      }
+      formOk.hidden = false;
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Quiero mi llamada + asesoría gratis';
     });
 
     document.getElementById('year').textContent = new Date().getFullYear();
