@@ -62,17 +62,23 @@
     .btn-outline:hover, .btn-cream:hover { background: var(--ink); color: var(--white); }
 
     /* ---------- Navegación ---------- */
-    header { position: sticky; top: 14px; z-index: 50; padding: 0 16px; }
+    header { position: fixed; top: 14px; left: 0; right: 0; z-index: 50; padding: 0 16px; }
     .nav {
-      display: flex; align-items: center; justify-content: space-between; height: 64px;
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; height: 64px;
       max-width: calc(var(--max) - 32px); padding: 0 10px 0 24px;
       background: rgba(255, 255, 255, .88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--line); border-radius: 999px;
       box-shadow: 0 8px 30px rgba(31, 52, 88, .06);
     }
-    .logo { display: flex; align-items: center; }
+    .logo { display: flex; align-items: center; justify-content: center; }
+    .nav-side { display: flex; gap: 24px; list-style: none; align-items: center; }
+    .nav-right { justify-content: flex-end; }
+    .nav-side a { font-size: .85rem; color: var(--text); transition: color .2s; white-space: nowrap; }
+    .nav-side a:not(.btn):hover { color: var(--ink-soft); }
+    .nav-side .btn { padding: 10px 20px; font-size: .82rem; color: var(--white); }
+    .nav-side .btn:hover { color: var(--ink); }
     .logo img { height: 38px; width: auto; }
-    .nav-links { display: flex; gap: 26px; list-style: none; align-items: center; }
+    .nav-links { display: none; list-style: none; }
     .nav-links a { font-size: .85rem; color: var(--text); transition: color .2s; }
     .nav-links a:not(.btn):hover { color: var(--ink-soft); }
     .nav-links .btn { padding: 10px 20px; font-size: .82rem; color: var(--white); }
@@ -80,7 +86,18 @@
     .menu-toggle { display: none; background: none; border: 0; font-size: 1.6rem; color: var(--ink); cursor: pointer; }
 
     /* ---------- Hero ---------- */
-    .hero { padding: 110px 0 130px; border-top: 0; }
+    .hero { padding: 14px 16px 0; border-top: 0; }
+    .hero-stage { position: relative; overflow: hidden; isolation: isolate; border-radius: var(--radius); padding-block: 170px 110px; background: var(--ink); }
+    .hero-bg { position: absolute; inset: 0; z-index: -1; }
+    .hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, rgba(20, 34, 60, .86) 0%, rgba(20, 34, 60, .62) 60%, rgba(20, 34, 60, .4) 100%); }
+    .hero-stage h1 { color: var(--white); }
+    .hero .hero-stage h1 em { color: #cdd8ea; }
+    .hero-stage p.lead { color: #dde3ee; }
+    .hero-stage .btn-primary { background: var(--white); color: var(--ink); border-color: var(--white); }
+    .hero-stage .btn-primary:hover { background: transparent; color: var(--white); }
+    .hero-stage .btn-outline { color: var(--white); border-color: rgba(255, 255, 255, .7); }
+    .hero-stage .btn-outline:hover { background: var(--white); color: var(--ink); }
+    .hero-stage .hero-card { background: rgba(255, 255, 255, .94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
     .hero-grid { display: grid; grid-template-columns: 1.4fr .8fr; gap: 80px; align-items: end; }
     .hero h1 { font-size: clamp(2.6rem, 6vw, 4.6rem); margin-bottom: 1.6rem; }
     .hero h1 em { font-style: italic; color: var(--ink-soft); }
@@ -143,9 +160,32 @@
     .expand-text em { font-style: italic; }
 
     /* ---------- ¿Te suena? ---------- */
-    .pains { display: grid; grid-template-columns: 1fr 1fr; column-gap: 64px; }
-    .pain { padding: 22px 0 22px 40px; border-bottom: 1px solid var(--line); position: relative; color: var(--text); }
-    .pain::before { content: "—"; position: absolute; left: 0; color: var(--sand); }
+    .pains { display: grid; gap: 14px; margin-inline: calc(50% - 50vw); }
+    .pains-row {
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+              mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    }
+    .pains-track { display: flex; gap: 14px; width: max-content; animation: pains-scroll 50s linear infinite; }
+    .pains-row.reverse .pains-track { animation-direction: reverse; animation-duration: 58s; }
+    .pains:hover .pains-track { animation-play-state: paused; }
+    @keyframes pains-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .pain {
+      flex: 0 0 auto; display: inline-flex; align-items: center; gap: 12px; white-space: nowrap;
+      padding: 16px 24px 16px 16px; border: 1px solid var(--line); border-radius: 999px; background: var(--white);
+      font-size: 1rem; color: var(--text); transition: background .25s, color .25s, border-color .25s;
+    }
+    .pain::before {
+      content: "✕"; width: 30px; height: 30px; border-radius: 50%; flex: 0 0 auto;
+      display: grid; place-items: center; font-size: .75rem; background: var(--bg-alt); color: var(--ink-soft);
+    }
+    .pain:hover { background: var(--ink); color: var(--white); border-color: var(--ink); }
+    .pain:hover::before { background: rgba(255, 255, 255, .15); color: var(--white); }
+    @media (prefers-reduced-motion: reduce) {
+      .pains-track { animation: none; flex-wrap: wrap; width: auto; justify-content: center; padding: 0 16px; }
+      .pains-row { -webkit-mask-image: none; mask-image: none; }
+      .pains-track [aria-hidden="true"] { display: none; }
+    }
     .solution {
       margin-top: 64px; display: flex; gap: 32px; align-items: center; justify-content: space-between; flex-wrap: wrap;
     }
@@ -157,6 +197,10 @@
     .about-visual { aspect-ratio: 4 / 5; position: relative; overflow: hidden; border-radius: var(--radius); will-change: clip-path; }
     .about-img { position: absolute; inset: 0; background: url("assets/equipo.jpg") center 35% / cover; will-change: transform; }
     .about-text p { margin-bottom: 1rem; }
+    .founders { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 1.4rem 0 1.6rem; }
+    .founder { border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: grid; gap: 6px; }
+    .founder strong { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.4rem; color: var(--ink); }
+    .founder span { font-size: .9rem; color: var(--muted); line-height: 1.5; }
     .values { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 2rem; }
     .values span { font-size: .85rem; color: var(--ink); padding-bottom: 2px; border-bottom: 1px solid var(--sand); }
 
@@ -186,14 +230,23 @@
     .formats-head h3 { font-size: 1.5rem; }
 
     /* ---------- Cómo trabajamos ---------- */
-    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; counter-reset: paso; }
-    .step { background: var(--bg-alt); border-radius: var(--radius); padding: 28px; }
+    .steps { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; counter-reset: paso; }
+    .steps-line { position: absolute; top: 36px; left: 12.5%; right: 12.5%; height: 2px; background: var(--line); }
+    .steps-progress { position: absolute; inset: 0; background: var(--ink); transform-origin: left center; }
+    .step { position: relative; text-align: center; display: grid; justify-items: center; }
     .step::before {
-      counter-increment: paso; content: "0" counter(paso);
-      display: block; font-size: .75rem; letter-spacing: .15em; color: var(--ink-soft); margin-bottom: 1.2rem;
+      counter-increment: paso; content: counter(paso);
+      width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; margin-bottom: 1.4rem;
+      font-family: "Fraunces", serif; font-size: 1.6rem; color: var(--ink);
+      background: var(--white); border: 2px solid var(--ink); position: relative; z-index: 1;
+      transition: background .4s, color .4s, transform .4s;
     }
-    .step p { font-size: .95rem; }
-    .step small { display: block; margin-top: 1rem; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--sand); font-weight: 600; }
+    .step.is-on::before { background: var(--ink); color: var(--white); transform: scale(1.08); }
+    .step p { font-size: .95rem; max-width: 240px; }
+    .step small {
+      display: inline-block; margin-top: 1rem; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 600;
+      color: var(--ink-soft); background: var(--bg-alt); padding: 6px 12px; border-radius: 999px;
+    }
 
     /* ---------- Casos de éxito: antes y después ---------- */
     #casos { background: var(--bg-alt); }
@@ -304,8 +357,7 @@
     /* ---------- Agenda una llamada ---------- */
     #agenda { background: var(--bg); padding: 16px; border-top: 0; }
     .agenda-stage { position: relative; overflow: hidden; border-radius: var(--radius); padding-block: 120px; background: var(--ink); isolation: isolate; }
-    .agenda-bg { position: absolute; inset: 0; z-index: -1; }
-    .agenda-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, rgba(20, 34, 60, .88) 0%, rgba(20, 34, 60, .7) 55%, rgba(20, 34, 60, .45) 100%); }
+    .agenda-stage::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle at 85% 20%, rgba(74, 95, 130, .55), transparent 55%); }
     .bg-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s ease; }
     .bg-video.is-active { opacity: 1; }
     .agenda-copy h2, .agenda-copy .bonus h3 { color: var(--white); }
@@ -357,14 +409,14 @@
       section { padding: 96px 0; }
       .hero-grid, .about-grid, .why-grid, .cta-grid { grid-template-columns: 1fr; gap: 56px; }
       .hero-card { padding: 28px; }
-      .hero { display: flex; flex-direction: column; }
-      .hero-grid { display: contents; }
-      .hero-text { order: 1; padding: 0 16px; }
-      .stats-carousel { order: 2; }
-      .hero-card { order: 3; margin: 48px 16px 0; }
+      .hero-stage { padding-block: 130px 72px; }
       .services { grid-template-columns: 1fr 1fr; }
       .plans { grid-template-columns: 1fr; }
-      .steps { grid-template-columns: 1fr 1fr; }
+      .steps { grid-template-columns: 1fr; gap: 36px; }
+      .steps-line { top: 36px; bottom: 36px; left: 35px; right: auto; width: 2px; height: auto; }
+      .steps-progress { transform-origin: center top; }
+      .step { grid-template-columns: 72px 1fr; column-gap: 20px; text-align: left; justify-items: start; align-items: start; }
+      .step::before { grid-row: 1 / span 3; margin-bottom: 0; }
       .case { grid-template-columns: 1fr 1fr; }
       .case.case-multi { grid-template-columns: 1fr; }
       .case-info { grid-column: 1 / -1; }
@@ -373,8 +425,11 @@
     @media (max-width: 760px) {
       section { padding: 80px 0; }
       .container { padding: 0 16px; }
-      .menu-toggle { display: block; }
+      .menu-toggle { display: block; justify-self: end; grid-column: 3; grid-row: 1; }
+      .nav-side { display: none; }
+      .logo { grid-column: 2; grid-row: 1; }
       .nav-links {
+        display: flex;
         position: absolute; top: 74px; left: 0; right: 0;
         flex-direction: column; gap: 0; background: var(--white);
         border-radius: var(--radius); box-shadow: 0 12px 30px rgba(31, 52, 88, .1);
@@ -384,14 +439,16 @@
       .nav-links li { width: 100%; text-align: center; }
       .nav-links a { display: block; padding: 14px; }
       .nav-links .btn { margin: 10px auto 18px; display: inline-flex; }
-      .hero { padding: 80px 0; }
+      .hero { padding: 8px 8px 0; }
+      .hero-stage { padding-block: 110px 56px; }
       .stats-carousel { margin-top: 48px; }
       .stat-slide { width: 170px; }
       .stat-big { font-size: 2.3rem; }
       #agenda { padding: 8px; }
       .agenda-stage { padding-block: 72px; }
       .plan { padding: 28px; }
-      .services, .row, .pains, .steps { grid-template-columns: 1fr; }
+      .services, .row, .founders { grid-template-columns: 1fr; }
+      .pain { font-size: .9rem; padding: 12px 18px 12px 12px; }
       .sectors li { font-size: 1rem; padding: 10px 18px; }
       form { padding: 24px; }
       .nav { padding: 0 8px 0 18px; }
@@ -411,8 +468,18 @@
 
   <!-- ================= NAVEGACIÓN ================= -->
   <header>
-    <div class="container nav">
+    <nav class="container nav" aria-label="Principal">
+      <ul class="nav-side nav-left">
+        <li><a href="#quienes-somos">Quiénes somos</a></li>
+        <li><a href="#que-hacemos">Qué hacemos</a></li>
+        <li><a href="#casos">Casos de éxito</a></li>
+      </ul>
       <a href="#inicio" class="logo"><img src="assets/brisa-logo.png" alt="Brisa Creative"></a>
+      <ul class="nav-side nav-right">
+        <li><a href="#clientes">Clientes</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#agenda" class="btn btn-primary">Agenda una llamada</a></li>
+      </ul>
       <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
       <ul class="nav-links">
         <li><a href="#quienes-somos">Quiénes somos</a></li>
@@ -423,15 +490,19 @@
         <li><a href="#faq">FAQ</a></li>
         <li><a href="#agenda" class="btn btn-primary">Agenda una llamada</a></li>
       </ul>
-    </div>
+    </nav>
   </header>
 
   <main>
     <!-- ================= HERO ================= -->
     <section class="hero" id="inicio">
+      <div class="hero-stage">
+        <div class="hero-bg" aria-hidden="true">
+          <video class="bg-video is-active" src="assets/fondo/trabajando1.mp4" poster="assets/fondo/trabajando1.jpg" muted playsinline preload="auto"></video>
+          <video class="bg-video" src="assets/fondo/trabajando2.mp4" poster="assets/fondo/trabajando2.jpg" muted playsinline preload="metadata"></video>
+        </div>
       <div class="container hero-grid">
         <div class="hero-text">
-          <span class="eyebrow">Agencia de redes sociales</span>
           <h1>Creamos redes sociales que <em>enamoran y venden</em>.</h1>
           <p class="lead">Somos un equipo de mujeres que graba y crea el contenido de tus redes: vídeos, carruseles e historias pensados para convertir seguidores en clientes.</p>
           <div class="hero-actions">
@@ -450,6 +521,7 @@
             <div class="stat"><strong>1 año</strong><span>creando contenido</span></div>
           </div>
         </aside>
+      </div>
       </div>
       <div class="stats-carousel" aria-label="Resultados reales de nuestros clientes">
         <div class="stats-track">
@@ -493,7 +565,7 @@
     <div class="expand-band">
       <div class="expand-media">
         <div class="expand-img" aria-hidden="true"></div>
-        <p class="expand-text">Contenido que se siente<br><em>como tu marca</em></p>
+        <p class="expand-text">Más que una agencia,<br><em>somos parte de tu equipo</em></p>
       </div>
     </div>
 
@@ -504,13 +576,9 @@
           <span class="eyebrow">¿Te suena?</span>
           <h2>Sabes que tus redes podrían venderte más, pero…</h2>
         </div>
-        <div class="pains">
-          <div class="pain reveal">Publicas cuando puedes y sin un plan claro.</div>
-          <div class="pain reveal">Tienes seguidores, pero no se convierten en clientes.</div>
-          <div class="pain reveal">No sabes qué contenido funciona ni por qué.</div>
-          <div class="pain reveal">Tu feed no refleja la calidad de tu marca.</div>
-          <div class="pain reveal">Los reels te cuestan horas y casi nadie los ve.</div>
-          <div class="pain reveal">No tienes tiempo para estar al día con las redes.</div>
+        <div class="pains reveal" aria-label="Problemas habituales con las redes sociales">
+          <div class="pains-row"><div class="pains-track"><span class="pain">Publicas cuando puedes y sin un plan claro</span><span class="pain">Tienes seguidores, pero no se convierten en clientes</span><span class="pain">No sabes qué contenido funciona ni por qué</span><span class="pain">Tu feed no refleja la calidad de tu marca</span><span class="pain">Los reels te cuestan horas y casi nadie los ve</span><span class="pain">No tienes tiempo para estar al día con las redes</span></div></div>
+          <div class="pains-row reverse"><div class="pains-track"><span class="pain">Tu feed no refleja la calidad de tu marca</span><span class="pain">Los reels te cuestan horas y casi nadie los ve</span><span class="pain">No tienes tiempo para estar al día con las redes</span><span class="pain">Publicas cuando puedes y sin un plan claro</span><span class="pain">Tienes seguidores, pero no se convierten en clientes</span><span class="pain">No sabes qué contenido funciona ni por qué</span></div></div>
         </div>
         <div class="solution reveal">
           <div>
@@ -531,7 +599,11 @@
         <div class="about-text reveal">
           <span class="eyebrow">Quiénes somos</span>
           <h2>Un equipo que se implica en tu negocio como si fuera el nuestro</h2>
-          <p>Nacimos con una idea clara: que las pequeñas y medianas marcas merecen unas redes sociales tan profesionales como las de las grandes, pero con un trato cercano y humano.</p>
+          <p>Somos Natalia y Sara, amigas desde la infancia, con la misma ilusión: hacer crecer las redes sociales de tu negocio.</p>
+          <div class="founders">
+            <div class="founder"><strong>Natalia</strong><span>Ha estudiado marketing. Piensa la estrategia para que cada contenido tenga un objetivo.</span></div>
+            <div class="founder"><strong>Sara</strong><span>Es actriz y le encanta crear contenido, delante y detrás de la cámara.</span></div>
+          </div>
           <p>Grabamos, editamos y creamos contenido a la medida de cada marca. Unimos creatividad y estrategia para crear redes que conectan de verdad con tu público.</p>
           <div class="values">
             <span>Cercanía</span>
@@ -605,6 +677,7 @@
           <h2>Un proceso sencillo, de la llamada a los resultados</h2>
         </div>
         <div class="steps">
+          <div class="steps-line" aria-hidden="true"><span class="steps-progress"></span></div>
           <div class="step reveal"><h3>Llamada y asesoría</h3><p>Analizamos tu cuenta de Instagram y te damos ideas de contenido que pueden funcionar en tu nicho.</p><small>Gratis</small></div>
           <div class="step reveal"><h3>Propuesta a tu medida</h3><p>Según tus necesidades, elegimos formatos (vídeos, carruseles, historias) y cómo trabajar juntas.</p><small>A medida</small></div>
           <div class="step reveal"><h3>Grabación y creación</h3><p>Siempre grabamos nosotras. Después editamos y creamos todo tu contenido.</p><small>Lo hacemos nosotras</small></div>
@@ -762,13 +835,12 @@
           <h2>Resolvemos tus dudas</h2>
         </div>
         <div class="faq reveal">
-          <details><summary>¿En qué redes sociales trabajáis?</summary><p>Instagram, TikTok, Facebook y LinkedIn. En la llamada te recomendamos en cuáles centrarte según tu negocio.</p></details>
-          <details><summary>¿Cuánto tiempo tarda en verse resultados?</summary><p>Los primeros cambios en alcance e interacción suelen notarse en las primeras semanas. Los resultados sólidos llegan con constancia, normalmente a partir de los 3 meses.</p></details>
-          <details><summary>¿Tengo que grabar yo los vídeos?</summary><p>No. Siempre grabamos nosotras, y después creamos y editamos todo el contenido.</p></details>
-          <details><summary>¿Quién sube el contenido a mis redes?</summary><p>Tú eliges: podemos subirlo nosotras o entregártelo listo para que lo publiques tú.</p></details>
-          <details><summary>¿Qué tipo de contenido hacéis?</summary><p>Vídeos, carruseles e historias. Siempre según lo que necesite tu marca.</p></details>
-                    <details><summary>¿Qué incluye la asesoría gratis?</summary><p>Analizamos tu cuenta de Instagram y te damos ideas de contenido que pueden funcionar en tu nicho.</p></details>
-          <details><summary>¿Hay permanencia?</summary><p>Te lo explicamos con total transparencia en la llamada, según el plan que mejor encaje contigo.</p></details>
+          <details><summary>¿En qué redes sociales trabajáis?</summary><p>Las principales son Instagram y TikTok. Instagram siempre lo enlazamos con Facebook, así tu contenido llega también ahí.</p></details>
+          <details><summary>¿Cuánto tiempo tarda en verse resultados?</summary><p>Depende del negocio. Hay clientes que lo han notado a las dos semanas, o incluso con un solo vídeo. Otros necesitan un proceso de adaptación, porque buscamos qué tipo de formato funciona en cada nicho.</p></details>
+          <details><summary>¿Tengo que grabar yo los vídeos?</summary><p>No. Los vídeos siempre los grabamos nosotras. Tú solo eliges si los subimos nosotras y nos encargamos de todo, o si los subes tú.</p></details>
+          <details><summary>¿Quién sube el contenido a mis redes?</summary><p>Depende de tus necesidades y de lo que prefieras: podemos encargarnos nosotras de todo o entregártelo listo para que lo subas tú.</p></details>
+          <details><summary>¿Qué incluye la asesoría gratis?</summary><p>Analizamos tu cuenta y te damos ideas de contenido que pueden funcionar en tu nicho.</p></details>
+          <details><summary>¿Hay permanencia?</summary><p>Te lo explicamos en la llamada.</p></details>
         </div>
       </div>
     </section>
@@ -776,10 +848,6 @@
     <!-- ================= AGENDA UNA LLAMADA ================= -->
     <section id="agenda">
       <div class="agenda-stage">
-        <div class="agenda-bg" aria-hidden="true">
-          <video class="bg-video is-active" src="assets/fondo/trabajando1.mp4" poster="assets/fondo/trabajando1.jpg" muted playsinline preload="auto"></video>
-          <video class="bg-video" src="assets/fondo/trabajando2.mp4" poster="assets/fondo/trabajando2.jpg" muted playsinline preload="metadata"></video>
-        </div>
       <div class="container cta-grid">
         <div class="reveal agenda-copy">
           <span class="eyebrow">Agenda una llamada</span>
@@ -873,15 +941,16 @@
     document.getElementById('year').textContent = new Date().getFullYear();
 
     // Carrusel de estadísticas: se duplica el contenido para que el movimiento sea continuo
-    const statsTrack = document.querySelector('.stats-track');
-    if (statsTrack) [...statsTrack.children].forEach(el => {
-      const c = el.cloneNode(true); c.setAttribute('aria-hidden', 'true'); statsTrack.appendChild(c);
+    document.querySelectorAll('.stats-track, .pains-track').forEach(track => {
+      [...track.children].forEach(el => {
+        const c = el.cloneNode(true); c.setAttribute('aria-hidden', 'true'); track.appendChild(c);
+      });
     });
 
     // Vídeos de fondo de la asesoría: se reproducen uno detrás de otro, sin clicar
     const bgVideos = [...document.querySelectorAll('.bg-video')];
     if (bgVideos.length) {
-      const stage = document.querySelector('.agenda-stage');
+      const stage = document.querySelector('.hero-stage');
       const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       let current = 0, visible = false;
       const playCurrent = () => { if (visible && !noMotion) bgVideos[current].play().catch(() => {}); };
@@ -931,7 +1000,7 @@
         // Portada: el texto sube más despacio que el scroll
         gsap.to('.hero-text', {
           yPercent: -18, opacity: .3, ease: 'none',
-          scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', ...scrub }
+          scrollTrigger: { trigger: '.hero-stage', start: 'top top', end: 'bottom top', ...scrub }
         });
         gsap.to('.hero-card', {
           yPercent: -35, ease: 'none',
@@ -961,6 +1030,16 @@
           scale: 1, yPercent: 6, ease: 'none',
           scrollTrigger: { trigger: '.about-visual', start: 'top bottom', end: 'bottom top', ...scrub }
         });
+
+        // Proceso: la línea se rellena y los círculos se activan al bajar
+        const vertical = window.matchMedia('(max-width: 960px)').matches;
+        gsap.fromTo('.steps-progress', vertical ? { scaleY: 0 } : { scaleX: 0 }, {
+          ...(vertical ? { scaleY: 1 } : { scaleX: 1 }), ease: 'none',
+          scrollTrigger: { trigger: '.steps', start: 'top 70%', end: 'bottom 55%', ...scrub }
+        });
+        gsap.utils.toArray('.step').forEach(st => ScrollTrigger.create({
+          trigger: st, start: vertical ? 'top 65%' : 'top 62%', toggleClass: { targets: st, className: 'is-on' }
+        }));
 
         // Casos: las capturas y vídeos crecen al entrar en pantalla
         gsap.utils.toArray('.case').forEach(c => {
