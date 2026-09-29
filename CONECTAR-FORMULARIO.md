@@ -3,19 +3,22 @@
 Cuando alguien rellena el formulario de la web:
 
 1. Sus datos se guardan en una **hoja de Google** (en vuestro Drive).
-2. Os llega un **email a brisacreativeagencia@gmail.com** con todos los datos y un botón para **escribirle por WhatsApp**.
+2. Os llega un **email a brisacreativeagencia@gmail.com** (se envía desde la cuenta de Sara) con todos los datos y un botón para **escribirle por WhatsApp**.
 
 Es gratis y se configura una sola vez (unos 5 minutos).
 
 ## Pasos
 
-1. Entra en [Google Drive](https://drive.google.com) con la cuenta **brisacreativeagencia@gmail.com**.
-2. Crea una hoja de cálculo nueva: **Nuevo → Hojas de cálculo de Google**. Ponle de nombre, por ejemplo, *Solicitudes web Brisa*.
+La hoja ya está creada en el Drive personal de Sara (saraillueca01@gmail.com):
+**[Solicitudes web · Brisa Creative](https://docs.google.com/spreadsheets/d/1IjFKA-VL2wTFqk772cEC7DOVKj00IxLo_Yn6ZlyObYw/edit)**
+
+1. Abre esa hoja con la cuenta saraillueca01@gmail.com.
+2. Comprueba que la primera fila tiene las columnas (Fecha, Nombre, Teléfono…).
 3. En la hoja, ve a **Extensiones → Apps Script**.
 4. Borra lo que aparece y pega todo el contenido del archivo `google-apps-script/Code.gs`. Pulsa el icono de **guardar**.
 5. Arriba a la derecha pulsa **Implementar → Nueva implementación**.
    - En el engranaje de "Seleccionar tipo", elige **Aplicación web**.
-   - **Ejecutar como:** Yo (brisacreativeagencia@gmail.com).
+   - **Ejecutar como:** Yo (saraillueca01@gmail.com).
    - **Quién tiene acceso:** Cualquier usuario.
    - Pulsa **Implementar**.
 6. Google te pedirá permisos: pulsa **Autorizar acceso**, elige la cuenta y, si sale "Google no ha verificado esta aplicación", pulsa **Configuración avanzada → Ir a (nombre del proyecto)** y **Permitir**. Es vuestro propio script, es seguro.

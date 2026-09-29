@@ -49,7 +49,11 @@ function doGet() {
 function obtenerHoja_() {
   const libro = SpreadsheetApp.getActiveSpreadsheet();
   let hoja = libro.getSheetByName(NOMBRE_HOJA);
-  if (!hoja) hoja = libro.insertSheet(NOMBRE_HOJA);
+  if (!hoja) {
+    // Usa la primera pestaña de la hoja y la renombra
+    hoja = libro.getSheets()[0];
+    hoja.setName(NOMBRE_HOJA);
+  }
   if (hoja.getLastRow() === 0) {
     const titulos = ['Fecha'].concat(CAMPOS.map(([, titulo]) => titulo), ['Estado']);
     hoja.appendRow(titulos);
