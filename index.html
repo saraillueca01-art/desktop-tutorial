@@ -127,7 +127,7 @@
     /* ---------- Quiénes somos ---------- */
     .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 96px; align-items: center; }
     .about-visual { aspect-ratio: 4 / 5; position: relative; overflow: hidden; border-radius: var(--radius); will-change: clip-path; }
-    .about-img { position: absolute; inset: 0; background: url("assets/arena.jpg") center / cover; will-change: transform; }
+    .about-img { position: absolute; inset: 0; background: url("assets/equipo.jpg") center 35% / cover; will-change: transform; }
     .about-text p { margin-bottom: 1rem; }
     .values { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 2rem; }
     .values span { font-size: .85rem; color: var(--ink); padding-bottom: 2px; border-bottom: 1px solid var(--sand); }
@@ -325,7 +325,7 @@
       .case { grid-template-columns: 1fr 1fr; }
       .case.case-multi { grid-template-columns: 1fr; }
       .case-info { grid-column: 1 / -1; }
-      .about-visual { aspect-ratio: 16 / 10; }
+      .about-visual { aspect-ratio: 1 / 1; max-width: 100%; }
     }
     @media (max-width: 760px) {
       section { padding: 80px 0; }
@@ -441,7 +441,7 @@
     <!-- ================= QUIÉNES SOMOS ================= -->
     <section id="quienes-somos">
       <div class="container about-grid">
-        <div class="about-visual" aria-hidden="true">
+        <div class="about-visual" role="img" aria-label="El equipo de Brisa Creative">
           <div class="about-img"></div>
         </div>
         <div class="about-text reveal">
