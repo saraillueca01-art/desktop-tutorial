@@ -118,7 +118,6 @@
     .stat span { font-size: .78rem; color: var(--sky); }
 
     /* ---------- Quiénes somos ---------- */
-    #quienes-somos { background: var(--white); }
     .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
     .about-visual {
       aspect-ratio: 4 / 5; border-radius: 28px; overflow: hidden;
@@ -142,14 +141,14 @@
     .about-text p { margin-bottom: 1rem; font-size: 1.05rem; }
     .values { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1.5rem; }
     .values span {
-      background: var(--cream); border: 1px solid var(--cream-dark);
+      background: var(--white); border: 1px solid var(--cream-dark);
       padding: 8px 16px; border-radius: 999px; font-size: .9rem; color: var(--navy); font-weight: 500;
     }
 
     /* ---------- Qué hacemos ---------- */
     .services { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
     .service {
-      background: var(--white); border-radius: var(--radius); padding: 32px;
+      background: var(--cream); border-radius: var(--radius); padding: 32px;
       border: 1px solid var(--cream-dark); transition: transform .25s, box-shadow .25s;
     }
     .service:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
@@ -160,22 +159,87 @@
     }
     .icon svg { width: 26px; height: 26px; }
 
-    /* ---------- Casos de éxito ---------- */
+    /* ---------- ¿Te suena? ---------- */
+    #problema { background: var(--white); }
+    .pains { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .pain {
+      background: var(--cream); border-radius: var(--radius); padding: 24px 24px 24px 60px;
+      position: relative; color: var(--navy); font-weight: 500;
+    }
+    .pain::before {
+      content: "✕"; position: absolute; left: 20px; top: 22px;
+      width: 26px; height: 26px; border-radius: 50%; background: var(--sand); color: var(--navy);
+      display: grid; place-items: center; font-size: .8rem; font-weight: 700;
+    }
+    .solution {
+      margin-top: 36px; background: var(--navy); color: var(--cream); border-radius: var(--radius);
+      padding: 32px; display: flex; gap: 24px; align-items: center; justify-content: space-between; flex-wrap: wrap;
+    }
+    .solution p { color: var(--sky); max-width: 640px; font-size: 1.05rem; }
+    .solution strong { color: var(--cream); font-family: "Fraunces", serif; font-size: 1.4rem; display: block; margin-bottom: .3rem; }
+
+    /* ---------- Cómo trabajamos ---------- */
+    #que-hacemos { background: var(--white); }
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; counter-reset: paso; }
+    .step { padding: 28px 24px; border-radius: var(--radius); background: var(--white); border: 1px solid var(--cream-dark); position: relative; }
+    .step::before {
+      counter-increment: paso; content: "0" counter(paso);
+      font-family: "Fraunces", serif; font-size: 2.4rem; color: var(--blue-soft); display: block; margin-bottom: .6rem; line-height: 1;
+    }
+    .step small { display: inline-block; margin-top: .8rem; font-weight: 600; color: var(--blue); font-size: .85rem; }
+
+    /* ---------- Casos de éxito: antes y después ---------- */
     #casos { background: var(--navy); }
     #casos h2, #casos h3 { color: var(--cream); }
     #casos .section-head p { color: var(--sky); }
     #casos .eyebrow { background: rgba(207,224,243,.15); color: var(--sky); }
-    .cases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .cases { display: grid; gap: 28px; }
     .case {
       background: rgba(255,255,255,.05); border: 1px solid rgba(207,224,243,.18);
-      border-radius: var(--radius); padding: 32px; display: flex; flex-direction: column;
+      border-radius: 24px; padding: 32px;
+      display: grid; grid-template-columns: 1.35fr 1.2fr .72fr; gap: 32px; align-items: start;
     }
-    .case .sector { font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--sand); font-weight: 600; margin-bottom: .6rem; }
-    .case p { color: var(--sky); margin-bottom: 1.5rem; flex: 1; }
-    .case .result {
-      font-family: "Fraunces", serif; font-size: 2.6rem; color: var(--white); line-height: 1;
+    .case .sector { font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--sand); font-weight: 600; margin-bottom: .4rem; display: block; }
+    .case .handle { color: var(--sky); margin-bottom: 1.2rem; }
+    .case .handle span { opacity: .7; }
+    .stats-table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    .stats-table th { text-align: left; font-weight: 500; color: var(--sky); font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; padding-bottom: 8px; }
+    .stats-table td { padding: 10px 12px 10px 0; white-space: nowrap; border-top: 1px solid rgba(207,224,243,.15); color: var(--cream); }
+    .stats-table td:first-child { color: var(--sky); white-space: normal; }
+    .stats-table .before { color: var(--sky); opacity: .75; }
+    .stats-table .after { font-weight: 600; }
+    .growth {
+      display: inline-block; background: var(--sand); color: var(--navy);
+      font-weight: 700; font-size: .78rem; padding: 3px 9px; border-radius: 999px; white-space: nowrap;
     }
-    .case .result-label { color: var(--sky); font-size: .9rem; margin-top: .3rem; }
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .media-label {
+      display: block; text-align: center; font-size: .75rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--sky); margin-bottom: 8px;
+    }
+    .media-label.after { color: var(--sand); }
+    .phone {
+      aspect-ratio: 9 / 16; border-radius: 22px; overflow: hidden; position: relative;
+      background: rgba(207,224,243,.08); border: 3px solid rgba(207,224,243,.25);
+      display: grid; place-items: center; text-align: center;
+    }
+    .phone.after { border-color: var(--sand); }
+    .phone .placeholder { color: var(--sky); font-size: .8rem; padding: 12px; opacity: .8; }
+    .phone .placeholder b { display: block; font-size: 1.6rem; margin-bottom: 6px; }
+    .phone img, .phone video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .case-cta { text-align: center; margin-top: 40px; }
+
+    /* ---------- Preguntas frecuentes ---------- */
+    .faq { max-width: 780px; margin: 0 auto; display: grid; gap: 12px; }
+    .faq details { background: var(--white); border: 1px solid var(--cream-dark); border-radius: 14px; padding: 18px 22px; }
+    .faq summary {
+      cursor: pointer; font-weight: 600; color: var(--navy); list-style: none;
+      display: flex; justify-content: space-between; gap: 16px;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after { content: "+"; font-size: 1.4rem; line-height: 1; color: var(--blue); }
+    .faq details[open] summary::after { content: "–"; }
+    .faq details p { margin-top: 10px; }
 
     /* ---------- Por qué nosotras ---------- */
     .why-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 64px; align-items: start; }
@@ -279,7 +343,10 @@
     /* ---------- Responsive ---------- */
     @media (max-width: 960px) {
       .hero-grid, .about-grid, .why-grid, .cta-grid { grid-template-columns: 1fr; gap: 40px; }
-      .services, .cases, .testimonials { grid-template-columns: 1fr 1fr; }
+      .services, .testimonials, .pains { grid-template-columns: 1fr 1fr; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .case { grid-template-columns: 1fr 1fr; }
+      .case-info { grid-column: 1 / -1; }
       .logos { grid-template-columns: repeat(3, 1fr); }
       .about-visual { aspect-ratio: 16 / 11; }
     }
@@ -296,7 +363,13 @@
       .nav-links li { width: 100%; text-align: center; }
       .nav-links a { display: block; padding: 14px; }
       .nav-links .btn { margin: 10px auto 18px; display: inline-flex; }
-      .services, .cases, .testimonials, .row { grid-template-columns: 1fr; }
+      .services, .testimonials, .row, .pains, .steps { grid-template-columns: 1fr; }
+      .case { grid-template-columns: 1fr; padding: 22px; }
+      .stats-table { font-size: .82rem; }
+      .stats-table td { padding-right: 6px; }
+      .stats-table th:last-child, .stats-table td:last-child { display: none; }
+      .case-info, .compare { min-width: 0; }
+      .case-video { max-width: 240px; margin: 0 auto; width: 100%; }
       .logos { grid-template-columns: repeat(2, 1fr); }
       .hero { padding: 56px 0 80px; }
       .hero-card, form { padding: 26px; }
@@ -317,6 +390,7 @@
         <li><a href="#casos">Casos de éxito</a></li>
         <li><a href="#por-que">Por qué nosotras</a></li>
         <li><a href="#clientes">Clientes</a></li>
+        <li><a href="#faq">FAQ</a></li>
         <li><a href="#agenda" class="btn btn-primary">Agenda una llamada</a></li>
       </ul>
     </div>
@@ -332,7 +406,7 @@
           <p class="lead">Somos un equipo de mujeres especializadas en crear contenido para redes sociales. Diseñamos posts, reels y estrategias que convierten seguidores en clientes.</p>
           <div class="hero-actions">
             <a href="#agenda" class="btn btn-primary">Agenda tu llamada gratis →</a>
-            <a href="#casos" class="btn btn-outline">Ver casos de éxito</a>
+            <a href="#casos" class="btn btn-outline">Ver antes y después</a>
           </div>
         </div>
         <aside class="hero-card reveal">
@@ -346,6 +420,31 @@
             <div class="stat"><strong>+5M</strong><span>visualizaciones</span></div>
           </div>
         </aside>
+      </div>
+    </section>
+
+    <!-- ================= ¿TE SUENA? ================= -->
+    <section id="problema">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">¿Te suena?</span>
+          <h2>Sabes que tus redes podrían venderte más, pero…</h2>
+        </div>
+        <div class="pains">
+          <div class="pain reveal">Publicas cuando puedes y sin un plan claro.</div>
+          <div class="pain reveal">Tienes seguidores, pero no se convierten en clientes.</div>
+          <div class="pain reveal">No sabes qué contenido funciona ni por qué.</div>
+          <div class="pain reveal">Tu feed no refleja la calidad de tu marca.</div>
+          <div class="pain reveal">Los reels te cuestan horas y casi nadie los ve.</div>
+          <div class="pain reveal">No tienes tiempo para estar al día con las redes.</div>
+        </div>
+        <div class="solution reveal">
+          <div>
+            <strong>La buena noticia: tiene solución.</strong>
+            <p>Nos ocupamos de tus redes de principio a fin para que tengas contenido bonito, constante y pensado para vender.</p>
+          </div>
+          <a href="#agenda" class="btn btn-cream">Hablemos →</a>
+        </div>
       </div>
     </section>
 
@@ -418,36 +517,94 @@
       </div>
     </section>
 
+    <!-- ================= CÓMO TRABAJAMOS ================= -->
+    <section id="proceso">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Cómo trabajamos</span>
+          <h2>Un proceso sencillo, de la llamada a los resultados</h2>
+        </div>
+        <div class="steps">
+          <div class="step reveal"><h3>Llamada y mentoría</h3><p>Conocemos tu negocio y te regalamos una mentoría privada con ideas para tus redes.</p><small>Gratis</small></div>
+          <div class="step reveal"><h3>Auditoría y estrategia</h3><p>Analizamos tus cuentas y definimos objetivos, público, tono y líneas de contenido.</p><small>Semana 1</small></div>
+          <div class="step reveal"><h3>Creación de contenido</h3><p>Diseñamos posts, carruseles, reels y textos, y te los enviamos para que los apruebes.</p><small>Cada mes</small></div>
+          <div class="step reveal"><h3>Análisis y mejora</h3><p>Medimos resultados, te enviamos un informe y ajustamos para seguir creciendo.</p><small>Cada mes</small></div>
+        </div>
+      </div>
+    </section>
+
     <!-- ================= CASOS DE ÉXITO ================= -->
     <section id="casos">
       <div class="container">
         <div class="section-head reveal">
           <span class="eyebrow">Casos de éxito</span>
-          <h2>Resultados reales para marcas reales</h2>
-          <p>Algunos de los proyectos de los que estamos más orgullosas.</p>
+          <h2>Antes y después de trabajar con nosotras</h2>
+          <p>Cuentas reales, estadísticas reales. Así cambian las redes de nuestras clientas cuando nos ponemos manos a la obra.</p>
         </div>
         <div class="cases">
+          <!-- Caso 1: sube las capturas y el vídeo a assets/casos/ con estos nombres -->
           <article class="case reveal">
-            <span class="sector">Moda · E‑commerce</span>
-            <h3>Tienda online de moda sostenible</h3>
-            <p>Nueva estrategia de contenido en Instagram con carruseles, reels y stories que venden.</p>
-            <div class="result">+18.000</div>
-            <div class="result-label">seguidores en 6 meses</div>
+            <div class="case-info">
+              <span class="sector">Moda · Tienda online</span>
+              <h3>Tienda de moda sostenible</h3>
+              <p class="handle">@cuentacliente1 <span>· 6 meses</span></p>
+              <table class="stats-table">
+                <tr><th>Métrica</th><th>Antes</th><th>Después</th><th></th></tr>
+                <tr><td>Seguidores</td><td class="before">2.100</td><td class="after">20.300</td><td><span class="growth">+867%</span></td></tr>
+                <tr><td>Alcance mensual</td><td class="before">8.000</td><td class="after">310.000</td><td><span class="growth">x38</span></td></tr>
+                <tr><td>Interacción</td><td class="before">0,9%</td><td class="after">6,4%</td><td><span class="growth">+5,5 pts</span></td></tr>
+                <tr><td>Ventas desde IG</td><td class="before">12/mes</td><td class="after">95/mes</td><td><span class="growth">x8</span></td></tr>
+              </table>
+            </div>
+            <div class="compare">
+              <div><span class="media-label">Antes</span><div class="phone"><div class="placeholder"><b>📱</b>Captura del perfil antes</div><img src="assets/casos/caso1-antes.jpg" alt="Captura del perfil antes" loading="lazy" onerror="this.remove()"></div></div>
+              <div><span class="media-label after">Después</span><div class="phone after"><div class="placeholder"><b>📱</b>Captura del perfil después</div><img src="assets/casos/caso1-despues.jpg" alt="Captura del perfil después" loading="lazy" onerror="this.remove()"></div></div>
+            </div>
+            <div class="case-video"><span class="media-label after">Reel creado por Brisa</span><div class="phone after"><div class="placeholder"><b>▶</b>Vídeo del caso</div><video src="assets/casos/caso1-video.mp4" controls muted playsinline preload="metadata" onerror="this.remove()"></video></div></div>
           </article>
+          <!-- Caso 2: sube las capturas y el vídeo a assets/casos/ con estos nombres -->
           <article class="case reveal">
-            <span class="sector">Salud · Clínica</span>
-            <h3>Clínica de estética</h3>
-            <p>Nueva línea visual en Instagram y reels educativos semanales para resolver dudas de sus pacientes.</p>
-            <div class="result">x3</div>
-            <div class="result-label">mensajes y reservas por Instagram</div>
+            <div class="case-info">
+              <span class="sector">Salud · Clínica</span>
+              <h3>Clínica de estética</h3>
+              <p class="handle">@cuentacliente2 <span>· 4 meses</span></p>
+              <table class="stats-table">
+                <tr><th>Métrica</th><th>Antes</th><th>Después</th><th></th></tr>
+                <tr><td>Seguidores</td><td class="before">3.400</td><td class="after">11.800</td><td><span class="growth">+247%</span></td></tr>
+                <tr><td>Alcance mensual</td><td class="before">5.500</td><td class="after">140.000</td><td><span class="growth">x25</span></td></tr>
+                <tr><td>Interacción</td><td class="before">1,2%</td><td class="after">5,1%</td><td><span class="growth">+3,9 pts</span></td></tr>
+                <tr><td>Reservas por DM</td><td class="before">15/mes</td><td class="after">48/mes</td><td><span class="growth">x3</span></td></tr>
+              </table>
+            </div>
+            <div class="compare">
+              <div><span class="media-label">Antes</span><div class="phone"><div class="placeholder"><b>📱</b>Captura del perfil antes</div><img src="assets/casos/caso2-antes.jpg" alt="Captura del perfil antes" loading="lazy" onerror="this.remove()"></div></div>
+              <div><span class="media-label after">Después</span><div class="phone after"><div class="placeholder"><b>📱</b>Captura del perfil después</div><img src="assets/casos/caso2-despues.jpg" alt="Captura del perfil después" loading="lazy" onerror="this.remove()"></div></div>
+            </div>
+            <div class="case-video"><span class="media-label after">Reel creado por Brisa</span><div class="phone after"><div class="placeholder"><b>▶</b>Vídeo del caso</div><video src="assets/casos/caso2-video.mp4" controls muted playsinline preload="metadata" onerror="this.remove()"></video></div></div>
           </article>
+          <!-- Caso 3: sube las capturas y el vídeo a assets/casos/ con estos nombres -->
           <article class="case reveal">
-            <span class="sector">Formación · Online</span>
-            <h3>Academia de cursos online</h3>
-            <p>Estrategia de TikTok y reels con vídeos cortos y virales para dar a conocer sus cursos.</p>
-            <div class="result">2,4M</div>
-            <div class="result-label">visualizaciones en TikTok</div>
+            <div class="case-info">
+              <span class="sector">Formación · Online</span>
+              <h3>Academia de cursos online</h3>
+              <p class="handle">@cuentacliente3 <span>· 5 meses</span></p>
+              <table class="stats-table">
+                <tr><th>Métrica</th><th>Antes</th><th>Después</th><th></th></tr>
+                <tr><td>Seguidores TikTok</td><td class="before">400</td><td class="after">36.000</td><td><span class="growth">x90</span></td></tr>
+                <tr><td>Visualizaciones</td><td class="before">12.000</td><td class="after">2,4M</td><td><span class="growth">x200</span></td></tr>
+                <tr><td>Interacción</td><td class="before">2,0%</td><td class="after">8,7%</td><td><span class="growth">+6,7 pts</span></td></tr>
+                <tr><td>Alumnos nuevos</td><td class="before">20/mes</td><td class="after">130/mes</td><td><span class="growth">x6,5</span></td></tr>
+              </table>
+            </div>
+            <div class="compare">
+              <div><span class="media-label">Antes</span><div class="phone"><div class="placeholder"><b>📱</b>Captura del perfil antes</div><img src="assets/casos/caso3-antes.jpg" alt="Captura del perfil antes" loading="lazy" onerror="this.remove()"></div></div>
+              <div><span class="media-label after">Después</span><div class="phone after"><div class="placeholder"><b>📱</b>Captura del perfil después</div><img src="assets/casos/caso3-despues.jpg" alt="Captura del perfil después" loading="lazy" onerror="this.remove()"></div></div>
+            </div>
+            <div class="case-video"><span class="media-label after">Reel creado por Brisa</span><div class="phone after"><div class="placeholder"><b>▶</b>Vídeo del caso</div><video src="assets/casos/caso3-video.mp4" controls muted playsinline preload="metadata" onerror="this.remove()"></video></div></div>
           </article>
+        </div>
+        <div class="case-cta reveal">
+          <a href="#agenda" class="btn btn-cream">Quiero resultados así →</a>
         </div>
       </div>
     </section>
@@ -517,6 +674,24 @@
             <p>“Profesionales, cercanas y con resultados medibles. Triplicamos las reservas por Instagram en pocos meses.”</p>
             <figcaption class="person"><div class="mini">LG</div><div><strong>Laura Gómez</strong><span>Directora, Bloom Clinic</span></div></figcaption>
           </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PREGUNTAS FRECUENTES ================= -->
+    <section id="faq">
+      <div class="container">
+        <div class="section-head center reveal">
+          <span class="eyebrow">Preguntas frecuentes</span>
+          <h2>Resolvemos tus dudas</h2>
+        </div>
+        <div class="faq reveal">
+          <details><summary>¿En qué redes sociales trabajáis?</summary><p>Instagram, TikTok, Facebook y LinkedIn. En la llamada te recomendamos en cuáles centrarte según tu negocio.</p></details>
+          <details><summary>¿Cuánto tiempo tarda en verse resultados?</summary><p>Los primeros cambios en alcance e interacción suelen notarse en las primeras semanas. Los resultados sólidos llegan con constancia, normalmente a partir de los 3 meses.</p></details>
+          <details><summary>¿Tengo que grabar yo los vídeos?</summary><p>Te guiamos con ideas y guiones sencillos para que grabar sea fácil, y nosotras nos encargamos de la edición.</p></details>
+          <details><summary>¿Puedo aprobar el contenido antes de publicarlo?</summary><p>Sí. Cada mes te enviamos el calendario y el contenido para que lo revises antes de que salga.</p></details>
+          <details><summary>¿Qué incluye la mentoría gratis?</summary><p>Una auditoría rápida de tus redes, 3 ideas de contenido para aumentar tu alcance, un plan para las próximas 4 semanas y una sesión 1:1 con una de nuestras estrategas.</p></details>
+          <details><summary>¿Hay permanencia?</summary><p>Te lo explicamos con total transparencia en la llamada, según el plan que mejor encaje contigo.</p></details>
         </div>
       </div>
     </section>

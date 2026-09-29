@@ -1,0 +1,11 @@
+Sube aquí las capturas y vídeos de los casos de éxito con estos nombres:
+
+  caso1-antes.jpg     captura del perfil ANTES de trabajar con Brisa
+  caso1-despues.jpg   captura del perfil DESPUÉS
+  caso1-video.mp4     reel o vídeo creado para esa cuenta
+
+(igual para caso2-... y caso3-...)
+
+Formato recomendado: vertical 9:16 (captura de móvil). Vídeos .mp4 de menos de 10 MB.
+Mientras no exista un archivo, la web muestra un recuadro de ejemplo en su lugar.
+Las estadísticas de cada caso se cambian en index.html (busca "Caso 1", "Caso 2", "Caso 3").
