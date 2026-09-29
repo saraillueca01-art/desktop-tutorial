@@ -177,7 +177,7 @@
     .case:first-child { border-top: 0; padding-top: 0; }
     .case.case-multi { grid-template-columns: 1fr 1.9fr; }
     .case-facts { list-style: none; display: grid; gap: 14px; margin-top: 1.4rem; }
-    .case-facts li { display: grid; grid-template-columns: 84px 1fr; gap: 12px; align-items: baseline; }
+    .case-facts li { display: grid; grid-template-columns: 112px 1fr; gap: 12px; align-items: baseline; }
     .case-facts strong { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.5rem; color: var(--ink); }
     .case-facts span { font-size: .9rem; color: var(--muted); }
     .reel-thumb { position: absolute; inset: 0; display: grid; place-items: center; }
@@ -274,7 +274,17 @@
     .faq details p { margin-top: 12px; max-width: 640px; }
 
     /* ---------- Agenda una llamada ---------- */
-    #agenda { background: var(--bg-alt); }
+    #agenda { background: var(--bg); padding: 16px; border-top: 0; }
+    .agenda-stage { position: relative; overflow: hidden; border-radius: var(--radius); padding-block: 120px; background: var(--ink); isolation: isolate; }
+    .agenda-bg { position: absolute; inset: 0; z-index: -1; }
+    .agenda-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, rgba(20, 34, 60, .88) 0%, rgba(20, 34, 60, .7) 55%, rgba(20, 34, 60, .45) 100%); }
+    .bg-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s ease; }
+    .bg-video.is-active { opacity: 1; }
+    .agenda-copy h2, .agenda-copy .bonus h3 { color: var(--white); }
+    .agenda-copy p { color: #d6dde9; }
+    .agenda-copy .eyebrow { color: #c9d3e3; }
+    .agenda-copy .bonus { border-top-color: rgba(255, 255, 255, .2); }
+    .agenda-copy .bonus li { color: var(--white); }
     .cta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 96px; align-items: start; }
     .bonus { margin-top: 2.4rem; padding-top: 2rem; border-top: 1px solid var(--line); }
     .bonus h3 { font-size: 1.1rem; }
@@ -342,6 +352,8 @@
       .nav-links a { display: block; padding: 14px; }
       .nav-links .btn { margin: 10px auto 18px; display: inline-flex; }
       .hero { padding: 80px 0; }
+      #agenda { padding: 8px; }
+      .agenda-stage { padding-block: 72px; }
       .plan { padding: 28px; }
       .services, .row, .pains, .steps { grid-template-columns: 1fr; }
       .sectors li { font-size: 1rem; padding: 10px 18px; }
@@ -546,6 +558,11 @@
               <p class="handle"><a href="https://www.instagram.com/pizzerialorenga/" target="_blank" rel="noopener">@pizzerialorenga</a> <span>· Menos de 1 mes</span></p>
               <div class="case-result"><strong>Viral</strong><span>en menos de un mes</span></div>
               <p class="case-desc">Pasamos de fotos sueltas sin estilo a un feed con identidad propia y vídeos grabados en el local que llevaron la pizzería a miles de personas.</p>
+              <ul class="case-facts">
+                <li><strong>326.779</strong><span>reproducciones de un solo vídeo</span></li>
+                <li><strong>4.600</strong><span>me gusta</span></li>
+                <li><strong>+86</strong><span>seguidores nuevos con ese vídeo</span></li>
+              </ul>
               <blockquote class="case-quote">“Vienen clientes diciendo: ‘¡Ay, te he visto en este vídeo!’”<cite>— Pizzería L’Orenga</cite></blockquote>
             </div>
             <div class="compare">
@@ -554,6 +571,7 @@
             </div>
             <div class="case-video"><span class="media-label after">Vídeo viral</span>
               <div class="phone after reel-video">
+                <span class="views">326 mil reproducciones</span>
                 <video src="assets/casos/caso3-video.mp4" poster="assets/casos/caso3-poster.jpg" muted loop playsinline preload="metadata" data-autoplay aria-label="Vídeo viral de Pizzería L’Orenga"></video>
                 <button type="button" class="sound-toggle" aria-label="Activar sonido">Activar sonido</button>
               </div>
@@ -685,8 +703,13 @@
 
     <!-- ================= AGENDA UNA LLAMADA ================= -->
     <section id="agenda">
+      <div class="agenda-stage">
+        <div class="agenda-bg" aria-hidden="true">
+          <video class="bg-video is-active" src="assets/fondo/trabajando1.mp4" poster="assets/fondo/trabajando1.jpg" muted playsinline preload="auto"></video>
+          <video class="bg-video" src="assets/fondo/trabajando2.mp4" poster="assets/fondo/trabajando2.jpg" muted playsinline preload="metadata"></video>
+        </div>
       <div class="container cta-grid">
-        <div class="reveal">
+        <div class="reveal agenda-copy">
           <span class="eyebrow">Agenda una llamada</span>
           <h2>Hablemos de tus redes… y llévate una asesoría gratis</h2>
           <p>Reserva una llamada de 30 minutos sin compromiso. Conoceremos tu negocio y te diremos con total sinceridad cómo podemos ayudarte.</p>
@@ -720,6 +743,7 @@
           <div class="form-ok" role="status">¡Gracias! Te escribiremos en menos de 24 h para agendar tu llamada.</div>
           <p class="form-note">Sin compromiso. Tus datos están seguros con nosotras.</p>
         </form>
+      </div>
       </div>
     </section>
   </main>
@@ -775,6 +799,27 @@
     });
 
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Vídeos de fondo de la asesoría: se reproducen uno detrás de otro, sin clicar
+    const bgVideos = [...document.querySelectorAll('.bg-video')];
+    if (bgVideos.length) {
+      const stage = document.querySelector('.agenda-stage');
+      const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let current = 0, visible = false;
+      const playCurrent = () => { if (visible && !noMotion) bgVideos[current].play().catch(() => {}); };
+      bgVideos.forEach((v, i) => v.addEventListener('ended', () => {
+        const next = (i + 1) % bgVideos.length;
+        bgVideos[next].currentTime = 0;
+        bgVideos[next].classList.add('is-active');
+        v.classList.remove('is-active');
+        current = next;
+        playCurrent();
+      }));
+      new IntersectionObserver(([e]) => {
+        visible = e.isIntersecting;
+        visible ? playCurrent() : bgVideos[current].pause();
+      }, { threshold: 0.15 }).observe(stage);
+    }
 
     // Vídeos de los casos: se reproducen solos (sin sonido) al verse en pantalla y se pausan al salir
     const autoVideos = document.querySelectorAll('video[data-autoplay]');
