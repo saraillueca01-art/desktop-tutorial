@@ -96,6 +96,34 @@
     .stat strong { display: block; font-family: "Fraunces", serif; font-weight: 400; font-size: 1.7rem; color: var(--ink); line-height: 1.1; }
     .stat span { display: block; margin-top: 6px; font-size: .75rem; line-height: 1.4; color: var(--muted); }
 
+    /* ---------- Carrusel de estadísticas ---------- */
+    .stats-carousel {
+      margin-top: 72px; overflow: hidden;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+              mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    }
+    .stats-track { display: flex; gap: 20px; width: max-content; padding: 8px 0; animation: stats-scroll 45s linear infinite; }
+    .stats-carousel:hover .stats-track { animation-play-state: paused; }
+    @keyframes stats-scroll { to { transform: translateX(-50%); } }
+    .stat-slide { flex: 0 0 auto; width: 220px; display: grid; gap: 14px; }
+    .stat-media {
+      aspect-ratio: 9 / 16; border-radius: 22px; overflow: hidden; border: 1px solid var(--line);
+      background: var(--bg-alt); max-width: 100%;
+    }
+    .stat-media img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+    .stat-slide.is-card .stat-media { background: var(--ink); border-color: var(--ink); display: grid; place-items: center; }
+    .stat-big { font-family: "Fraunces", serif; font-weight: 300; font-size: 3rem; color: var(--white); text-align: center; padding: 0 12px; line-height: 1.1; }
+    .stat-slide figcaption { display: grid; gap: 2px; padding: 0 4px; }
+    .stat-slide figcaption strong { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.4rem; color: var(--ink); }
+    .stat-slide figcaption span { font-size: .85rem; color: var(--muted); line-height: 1.4; }
+    .stat-slide figcaption em { font-style: normal; font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; color: var(--ink-soft); margin-top: 4px; }
+    .stat-slide.is-card figcaption strong { visibility: hidden; }
+    @media (prefers-reduced-motion: reduce) {
+      .stats-carousel { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+      .stats-track { animation: none; }
+      .stats-track [aria-hidden="true"] { display: none; }
+    }
+
     /* ---------- Parallax / imágenes que se expanden ---------- */
     .expand-band { padding: 0 16px 40px; }
     .expand-media {
@@ -104,13 +132,13 @@
       will-change: clip-path;
     }
     .expand-img {
-      position: absolute; inset: -12% 0; background: url("assets/arena.jpg") center / cover;
+      position: absolute; inset: -12% 0; background: url("assets/equipo-trabajando.jpg") center 40% / cover;
       will-change: transform;
     }
-    .expand-img::after { content: ""; position: absolute; inset: 0; background: rgba(255, 255, 255, .22); }
+    .expand-img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20, 34, 60, .15) 0%, rgba(20, 34, 60, .55) 100%); }
     .expand-text {
       position: relative; font-family: "Fraunces", serif; font-weight: 300;
-      font-size: clamp(2rem, 5vw, 3.8rem); line-height: 1.15; color: var(--ink); padding: 0 16px;
+      font-size: clamp(2rem, 5vw, 3.8rem); line-height: 1.15; color: var(--white); padding: 0 16px; text-shadow: 0 2px 24px rgba(0, 0, 0, .3); align-self: end; margin-bottom: 8vh;
     }
     .expand-text em { font-style: italic; }
 
@@ -329,6 +357,11 @@
       section { padding: 96px 0; }
       .hero-grid, .about-grid, .why-grid, .cta-grid { grid-template-columns: 1fr; gap: 56px; }
       .hero-card { padding: 28px; }
+      .hero { display: flex; flex-direction: column; }
+      .hero-grid { display: contents; }
+      .hero-text { order: 1; padding: 0 16px; }
+      .stats-carousel { order: 2; }
+      .hero-card { order: 3; margin: 48px 16px 0; }
       .services { grid-template-columns: 1fr 1fr; }
       .plans { grid-template-columns: 1fr; }
       .steps { grid-template-columns: 1fr 1fr; }
@@ -352,6 +385,9 @@
       .nav-links a { display: block; padding: 14px; }
       .nav-links .btn { margin: 10px auto 18px; display: inline-flex; }
       .hero { padding: 80px 0; }
+      .stats-carousel { margin-top: 48px; }
+      .stat-slide { width: 170px; }
+      .stat-big { font-size: 2.3rem; }
       #agenda { padding: 8px; }
       .agenda-stage { padding-block: 72px; }
       .plan { padding: 28px; }
@@ -414,6 +450,34 @@
             <div class="stat"><strong>1 año</strong><span>creando contenido</span></div>
           </div>
         </aside>
+      </div>
+      <div class="stats-carousel" aria-label="Resultados reales de nuestros clientes">
+        <div class="stats-track">
+          <figure class="stat-slide">
+            <div class="stat-media"><img src="assets/stats/eatandgrow-viral.jpg" alt="Estadísticas de Instagram de Eat and Grow" loading="lazy"></div>
+            <figcaption><strong>844K</strong><span>visualizaciones y 11.200 compartidos</span><em>Eat and Grow</em></figcaption>
+          </figure>
+          <figure class="stat-slide is-card">
+            <div class="stat-media"><div class="stat-big">326.779</div></div>
+            <figcaption><strong>326.779</strong><span>reproducciones de un solo vídeo</span><em>Pizzería L’Orenga</em></figcaption>
+          </figure>
+          <figure class="stat-slide">
+            <div class="stat-media"><img src="assets/stats/tallarina-336k.jpg" alt="Estadísticas de Instagram de Can Tallarina" loading="lazy"></div>
+            <figcaption><strong>336K</strong><span>visualizaciones en un vídeo</span><em>Can Tallarina</em></figcaption>
+          </figure>
+          <figure class="stat-slide is-card">
+            <div class="stat-media"><div class="stat-big">&lt;30 s</div></div>
+            <figcaption><strong>&lt;30 s</strong><span>para agotar 100 entradas con un vídeo</span><em>Can Tallarina</em></figcaption>
+          </figure>
+          <figure class="stat-slide">
+            <div class="stat-media"><img src="assets/stats/eatandgrow-reels.jpg" alt="Estadísticas de Instagram de Eat and Grow" loading="lazy"></div>
+            <figcaption><strong>+10.000</strong><span>seguidores empezando de cero</span><em>Eat and Grow</em></figcaption>
+          </figure>
+          <figure class="stat-slide is-card">
+            <div class="stat-media"><div class="stat-big">0 €</div></div>
+            <figcaption><strong>0 €</strong><span>en publicidad desde que trabajamos juntos</span><em>Can Tallarina</em></figcaption>
+          </figure>
+        </div>
       </div>
     </section>
 
@@ -799,6 +863,12 @@
     });
 
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Carrusel de estadísticas: se duplica el contenido para que el movimiento sea continuo
+    const statsTrack = document.querySelector('.stats-track');
+    if (statsTrack) [...statsTrack.children].forEach(el => {
+      const c = el.cloneNode(true); c.setAttribute('aria-hidden', 'true'); statsTrack.appendChild(c);
+    });
 
     // Vídeos de fondo de la asesoría: se reproducen uno detrás de otro, sin clicar
     const bgVideos = [...document.querySelectorAll('.bg-video')];
