@@ -1,10 +1,8 @@
-Sube aquí las capturas y vídeos de los casos de éxito con estos nombres:
+Archivos de los casos de éxito:
 
-  casoN-antes.jpg     captura del perfil ANTES de trabajar con Brisa
-  casoN-despues.jpg   captura del perfil DESPUÉS
-  casoN-video.mp4     reel o vídeo creado para esa cuenta (vertical 9:16)
-  casoN-poster.jpg    (opcional) imagen que se ve mientras carga el vídeo
+  Caso 3 · Pizzería L'Orenga   caso3-antes.jpg, caso3-despues.jpg, caso3-video.mp4, caso3-poster.jpg
+  Caso 4 · Can Tallarina       caso4-video1/2/3.mp4, caso4-poster1/2/3.jpg
+  Caso 2 · Eat and Grow        caso2-feed.jpg, caso2-reels.jpg, caso2-video.mp4, caso2-poster.jpg
 
-N = 1 (cafetería), 2 (cliente +10.000 seguidores), 3 (Pizzería L'Orenga).
-Vídeos .mp4 (H.264), a ser posible de menos de 10 MB.
-Mientras no exista un archivo, la web muestra un recuadro de ejemplo en su lugar.
+Vídeos: .mp4 (H.264), verticales 9:16. Los textos y cifras de cada caso están en index.html
+(busca "Caso 2", "Caso 3", "Caso 4").
