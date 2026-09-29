@@ -180,6 +180,13 @@
     .case-facts li { display: grid; grid-template-columns: 84px 1fr; gap: 12px; align-items: baseline; }
     .case-facts strong { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.5rem; color: var(--ink); }
     .case-facts span { font-size: .9rem; color: var(--muted); }
+    .reel-thumb { position: absolute; inset: 0; display: grid; place-items: center; }
+    .reel-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .reel-thumb .play {
+      position: relative; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(255, 255, 255, .85); color: var(--ink); font-size: 1rem; transition: transform .2s;
+    }
+    .reel-thumb:hover .play { transform: scale(1.08); }
     .views {
       position: absolute; left: 12px; bottom: 12px; z-index: 2; font-size: .75rem; font-weight: 500; color: var(--white);
       background: rgba(31, 52, 88, .6); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
@@ -579,7 +586,7 @@
             <div class="case-videos">
               <span class="media-label after">3 vídeos virales creados por Brisa</span>
               <div class="videos-grid">
-                <div class="phone after reel-video"><div class="placeholder"><b>▶</b>Vídeo viral 1</div><span class="views">336 mil visualizaciones</span><video src="assets/casos/caso4-video1.mp4" poster="assets/casos/caso4-poster1.jpg" muted loop playsinline preload="metadata" data-autoplay onerror="this.remove()"></video><button type="button" class="sound-toggle" aria-label="Activar sonido">Activar sonido</button></div>
+                <div class="phone after reel-video"><a class="reel-thumb" href="https://www.instagram.com/reel/DWyhQLZCMLU/" target="_blank" rel="noopener" aria-label="Ver el vídeo de 336 mil visualizaciones en Instagram"><img src="assets/casos/caso4-poster1.jpg" alt=""><span class="play">▶</span></a><span class="views">336 mil visualizaciones</span><video src="assets/casos/caso4-video1.mp4" poster="assets/casos/caso4-poster1.jpg" muted loop playsinline preload="metadata" data-autoplay onerror="this.remove()"></video><button type="button" class="sound-toggle" aria-label="Activar sonido">Activar sonido</button></div>
                 <div class="phone after reel-video"><div class="placeholder"><b>▶</b>Vídeo viral 2</div><span class="views">115 mil visualizaciones</span><video src="assets/casos/caso4-video2.mp4" poster="assets/casos/caso4-poster2.jpg" muted loop playsinline preload="metadata" data-autoplay onerror="this.remove()"></video><button type="button" class="sound-toggle" aria-label="Activar sonido">Activar sonido</button></div>
                 <div class="phone after reel-video"><div class="placeholder"><b>▶</b>Vídeo viral 3</div><span class="views">108 mil visualizaciones</span><video src="assets/casos/caso4-video3.mp4" poster="assets/casos/caso4-poster3.jpg" muted loop playsinline preload="metadata" data-autoplay onerror="this.remove()"></video><button type="button" class="sound-toggle" aria-label="Activar sonido">Activar sonido</button></div>
               </div>
