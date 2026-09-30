@@ -1,18 +1,22 @@
 /* ==========================================================================
    Mood Matcha · piezas comunes de las propuestas de diseño
    --------------------------------------------------------------------------
-   FOTOS: pega aquí el enlace de cada foto (Shopify → Contenido → Archivos).
-   Mientras esté vacío se muestra una escena animada provisional con su nombre.
+   FOTOS Y VÍDEOS: pega aquí el enlace de cada foto o vídeo .mp4
+   (Shopify → Contenido → Archivos). Los vídeos se reproducen en bucle, sin
+   sonido y solo mientras se ven. Si algo está vacío o no carga, se muestra una
+   escena animada provisional con su nombre.
    ========================================================================== */
 window.MM_FOTOS = {
   fabrica: '',   // la fábrica / molinos de piedra
-  chasen: '',    // matcha batiéndose con el chasen
-  campo: '',     // campo de té a la sombra
+  chasen: 'media/ceremonia.mp4',   // vídeo: preparando el matcha (Pexels, uso comercial libre)
+  campo: 'media/campo-istock.mp4', // vídeo: campo de té (vista previa de iStock con marca de agua: hay que comprar la licencia)
   polvo: '',     // matcha en polvo, cuchara
   latte: '',     // matcha latte desde arriba
   lata: '',      // la lata de Mood Matcha
   casa: ''       // ambiente: casa blanca, madera, luz tranquila
 };
+/* Imagen que se ve mientras carga cada vídeo */
+window.MM_POSTERS = { chasen: 'media/ceremonia.jpg', campo: 'media/campo-istock.jpg' };
 
 window.MM = (() => {
   'use strict';
@@ -254,13 +258,27 @@ window.MM = (() => {
       el.dataset.mmDone = 1;
       el.classList.add('mm-media');
       const kind = el.dataset.media, src = window.MM_FOTOS[kind];
-      if (src) {
-        const img = new Image(); img.src = src; img.alt = el.dataset.alt || ''; img.loading = 'lazy'; img.decoding = 'async';
-        el.prepend(img);
-      } else {
+      const fallback = () => {
         mountScene(el, kind);
         if (!('nolabel' in el.dataset)) el.insertAdjacentHTML('beforeend', `<span class="mm-chip">${LABELS[kind] || 'Foto'}</span>`);
-      }
+      };
+      if (src && /\.(mp4|webm|mov)(\?|#|$)/i.test(src)) {
+        const v = document.createElement('video');
+        v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'metadata';
+        v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('aria-hidden', 'true');
+        if (window.MM_POSTERS?.[kind]) v.poster = window.MM_POSTERS[kind];
+        // WebM (más ligero) si el navegador lo admite; si no, MP4 (Safari, iPhone)
+        const srcs = /\.mp4(\?|#|$)/i.test(src) ? [[src.replace(/\.mp4/i, '.webm'), 'video/webm'], [src, 'video/mp4']] : [[src, '']];
+        srcs.forEach(([u, type]) => { const so = document.createElement('source'); so.src = u; if (type) so.type = type; v.append(so); });
+        v.lastElementChild.addEventListener('error', () => { v.remove(); fallback(); }, { once: true });
+        el.prepend(v);
+        // se reproduce solo mientras está en pantalla (y quieto si se pide menos movimiento)
+        new IntersectionObserver(([e]) => { if (e.isIntersecting && !reduced) v.play().catch(() => {}); else v.pause(); }).observe(el);
+      } else if (src) {
+        const img = new Image(); img.src = src; img.alt = el.dataset.alt || ''; img.loading = 'lazy'; img.decoding = 'async';
+        img.addEventListener('error', () => { img.remove(); fallback(); }, { once: true });
+        el.prepend(img);
+      } else fallback();
     });
   }
 

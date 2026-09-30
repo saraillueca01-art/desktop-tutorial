@@ -66,8 +66,40 @@ window.MMA = (() => {
   /* ---------------------------------------------------------------------
      1 · PINCEL: el chasen cruza en zigzag y pinta de verde una franja
      --------------------------------------------------------------------- */
-  function pincel(host, { band = [.1, .62], rows = 3, dur = 4200, onDone } = {}) {
-    const st = stage(host), { c } = st;
+  function pincel(host, { band = [.1, .62], rows = 3, dur = 4200, reveal = '', poster = '', onDone } = {}) {
+    const st = stage(host), c0 = st.c;
+    // con "reveal", la pintura hace de máscara y deja ver un vídeo debajo
+    let c = c0, mask = null, video = null;
+    if (reveal) {
+      mask = document.createElement('canvas'); c = mask.getContext('2d');
+      video = document.createElement('video');
+      Object.assign(video, { muted: true, loop: true, playsInline: true, preload: 'auto' });
+      (/\.mp4(\?|#|$)/i.test(reveal) ? [[reveal.replace(/\.mp4/i, '.webm'), 'video/webm'], [reveal, 'video/mp4']] : [[reveal, '']])
+        .forEach(([u, type]) => { const so = document.createElement('source'); so.src = u; if (type) so.type = type; video.append(so); });
+      if (poster) { video.poster = poster; }
+      video.setAttribute('muted', ''); video.setAttribute('playsinline', '');
+      Object.assign(video.style, { position: 'absolute', width: '1px', height: '1px', opacity: 0, pointerEvents: 'none' });
+      host.append(video);
+      new IntersectionObserver(([e]) => (e.isIntersecting && !reduced ? video.play().catch(() => {}) : video.pause())).observe(host);
+      video.lastElementChild.addEventListener('error', () => { video = null; }, { once: true });
+    }
+    const sizeMask = () => { if (!mask) return; mask.width = st.cv.width; mask.height = st.cv.height; c.setTransform(st.dpr, 0, 0, st.dpr, 0, 0); };
+    sizeMask();
+    const composite = () => {
+      if (!mask) return;
+      const W = st.W, H = st.H;
+      c0.globalCompositeOperation = 'source-over';
+      c0.clearRect(0, 0, W, H);
+      if (video && video.readyState >= 2) {
+        const vw = video.videoWidth, vh = video.videoHeight, k = Math.max(W / vw, H / vh);
+        c0.drawImage(video, (W - vw * k) / 2, (H - vh * k) / 2, vw * k, vh * k);
+        c0.fillStyle = 'rgba(40,58,18,.32)'; c0.fillRect(0, 0, W, H);
+        c0.globalCompositeOperation = 'destination-in';
+        c0.drawImage(mask, 0, 0, W, H);
+        c0.globalCompositeOperation = 'source-over';
+        c0.globalAlpha = .22; c0.drawImage(mask, 0, 0, W, H); c0.globalAlpha = 1;
+      } else c0.drawImage(mask, 0, 0, W, H);
+    };
     const W = () => st.W, H = () => st.H;
     const cw = clamp(innerWidth * .07, 56, 96);
     const ch = tool(host, CHASEN, cw), tipX = cw * .5, tipY = cw * 292 / 120;
@@ -106,12 +138,13 @@ window.MMA = (() => {
       }
     }
     function repaint() { c.clearRect(0, 0, W(), H()); const t = s; s = 0; drawTo(t); }
-    st.onResize = () => { if (s > 0) repaint(); };
+    st.onResize = () => { sizeMask(); if (s > 0) repaint(); };
     if (reduced) { drawTo(1); done = true; ch.style.opacity = 0; onDone?.(); }
     let t0 = null, exitT = null;
     (function loop(t) {
       requestAnimationFrame(loop);
       if (!st.visible) return;
+      composite();
       if (!done) {
         t0 ??= t;
         const k = clamp((t - t0) / dur, 0, 1);

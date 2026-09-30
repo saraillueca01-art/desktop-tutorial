@@ -160,7 +160,7 @@
   <header class="paint" id="top">
     <div class="paint-host" id="pincel"></div>
     <h1 class="paint-t">Un matcha para tu <i>calma</i></h1>
-    <div class="paint-sub"><p>Batido a mano, despacio, como en casa. Matcha ceremonial de primera cosecha.</p><a class="btn" href="#lata">Comprar · <span data-price></span></a><span class="paint-hint">Pasa el ratón: sigue pintando</span></div>
+    <div class="paint-sub"><p>Cada pincelada descubre el ritual: batido a mano, despacio, como en casa.</p><a class="btn" href="#lata">Comprar · <span data-price></span></a><span class="paint-hint">Pasa el ratón y descubre más</span></div>
   </header>
 
   <div class="linen" aria-hidden="true"><span><b>Pide hoy · sale <span data-ship="sale"></span> · envío gratis desde 35 €</b></span></div>
@@ -205,7 +205,7 @@
   MM.start(6);
   MM.nav();
   MM.shadows($('.paint'), { opacity: .14 });
-  MMA.pincel($('#pincel'), { band: innerWidth < 760 ? [.16, .56] : [.1, .62], onDone: () => $('.paint').classList.add('done') });
+  MMA.pincel($('#pincel'), { band: innerWidth < 760 ? [.16, .56] : [.1, .62], reveal: MM_FOTOS.chasen, poster: MM_POSTERS.chasen, onDone: () => $('.paint').classList.add('done') });
   MM.shadows($('.niche'), { opacity: .14, branches: 3 });
   MM.shadows($('#calm'), { opacity: .2 });
   carousel($('#ftrack'), $('#fp'), $('#fn'));
