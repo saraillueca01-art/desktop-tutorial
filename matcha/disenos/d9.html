@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mood Matcha Pincelada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gilda+Display&family=Figtree:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* Diseño 9 · Pincelada: un ensō de matcha pintado a pincel rodea la lata; después, el arco de la casa se abre */
+  :root {
+    --wall: #ffffff; --lime: #f5f6f2; --olive: #6b7b45; --olive-d: #333f28; --oak: #b98a58; --stone: #e7e3db;
+    --ink: #2c3524; --muted: #737a6a; --line: rgba(44, 53, 36, .12);
+    --serif: "Gilda Display", "Didot", Georgia, serif; --sans: "Figtree", "Helvetica Neue", system-ui, sans-serif;
+    --ease: cubic-bezier(.76, 0, .24, 1); --out: cubic-bezier(.16, 1, .3, 1);
+    --g: clamp(16px, 5vw, 80px);
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--wall); color: var(--ink); font: 300 16px/1.7 var(--sans); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  .label { font: 500 .64rem/1.4 var(--sans); letter-spacing: .24em; text-transform: uppercase; color: var(--olive); }
+  :focus-visible { outline: 1px solid var(--olive); outline-offset: 4px; }
+
+  .nav {
+    position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); left: clamp(10px, 2vw, 28px); right: clamp(10px, 2vw, 28px); z-index: 50;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 12px clamp(18px, 2.4vw, 32px); border-radius: 22px;
+    background: rgba(255, 255, 255, .78); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 0 0 1px var(--line), 0 20px 40px -30px rgba(44, 53, 36, .45); transition: transform .7s var(--ease), background .5s, color .5s;
+  }
+  .nav.is-hidden { transform: translateY(calc(-100% - 20px)); }
+  .nav.is-dark { background: rgba(30, 36, 24, .25); color: #fff; box-shadow: 0 0 0 1px rgba(255, 255, 255, .18); }
+  .nav ul { display: flex; gap: 26px; list-style: none; }
+  .nav ul a { font: 500 .64rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; }
+  .brand { font: 400 1.5rem/1 var(--serif); letter-spacing: .02em; }
+  .brand i { color: var(--olive); font-style: normal; }
+  .nav.is-dark .brand i { color: #dfe6c8; }
+  .nav-r { justify-self: end; display: flex; gap: 24px; align-items: center; }
+  .bag { position: relative; font: 500 .64rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; padding: 12px 16px; border-radius: 999px; box-shadow: inset 0 0 0 1px currentColor; }
+  .bag b { margin-left: 6px; }
+  @media (max-width: 860px) { .nav { grid-template-columns: 1fr auto; } .nav ul { display: none; } }
+
+  /* Portada: ensō a pincel */
+  .ensoh { position: relative; height: 100vh; height: 100svh; min-height: 600px; overflow: hidden; background: var(--wall); }
+  .eh-host { position: absolute; inset: 0; }
+  .eh-tin { position: absolute; z-index: 2; left: 50%; top: 50%; width: min(34vw, 170px); transform: translate(-50%, -44%) scale(.92); opacity: 0; transition: opacity 1.4s, transform 1.6s var(--out); }
+  .ensoh.done .eh-tin { opacity: 1; transform: translate(-50%, -52%); }
+  .eh-t { position: absolute; z-index: 3; top: 50%; transform: translateY(-50%); font: 400 clamp(2.2rem, 4.4vw, 4.8rem)/1 var(--serif); white-space: nowrap; }
+  .eh-t.l { left: var(--g); } .eh-t.r { right: var(--g); }
+  .eh-t i { font-style: normal; color: var(--olive); }
+  .eh-sub { position: absolute; z-index: 3; left: 0; right: 0; bottom: 7vh; display: grid; justify-items: center; gap: 12px; color: var(--muted); font-size: .86rem; }
+  @media (max-width: 760px) { .eh-t { top: 14vh; transform: none; font-size: clamp(2.2rem, 11vw, 3.4rem); } .eh-t.r { top: calc(14vh + 1.1em); right: auto; left: var(--g); } .eh-tin { top: 56%; } }
+
+  /* Portada: el arco se abre */
+  .door { position: relative; height: 220vh; background: var(--lime); }
+  .door-in { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: grid; place-items: center; }
+  .arch { position: relative; z-index: 2; width: var(--w, 38vw); height: var(--h, 72vh); border-radius: var(--r, 999px) var(--r, 999px) 0 0; overflow: hidden;
+    box-shadow: 0 0 0 10px var(--oak), 0 40px 80px -40px rgba(44, 53, 36, .5); will-change: width, height; margin-top: 8vh; }
+  .arch .mm-slides { position: absolute; inset: 0; }
+  .arch::after { content: ""; position: absolute; inset: 0; z-index: 3; background: rgba(20, 26, 14, .42); opacity: var(--o, 0); pointer-events: none; }
+  .door-t { position: absolute; z-index: 3; top: 50%; transform: translateY(-50%); font: 400 clamp(2.2rem, 4.2vw, 4.6rem)/1 var(--serif); color: var(--ink); transition: opacity .4s; white-space: nowrap; }
+  .door-t.l { left: var(--g); } .door-t.r { right: var(--g); }
+  .door-t.r i { font-style: normal; color: var(--olive); }
+  .door-sub { position: absolute; z-index: 3; left: 50%; bottom: 5vh; transform: translateX(-50%); display: flex; gap: 12px; align-items: center; color: var(--muted); font-size: .8rem; white-space: nowrap; }
+  .door-sub::before { content: ""; width: 1px; height: 30px; background: var(--muted); animation: breathe 2.4s ease-in-out infinite; }
+  @keyframes breathe { 50% { transform: scaleY(.4); opacity: .4; } }
+  .inside { position: absolute; z-index: 4; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; color: #fff; opacity: var(--o, 0); width: min(90vw, 760px); pointer-events: none; }
+  .inside h2 { font: 400 clamp(2.6rem, 6vw, 5.6rem)/1.02 var(--serif); text-wrap: balance; text-shadow: 0 2px 30px rgba(0, 0, 0, .25); }
+  .inside p { margin-top: 18px; font-size: 1.05rem; }
+  .inside .btn { pointer-events: auto; margin-top: 30px; }
+  @media (max-width: 760px) {
+    .door-t { top: 16vh; transform: none; font-size: clamp(2.2rem, 11vw, 3.4rem); }
+    .door-t.l { left: var(--g); } .door-t.r { top: calc(16vh + 1.1em); right: auto; left: var(--g); }
+    .arch { margin-top: 26vh; }
+  }
+
+  .btn { display: inline-flex; align-items: center; gap: 12px; padding: 17px 30px; border-radius: 999px; font: 500 .7rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; background: var(--olive-d); color: #fff; transition: background .5s, transform .5s var(--out); }
+  .btn:hover { background: var(--olive); transform: translateY(-2px); }
+  .btn.light { background: #fff; color: var(--olive-d); }
+
+  /* La lata en su hornacina */
+  .niche { position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; gap: 6vw; align-items: center; padding: 140px var(--g); }
+  .niche > * { position: relative; z-index: 2; }
+  .hollow { justify-self: center; width: min(100%, 440px); aspect-ratio: 3 / 4; border-radius: 999px 999px 18px 18px; background: linear-gradient(180deg, #f0f1ec, #ffffff 70%); box-shadow: inset 0 18px 40px -20px rgba(44, 53, 36, .25); display: grid; place-items: end center; padding-bottom: 12%; }
+  .tin { width: 52%; filter: drop-shadow(0 30px 30px rgba(44, 53, 36, .2)); animation: float 6s ease-in-out infinite; }
+  @keyframes float { 50% { transform: translateY(-10px); } }
+  .plinth { width: 70%; height: 16px; margin-top: -4px; border-radius: 3px; background: linear-gradient(180deg, #c89c69, #a77a48); }
+  .copy h2 { font: 400 clamp(2.4rem, 4.8vw, 4.4rem)/1.02 var(--serif); margin: 14px 0 20px; text-wrap: balance; }
+  .copy h2 i { font-style: normal; color: var(--olive); }
+  .copy > p { color: var(--muted); max-width: 44ch; }
+  .facts-row { display: grid; grid-template-columns: repeat(3, 1fr); margin: 28px 0; border-block: 1px solid var(--line); }
+  .facts-row div { padding: 18px 10px; text-align: center; }
+  .facts-row div + div { border-left: 1px solid var(--line); }
+  .facts-row b { display: block; font: 400 1.8rem/1 var(--serif); color: var(--olive-d); }
+  .facts-row span { font-size: .78rem; color: var(--muted); }
+  .buyline { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .buyline b { font: 400 1.8rem/1 var(--serif); }
+  .free { margin-top: 22px; font-size: .88rem; }
+  .free .bar { height: 3px; margin-top: 10px; border-radius: 3px; background: var(--stone); position: relative; overflow: hidden; }
+  .free .bar::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--p, 0%); background: var(--olive); transition: width 1s var(--out); }
+  .ship { margin-top: 14px; font-size: .88rem; color: var(--muted); }
+  .ship b { color: var(--ink); font-weight: 500; }
+  @media (max-width: 860px) { .niche { grid-template-columns: 1fr; padding-top: 100px; } }
+
+  /* Moods en arcos */
+  .moods { padding: 120px var(--g); background: var(--lime); }
+  .moods header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px; margin-bottom: 44px; }
+  .moods h2 { font: 400 clamp(2.4rem, 4.6vw, 4.2rem)/1 var(--serif); }
+  .moods h2 i { font-style: normal; color: var(--olive); }
+  .arches { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+  .ma { position: relative; }
+  .ma .pic { position: relative; aspect-ratio: 2 / 3.1; border-radius: 999px 999px 10px 10px; overflow: hidden; transition: transform 1s var(--out); }
+  .ma .pic .mm-media { position: absolute; inset: 0; transition: transform 1.6s var(--out); }
+  .ma:hover .pic { transform: translateY(-10px); }
+  .ma:hover .pic .mm-media { transform: scale(1.06); }
+  .ma h3 { font: 400 1.6rem/1.1 var(--serif); margin-top: 16px; }
+  .ma p { font-size: .86rem; color: var(--muted); }
+  @media (max-width: 900px) { .arches { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; } .ma { flex: none; width: 62vw; scroll-snap-align: start; } }
+
+  /* Cifras clave en arcos */
+  .facts { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: 40px; padding: 130px 0 130px var(--g); }
+  .facts h2 { font: 400 clamp(2.4rem, 4.4vw, 4rem)/1 var(--serif); margin: 14px 0 26px; }
+  .facts h2 i { font-style: normal; color: var(--olive); }
+  .arrows { display: flex; gap: 8px; }
+  .arrows button { width: 46px; height: 46px; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--line); transition: background .3s, color .3s, opacity .3s; }
+  .arrows button:hover { background: var(--olive-d); color: #fff; }
+  .arrows button:disabled { opacity: .3; }
+  .ftrack { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-right: var(--g); cursor: grab; }
+  .ftrack::-webkit-scrollbar { display: none; }
+  .fact { position: relative; flex: none; width: min(70vw, 320px); aspect-ratio: 3 / 4.2; border-radius: 999px 999px 16px 16px; overflow: hidden; scroll-snap-align: start; color: #fff; }
+  .fact .mm-media { position: absolute; inset: 0; transition: transform 1.6s var(--out); }
+  .fact:hover .mm-media { transform: scale(1.05); }
+  .fact::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20, 26, 14, .6), rgba(20, 26, 14, 0) 50%); pointer-events: none; }
+  .fact h3 { position: absolute; left: 24px; right: 24px; bottom: 24px; z-index: 2; font: 400 2.4rem/1 var(--serif); }
+  .fact h3 small { display: block; margin-top: 8px; font: 500 .6rem/1.4 var(--sans); letter-spacing: .22em; text-transform: uppercase; }
+  @media (max-width: 860px) { .facts { grid-template-columns: 1fr; } }
+
+  .calm { position: relative; overflow: hidden; padding: 150px var(--g); text-align: center; background: var(--wall); }
+  .calm p { position: relative; z-index: 2; font: 400 clamp(2rem, 4.6vw, 4rem)/1.15 var(--serif); max-width: 20ch; margin-inline: auto; text-wrap: balance; }
+  .calm p i { font-style: normal; color: var(--olive); }
+  .calm small { position: relative; z-index: 2; display: block; margin-top: 24px; color: var(--muted); }
+  footer { padding: 40px var(--g) 90px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-top: 1px solid var(--line); font-size: .82rem; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) { .tin { animation: none; } }
+</style>
+</head>
+<body>
+  <nav class="nav" aria-label="Principal">
+    <ul><li><a href="#lata">Tienda</a></li><li><a href="#moods">Moods</a></li></ul>
+    <a class="brand" href="#top">mood <i>matcha</i></a>
+    <div class="nav-r"><ul><li><a href="#cifras">Cifras</a></li></ul><a class="bag" href="#lata">Cesta<b data-count>0</b></a></div>
+  </nav>
+
+  <header class="ensoh" id="top">
+    <div class="eh-host" id="enso"></div>
+    <div class="eh-tin" id="ehTin"></div>
+    <h1 class="eh-t l">Un matcha</h1>
+    <p class="eh-t r">para tu <i>calma</i></p>
+    <div class="eh-sub"><a class="btn" href="#lata">Comprar · <span data-price></span></a><span>Baja y entra en casa</span></div>
+  </header>
+
+  <section class="door" id="casa">
+    <div class="door-in">
+      <h2 class="door-t l">Pasa</h2>
+      <p class="door-t r">y <i>quédate</i></p>
+      <div class="arch" id="arch" data-dark>
+        <div class="mm-slides" id="archSlides">
+          <div class="mm-slide"><div data-media="casa"></div></div>
+          <div class="mm-slide"><div data-media="chasen"></div></div>
+          <div class="mm-slide"><div data-media="fabrica"></div></div>
+        </div>
+      </div>
+      <div class="inside" id="inside">
+        <h2>Pasa. Aquí se bate despacio.</h2>
+        <p>Matcha ceremonial para tus mañanas tranquilas.</p>
+        <a class="btn light" href="#lata">Descubrir la lata</a>
+      </div>
+      <p class="door-sub" id="doorSub">Baja para entrar</p>
+    </div>
+  </section>
+
+  <section class="niche" id="lata">
+    <div><div class="hollow"><div class="tin" id="tin"></div></div></div>
+    <div class="copy" data-rv>
+      <span class="label">Una sola lata · 30 g</span>
+      <h2>Hecho para tus momentos de <i>calma</i></h2>
+      <p>Matcha ceremonial de primera cosecha, molido en piedra en Japón. Suave, cremoso y sin amargor. Una cucharadita, agua a 80 °C y dos minutos para ti.</p>
+      <div class="facts-row"><div><b data-to="15">0</b><span>tazas por lata</span></div><div><b data-to="2" data-suf=" g">0</b><span>por taza</span></div><div><b data-to="21">0</b><span>días a la sombra</span></div></div>
+      <div class="buyline"><b data-price></b><button class="btn" type="button" data-add>Añadir a la cesta</button></div>
+      <div class="free"><span data-freetxt></span><div class="bar" data-freebar></div></div>
+      <p class="ship">Pide hoy y sale <b data-ship="sale"></b> · te llega entre el <b data-ship="rango"></b></p>
+    </div>
+  </section>
+
+  <section class="moods" id="moods">
+    <header data-rv><div><span class="label">Una lata, cinco recetas</span><h2>Elige tu <i>mood</i></h2></div><a class="btn" href="#lata">Comprar</a></header>
+    <div class="arches" id="arches"></div>
+  </section>
+
+  <section class="facts" id="cifras">
+    <div><span class="label">En cifras</span><h2>Cifras <i>clave</i></h2><div class="arrows"><button type="button" id="fp" aria-label="Anterior">←</button><button type="button" id="fn" aria-label="Siguiente">→</button></div></div>
+    <div class="ftrack" id="ftrack"></div>
+  </section>
+
+  <section class="calm" id="calm"><p>Paz, luz de mañana y un cuenco <i>verde</i> entre las manos.</p><small>Envío en 24–72 h · gratis desde 35 €</small></section>
+  <footer><span>© Mood Matcha</span><span>Envíos · Aviso legal · Privacidad · Instagram</span></footer>
+
+<script src="comun.js"></script>
+<script src="animaciones.js"></script>
+<script>
+(() => {
+  const { $, $$, slides, tin, onScroll, pinned, carousel, lerp, clamp } = MM;
+  const MOODS = [['Focus', 'Solo con agua, por la mañana', 'chasen'], ['Calma', 'Latte templado de avena', 'latte'], ['Energía', 'Con hielo y tónica', 'polvo'], ['Social', 'Matcha lemonade', 'campo'], ['Antojo', 'Affogato de vainilla', 'casa']];
+  const FACTS = [['21 días', 'a la sombra', 'campo'], ['2 g', 'por taza', 'polvo'], ['15 tazas', 'en cada lata', 'chasen'], ['80 °C', 'nunca hirviendo', 'latte'], ['24–72 h', 'hasta tu casa', 'casa']];
+  $('#tin').innerHTML = tin({ lid: 'madera', deco: 'rama', accent: '#6b7b45', ink: '#2c3524', font: 'Gilda Display, Georgia, serif' }) + '<div class="plinth"></div>';
+  $('#arches').innerHTML = MOODS.map((m, i) => `<article class="ma" data-rv style="--d:${i * .08}s"><div class="pic"><div data-media="${m[2]}" data-nolabel></div></div><h3>${m[0]}</h3><p>${m[1]}</p></article>`).join('');
+  $('#ftrack').innerHTML = FACTS.map(f => `<article class="fact"><div data-media="${f[2]}" data-nolabel></div><h3>${f[0]}<small>${f[1]}</small></h3></article>`).join('');
+
+  MM.start(9);
+  MM.nav();
+  slides($('#archSlides'));
+  MM.shadows($('.door-in'), { opacity: .2 });
+  MM.shadows($('.ensoh'), { opacity: .15 });
+  $('#ehTin').innerHTML = tin({ lid: 'madera', deco: 'rama', accent: '#6b7b45', ink: '#2c3524', font: 'Gilda Display, Georgia, serif' });
+  MMA.enso($('#enso'), { radius: innerWidth < 760 ? .4 : .3, onDone: () => $('.ensoh').classList.add('done') });
+  MM.shadows($('.niche'), { opacity: .14, branches: 3 });
+  MM.shadows($('#calm'), { opacity: .2 });
+  carousel($('#ftrack'), $('#fp'), $('#fn'));
+
+  // el arco se abre al hacer scroll
+  const door = $('.door'), arch = $('#arch'), inside = $('#inside'), tl = $('.door-t.l'), tr = $('.door-t.r'), sub = $('#doorSub');
+  onScroll(() => {
+    const p = pinned(door), e = p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+    const narrow = innerWidth < 760;
+    arch.style.setProperty('--w', lerp(narrow ? 78 : 36, 100, e) + 'vw');
+    arch.style.setProperty('--h', lerp(narrow ? 56 : 74, 100, e) + 'vh');
+    arch.style.setProperty('--r', lerp(innerWidth, 0, clamp(e * 1.3, 0, 1)) + 'px');
+    arch.style.marginTop = lerp(narrow ? 26 : 8, 0, e) + 'vh';
+    arch.style.boxShadow = `0 0 0 ${lerp(10, 0, e)}px var(--oak), 0 40px 80px -40px rgba(44,53,36,.5)`;
+    const out = clamp(1 - p * 3, 0, 1);
+    tl.style.opacity = tr.style.opacity = sub.style.opacity = out;
+    tl.style.translate = `${-p * 200}px 0`; tr.style.translate = `${p * 200}px 0`;
+    const o = clamp((p - .55) * 3, 0, 1);
+    inside.style.setProperty('--o', o); arch.style.setProperty('--o', o);
+  });
+})();
+</script>
+</body>
+</html>

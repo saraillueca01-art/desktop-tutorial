@@ -44,7 +44,7 @@ window.MM = (() => {
   .mm-switch{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:200;display:flex;align-items:center;gap:4px;
     padding:6px;border-radius:999px;background:rgba(20,32,22,.86);color:#fff;font:500 12px/1 system-ui,sans-serif;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
     box-shadow:0 12px 30px -10px rgba(0,0,0,.4)}
-  .mm-switch a{display:grid;place-items:center;min-width:32px;height:32px;padding:0 10px;border-radius:999px;color:#fff;text-decoration:none;transition:background .3s}
+  .mm-switch a{display:grid;place-items:center;min-width:28px;height:30px;padding:0 7px;border-radius:999px;color:#fff;text-decoration:none;transition:background .3s}
   .mm-switch a:hover{background:rgba(255,255,255,.14)}
   .mm-switch a.on{background:#fff;color:#1f3527}
   .mm-switch span{padding:0 8px 0 10px;opacity:.7;white-space:nowrap}
@@ -387,7 +387,7 @@ window.MM = (() => {
     const bar = document.createElement('nav');
     bar.className = 'mm-switch'; bar.setAttribute('aria-label', 'Propuestas de diseño');
     bar.innerHTML = `<a href="index.html" aria-label="Ver todas las propuestas">☰</a><span>Diseño</span>` +
-      [1, 2, 3, 4, 5].map(i => `<a href="d${i}.html" class="${i === n ? 'on' : ''}" aria-label="Diseño ${i}">${i}</a>`).join('');
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => `<a href="d${i}.html" class="${i === n ? 'on' : ''}" aria-label="Diseño ${i}">${i}</a>`).join('');
     document.body.append(bar);
   }
 

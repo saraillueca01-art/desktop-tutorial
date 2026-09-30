@@ -29,6 +29,8 @@
   .row { display: grid; grid-template-columns: 90px 150px minmax(0, 1fr) auto; gap: 26px; align-items: center; padding: 24px; border-radius: 22px; box-shadow: 0 0 0 1px var(--line); transition: box-shadow .5s, transform .7s var(--out), background .5s; }
   .row:hover { transform: translateY(-4px); box-shadow: 0 0 0 1px var(--line), 0 30px 60px -40px rgba(34, 48, 31, .5); background: #fcfdfb; }
   .num { font: 300 3.6rem/1 var(--serif); color: var(--leaf); }
+  .grp { font: 500 .66rem/1 var(--sans); letter-spacing: .26em; text-transform: uppercase; color: var(--leaf); padding-top: 34px; }
+  .grp:first-child { padding-top: 0; }
   .can { width: 150px; aspect-ratio: 1; border-radius: 18px; display: grid; place-items: center; background: var(--c, var(--mist)); overflow: hidden; }
   .can > div { width: 54%; animation: bob 5s ease-in-out infinite; animation-delay: var(--dl); }
   @keyframes bob { 50% { transform: translateY(-6px) rotate(-2deg); } }
@@ -47,8 +49,8 @@
 <body>
   <header class="top" id="top">
     <span>Mood Matcha · propuestas de diseño</span>
-    <h1>Cinco maneras de contar la <em>calma</em></h1>
-    <p>Todas comparten lo que ya te gustaba: el menú redondo flotante, fotos de fondo a pantalla completa, una sola lata, las tarjetas de cifras clave y fondo blanco con verdes. Cambian la tipografía, el movimiento y la etiqueta de la lata. Abre cada una y baja despacio: todo se mueve.</p>
+    <h1>Diez maneras de contar la <em>calma</em></h1>
+    <p>Arriba, las cinco nuevas: mezclan lo que más te gustó de la 2, la 4 y la 5, y la portada se dibuja con matcha (un chasen que pinta, un cuenco que se bate, polvo que escribe, un ensō a pincel y una marea verde). Abajo, la primera ronda. Todas comparten el menú redondo flotante, fotos de fondo a pantalla completa, una sola lata, las tarjetas de cifras clave y fondo blanco con verdes. Cambian la tipografía, el movimiento y la etiqueta de la lata. Abre cada una y baja despacio: todo se mueve.</p>
     <p class="note">Las fotos todavía no son reales: cada hueco muestra una escena animada con su nombre (fábrica, chasen, campo, casa…). En cuanto tengamos vuestras fotos, se ponen en un solo sitio y aparecen en todos los diseños.</p>
   </header>
 
@@ -58,13 +60,18 @@
 <script>
 (() => {
   const D = [
-    { n: 1, name: 'Aire', font: 'Cormorant Garamond', desc: 'Blanco puro y serif fina. Portada con fotos que se funden con zoom lento, la lata girando sobre sí misma y moods en acordeón.', bg: '#f1f4ee', sw: ['#ffffff', '#1c3024', '#7a9a3a', '#dfeabf'], tin: {} },
+    { n: 6, group: 'Nuevas · la portada se hace con matcha', name: 'Pincel', font: 'Gilda Display', desc: 'Un chasen cruza la portada en zigzag y la pinta de verde; el titular aparece sobre la pintura y después puedes seguir pintando con el ratón. Debajo, la casa del diseño 2 con rayas de lino.', bg: '#f5f6f2', sw: ['#ffffff', '#333f28', '#6b7b45', '#b98a58'], tin: { lid: 'madera', deco: 'rama', accent: '#6b7b45', ink: '#2c3524', font: 'Gilda Display, Georgia, serif' } },
+    { n: 7, name: 'Batido', font: 'Marcellus', desc: 'Un cuenco visto desde arriba se bate solo: el chasen hace la W y la espuma va apareciendo. Al bajar, el círculo se abre en foto, como en el diseño 5.', bg: '#f1f5ed', sw: ['#ffffff', '#26361f', '#7d9b3f', '#b5c795'], tin: { deco: 'enso', lid: '#26361f', accent: '#7d9b3f', ink: '#26361f', font: 'Marcellus, Georgia, serif' } },
+    { n: 8, name: 'Polvo', font: 'Tenor Sans', desc: 'La cucharilla de bambú deja caer matcha en polvo que escribe MOOD MATCHA. Al pasar el ratón las letras se deshacen y vuelven a su sitio. Debajo, el estilo editorial del diseño 4.', bg: '#eef2ea', sw: ['#ffffff', '#253022', '#4f6440', '#8fa27a'], tin: { deco: 'lino', lid: '#ffffff', accent: '#8fa27a', ink: '#253022', font: 'Tenor Sans, Gill Sans, sans-serif' } },
+    { n: 9, name: 'Pincelada', font: 'Gilda Display', desc: 'Un ensō de matcha pintado a pincel seco rodea la lata. Al bajar entras por el arco de la casa del diseño 2.', bg: '#f5f6f2', sw: ['#ffffff', '#333f28', '#6b7b45', '#b98a58'], tin: { lid: 'madera', deco: 'rama', accent: '#6b7b45', ink: '#2c3524', font: 'Gilda Display, Georgia, serif' } },
+    { n: 10, name: 'Marea', font: 'Tenor Sans', desc: 'El matcha sube con olas desde abajo y el titular pasa de verde a blanco al quedar sumergido; el ratón hace ondas. Al bajar te hundes en los moods. Estilo editorial del diseño 4.', bg: '#e6eedb', sw: ['#ffffff', '#4d6b22', '#93b24c', '#8fa27a'], tin: { deco: 'lino', lid: '#4d6b22', accent: '#7c9a3d', ink: '#253022', font: 'Tenor Sans, Gill Sans, sans-serif' } },
+    { n: 1, group: 'Primera ronda', name: 'Aire', font: 'Cormorant Garamond', desc: 'Blanco puro y serif fina. Portada con fotos que se funden con zoom lento, la lata girando sobre sí misma y moods en acordeón.', bg: '#f1f4ee', sw: ['#ffffff', '#1c3024', '#7a9a3a', '#dfeabf'], tin: {} },
     { n: 2, name: 'Casa', font: 'Gilda Display', desc: 'Pared encalada, arcos y madera clara, con sombras de olivo que se mecen. El arco de la portada se abre al bajar, como si entraras en casa.', bg: '#f5f6f2', sw: ['#ffffff', '#333f28', '#6b7b45', '#b98a58'], tin: { lid: 'madera', deco: 'rama', accent: '#6b7b45', ink: '#2c3524', font: 'Gilda Display, Georgia, serif' } },
     { n: 3, name: 'Sombra', font: 'Bodoni Moda', desc: 'Verde oliva profundo con reflejos de luz. Fotos que entran con cortinilla, un recorrido horizontal de la fábrica a tu casa y moods con foto que sigue al cursor.', bg: '#2b3423', sw: ['#2b3423', '#f7f8f3', '#c7d3a8', '#c9a06c'], tin: { body: '#b9c6a1', lid: '#ffffff', ink: '#ffffff', accent: '#2b3423', font: 'Bodoni Moda, Didot, Georgia, serif' } },
     { n: 4, name: 'Lino', font: 'Tenor Sans', desc: 'Editorial y sereno, con rayas de lino en movimiento. La lata en tarjeta con etiquetas, banner de guía a todo el ancho y mosaico de fotos con parallax.', bg: '#eef2ea', sw: ['#ffffff', '#253022', '#4f6440', '#8fa27a'], tin: { deco: 'lino', lid: '#ffffff', accent: '#8fa27a', ink: '#253022', font: 'Tenor Sans, Gill Sans, sans-serif' } },
     { n: 5, name: 'Ensō', font: 'Marcellus', desc: 'Todo gira alrededor del círculo. La foto crece hasta llenar la pantalla, los moods orbitan la lata, el envío gratis es un anillo y las cifras se dibujan.', bg: '#f1f5ed', sw: ['#ffffff', '#26361f', '#7d9b3f', '#b5c795'], tin: { deco: 'enso', lid: '#26361f', accent: '#7d9b3f', ink: '#26361f', font: 'Marcellus, Georgia, serif' } }
   ];
-  document.getElementById('list').innerHTML = D.map((d, i) => `
+  document.getElementById('list').innerHTML = D.map((d, i) => `${d.group ? `<h2 class="grp">${d.group}</h2>` : ''}
     <a class="row" href="d${d.n}.html">
       <span class="num">${d.n}</span>
       <span class="can" style="--c:${d.bg}"><div style="--dl:${i * -.9}s">${MM.tin(d.tin)}</div></span>
