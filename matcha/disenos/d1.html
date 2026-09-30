@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mood Matcha Aire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* Diseño 1 · Aire: blanco puro, fotos a sangre que se funden, serif fina, la lata como protagonista */
+  :root {
+    --bg: #ffffff; --ink: #1c3024; --muted: #6a776c; --line: rgba(28, 48, 36, .12);
+    --mist: #f0f4ee; --matcha: #7a9a3a; --soft: #dfeabf;
+    --serif: "Cormorant Garamond", Georgia, serif; --sans: "Jost", "Helvetica Neue", system-ui, sans-serif;
+    --ease: cubic-bezier(.76, 0, .24, 1); --out: cubic-bezier(.16, 1, .3, 1);
+    --g: clamp(16px, 5vw, 80px);
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--ink); font: 300 16px/1.7 var(--sans); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  em { font-family: var(--serif); font-style: italic; font-weight: 300; }
+  .label { font: 400 .66rem/1.4 var(--sans); letter-spacing: .26em; text-transform: uppercase; }
+  :focus-visible { outline: 1px solid var(--matcha); outline-offset: 4px; }
+
+  /* Menú redondo flotante */
+  .nav {
+    position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); left: clamp(10px, 2vw, 28px); right: clamp(10px, 2vw, 28px); z-index: 50;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 12px clamp(18px, 2.4vw, 32px); border-radius: 20px;
+    background: rgba(255, 255, 255, .82); color: var(--ink); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    box-shadow: 0 0 0 1px var(--line), 0 18px 40px -28px rgba(28, 48, 36, .4); transition: transform .7s var(--ease), background .5s, color .5s, box-shadow .5s;
+  }
+  .nav.is-hidden { transform: translateY(calc(-100% - 20px)); }
+  .nav.is-dark { background: rgba(20, 30, 18, .22); color: #fff; box-shadow: 0 0 0 1px rgba(255, 255, 255, .18); }
+  .nav ul { display: flex; gap: 28px; list-style: none; }
+  .nav ul a { font: 500 .64rem/1 var(--sans); letter-spacing: .22em; text-transform: uppercase; }
+  .brand { font: 400 1.7rem/1 var(--serif); display: flex; gap: 6px; align-items: baseline; }
+  .brand em { color: var(--matcha); transition: color .5s; }
+  .nav.is-dark .brand em { color: var(--soft); }
+  .nav-r { justify-self: end; display: flex; align-items: center; gap: 26px; }
+  .bag { position: relative; width: 40px; height: 40px; border-radius: 12px; box-shadow: inset 0 0 0 1px currentColor; display: grid; place-items: center; }
+  .bag svg { width: 18px; height: 18px; }
+  .bag b { position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px; border-radius: 9px; background: var(--matcha); color: #fff; font: 500 .58rem/18px var(--sans); text-align: center; }
+  @media (max-width: 860px) { .nav { grid-template-columns: 1fr auto; } .nav ul { display: none; } }
+
+  /* Portada: fotos a pantalla completa */
+  .hero { position: relative; height: 100vh; height: 100svh; min-height: 560px; color: #fff; overflow: hidden; }
+  .hero .mm-slides { position: absolute; inset: 0; }
+  .hero::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(180deg, rgba(10, 18, 10, .35), rgba(10, 18, 10, 0) 30%, rgba(10, 18, 10, 0) 50%, rgba(10, 18, 10, .55)); }
+  .hero-in { position: absolute; left: var(--g); right: var(--g); bottom: clamp(40px, 9vh, 100px); z-index: 3; display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; flex-wrap: wrap; }
+  .hero h1 { font: 300 clamp(3rem, 7.4vw, 7.6rem)/.96 var(--serif); letter-spacing: -.02em; max-width: 12ch; text-wrap: balance; }
+  .roll { display: inline-grid; overflow: hidden; vertical-align: bottom; height: 1.08em; }
+  .roll span { grid-area: 1 / 1; font-style: italic; color: var(--soft); transform: translateY(105%); transition: transform 1s var(--ease); }
+  .roll span.on { transform: none; } .roll span.off { transform: translateY(-105%); }
+  .hero-side { display: grid; gap: 18px; justify-items: start; max-width: 340px; }
+  .caption { display: grid; gap: 4px; }
+  .caption b { font: 400 1.4rem/1.1 var(--serif); font-style: italic; }
+  .bars { display: flex; gap: 6px; width: 100%; }
+  .bars i { flex: 1; height: 1px; background: rgba(255, 255, 255, .3); position: relative; overflow: hidden; }
+  .bars i.on::after { content: ""; position: absolute; inset: 0; background: #fff; transform-origin: left; animation: fill 5.2s linear forwards; }
+  @keyframes fill { from { transform: scaleX(0); } }
+  .btn { display: inline-flex; align-items: center; gap: 14px; padding: 17px 30px; border-radius: 2px; font: 400 .66rem/1 var(--sans); letter-spacing: .24em; text-transform: uppercase; background: var(--ink); color: #fff; position: relative; overflow: hidden; isolation: isolate; transition: color .5s; }
+  .btn::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--matcha); transform: scaleX(0); transform-origin: right; transition: transform .7s var(--ease); }
+  .btn:hover::before { transform: scaleX(1); transform-origin: left; }
+  .btn.light { background: #fff; color: var(--ink); }
+  .btn.light::before { background: var(--soft); }
+
+  /* Marquesina */
+  .marquee { overflow: hidden; border-block: 1px solid var(--line); padding-block: 26px; }
+  .track { display: flex; width: max-content; animation: slide 38s linear infinite; }
+  .track span { font: 300 clamp(1.8rem, 3.6vw, 3rem)/1 var(--serif); padding-inline: 28px; white-space: nowrap; display: flex; align-items: center; gap: 56px; }
+  .track span::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--matcha); }
+  .track em { color: var(--matcha); }
+  @keyframes slide { to { transform: translateX(-50%); } }
+
+  /* La lata */
+  .one { position: relative; overflow: hidden; display: grid; grid-template-columns: 1.1fr 1fr; gap: 6vw; align-items: center; padding: 140px var(--g); }
+  .one > .stage, .one > .buy { position: relative; z-index: 2; }
+  .stage { position: relative; aspect-ratio: 1; max-width: 620px; width: 100%; justify-self: center; display: grid; place-items: center; }
+  .ring { position: absolute; inset: 0; animation: spin 40s linear infinite; }
+  .ring text { font: 400 11px var(--sans); letter-spacing: 6px; fill: var(--muted); text-transform: uppercase; }
+  .halo { position: absolute; inset: 14%; border-radius: 50%; background: radial-gradient(circle, var(--mist), rgba(240, 244, 238, 0) 70%); }
+  .tin { position: relative; width: 44%; will-change: transform; filter: drop-shadow(0 40px 40px rgba(28, 48, 36, .18)); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .buy h2 { font: 300 clamp(2.6rem, 5vw, 4.6rem)/1 var(--serif); letter-spacing: -.02em; margin: 16px 0 20px; text-wrap: balance; }
+  .buy h2 em { color: var(--matcha); }
+  .buy > p { color: var(--muted); max-width: 46ch; }
+  .price { display: flex; align-items: baseline; gap: 16px; margin: 26px 0; padding-block: 18px; border-block: 1px solid var(--line); }
+  .price b { font: 300 1.7rem/1 var(--sans); }
+  .price span { color: var(--muted); font-size: .9rem; }
+  .stock { display: flex; align-items: center; gap: 10px; font-size: .9rem; margin-bottom: 18px; }
+  .stock i { width: 6px; height: 6px; border-radius: 50%; background: var(--matcha); box-shadow: 0 0 0 0 rgba(122, 154, 58, .5); animation: ping 2s infinite; }
+  @keyframes ping { 70% { box-shadow: 0 0 0 8px rgba(122, 154, 58, 0); } }
+  .free { margin: 18px 0; padding: 16px 18px; border-radius: 12px; background: var(--mist); font-size: .88rem; }
+  .free .bar { height: 2px; margin-top: 12px; background: rgba(28, 48, 36, .1); position: relative; }
+  .free .bar::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--p, 0%); background: var(--matcha); transition: width 1s var(--out); }
+  .ship { display: grid; gap: 8px; font-size: .88rem; color: var(--muted); }
+  .ship b { color: var(--ink); font-weight: 500; }
+  .buy .btn { width: 100%; justify-content: center; margin-top: 22px; padding-block: 20px; }
+  @media (max-width: 860px) { .one { grid-template-columns: 1fr; padding-top: 100px; } }
+
+  /* Moods */
+  .moods { display: grid; grid-template-columns: 1fr 1.1fr; gap: 6vw; align-items: center; padding: 120px var(--g); background: var(--mist); }
+  .moods h2 { font: 300 clamp(2.4rem, 4.8vw, 4.4rem)/1 var(--serif); margin: 16px 0 36px; text-wrap: balance; }
+  .moods h2 em { color: var(--matcha); }
+  .mtabs { display: grid; border-top: 1px solid var(--line); }
+  .mtab { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 12px; padding: 18px 0; border-bottom: 1px solid var(--line); text-align: left; transition: padding .6s var(--out); }
+  .mtab b { font: 300 1.9rem/1 var(--serif); transition: color .4s; }
+  .mtab span { color: var(--muted); font-size: .86rem; }
+  .mtab p { grid-column: 1 / -1; max-height: 0; overflow: hidden; color: var(--muted); font-size: .92rem; transition: max-height .8s var(--out), margin .6s; }
+  .mtab[aria-selected="true"] { padding-left: 14px; }
+  .mtab[aria-selected="true"] b { color: var(--matcha); font-style: italic; }
+  .mtab[aria-selected="true"] p { max-height: 120px; margin-top: 8px; }
+  .mpic { position: relative; aspect-ratio: 4 / 5; border-radius: 18px; overflow: hidden; }
+  .mpic .mm-slide { transition-duration: 1.1s; }
+  @media (max-width: 860px) { .moods { grid-template-columns: 1fr; } .mpic { order: -1; } }
+
+  /* Cifras clave */
+  .facts { padding: 130px 0 130px var(--g); display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: 40px; }
+  .facts h2 { font: 300 clamp(2.4rem, 4.4vw, 4rem)/1 var(--serif); margin: 16px 0 26px; }
+  .facts h2 em { color: var(--matcha); }
+  .arrows { display: flex; gap: 8px; }
+  .arrows button { width: 46px; height: 46px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--line); font-size: 1.1rem; transition: background .3s, color .3s, opacity .3s; }
+  .arrows button:hover { background: var(--ink); color: #fff; }
+  .arrows button:disabled { opacity: .3; }
+  .ftrack { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-right: var(--g); cursor: grab; }
+  .ftrack::-webkit-scrollbar { display: none; }
+  .fact { flex: none; width: min(74vw, 340px); aspect-ratio: 3 / 4; border-radius: 22px; overflow: hidden; position: relative; scroll-snap-align: start; color: #fff; }
+  .fact .mm-media { position: absolute; inset: 0; transition: transform 1.6s var(--out); }
+  .fact:hover .mm-media { transform: scale(1.05); }
+  .fact::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 18, 10, .5), rgba(10, 18, 10, 0) 45%); pointer-events: none; }
+  .fact h3 { position: absolute; top: 24px; left: 24px; right: 24px; z-index: 2; font: 300 2.6rem/1 var(--serif); }
+  .fact h3 small { display: block; margin-top: 10px; font: 400 .6rem/1.4 var(--sans); letter-spacing: .24em; text-transform: uppercase; }
+  @media (max-width: 860px) { .facts { grid-template-columns: 1fr; } }
+
+  .foot { padding: 110px var(--g) 110px; border-top: 1px solid var(--line); text-align: center; }
+  .foot p { font: 300 clamp(4rem, 14vw, 13rem)/.9 var(--serif); letter-spacing: -.03em; }
+  .foot p em { color: var(--matcha); }
+  .foot small { display: block; margin-top: 26px; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) { .ring, .track { animation: none; } }
+</style>
+</head>
+<body>
+  <nav class="nav" aria-label="Principal">
+    <ul><li><a href="#lata">Tienda</a></li><li><a href="#moods">Moods</a></li></ul>
+    <a class="brand" href="#top">mood<em>matcha</em></a>
+    <div class="nav-r">
+      <ul><li><a href="#cifras">Cifras</a></li></ul>
+      <a class="bag" href="#lata" aria-label="Cesta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 8h14l-1.2 12.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></svg><b data-count>0</b></a>
+    </div>
+  </nav>
+
+  <header class="hero" id="top" data-dark>
+    <div class="mm-slides" id="heroSlides">
+      <div class="mm-slide"><div data-media="fabrica"></div></div>
+      <div class="mm-slide"><div data-media="chasen"></div></div>
+      <div class="mm-slide"><div data-media="campo"></div></div>
+    </div>
+    <div class="hero-in">
+      <h1>Un matcha para tu <span class="roll" id="roll"></span></h1>
+      <div class="hero-side">
+        <div class="caption"><span class="label" id="capN">01 / 03</span><b id="capT">Molido en piedra, despacio</b></div>
+        <div class="bars" id="bars"><i></i><i></i><i></i></div>
+        <a class="btn light" href="#lata">Comprar · <span data-price></span> →</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="marquee" aria-hidden="true"><div class="track">
+    <span>Focus</span><span><em>calma</em></span><span>Energía</span><span><em>social</em></span><span>Antojo</span>
+    <span>Focus</span><span><em>calma</em></span><span>Energía</span><span><em>social</em></span><span>Antojo</span>
+  </div></div>
+
+  <section class="one" id="lata">
+    <div class="stage">
+      <svg class="ring" viewBox="0 0 400 400" aria-hidden="true"><defs><path id="c" d="M200 200 m-180 0 a180 180 0 1 1 360 0 a180 180 0 1 1 -360 0"/></defs><text><textPath href="#c">Una sola lata · todos tus moods · matcha ceremonial · primera cosecha · </textPath></text></svg>
+      <div class="halo"></div>
+      <div class="tin" id="tin"></div>
+    </div>
+    <div class="buy" data-rv>
+      <span class="label">Matcha ceremonial · 30 g</span>
+      <h2>Solo hay una lata. <em>La buena.</em></h2>
+      <p>Primera cosecha de Japón, molida en piedra. Verde intenso, textura cremosa y final dulce. Sirve para todo: solo, en latte, con hielo o en un postre.</p>
+      <div class="price"><b data-price></b><span>≈ 15 tazas · 1,53 € por taza</span></div>
+      <div class="stock"><i></i>En stock · quedan <b>23</b> latas</div>
+      <div class="ship">
+        <span>Pide en las próximas <b data-ship="cuenta"></b> y sale <b data-ship="sale"></b>.</span>
+        <span>Te llega entre el <b data-ship="rango"></b>.</span>
+      </div>
+      <div class="free"><span data-freetxt></span><div class="bar" data-freebar></div></div>
+      <button class="btn" type="button" data-add>Añadir a la cesta</button>
+    </div>
+  </section>
+
+  <section class="moods" id="moods">
+    <div data-rv>
+      <span class="label">Un matcha, cinco recetas</span>
+      <h2>¿Cuál es tu <em>mood</em> hoy?</h2>
+      <div class="mtabs" role="tablist" id="mtabs"></div>
+    </div>
+    <div class="mpic mm-slides" id="mpic"></div>
+  </section>
+
+  <section class="facts" id="cifras">
+    <div>
+      <span class="label">En cifras</span>
+      <h2>Cifras <em>clave</em></h2>
+      <div class="arrows"><button type="button" id="fp" aria-label="Anterior">←</button><button type="button" id="fn" aria-label="Siguiente">→</button></div>
+    </div>
+    <div class="ftrack" id="ftrack"></div>
+  </section>
+
+  <footer class="foot"><p>mood <em>matcha</em></p><small>Envío en 24–72 h · gratis desde 35 €</small></footer>
+
+<script src="comun.js"></script>
+<script>
+(() => {
+  const { $, $$, slides, tin, onScroll, progress, carousel, reduced } = MM;
+  const MOODS = [
+    ['Focus', 'Usucha, solo agua', '2 g de matcha y 70 ml de agua a 80 °C. Bate en W 15 segundos.', 'chasen'],
+    ['Calma', 'Latte templado de avena', 'Bate 2 g con 30 ml de agua y añade 200 ml de avena espumada.', 'latte'],
+    ['Energía', 'Iced matcha tonic', 'Hielo, 150 ml de tónica y 2 g de matcha batido en agua fría.', 'polvo'],
+    ['Social', 'Matcha lemonade', 'Limón, agua con gas y matcha por encima. Para compartir.', 'campo'],
+    ['Antojo', 'Matcha affogato', 'Una bola de helado de vainilla y matcha caliente por encima.', 'lata']
+  ];
+  const FACTS = [['21 días', 'a la sombra antes de cosechar', 'campo'], ['2 g', 'por taza, una cucharadita', 'polvo'], ['15 tazas', 'en cada lata', 'chasen'], ['80 °C', 'nunca hirviendo', 'latte'], ['24–72 h', 'de nuestra casa a tu cuenco', 'fabrica']];
+
+  $('#tin').innerHTML = tin();
+  $('#mtabs').innerHTML = MOODS.map((m, i) => `<button class="mtab" role="tab" aria-selected="${i === 0}" data-i="${i}"><b>${m[0]}</b><span>${m[1]}</span><p>${m[2]}</p></button>`).join('');
+  $('#mpic').innerHTML = MOODS.map(m => `<div class="mm-slide"><div data-media="${m[3]}"></div></div>`).join('');
+  $('#ftrack').innerHTML = FACTS.map(f => `<article class="fact"><div data-media="${f[2]}" data-nolabel></div><h3>${f[0]}<small>${f[1]}</small></h3></article>`).join('');
+
+  MM.start(1);
+  MM.nav();
+  MM.shadows($('.one'), { opacity: .16 });
+
+  // titular que rota
+  const words = ['focus.', 'calma.', 'energía.', 'antojo.', 'mood.'];
+  const roll = $('#roll'); roll.innerHTML = words.map(w => `<span>${w}</span>`).join('');
+  const rs = [...roll.children]; let r = 0; rs[0].classList.add('on');
+  if (!reduced) setInterval(() => { const p = rs[r]; p.classList.replace('on', 'off'); setTimeout(() => p.classList.remove('off'), 1000); r = (r + 1) % rs.length; rs[r].classList.add('on'); }, 2400);
+
+  // portada
+  const caps = ['Molido en piedra, despacio', 'Batido a mano con chasen', 'Cosechado a la sombra'];
+  slides($('#heroSlides'), { onChange: i => {
+    $('#capN').textContent = `0${i + 1} / 03`; $('#capT').textContent = caps[i];
+    $$('#bars i').forEach((b, k) => { b.classList.remove('on'); if (k === i) { void b.offsetWidth; b.classList.add('on'); } });
+  } });
+
+  // moods
+  const mp = slides($('#mpic'), { every: 999999 });
+  $('#mtabs').addEventListener('click', e => {
+    const t = e.target.closest('.mtab'); if (!t) return;
+    $$('.mtab').forEach(x => x.setAttribute('aria-selected', x === t));
+    mp.go(+t.dataset.i);
+  });
+
+  carousel($('#ftrack'), $('#fp'), $('#fn'));
+
+  // la lata flota y gira con el scroll
+  const stage = $('.stage'), t = $('#tin');
+  onScroll(() => {
+    const p = progress(stage) - .5;
+    t.style.transform = `translateY(${p * -80}px) rotate(${p * 10}deg)`;
+  });
+})();
+</script>
+</body>
+</html>
