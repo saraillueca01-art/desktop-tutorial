@@ -43,6 +43,7 @@ Justo debajo están los ajustes de envío (`TIENDA`):
 | `deliveryMin` / `deliveryMax` | `1` / `3` | Entrega en 24–72 h: calcula "te llega entre el X y el Y" |
 | `cutoffHour` | `24` | Hora límite para que el pedido cuente como de hoy (p. ej. `14` = hasta las 14:00) |
 | `lowStock` | `10` | A partir de cuántas unidades se muestra "¡Últimas unidades!" |
+| `notas` | `Dulce`, `Cremoso` | Etiquetas de sabor de las tarjetas de la tienda |
 
 Los fines de semana no cuentan como días de envío ni de entrega.
 
@@ -50,10 +51,29 @@ Los fines de semana no cuentan como días de envío ni de entrega.
 (Configuración → Envío y entrega → tarifa gratuita con condición de precio mínimo de 35 €),
 porque el importe final lo cobra Shopify en su checkout.
 
+
+## 3b. Poner vuestras fotos y vídeo
+
+Justo debajo de `TIENDA` está el bloque `MEDIA`. Sube los archivos a Shopify
+(**Contenido → Archivos**), copia el enlace de cada uno y pégalo entre las comillas:
+
+| Campo | Dónde se ve | Consejo |
+|---|---|---|
+| `heroVideo` | Vídeo a pantalla completa de la portada | `.mp4` horizontal, sin sonido, de 10 a 20 s en bucle y menos de 8 MB |
+| `heroPoster` | Imagen mientras carga el vídeo | Un fotograma del propio vídeo |
+| `guiaFoto` | Banner "¿Qué es el matcha?" | Foto horizontal (campo de té, cosecha…) |
+| `cifras` | Las 5 tarjetas de "Cifras clave", en orden | Fotos verticales (3:4) |
+| `galeria` | El mosaico #moodmatcha (8 huecos) | Fotos de producto y lifestyle |
+
+Mientras un campo esté vacío se ve una ilustración o, en la portada, la espuma animada.
+Las fotos de la lata que salen en las tarjetas de la tienda vienen del propio producto en Shopify:
+si subes una imagen a cada variante (30 g, 60 g…), cada tarjeta usa la suya.
+
 ## 4. Pendiente antes de publicar
 
 - **Opiniones**: las tres del bloque de opiniones son textos de ejemplo. Cámbialas por opiniones reales de clientes o quita ese bloque.
 - **Newsletter**: el formulario "Club Mood" solo muestra un mensaje. Hay que conectarlo con Shopify Forms o Klaviyo.
 - **Enlaces legales** del pie (envíos, aviso legal, privacidad) y el enlace de Instagram.
 - **Logo**: ahora hay un logotipo de texto (`mood` + *matcha*). Cuando tengáis logo se cambia en `.wordmark`.
-- **Fotos**: las ilustraciones de la galería son provisionales. Con Shopify conectado se usan las fotos del producto.
+- **Fotos y vídeo**: rellena el bloque `MEDIA` (apartado 3b). Las ilustraciones son provisionales.
+- **Cifras clave**: revisa que los datos (21 días, 2 g, 15 tazas, 80 °C, 24–72 h) encajan con vuestro producto. Se cambian en `FACTS`.
