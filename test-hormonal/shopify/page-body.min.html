@@ -646,6 +646,8 @@ CONFIGURACIÓN — cambia aquí el enlace a la página del inositol
 var SHOP = "https://www.benissalud.com";
 // Los contactos se guardan en Shopify → Clientes, con estas etiquetas para Shopify Email
 var TAG_PREFIX = "th-";
+// Hoja de Google donde se guardan los correos (URL de la "aplicación web" de Apps Script)
+var SHEET_URL = window.TH_SHEET_URL || "";
 var PRIVACY_URL = SHOP + "/policies/privacy-policy";
 // Prueba social: antes y después real y vídeos de Instagram
 var BEFORE_AFTER_IMG = "https://cdn.shopify.com/s/files/1/1007/7516/6277/files/test-hormonal-antes-despues.webp?v=1790866244";
@@ -1190,20 +1192,11 @@ if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { fail("Escribe un email váli
 if (!field("privacy").checked) { fail("Marca la casilla de la política de privacidad para continuar.", privacyRow); return; }
 lead = { email: email, name: field("name").value.trim(), marketing: field("marketing").checked };
 track("Lead", { content_name: "test_hormonal_email" });
-if (onShopify()) {
-// Guardamos sus respuestas, enviamos el formulario de Shopify y al volver mostramos el resultado
 var data = showResult(true);
+sendSheet(data);
+sendLead(data, false);
 lead.sent = true;
-saveState();
-showLoading(true);
-sendLead(data, true);
-// Red de seguridad: si el envío no sale de la página, mostramos el resultado igualmente
-setTimeout(function () {
-if (quiz.querySelector(".loading")) { loadState(); showResult(); }
-}, 7000);
-} else {
 showLoading();
-}
 }
 document.getElementById("lead-submit").addEventListener("click", submitLead);
 box.addEventListener("keydown", function (e) { if (e.key === "Enter" && e.target.tagName === "INPUT") { e.preventDefault(); submitLead(); } });
@@ -1251,6 +1244,19 @@ if (el) el.value = fields[k];
 diagLog("envío " + fields.form_type + (topLevel ? " (página)" : " (fondo)") + " → " + form.action);
 if (form.requestSubmit) form.requestSubmit(); else form.submit();
 } catch (e) {}
+}
+// Guarda el contacto en la hoja de Google (no depende del antispam de Shopify)
+function sendSheet(data) {
+if (!lead || !SHEET_URL) { diagLog("hoja de Google: " + (SHEET_URL ? "sin datos" : "falta SHEET_URL")); return; }
+var f = { email: lead.email, nombre: lead.name || "", marketing: lead.marketing ? "si" : "no", etiquetas: data.tags.join(", ") };
+Object.keys(data.sheet).forEach(function (k) { f[k] = data.sheet[k]; });
+var body = new URLSearchParams(f);
+try {
+fetch(SHEET_URL, { method: "POST", mode: "no-cors", body: body, keepalive: true })
+.then(function () { diagLog("hoja de Google: enviado ✅"); }, function (e) { diagLog("hoja de Google: error " + e); });
+} catch (e) {
+try { navigator.sendBeacon(SHEET_URL, body); } catch (e2) {}
+}
 }
 function sendLead(data, topLevel) {
 if (!lead || !onShopify()) return;
@@ -1335,6 +1341,11 @@ var utm = new URLSearchParams(location.search).get("utm_source") || (savedUtm ||
 var leadData = {
 tags: ["test-hormonal", TAG_PREFIX + "resultado-" + level, TAG_PREFIX + "perfil-" + angle, TAG_PREFIX + "principal-" + mainKey, TAG_PREFIX + "pack-" + c1.key]
 .concat(utm ? [TAG_PREFIX + "origen-" + utm.toLowerCase().replace(/[^a-z0-9-]/g, "")] : []),
+sheet: {
+resultado: r.tag + " (" + Math.round(ratio * 100) + "%)", perfil: A.title,
+principal: PRODUCTS[mainKey].name, complemento: PRODUCTS[c1.key].name, origen: utm || "",
+respuestas: Object.keys(answered).map(function (q) { return q + " " + answered[q]; }).join(" | ")
+},
 summary: "Resultado: " + r.tag + " (" + Math.round(ratio * 100) + "%)\nPerfil: " + A.title +
 "\nProducto principal: " + PRODUCTS[mainKey].name + "\nComplemento recomendado: " + PRODUCTS[c1.key].name +
 "\nSeñales: " + picked.map(function (p) { return p.msg.title; }).join("; ") +
