@@ -202,6 +202,11 @@
 
     /* ---------- El inositol en tu cuerpo ---------- */
     .body-section { position: relative; overflow: hidden; }
+    .result .body-section { padding: 8px 0 24px; margin-bottom: 8px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .result .body-section .container { padding: 0; }
+    .result .body-section h2 { font-size: clamp(1.4rem, 3.4vw, 1.8rem); margin-top: .6rem; }
+    .result .body-grid { grid-template-columns: 1fr; gap: 12px; margin-top: 18px; }
+    .result .body-figure svg { max-width: 230px; }
     .body-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 40px; align-items: center; margin-top: 36px; }
     .body-figure svg { width: 100%; max-width: 300px; display: block; margin: 0 auto; overflow: visible; }
     .silhouette > * { fill: url(#bodyGrad); stroke: #b9dbe8; stroke-width: 1.5; }
@@ -484,7 +489,6 @@
     <div class="container hero-grid">
       <div>
         <span class="eyebrow">Test hormonal gratuito · 2 minutos</span>
-        <a href="#cuerpo" class="body-chip"><span>🧬</span> ¿Sabías que el inositol lo fabrica tu propio cuerpo? <b>Descúbrelo →</b></a>
         <h1>¿Cómo están <span class="rotator"><em class="word is-on">tus hormonas</em><em class="word">tu ciclo</em><em class="word">tu energía</em><em class="word">tu piel</em><em class="word">tus antojos</em></span> de verdad?</h1>
         <p class="lead">Ciclos irregulares, cansancio, granitos, antojos, hinchazón… Tu cuerpo te está hablando. Responde un máximo de 10 preguntas y descubre qué te está diciendo.</p>
         <a href="#test" class="btn btn-accent pulse" data-start>Hacer el test gratis →</a>
@@ -524,7 +528,7 @@
   </section>
 
   <!-- ---------- El inositol en tu cuerpo ---------- -->
-  <section id="cuerpo" class="body-section">
+  <section id="cuerpo" class="body-section" hidden>
     <div class="container center">
       <span class="eyebrow">Lo que quizá no sabías</span>
       <h2>El inositol <em>ya vive en tu cuerpo</em></h2>
@@ -1356,6 +1360,7 @@
         '<p class="reasons-sub">Según tus respuestas y lo que dicen los estudios:</p>' +
         '<ul class="reasons stagger">' + reasonsHtml + '</ul>' +
         '<p class="notice">' + STUDY_NOTICE + '</p>' +
+        (notForHer ? '' : '<div id="body-slot"></div>') +
         (notForHer
           ? '<div class="reco"><span class="reco-tag">Tu recomendación personalizada</span><h4>Lo que más encaja contigo: ' + PRODUCTS[mainKey].name + '</h4>' +
             '<p>Tus respuestas muestran pocas señales hormonales, así que ahora mismo el inositol no es lo que más necesitas. ' + M.why + ', lo que mejor encaja contigo es el ' + PRODUCTS[mainKey].name + '.</p>' +
@@ -1378,6 +1383,7 @@
         if (dot) dot.style.left = Math.max(4, Math.min(96, ratio * 100)) + "%";
       }, 60);
       countUp(document.getElementById("score-num"), Math.round(ratio * 100));
+      if (!notForHer) showBodySection(document.getElementById("body-slot"));
       setupRoutine(level, angle, mainKey, notForHer ? null : combos[0].key);
       quiz.querySelectorAll(".stagger > *, .routine, .reco").forEach(function (el, i) {
         el.style.animationDelay = (250 + i * 120) + "ms";
@@ -1564,7 +1570,17 @@
     }
     hsEls.forEach(function (h) { h.addEventListener("click", function () { pickOrgan(Number(h.dataset.i), true); }); });
     pickOrgan(0);
-    if (!reduce) organAuto = setInterval(function () { pickOrgan((organI + 1) % ORGANS.length); }, 3800);
+    var bodySection = document.getElementById("cuerpo");
+    bodySection.parentNode.removeChild(bodySection);
+    function showBodySection(slot) {
+      if (!slot) return;
+      bodySection.hidden = false;
+      bodySection.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); });
+      slot.appendChild(bodySection);
+      pickOrgan(0);
+      clearInterval(organAuto); organAuto = null;
+      if (!reduce) organAuto = setInterval(function () { pickOrgan((organI + 1) % ORGANS.length); }, 3800);
+    }
 
     document.getElementById("year").textContent = new Date().getFullYear();
     renderQuestion();
