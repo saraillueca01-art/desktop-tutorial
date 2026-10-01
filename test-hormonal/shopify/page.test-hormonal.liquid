@@ -460,6 +460,7 @@
     .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center; max-width: 900px; margin: 40px auto 0; text-align: left; }
     .ba .btn { margin-top: 1rem; }
     @media (max-width: 860px) { .ba { grid-template-columns: 1fr; gap: 16px; } .ba .btn { width: 100%; } }
+    #th-diag { position: fixed; left: 8px; right: 8px; bottom: 8px; z-index: 2147483600; background: #111; color: #7CFC9A; font: 12px/1.45 monospace; padding: 10px 12px; border-radius: 10px; max-height: 40vh; overflow: auto; }
     .email-step h3 { font-size: clamp(1.4rem, 3.2vw, 1.8rem); margin-bottom: .4rem; }
     .email-step .hint { margin-bottom: 1.2rem; }
     #lead-form { display: grid; gap: 14px; }
@@ -1273,6 +1274,26 @@
 
     // Envía el contacto a Shopify (formularios nativos de la tienda, mismo dominio)
     // Rellena el formulario nativo de Shopify y lo envía en segundo plano (sin salir de la página)
+    // Diagnóstico: abre la página con ?debug=1 para ver qué pasa con el envío
+    var DIAG = /[?&]debug=1/.test(location.search) || (function () { try { return sessionStorage.getItem("th_debug") === "1"; } catch (e) { return false; } })();
+    if (DIAG) { try { sessionStorage.setItem("th_debug", "1"); } catch (e) {} }
+    function diagLog(msg) {
+      try {
+        var log = JSON.parse(sessionStorage.getItem("th_diag") || "[]");
+        log.push(new Date().toLocaleTimeString() + " · " + msg);
+        sessionStorage.setItem("th_diag", JSON.stringify(log.slice(-12)));
+      } catch (e) {}
+      renderDiag();
+    }
+    function renderDiag() {
+      if (!DIAG) return;
+      var box = document.getElementById("th-diag");
+      if (!box) { box = document.createElement("div"); box.id = "th-diag"; (document.getElementById("th-app") || document.body).appendChild(box); }
+      var log = []; try { log = JSON.parse(sessionStorage.getItem("th_diag") || "[]"); } catch (e) {}
+      box.innerHTML = "<strong>Diagnóstico</strong><br>Shopify detectado: " + (onShopify() ? "SÍ (" + window.Shopify.shop + ")" : "NO") +
+        "<br>Dirección: " + location.pathname + location.search + location.hash +
+        "<br>" + log.map(function (l) { return "• " + l; }).join("<br>");
+    }
     function onShopify() { return !!(window.Shopify && window.Shopify.shop); }
     function shopifyForm(fields, topLevel) {
       try {
@@ -1289,6 +1310,7 @@
           var el = form.querySelector('[name="' + k + '"]');
           if (el) el.value = fields[k];
         });
+        diagLog("envío " + fields.form_type + (topLevel ? " (página)" : " (fondo)") + " → " + form.action);
         if (form.requestSubmit) form.requestSubmit(); else form.submit();
       } catch (e) {}
     }
@@ -1648,6 +1670,12 @@
     }
 
     document.getElementById("year").textContent = new Date().getFullYear();
+    if (DIAG) {
+      var q = location.search + location.hash;
+      if (/customer_posted=true|contact_posted=true/.test(q)) diagLog("Shopify confirma el envío ✅ (" + q.replace(/^\?/, "") + ")");
+      else if (/form_type|errors|challenge/.test(q)) diagLog("Shopify devolvió: " + q);
+      renderDiag();
+    }
     var restored = loadState();
     if (restored && restored.answers && restored.lead) {
       answers = restored.answers; lead = restored.lead; lead.sent = true; savedUtm = restored.utm || "";
