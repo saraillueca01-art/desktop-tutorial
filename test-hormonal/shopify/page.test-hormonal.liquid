@@ -131,6 +131,11 @@
     .meter-labels { display: flex; justify-content: space-between; font-size: .75rem; color: var(--muted); margin-top: 8px; }
     .prod { display: flex; align-items: center; gap: 12px; background: var(--white); border-radius: 14px; padding: 8px 12px 8px 8px; margin: 0 0 1rem; color: var(--text); }
     .prod img { width: 56px; height: 56px; object-fit: cover; border-radius: 10px; flex: none; background: var(--bg-alt); }
+    .pimg { flex: none; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 10px; background: var(--bg-alt); overflow: hidden; }
+    .pimg img { width: 100%; height: 100%; }
+    .pimg.noimg { background: linear-gradient(135deg, #dceefa, #d6f3ea); }
+    .pimg.noimg::before { content: attr(data-icon); font-size: 1.7rem; }
+    .r-row .pimg { width: 48px; height: 48px; }
     .prod strong { display: block; font-size: .92rem; color: var(--ink); line-height: 1.3; }
     .prod span { font-size: .8rem; color: var(--muted); }
     .prod em { display: block; font-style: normal; font-weight: 600; font-size: .85rem; color: var(--ink); white-space: nowrap; }
@@ -1088,7 +1093,7 @@
           el.querySelectorAll(".dur-opt").forEach(function (b) { b.classList.toggle("on", on && Number(b.dataset.o) === oi); });
           var note = el.querySelector(".dur-note:not(.solo)"); if (note) note.textContent = on ? o.note : "";
           var pr = el.querySelector(".prod em"); if (pr) pr.textContent = fmt(o.p);
-          var ds = el.querySelector(".prod span"); if (ds) ds.textContent = o.s;
+          var ds = el.querySelector(".prod > div > span"); if (ds) ds.textContent = o.s;
         });
         box.querySelectorAll(".tier").forEach(function (el, i) { el.classList.toggle("active", TIERS[i] === t); el.classList.toggle("done", TIERS[i].min <= count); });
         document.getElementById("tiers-fill").style.width = (Math.min(count, 3) - 1) / 2 * 100 + "%";
@@ -1152,9 +1157,17 @@
       el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump");
     }
 
+    // Icono de cada producto por si la foto no carga
+    var PRODUCT_ICON = { inositol: "🧬", magnesio: "🌙", vitc: "🍊", creatina: "💪", colageno: "✨" };
+    function productImg(key) {
+      var P = PRODUCTS[key];
+      // Foto pequeña servida por Shopify (más rápida); si falla, se muestra el icono
+      var src = P.img + (P.img.indexOf("?") > -1 ? "&" : "?") + "width=200";
+      return '<span class="pimg" data-icon="' + PRODUCT_ICON[key] + '"><img src="' + src + '" alt="' + P.name + '" loading="lazy" onerror="this.parentNode.classList.add(\'noimg\');this.remove()"></span>';
+    }
     function productCard(key) {
       var P = PRODUCTS[key];
-      return '<div class="prod"><img src="' + P.img + '" alt="' + P.name + '" loading="lazy"><div><strong>' + P.name + '</strong><span>' + P.detail + '</span><em>' + P.price + '</em></div></div>';
+      return '<div class="prod">' + productImg(key) + '<div><strong>' + P.name + '</strong><span>' + P.detail + '</span><em>' + P.price + '</em></div></div>';
     }
 
     function renderQuestion() {
