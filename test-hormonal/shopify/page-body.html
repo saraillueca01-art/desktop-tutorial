@@ -266,6 +266,18 @@
 #th-app .plan-list strong { display: block; color: var(--ink); font-size: .95rem; }
 #th-app .plan-list p { font-size: .85rem !important; color: var(--text) !important; margin: .1rem 0 0 !important; }
 #th-app .plan-foot { font-size: .8rem !important; color: var(--ink-soft) !important; margin-top: .8rem !important; }
+#th-app .today { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin: 0 0 14px; padding: 12px 14px; border-radius: 16px; color: #fff; background: linear-gradient(120deg, #0e3a4f, #2f80c8 55%, #19a383); background-size: 200% 200%; animation: todayBg 6s ease infinite; box-shadow: 0 10px 24px rgba(14, 58, 79, .18); }
+#th-app .today .t-txt { flex: 1 1 150px; min-width: 0; }
+#th-app .today strong { white-space: nowrap; }
+#th-app .today-chip { display: inline-block; white-space: nowrap; margin: 2px 0 14px; padding: 4px 10px; border-radius: 99px; background: rgba(255, 255, 255, .2); color: #fff; font-size: .8rem; font-weight: 600; font-variant-numeric: tabular-nums; animation: chipGlow 2.4s ease-in-out infinite; }
+#th-app .today .t-ico { flex: none; font-size: 1.5rem; animation: todayPulse 1.2s ease-in-out infinite; }
+#th-app .today strong { display: block; font-size: .95rem; letter-spacing: .02em; color: #fff; }
+#th-app .today small { display: block; font-size: .78rem; opacity: .9; color: #fff; }
+#th-app .today .t-clock { flex: none; margin-left: auto; display: flex; gap: 4px; font-variant-numeric: tabular-nums; }
+#th-app .today .t-clock span { min-width: 34px; text-align: center; padding: 6px 4px; border-radius: 8px; background: rgba(255, 255, 255, .18); font-weight: 700; font-size: 1rem; color: #fff; }
+#th-app .today .t-clock span small { font-size: .6rem; font-weight: 500; opacity: .85; }
+@keyframes todayBg { 0%, 100% { background-position: 0 50%; } 50% { background-position: 100% 50%; } }
+@keyframes todayPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18) rotate(-8deg); } }
 #th-app .rewards { position: sticky; top: 8px; z-index: 5; background: rgba(255, 255, 255, .96); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1.5px solid #a9e3d4; border-radius: 16px; padding: 12px 14px 4px; margin: 0 0 14px; box-shadow: 0 10px 24px rgba(14, 58, 79, .08); }
 #th-app .ship p { font-size: .86rem !important; color: var(--ink) !important; margin-bottom: 10px !important; }
 #th-app .rw-bar { position: relative; height: 8px; border-radius: 99px; background: var(--line); margin: 6px 14px 30px 0; }
@@ -1065,7 +1077,40 @@ html { font-size: 16px !important; }
       }).join("") + '</div><p class="dur-note"></p>';
     }
 
+    // Oferta "solo hoy": vale hasta las 23:59 del día en que hace el test (se recuerda en su navegador)
+    function todayDeadline() {
+      var end = new Date(); end.setHours(23, 59, 59, 999);
+      try {
+        var saved = +localStorage.getItem("th_oferta_fin");
+        if (saved) return saved;
+        localStorage.setItem("th_oferta_fin", String(end.getTime()));
+      } catch (e) {}
+      return end.getTime();
+    }
+    function todayHtml() {
+      if (todayDeadline() <= Date.now()) return "";
+      return '<div class="today" id="today"><span class="t-ico">⏰</span><div class="t-txt"><strong>OFERTA SOLO HOY</strong><small>Tu descuento termina a las 23:59</small></div>' +
+        '<div class="t-clock"><span id="t-h">00<small><br>h</small></span><span id="t-m">00<small><br>min</small></span><span id="t-s">00<small><br>s</small></span></div></div>';
+    }
+    function startTodayClock() {
+      var end = todayDeadline();
+      function pad(n) { return (n < 10 ? "0" : "") + n; }
+      function tick() {
+        var box = document.getElementById("today");
+        if (!box) return;
+        var left = Math.max(0, end - Date.now()), sec = Math.floor(left / 1000);
+        if (!left) { box.remove(); var ch = document.getElementById("today-chip"); if (ch) ch.remove(); return; }
+        var tc = document.getElementById("tc-left");
+        if (tc) tc.textContent = pad(Math.floor(sec / 3600)) + ":" + pad(Math.floor(sec / 60) % 60) + ":" + pad(sec % 60);
+        document.getElementById("t-h").firstChild.nodeValue = pad(Math.floor(sec / 3600));
+        document.getElementById("t-m").firstChild.nodeValue = pad(Math.floor(sec / 60) % 60);
+        document.getElementById("t-s").firstChild.nodeValue = pad(sec % 60);
+        setTimeout(tick, 1000);
+      }
+      tick();
+    }
     function setupRoutine(level, angle, mainKey, preselect) {
+      startTodayClock();
       var box = document.getElementById("routine"), sel = {};
       sel[mainKey] = defaultOpt(mainKey, angle);
       if (preselect) sel[preselect] = defaultOpt(preselect, angle);
@@ -1411,7 +1456,7 @@ html { font-size: 16px !important; }
           (c.reco ? body : '<details><summary>' + C.why + ': ¿por qué?</summary>' + body + '</details>') +
           '</div>';
       }).join("");
-      var routineHtml = '<div class="routine" id="routine">' +
+      var routineHtml = '<div class="routine" id="routine">' + todayHtml() +
         '<span class="combo-tag">🎁 Descuento exclusivo del test</span>' +
         '<h4 class="reasons-title">Crea tu rutina y ahorra hasta un 20%</h4>' +
         '<p class="reasons-sub">Tu ' + PRODUCTS[mainKey].name + ' ya tiene un 10%. Con 2 productos tienes un 15% y con 3 o más, un 20% en <strong>toda tu compra</strong>.</p>' +
@@ -1456,6 +1501,7 @@ html { font-size: 16px !important; }
             productCard("inositol") +
             '<p class="dose">Myo-Inositol 100% puro en polvo. Se toma 2 g al día (una cuchara dosificadora) y un tarro da para más de 3 meses, el tiempo en el que los estudios valoran los efectos.</p>') +
         '<p class="price-line"><s>' + PRODUCTS[mainKey].price + '</s> <strong>' + fmt(priceOf(mainKey) * .9) + '</strong> <span class="badge">-10% por hacer el test</span></p>' +
+        (todayDeadline() > Date.now() ? '<div><span class="today-chip" id="today-chip">⏰ Solo hoy · quedan <b id="tc-left">--:--:--</b></span></div>' : '') +
         '<a class="btn btn-accent track-buy" data-what="' + mainKey + '" href="' + mainLink(mainKey, level, angle) + '">' + (notForHer ? 'Quiero mi ' + PRODUCTS[mainKey].name : A.cta) + ' →</a>' +
         '<a class="reco-more" href="#routine">o crea tu rutina y ahorra hasta un 20% ↓</a></div>' +
         routineHtml +
