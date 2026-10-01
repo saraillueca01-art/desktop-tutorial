@@ -200,6 +200,71 @@
       .tier strong { font-size: 1.2rem; }
     }
 
+    /* ---------- El inositol en tu cuerpo ---------- */
+    .body-section { position: relative; overflow: hidden; }
+    .body-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 40px; align-items: center; margin-top: 36px; }
+    .body-figure svg { width: 100%; max-width: 300px; display: block; margin: 0 auto; overflow: visible; }
+    .silhouette > * { fill: url(#bodyGrad); stroke: #b9dbe8; stroke-width: 1.5; }
+    .flow path { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 4 10; opacity: .55; animation: flow 1.6s linear infinite; }
+    @keyframes flow { to { stroke-dashoffset: -28; } }
+    .hs { cursor: pointer; }
+    .hs .ring { fill: rgba(20, 163, 139, .18); transform-box: fill-box; transform-origin: center; animation: ringPulse 2.2s ease-out infinite; }
+    .hs .dot { fill: var(--white); stroke: var(--accent); stroke-width: 2; transition: all .3s; }
+    .hs text { font-size: 9px; text-anchor: middle; pointer-events: none; }
+    .hs.on .dot { fill: var(--accent); stroke: var(--white); transform: scale(1.5); transform-box: fill-box; transform-origin: center; }
+    .hs.on .ring { fill: rgba(47, 128, 200, .25); animation-duration: 1.2s; }
+    .hs:nth-of-type(2) .ring { animation-delay: .4s; } .hs:nth-of-type(3) .ring { animation-delay: .8s; }
+    .hs:nth-of-type(4) .ring { animation-delay: 1.2s; } .hs:nth-of-type(5) .ring { animation-delay: 1.6s; }
+    @keyframes ringPulse { 0% { transform: scale(.6); opacity: .9; } 100% { transform: scale(1.9); opacity: 0; } }
+    .organ-card { background: var(--white); border: 1.5px solid var(--line); border-radius: 22px; padding: 22px; box-shadow: 0 20px 40px rgba(14, 58, 79, .07); min-height: 170px; }
+    .organ-card .o-emoji { font-size: 2.2rem; display: inline-block; animation: bob 2.4s ease-in-out infinite; }
+    .organ-card h3 { font-size: 1.35rem; margin: .3rem 0 .4rem; }
+    .organ-card p { color: var(--text); font-size: .98rem; }
+    .organ-card.swap { animation: cardIn .45s ease; }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+    .organ-dots { display: flex; gap: 8px; justify-content: center; margin: 12px 0 22px; }
+    .organ-dots button { width: 10px; height: 10px; border-radius: 99px; border: 0; background: var(--line); cursor: pointer; padding: 0; transition: all .3s; }
+    .organ-dots button.on { width: 26px; background: var(--grad); }
+    .cell-anim { background: linear-gradient(180deg, #f2f9fb, #ffffff); border: 1.5px solid var(--line); border-radius: 22px; padding: 18px 18px 8px; }
+    .cell-anim h3 { font-size: 1.15rem; margin-bottom: .4rem; text-align: left; }
+    .cell-anim svg { width: 100%; display: block; overflow: visible; }
+    .cell { fill: rgba(20, 163, 139, .06); stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: 6 5; }
+    .cell-glow { fill: #c9f5e8; opacity: 0; animation: cGlow 6s ease-in-out infinite; }
+    .receptor { fill: var(--blue); }
+    .key { font-size: 26px; animation: cKey 6s ease-in-out infinite; }
+    .msg { fill: var(--accent); opacity: 0; }
+    .m1 { animation: cMsg1 6s ease-in-out infinite; } .m2 { animation: cMsg2 6s ease-in-out infinite; } .m3 { animation: cMsg3 6s ease-in-out infinite; }
+    .glu { fill: var(--blue); opacity: .85; }
+    .g1 { animation: cGlu1 6s ease-in-out infinite; } .g2 { animation: cGlu2 6s ease-in-out infinite; } .g3 { animation: cGlu3 6s ease-in-out infinite; }
+    .bolt { font-size: 26px; opacity: 0; transform-box: fill-box; transform-origin: center; animation: cBolt 6s ease-in-out infinite; }
+    @keyframes cKey { 0% { transform: translateX(0); opacity: 0; } 8% { opacity: 1; } 28%, 85% { transform: translateX(140px); opacity: 1; } 95%, 100% { transform: translateX(140px); opacity: 0; } }
+    @keyframes cMsg1 { 0%, 30% { opacity: 0; transform: translate(0, 0); } 36% { opacity: 1; } 58%, 85% { opacity: 1; transform: translate(26px, -18px); } 95%, 100% { opacity: 0; transform: translate(26px, -18px); } }
+    @keyframes cMsg2 { 0%, 34% { opacity: 0; transform: translate(0, 0); } 40% { opacity: 1; } 62%, 85% { opacity: 1; transform: translate(34px, 4px); } 95%, 100% { opacity: 0; transform: translate(34px, 4px); } }
+    @keyframes cMsg3 { 0%, 38% { opacity: 0; transform: translate(0, 0); } 44% { opacity: 1; } 66%, 85% { opacity: 1; transform: translate(22px, 22px); } 95%, 100% { opacity: 0; transform: translate(22px, 22px); } }
+    @keyframes cGlu1 { 0%, 62% { transform: translate(0, 0); opacity: .85; } 80% { transform: translate(80px, 26px); opacity: 1; } 90%, 100% { transform: translate(80px, 26px); opacity: 0; } }
+    @keyframes cGlu2 { 0%, 64% { transform: translate(0, 0); opacity: .85; } 82% { transform: translate(78px, -22px); opacity: 1; } 92%, 100% { transform: translate(78px, -22px); opacity: 0; } }
+    @keyframes cGlu3 { 0%, 66% { transform: translate(0, 0); opacity: .85; } 84% { transform: translate(102px, 0); opacity: 1; } 94%, 100% { transform: translate(102px, 0); opacity: 0; } }
+    @keyframes cGlow { 0%, 72% { opacity: 0; } 82%, 90% { opacity: .9; } 100% { opacity: 0; } }
+    @keyframes cBolt { 0%, 74% { opacity: 0; transform: scale(.4); } 82%, 92% { opacity: 1; transform: scale(1.25); } 100% { opacity: 0; transform: scale(1); } }
+    .cell-steps { list-style: none; display: grid; gap: 6px; margin: 4px 0 10px; text-align: left; }
+    .cell-steps li { display: flex; gap: 10px; align-items: center; font-size: .9rem; color: var(--muted); padding: 6px 8px; border-radius: 10px; }
+    .cell-steps b { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--line); color: var(--ink); font-size: .78rem; }
+    .cell-steps .s1 { animation: st1 6s infinite; } .cell-steps .s2 { animation: st2 6s infinite; } .cell-steps .s3 { animation: st3 6s infinite; }
+    @keyframes st1 { 0%, 30% { background: var(--accent-soft); color: var(--ink); } 33%, 100% { background: transparent; color: var(--muted); } }
+    @keyframes st2 { 0%, 32% { background: transparent; color: var(--muted); } 35%, 62% { background: var(--accent-soft); color: var(--ink); } 65%, 100% { background: transparent; color: var(--muted); } }
+    @keyframes st3 { 0%, 64% { background: transparent; color: var(--muted); } 67%, 96% { background: var(--accent-soft); color: var(--ink); } 100% { background: transparent; color: var(--muted); } }
+    .why-take { margin-top: 16px; text-align: left; color: var(--text); font-size: .95rem; background: var(--blue-soft); border-radius: 16px; padding: 14px 16px; }
+    .why-take a { display: inline-block; margin-top: 4px; font-size: .8rem; color: var(--ink-soft); }
+    @media (max-width: 860px) {
+      .body-grid { grid-template-columns: 1fr; gap: 10px; }
+      .body-figure svg { max-width: 220px; }
+    }
+
+    /* Envío gratis */
+    .ship { margin: .6rem 0 .2rem; font-size: .85rem; color: var(--ink); }
+    .ship-bar { height: 6px; border-radius: 99px; background: var(--line); overflow: hidden; margin-top: 6px; }
+    .ship-bar span { display: block; height: 100%; width: 0; background: var(--grad); transition: width .5s cubic-bezier(.2, .7, .2, 1); }
+
     /* ---------- Movimiento e interacción ---------- */
     .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: .55; z-index: -1; pointer-events: none; animation: float 14s ease-in-out infinite alternate; }
     .b1 { width: 420px; height: 420px; background: #bfe0f7; top: -120px; right: -80px; }
@@ -328,11 +393,20 @@
     .summary .btn { width: 100%; }
     .dur-label { font-size: .85rem; font-weight: 600; color: var(--ink); margin: .8rem 0 .5rem; }
     .dur { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .dur-opt { position: relative; padding: 22px 8px 12px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--white); cursor: pointer; overflow: hidden; font-family: "Inter", sans-serif; transition: all .25s; }
+    .dur-opt { position: relative; padding: 12px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 14px; border: 1.5px solid var(--line); background: var(--white); cursor: pointer; overflow: hidden; font-family: "Inter", sans-serif; transition: all .25s; }
     .dur-opt strong { display: block; font-size: 1rem; color: var(--ink); }
     .dur-opt span { font-size: .74rem; color: var(--muted); }
     .dur-opt.on { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 8px 18px rgba(20, 163, 139, .15); }
-    .dur-badge { position: absolute; top: 0; right: 0; font-style: normal; font-size: .6rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--white); background: var(--grad); padding: 3px 8px; border-bottom-left-radius: 10px; }
+    .dur-badge { display: block; align-self: stretch; margin: -12px -8px 8px; font-style: normal; font-size: .62rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--white); background: var(--grad); padding: 4px 6px; text-align: center; }
+    .dur-opt:not(:has(.dur-badge)) { padding-top: 30px; }
+    .dur-price { display: block; font-weight: 700; color: var(--ink) !important; font-size: .82rem !important; margin-top: 2px; }
+    .r-item:not(.on) .dur-opt { opacity: .75; }
+    .rev-title { margin-top: 1.2rem; }
+    .reviews { display: grid; gap: 8px; }
+    .review { background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+    .review .stars { color: #f2b632; letter-spacing: 2px; font-size: .9rem; }
+    .review p { font-size: .9rem !important; color: var(--text) !important; margin: .3rem 0 !important; }
+    .review span { font-size: .74rem; color: var(--muted); }
     .dur-note { font-size: .8rem !important; color: var(--ink-soft) !important; margin-top: .5rem !important; }
     .proof { margin: 14px 0 4px; padding: 16px; border-radius: 18px; background: linear-gradient(180deg, #f2f9fb, #ffffff); border: 1.5px solid var(--line); }
     .proof h5 { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.15rem; color: var(--ink); margin-bottom: .7rem; }
@@ -417,6 +491,64 @@
     </div>
   </section>
 
+  <!-- ---------- El inositol en tu cuerpo ---------- -->
+  <section id="cuerpo" class="body-section">
+    <div class="container center">
+      <span class="eyebrow">Lo que quizá no sabías</span>
+      <h2>El inositol <em>ya vive en tu cuerpo</em></h2>
+      <p class="section-intro">Tu cuerpo lo fabrica cada día y lo usa en muchas funciones. Toca cada punto para descubrir dónde trabaja.</p>
+    </div>
+    <div class="container body-grid">
+      <div class="body-figure reveal">
+        <svg viewBox="0 0 200 400" role="img" aria-label="Silueta del cuerpo con los lugares donde actúa el inositol">
+          <defs>
+            <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#d6ebf8"/><stop offset="1" stop-color="#d3f1e6"/>
+            </linearGradient>
+          </defs>
+          <g class="silhouette">
+            <circle cx="100" cy="50" r="30"/>
+            <rect x="90" y="76" width="20" height="18" rx="6"/>
+            <path d="M64 96 Q100 86 136 96 Q154 104 152 130 L150 178 Q146 206 140 222 Q156 252 148 290 L134 392 H112 L102 300 H98 L88 392 H66 L52 290 Q44 252 60 222 Q54 206 50 178 L48 130 Q46 104 64 96 Z"/>
+            <path d="M48 112 Q30 150 30 200 Q30 228 38 250 L46 248 Q42 222 44 200 Q46 160 58 128 Z"/>
+            <path d="M152 112 Q170 150 170 200 Q170 228 162 250 L154 248 Q158 222 156 200 Q154 160 142 128 Z"/>
+          </g>
+          <g class="flow">
+            <path d="M100 60 C 115 110, 85 150, 100 190 S 115 230, 100 250 S 70 300, 78 330"/>
+          </g>
+          <g class="hs" data-i="0" transform="translate(100 46)"><circle class="ring" r="14"/><circle class="dot" r="7"/><text y="4">🧠</text></g>
+          <g class="hs" data-i="1" transform="translate(126 132)"><circle class="ring" r="14"/><circle class="dot" r="7"/><text y="4">🧬</text></g>
+          <g class="hs" data-i="2" transform="translate(100 190)"><circle class="ring" r="14"/><circle class="dot" r="7"/><text y="4">🫘</text></g>
+          <g class="hs" data-i="3" transform="translate(100 248)"><circle class="ring" r="14"/><circle class="dot" r="7"/><text y="4">🌸</text></g>
+          <g class="hs" data-i="4" transform="translate(76 322)"><circle class="ring" r="14"/><circle class="dot" r="7"/><text y="4">⚡</text></g>
+        </svg>
+      </div>
+      <div class="body-info reveal">
+        <div class="organ-card" id="organ-card" aria-live="polite"></div>
+        <div class="organ-dots" id="organ-dots"></div>
+        <div class="cell-anim">
+          <h3>Así trabaja en cada célula</h3>
+          <svg viewBox="0 0 320 130" aria-hidden="true">
+            <circle class="cell-glow" cx="236" cy="62" r="48"/>
+            <circle class="cell" cx="236" cy="62" r="48"/>
+            <rect class="receptor" x="182" y="52" width="10" height="20" rx="3"/>
+            <text class="key" x="16" y="70">🔑</text>
+            <circle class="msg m1" cx="196" cy="62" r="4.5"/><circle class="msg m2" cx="196" cy="62" r="4.5"/><circle class="msg m3" cx="196" cy="62" r="4.5"/>
+            <circle class="glu g1" cx="150" cy="30" r="5"/><circle class="glu g2" cx="150" cy="96" r="5"/><circle class="glu g3" cx="130" cy="62" r="5"/>
+            <text class="bolt" x="226" y="72">⚡</text>
+          </svg>
+          <ol class="cell-steps">
+            <li class="s1"><b>1</b>La insulina llama a la puerta de la célula</li>
+            <li class="s2"><b>2</b>El inositol lleva el mensaje hacia dentro</li>
+            <li class="s3"><b>3</b>La glucosa entra y se convierte en energía</li>
+          </ol>
+        </div>
+        <p class="why-take"><strong>Entonces, ¿por qué tomarlo?</strong> Porque en situaciones como el SOP o la resistencia a la insulina se ha visto que el cuerpo lo aprovecha peor. Por eso se estudia como complemento: para darle a tus células más de algo que ya conocen.
+          <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8896029/" target="_blank" rel="noopener">📚 Ver revisión científica</a></p>
+      </div>
+    </div>
+  </section>
+
   <!-- ---------- Test ---------- -->
   <section id="test">
     <div class="blob b4"></div><div class="blob b5"></div>
@@ -448,7 +580,16 @@
     <div class="container">
       <div class="faq">
         <details class="reveal"><summary>¿El test es realmente gratis?</summary><p>Sí. No te pedimos tarjeta ni que te registres. Solo tu email al final, para enseñarte tu resultado y tu recomendación.</p></details>
-        <details class="reveal"><summary>¿Cuánto tarda?</summary><p>Unos 2 minutos. Son 10 preguntas como máximo de respuesta rápida.</p></details>
+        <details class="reveal"><summary>¿Cuánto tarda en llegar mi pedido?</summary><p>Preparamos tu pedido en 24–48 horas hábiles y lo enviamos con Correos o Packlink. La entrega suele tardar entre 2 y 7 días hábiles según tu zona. Los pedidos de fin de semana o festivos salen el siguiente día hábil, y recibirás un enlace para seguir tu paquete.</p></details>
+        <details class="reveal"><summary>¿Cuánto cuesta el envío?</summary><p>El envío a España cuesta 3,50 € y es <strong>gratis a partir de 35 €</strong>.</p></details>
+        <details class="reveal"><summary>Si mi cuerpo ya fabrica inositol, ¿por qué tomarlo?</summary><p>Tu cuerpo lo fabrica y lo usa en muchas funciones, pero en situaciones como el SOP o la resistencia a la insulina se ha visto que lo aprovecha peor. Por eso se estudia como complemento: aporta más de una molécula que tus células ya conocen.</p></details>
+        <details class="reveal"><summary>¿Cómo se toma el Myo-Inositol?</summary><p>2 g al día, una cuchara dosificadora rasa (viene incluida), preferiblemente por la mañana en ayunas. Disuélvelo en agua, zumo o tu bebida favorita: no tiene sabor y se disuelve fácilmente.</p></details>
+        <details class="reveal"><summary>¿Cuánto me dura un tarro?</summary><p>El tarro de 200 g son 100 tomas de 2 g: más de 3 meses. Con el tratamiento de 6 meses (2 tarros) tienes para todo el semestre.</p></details>
+        <details class="reveal"><summary>¿Cuándo notaré los resultados?</summary><p>Los complementos trabajan con el tiempo. En los estudios los efectos se valoran a partir de los 3 meses de uso continuado, y en la piel la mejora se vio a los 6 meses. Cada cuerpo es diferente y los resultados pueden variar.</p></details>
+        <details class="reveal"><summary>¿Lo puedo combinar con otros complementos?</summary><p>Sí, el Myo-Inositol se puede combinar con otros complementos, como el magnesio, la vitamina C, la creatina o el colágeno. Si tomas medicación o anticonceptivos, consúltalo antes con tu médico.</p></details>
+        <details class="reveal"><summary>¿Puedo tomarlo si estoy embarazada o dando el pecho?</summary><p>En el embarazo, la lactancia o si tienes alguna enfermedad, consulta siempre con tu médico o ginecóloga antes de tomar cualquier complemento.</p></details>
+        <details class="reveal"><summary>¿Cómo funcionan los descuentos del test?</summary><p>Se aplican solos al pagar: un 10% en el Myo-Inositol, un 15% en toda tu compra con 2 productos y un 20% con 3 o más. Los descuentos no se pueden sumar entre sí.</p></details>
+        <details class="reveal"><summary>¿Y si quiero devolverlo?</summary><p>Tienes 30 días desde que lo recibes para solicitar una devolución, con el producto sin abrir y en su embalaje original. Escríbenos y te ayudamos.</p></details>
         <details class="reveal"><summary>¿Qué hacéis con mis datos?</summary><p>Guardamos tu email y tu resultado en nuestra tienda. Solo te escribiremos si nos das permiso, no compartimos tus datos con nadie y puedes darte de baja cuando quieras.</p></details>
         <details class="reveal"><summary>¿Sustituye a una analítica o a ir al médico?</summary><p>No. Es una herramienta orientativa para que conozcas mejor las señales de tu cuerpo. Si tienes síntomas intensos o persistentes, consulta con tu médico o ginecóloga.</p></details>
       </div>
@@ -487,6 +628,37 @@
     // Pega aquí los enlaces de tus reels de Instagram, p. ej. "https://www.instagram.com/reel/XXXXXXXX/"
     var INSTAGRAM_REELS = [];
 
+    // Formatos y duraciones de cada producto (según la ficha de la tienda).
+    // q = unidades que van al carrito y que cuentan para el descuento por cantidad
+    var OPTIONS = {
+      inositol: [
+        { t: "3 meses", s: "1 tarro · 100 tomas", v: "56619259330885", q: 1, p: 24.95, note: "1 tarro = 100 tomas de 2 g, más de 3 meses: el tiempo en el que los estudios valoran los efectos." },
+        { t: "6 meses", s: "2 tarros", v: "56619259330885", q: 2, p: 49.90, badge: "Más completo", note: "En el estudio sobre la piel, la mejora del acné y del vello se vio a los 6 meses de uso continuado." }
+      ],
+      magnesio: [
+        { t: "1 mes", s: "Tarro de cristal 100 g", v: "58574868283717", q: 1, p: 19.95, note: "3 g al día: el tarro de 100 g dura 1 mes." },
+        { t: "3 meses", s: "Reutilizable 300 g", v: "58574868316485", q: 1, p: 34.95, badge: "Ahorras 24,90 €", note: "El formato de 300 g dura 3 meses: te sale a 11,65 € al mes en lugar de 19,95 €." }
+      ],
+      creatina: [
+        { t: "50 días", s: "1 bote 150 g", v: "56619269882181", q: 1, p: 10.95, note: "3 g al día: un bote de 150 g dura unos 50 días." },
+        { t: "3 meses", s: "2 botes · 100 días", v: "56619269882181", q: 2, p: 21.90, badge: "Suma 2 al descuento", note: "Con 2 botes tienes para unos 100 días y sumas 2 productos a tu descuento." }
+      ],
+      vitc: [
+        { t: "6 meses", s: "Tarro 100 g", v: "56590721024325", q: 1, p: 15.95, note: "Una cucharadita al día: el tarro dura unos 6 meses." }
+      ],
+      colageno: [
+        { t: "1 mes", s: "1 bote 120 g", v: "56749441057093", q: 1, p: 14.95, note: "5 g al día: un bote son 24 tomas, aproximadamente un mes." },
+        { t: "3 meses", s: "3 botes", v: "56749441057093", q: 3, p: 44.85, badge: "Suma 3 al descuento", note: "Los estudios sobre la piel con colágeno duran entre 8 y 12 semanas. Con 3 botes completas ese tiempo y sumas 3 productos a tu descuento." }
+      ]
+    };
+    // Opiniones reales de clientas (TikTok Shop), guardadas en las fichas de producto
+    var REVIEWS = [
+      { p: "Vitamina C pura", t: "Ya he comprado varias veces, me subió el hierro al tomarlo junto, ni un resfriado y trabajo en un hospital. Seguiré comprando, el envío rapidísimo y son muy detallistas." },
+      { p: "Bisglicinato de Magnesio", t: "Buenísimo producto y atención. Me quedo con él sin lugar a dudas." },
+      { p: "Creatina Creapure", t: "Me encanta esta creatina y es Creapure. Para el gym es lo mejor." }
+    ];
+    var ALT_CODE = "TESTBIENESTAR10"; // 10% cuando el producto principal no es el inositol
+    var FREE_SHIPPING = 35; // envío gratis en España a partir de 35 €
     // Descuentos creados en Shopify: solo inositol / +1 producto / +2 o más
     var TIERS = [
       { min: 1, pct: 10, code: "TESTHORMONAL10", label: "Solo inositol" },
@@ -687,6 +859,10 @@
           text: "Con la menopausia baja el colágeno de la piel. En ensayos con placebo, el colágeno Peptan®, el mismo de este producto, mejoró la hidratación de la piel." }
       }
     };
+    COMBOS.inositol = {
+      mantener: { why: "Para mantener tu equilibrio", study: "insulina",
+        text: "Ahora tienes pocas señales hormonales, pero el inositol es una molécula que tu cuerpo usa cada día como mensajero de la insulina y de tus hormonas. Muchas mujeres lo añaden para mantener ese equilibrio." }
+    };
     var COMBO_DEFAULT = { key: "magnesio", reason: "cansancio" };
     var DEFAULT_REASON = { magnesio: "cansancio", vitc: "cansancio", creatina: "animo", colageno: "piel" };
 
@@ -780,8 +956,18 @@
       url.searchParams.set("discount", tierFor(keys.length).code);
       return url.toString();
     }
-    function inositolLink(level, angle) {
-      return withParams(SHOP + "/discount/" + TIERS[0].code + "?redirect=" + encodeURIComponent("/products/" + PRODUCTS.inositol.handle), level, angle);
+    function mainCode(key) { return key === "inositol" ? TIERS[0].code : ALT_CODE; }
+    function mainLink(key, level, angle) {
+      return withParams(SHOP + "/discount/" + mainCode(key) + "?redirect=" + encodeURIComponent("/products/" + PRODUCTS[key].handle), level, angle);
+    }
+    function inositolLink(level, angle) { return mainLink("inositol", level, angle); }
+    // Carrito con variantes y cantidades: [{ v: variante, q: cantidad }]
+    function linesLink(lines, code, level, angle) {
+      var qty = {};
+      lines.forEach(function (l) { qty[l.v] = (qty[l.v] || 0) + l.q; });
+      var url = new URL(withParams(SHOP + "/cart/" + Object.keys(qty).map(function (v) { return v + ":" + qty[v]; }).join(","), level, angle));
+      url.searchParams.set("discount", code);
+      return url.toString();
     }
 
     function proofHtml() {
@@ -795,6 +981,10 @@
         '<blockquote class="proof-quote">“' + BEFORE_AFTER_QUOTE + '”<div class="stars">★★★★★</div></blockquote>' +
         (reels ? '<div class="reels">' + reels + '</div>' : '') +
         '<p class="proof-note">Experiencia personal. Los resultados pueden variar de una persona a otra.</p>' +
+        '<h5 class="rev-title">Lo que dicen nuestras clientas</h5>' +
+        '<div class="reviews">' + REVIEWS.map(function (r) {
+          return '<div class="review"><div class="stars">★★★★★</div><p>“' + r.t + '”</p><span>' + r.p + ' · Opinión en TikTok Shop</span></div>';
+        }).join("") + '</div>' +
         '</div>';
     }
     function loadInstagram() {
@@ -805,56 +995,76 @@
       document.body.appendChild(sc);
     }
 
-    function setupRoutine(level, angle, preselect) {
-      var box = document.getElementById("routine"), chosen = [preselect];
-      // La piel tarda más: en el estudio sobre acné la mejora se vio a los 6 meses
-      var inosQty = angle === "piel" ? 2 : 1;
-      box.querySelectorAll(".dur-opt").forEach(function (b) {
-        b.addEventListener("click", function (e) {
-          inosQty = Number(b.dataset.q); ripple(b, e);
-          track("RoutineChange", { content_name: "inositol_meses", value: inosQty * 3 });
+    function defaultOpt(key, angle) {
+      if (key === "inositol") return angle === "piel" ? 1 : 0;
+      if (key === "magnesio") return 1; // el formato de 300 g es el que más compensa
+      return 0;
+    }
+    function optionsHtml(key) {
+      var opts = OPTIONS[key];
+      if (opts.length < 2) return '<p class="dur-note solo">' + opts[0].s + ' · ' + opts[0].note + '</p>';
+      return '<div class="dur">' + opts.map(function (o, i) {
+        return '<button type="button" class="dur-opt" data-o="' + i + '">' + (o.badge ? '<em class="dur-badge">' + o.badge + '</em>' : '') +
+          '<strong>' + o.t + '</strong><span>' + o.s + '</span><span class="dur-price">' + fmt(o.p) + '</span></button>';
+      }).join("") + '</div><p class="dur-note"></p>';
+    }
+
+    function setupRoutine(level, angle, mainKey, preselect) {
+      var box = document.getElementById("routine"), sel = {};
+      sel[mainKey] = defaultOpt(mainKey, angle);
+      if (preselect) sel[preselect] = defaultOpt(preselect, angle);
+      loadInstagram();
+
+      function update() {
+        var keys = Object.keys(sel), lines = keys.map(function (k) { return OPTIONS[k][sel[k]]; });
+        var count = lines.reduce(function (a, o) { return a + o.q; }, 0);
+        var sub = lines.reduce(function (a, o) { return a + o.p; }, 0);
+        var t = tierFor(count), code = t.min === 1 ? mainCode(mainKey) : t.code, disc = sub * t.pct / 100, total = sub - disc;
+
+        box.querySelectorAll(".r-item[data-key]").forEach(function (el) {
+          var k = el.dataset.key, on = k in sel, oi = on ? sel[k] : defaultOpt(k, angle), o = OPTIONS[k][oi];
+          el.classList.toggle("on", on);
+          var tg = el.querySelector(".toggle"); if (tg) tg.setAttribute("aria-pressed", on);
+          el.querySelectorAll(".dur-opt").forEach(function (b) { b.classList.toggle("on", on && Number(b.dataset.o) === oi); });
+          var note = el.querySelector(".dur-note:not(.solo)"); if (note) note.textContent = on ? o.note : "";
+          var pr = el.querySelector(".prod em"); if (pr) pr.textContent = fmt(o.p);
+          var ds = el.querySelector(".prod span"); if (ds) ds.textContent = o.s;
+        });
+        box.querySelectorAll(".tier").forEach(function (el, i) { el.classList.toggle("active", TIERS[i] === t); el.classList.toggle("done", TIERS[i].min <= count); });
+        document.getElementById("tiers-fill").style.width = (Math.min(count, 3) - 1) / 2 * 100 + "%";
+        document.getElementById("sum-sub").textContent = fmt(sub);
+        document.getElementById("sum-disc-label").textContent = "Descuento -" + t.pct + "%" + (t.min === 1 ? " (" + PRODUCTS[mainKey].name + ")" : "");
+        document.getElementById("sum-disc").textContent = "-" + fmt(disc);
+        bump(document.getElementById("sum-total"), fmt(total));
+        var falta = FREE_SHIPPING - total;
+        document.getElementById("ship").innerHTML = (falta > 0
+          ? "🚚 Te faltan <strong>" + fmt(falta) + "</strong> para el envío gratis"
+          : "🚚 <strong>¡Envío gratis!</strong> Llega en 2–7 días hábiles") +
+          '<div class="ship-bar"><span style="width:' + Math.min(100, total / FREE_SHIPPING * 100) + '%"></span></div>';
+        var next = TIERS.filter(function (x) { return x.min > count; })[0];
+        document.getElementById("nudge").innerHTML = next
+          ? "👉 Añade " + (next.min - count) + " producto más o elige un tratamiento más largo y consigue un <strong>" + next.pct + "% en toda tu compra</strong>."
+          : "🎉 ¡Tienes el descuento máximo! Te ahorras <strong>" + fmt(disc) + "</strong>.";
+        var buy = document.getElementById("buy-routine");
+        buy.href = linesLink(lines, code, level, angle);
+        buy.dataset.what = "rutina_" + count;
+        buy.textContent = "Comprar mi rutina con -" + t.pct + "% · " + fmt(total) + " →";
+      }
+
+      box.querySelectorAll(".r-item[data-key] .toggle").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          var k = btn.closest(".r-item").dataset.key;
+          if (k in sel) delete sel[k]; else sel[k] = defaultOpt(k, angle);
+          ripple(btn, e);
+          track("RoutineChange", { content_name: k, value: Object.keys(sel).length });
           update();
         });
       });
-      loadInstagram();
-      function update() {
-        var keys = [];
-        for (var q = 0; q < inosQty; q++) keys.push("inositol");
-        keys = keys.concat(chosen);
-        var t = tierFor(keys.length);
-        box.querySelectorAll(".dur-opt").forEach(function (b) { b.classList.toggle("on", Number(b.dataset.q) === inosQty); });
-        document.getElementById("dur-note").textContent = inosQty === 2
-          ? "En el estudio sobre la piel, la mejora del acné y del vello se vio a los 6 meses de uso continuado."
-          : "1 tarro = 100 tomas de 2 g, más de 3 meses: el tiempo en el que los estudios valoran los efectos.";
-        var sub = keys.reduce(function (a, k) { return a + priceOf(k); }, 0);
-        // El 10% solo se aplica al inositol; 15% y 20%, a toda la compra
-        var base = t.min === 1 ? priceOf("inositol") * inosQty : sub, disc = base * t.pct / 100;
-        box.querySelectorAll(".r-item[data-key]").forEach(function (el) {
-          var on = chosen.indexOf(el.dataset.key) > -1;
-          el.classList.toggle("on", on);
-          el.querySelector(".toggle").setAttribute("aria-pressed", on);
-        });
-        box.querySelectorAll(".tier").forEach(function (el, i) { el.classList.toggle("active", TIERS[i] === t); el.classList.toggle("done", TIERS[i].min <= keys.length); });
-        document.getElementById("tiers-fill").style.width = (Math.min(keys.length, 3) - 1) / 2 * 100 + "%";
-        document.getElementById("sum-sub").textContent = fmt(sub);
-        document.getElementById("sum-disc-label").textContent = "Descuento -" + t.pct + "%" + (t.min === 1 ? " (inositol)" : "");
-        document.getElementById("sum-disc").textContent = "-" + fmt(disc);
-        bump(document.getElementById("sum-total"), fmt(sub - disc));
-        var next = TIERS.filter(function (x) { return x.min > keys.length; })[0];
-        document.getElementById("nudge").innerHTML = next
-          ? "👉 Añade " + (next.min - keys.length) + " producto más" + (inosQty === 1 ? " (o elige 6 meses de inositol)" : "") + " y consigue un <strong>" + next.pct + "% en toda tu compra</strong>."
-          : "🎉 ¡Tienes el descuento máximo! Te ahorras <strong>" + fmt(disc) + "</strong>.";
-        var buy = document.getElementById("buy-routine");
-        buy.href = routineLink(keys, level, angle);
-        buy.dataset.what = "rutina_" + keys.length;
-        buy.textContent = "Comprar mi rutina con -" + t.pct + "% · " + fmt(sub - disc) + " →";
-      }
-      box.querySelectorAll(".r-item[data-key] .toggle").forEach(function (btn) {
-        btn.addEventListener("click", function (e) {
-          var k = btn.closest(".r-item").dataset.key, i = chosen.indexOf(k);
-          if (i > -1) chosen.splice(i, 1); else chosen.push(k);
-          ripple(btn, e);
-          track("RoutineChange", { content_name: k, value: chosen.length });
+      box.querySelectorAll(".r-item[data-key] .dur-opt").forEach(function (b) {
+        b.addEventListener("click", function (e) {
+          var k = b.closest(".r-item").dataset.key;
+          sel[k] = Number(b.dataset.o); ripple(b, e);
+          track("RoutineChange", { content_name: k + "_" + OPTIONS[k][sel[k]].t, value: OPTIONS[k][sel[k]].q });
           update();
         });
       });
@@ -1019,36 +1229,41 @@
       }).join("");
 
       var combos = pickCombos(picked);
+      // Si apenas hay señales hormonales, el inositol no es lo principal: recomendamos otro producto
+      var notForHer = angle === "equilibrio" || (level === "low" && (angle === "animo" || angle === "energia"));
+      var mainKey = notForHer ? combos[0].key : "inositol";
+      var M = notForHer ? COMBOS[combos[0].key][combos[0].reason] : null;
+      var routineItems = notForHer
+        ? [{ key: "inositol", reason: "mantener", reco: true }].concat(combos.filter(function (c) { return c.key !== mainKey; }).map(function (c) { c.reco = false; return c; }))
+        : combos;
+      if (notForHer && routineItems.length > 1) routineItems[1].reco = true;
       var tiersHtml = TIERS.map(function (t, i) {
         return '<div class="tier" data-i="' + i + '"><strong>-' + t.pct + '%</strong><span>' + t.label + '</span></div>';
       }).join("");
-      var itemsHtml = combos.map(function (c) {
+      var itemsHtml = routineItems.map(function (c) {
         var C = COMBOS[c.key][c.reason], s = STUDIES[C.study];
         var body = '<p>' + C.text + '</p>' + (s ? '<a class="study" href="' + s.url + '" target="_blank" rel="noopener">📚 ' + s.label + '</a>' : '');
         return '<div class="r-item' + (c.reco ? ' reco-item' : '') + '" data-key="' + c.key + '">' +
           (c.reco ? '<span class="combo-tag">★ Recomendado para ti · ' + C.why + '</span>' : '') +
           '<div class="r-row">' + productCard(c.key) + '<button type="button" class="toggle" aria-pressed="false"><span class="t-add">+ Añadir</span><span class="t-on">✓ Añadido</span></button></div>' +
+          optionsHtml(c.key) +
           (c.reco ? body : '<details><summary>' + C.why + ': ¿por qué?</summary>' + body + '</details>') +
           '</div>';
       }).join("");
       var routineHtml = '<div class="routine" id="routine">' +
         '<span class="combo-tag">🎁 Descuento exclusivo del test</span>' +
         '<h4 class="reasons-title">Crea tu rutina y ahorra hasta un 20%</h4>' +
-        '<p class="reasons-sub">Tu Myo-Inositol ya tiene un 10%. Con 2 productos tienes un 15% y con 3 o más, un 20% en <strong>toda tu compra</strong>.</p>' +
+        '<p class="reasons-sub">Tu ' + PRODUCTS[mainKey].name + ' ya tiene un 10%. Con 2 productos tienes un 15% y con 3 o más, un 20% en <strong>toda tu compra</strong>.</p>' +
         '<div class="tiers"><div class="tiers-bar"><span id="tiers-fill"></span></div>' + tiersHtml + '</div>' +
-        '<div class="r-item fixed"><div class="r-row">' + productCard("inositol") + '<span class="incl">✓ Incluido</span></div>' +
-        '<p class="dur-label">¿Cuánto tiempo quieres cuidarte?</p>' +
-        '<div class="dur">' +
-        '<button type="button" class="dur-opt" data-q="1"><strong>3 meses</strong><span>1 tarro</span></button>' +
-        '<button type="button" class="dur-opt" data-q="2"><em class="dur-badge">Más completo</em><strong>6 meses</strong><span>2 tarros · cuenta para tu descuento</span></button>' +
-        '</div>' +
-        '<p class="dur-note" id="dur-note"></p></div>' +
+        '<div class="r-item fixed on" data-key="' + mainKey + '"><div class="r-row">' + productCard(mainKey) + '<span class="incl">✓ Incluido</span></div>' +
+        '<p class="dur-label">¿Cuánto tiempo quieres cuidarte?</p>' + optionsHtml(mainKey) + '</div>' +
         itemsHtml +
         proofHtml() +
         '<div class="summary">' +
         '<div class="sum-row"><span>Subtotal</span><span id="sum-sub"></span></div>' +
         '<div class="sum-row disc"><span id="sum-disc-label"></span><span id="sum-disc"></span></div>' +
         '<div class="sum-row total"><span>Total</span><span id="sum-total"></span></div>' +
+        '<div class="ship" id="ship"></div>' +
         '<p class="nudge" id="nudge"></p>' +
         '<a class="btn btn-accent track-buy" id="buy-routine" data-what="rutina" href="#">Comprar mi rutina →</a>' +
         '<p class="form-note">El descuento se aplica automáticamente al pagar.</p>' +
@@ -1061,14 +1276,19 @@
         '<p>' + r.text + '</p>' +
         '<div class="meter"><div class="meter-bar"><span class="meter-dot" id="dot"></span></div>' +
         '<div class="meter-labels"><span>En equilibrio</span><span>Señales leves</span><span>Señales claras</span></div></div>' +
-        '<h4 class="reasons-title">Por qué el inositol encaja contigo</h4>' +
+        '<h4 class="reasons-title">' + (notForHer ? 'Lo que nos dicen tus respuestas' : 'Por qué el inositol encaja contigo') + '</h4>' +
         '<p class="reasons-sub">Según tus respuestas y lo que dicen los estudios:</p>' +
         '<ul class="reasons stagger">' + reasonsHtml + '</ul>' +
-        '<div class="reco"><span class="reco-tag">Tu recomendación personalizada</span><h4>' + A.title + '</h4><p>' + A.text + '</p>' +
-        productCard("inositol") +
-        '<p class="dose">Myo-Inositol 100% puro en polvo. Se toma 2 g al día (una cuchara dosificadora) y un tarro da para más de 3 meses, el tiempo en el que los estudios valoran los efectos.</p>' +
-        '<p class="price-line"><s>' + PRODUCTS.inositol.price + '</s> <strong>' + fmt(priceOf("inositol") * .9) + '</strong> <span class="badge">-10% por hacer el test</span></p>' +
-        '<a class="btn btn-accent track-buy" data-what="inositol" href="' + inositolLink(level, angle) + '">' + A.cta + ' →</a>' +
+        (notForHer
+          ? '<div class="reco"><span class="reco-tag">Tu recomendación personalizada</span><h4>Lo que más encaja contigo: ' + PRODUCTS[mainKey].name + '</h4>' +
+            '<p>Tus respuestas muestran pocas señales hormonales, así que ahora mismo el inositol no es lo que más necesitas. ' + M.why + ', lo que mejor encaja contigo es el ' + PRODUCTS[mainKey].name + '.</p>' +
+            '<p>' + M.text + '</p>' + (STUDIES[M.study] ? '<p class="dose"><a href="' + STUDIES[M.study].url + '" target="_blank" rel="noopener" style="color:#c9f5e8">📚 ' + STUDIES[M.study].label + '</a></p>' : '') +
+            productCard(mainKey)
+          : '<div class="reco"><span class="reco-tag">Tu recomendación personalizada</span><h4>' + A.title + '</h4><p>' + A.text + '</p>' +
+            productCard("inositol") +
+            '<p class="dose">Myo-Inositol 100% puro en polvo. Se toma 2 g al día (una cuchara dosificadora) y un tarro da para más de 3 meses, el tiempo en el que los estudios valoran los efectos.</p>') +
+        '<p class="price-line"><s>' + PRODUCTS[mainKey].price + '</s> <strong>' + fmt(priceOf(mainKey) * .9) + '</strong> <span class="badge">-10% por hacer el test</span></p>' +
+        '<a class="btn btn-accent track-buy" data-what="' + mainKey + '" href="' + mainLink(mainKey, level, angle) + '">' + (notForHer ? 'Quiero mi ' + PRODUCTS[mainKey].name : A.cta) + ' →</a>' +
         '<a class="reco-more" href="#routine">o crea tu rutina y ahorra hasta un 20% ↓</a></div>' +
         routineHtml +
         '<p class="legal-note">Resultado orientativo. No sustituye la consulta con un profesional sanitario. Si estás embarazada, das el pecho o tomas medicación, consulta antes con tu médico. Los complementos alimenticios no deben utilizarse como sustitutos de una dieta equilibrada y un modo de vida saludable.</p>' +
@@ -1080,21 +1300,21 @@
         if (dot) dot.style.left = Math.max(4, Math.min(96, ratio * 100)) + "%";
       }, 60);
       countUp(document.getElementById("score-num"), Math.round(ratio * 100));
-      setupRoutine(level, angle, combos[0].key);
+      setupRoutine(level, angle, mainKey, notForHer ? null : combos[0].key);
       quiz.querySelectorAll(".stagger > *, .routine, .reco").forEach(function (el, i) {
         el.style.animationDelay = (250 + i * 120) + "ms";
         if (!el.parentNode.classList.contains("stagger")) { el.classList.add("pop-in"); }
       });
       confetti();
 
-      var answered = {}, c1 = combos[0];
+      var answered = {}, c1 = notForHer ? (routineItems[1] || routineItems[0]) : combos[0];
       visibleQuestions().forEach(function (item) { answered[item.q] = item.options[answers[item.id]][0]; });
       var utm = new URLSearchParams(location.search).get("utm_source");
       sendLead({
-        tags: ["test-hormonal", TAG_PREFIX + "resultado-" + level, TAG_PREFIX + "perfil-" + angle, TAG_PREFIX + "pack-" + c1.key]
+        tags: ["test-hormonal", TAG_PREFIX + "resultado-" + level, TAG_PREFIX + "perfil-" + angle, TAG_PREFIX + "principal-" + mainKey, TAG_PREFIX + "pack-" + c1.key]
           .concat(utm ? [TAG_PREFIX + "origen-" + utm.toLowerCase().replace(/[^a-z0-9-]/g, "")] : []),
         summary: "Resultado: " + r.tag + " (" + Math.round(ratio * 100) + "%)\nPerfil: " + A.title +
-          "\nPack recomendado: Myo-Inositol + " + PRODUCTS[c1.key].name +
+          "\nProducto principal: " + PRODUCTS[mainKey].name + "\nComplemento recomendado: " + PRODUCTS[c1.key].name +
           "\nSeñales: " + picked.map(function (p) { return p.msg.title; }).join("; ") +
           "\n\nRespuestas:\n" + Object.keys(answered).map(function (q) { return "- " + q + " " + answered[q]; }).join("\n")
       });
@@ -1122,8 +1342,9 @@
     var sticky = document.getElementById("sticky-cta");
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(function (entries) {
-        sticky.classList.toggle("hidden", entries[0].isIntersecting);
-      }, { threshold: 0.15 }).observe(document.getElementById("test"));
+        // Se oculta cuando el test está a la vista o cuando ya ha empezado
+        sticky.classList.toggle("hidden", entries[0].isIntersecting || current > 0 || !!lead);
+      }, { threshold: 0 }).observe(document.getElementById("test"));
     }
 
     // Efecto onda al pulsar
@@ -1225,6 +1446,34 @@
       '<p class="proof-note">Experiencia personal. Los resultados pueden variar de una persona a otra.</p>' +
       '<a href="#test" class="btn btn-accent" data-start>Hacer mi test gratis →</a></div>';
     document.querySelector("#ba-section [data-start]").addEventListener("click", function (e) { e.preventDefault(); quiz.scrollIntoView({ behavior: "smooth", block: "start" }); });
+
+    // El inositol en tu cuerpo: puntos interactivos
+    var ORGANS = [
+      { e: "🧠", t: "En tu cerebro", d: "Participa en las señales de neurotransmisores como la serotonina, muy relacionada con el ánimo, la calma y el descanso." },
+      { e: "🧬", t: "En todas tus células", d: "Forma parte de la membrana de cada una de tus células y ayuda a que se comuniquen entre ellas y con tus hormonas." },
+      { e: "🫘", t: "En tus riñones", d: "Aquí lo fabrica tu propio cuerpo a partir de la glucosa. También lo obtienes de alimentos como la naranja, las legumbres y los frutos secos." },
+      { e: "🌸", t: "En tus ovarios", d: "Ayuda a que los ovarios respondan a la hormona FSH, clave para que el óvulo madure y haya ovulación. Por eso se estudia tanto en el SOP." },
+      { e: "⚡", t: "En tus músculos e hígado", d: "Actúa como mensajero de la insulina: ayuda a que la glucosa entre en las células y se convierta en energía, en lugar de picos y bajones." }
+    ];
+    var hsEls = document.querySelectorAll("#cuerpo .hs"), organCard = document.getElementById("organ-card"), organDots = document.getElementById("organ-dots");
+    var organI = 0, organAuto = null;
+    ORGANS.forEach(function (o, i) {
+      var b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", o.t);
+      b.addEventListener("click", function () { pickOrgan(i, true); });
+      organDots.appendChild(b);
+    });
+    function pickOrgan(i, byUser) {
+      organI = i;
+      var o = ORGANS[i];
+      organCard.innerHTML = '<span class="o-emoji">' + o.e + '</span><h3>' + o.t + '</h3><p>' + o.d + '</p>';
+      organCard.classList.remove("swap"); void organCard.offsetWidth; organCard.classList.add("swap");
+      hsEls.forEach(function (h, j) { h.classList.toggle("on", j === i); });
+      organDots.querySelectorAll("button").forEach(function (b, j) { b.classList.toggle("on", j === i); });
+      if (byUser) { clearInterval(organAuto); organAuto = null; track("BodyExplore", { content_name: o.t }); }
+    }
+    hsEls.forEach(function (h) { h.addEventListener("click", function () { pickOrgan(Number(h.dataset.i), true); }); });
+    pickOrgan(0);
+    if (!reduce) organAuto = setInterval(function () { pickOrgan((organI + 1) % ORGANS.length); }, 3800);
 
     document.getElementById("year").textContent = new Date().getFullYear();
     renderQuestion();
