@@ -658,6 +658,17 @@
     </div>
   </footer>
 
+  <!-- Formularios nativos de Shopify (igual que el boletín del tema): crean el cliente con sus etiquetas -->
+  <iframe name="sh-sink" id="sh-sink" title="envío" hidden tabindex="-1" style="display:none"></iframe>
+  <form id="sh-customer" method="post" action="/contact#contact_form" accept-charset="UTF-8" target="sh-sink" hidden>
+    <input type="hidden" name="form_type" value="customer"><input type="hidden" name="utf8" value="✓">
+    <input type="hidden" name="contact[email]"><input type="hidden" name="contact[first_name]"><input type="hidden" name="contact[tags]">
+  </form>
+  <form id="sh-contact" method="post" action="/contact#contact_form" accept-charset="UTF-8" target="sh-sink" hidden>
+    <input type="hidden" name="form_type" value="contact"><input type="hidden" name="utf8" value="✓">
+    <input type="hidden" name="contact[email]"><input type="hidden" name="contact[name]"><textarea name="contact[body]" hidden></textarea>
+  </form>
+
   <div class="sticky-cta" id="sticky-cta"><a href="#test" class="btn btn-accent" data-start>Hacer el test gratis →</a></div>
 
   <script>
@@ -1246,12 +1257,16 @@
     }
 
     // Envía el contacto a Shopify (formularios nativos de la tienda, mismo dominio)
+    // Rellena el formulario nativo de Shopify y lo envía en segundo plano (sin salir de la página)
     function shopifyForm(fields) {
       try {
-        var fd = new URLSearchParams();
-        fd.set("utf8", "✓");
-        Object.keys(fields).forEach(function (k) { fd.set(k, fields[k]); });
-        return fetch("/contact", { method: "POST", body: fd, credentials: "same-origin", keepalive: true }).catch(function () {});
+        var form = document.getElementById(fields.form_type === "customer" ? "sh-customer" : "sh-contact");
+        Object.keys(fields).forEach(function (k) {
+          if (k === "form_type") return;
+          var el = form.querySelector('[name="' + k + '"]');
+          if (el) el.value = fields[k];
+        });
+        if (form.requestSubmit) form.requestSubmit(); else form.submit();
       } catch (e) {}
     }
     function sendLead(data) {
