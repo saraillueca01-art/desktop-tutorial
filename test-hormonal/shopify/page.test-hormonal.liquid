@@ -90,7 +90,7 @@
     .section-intro { max-width: 600px; margin: 0 auto; }
 
     /* ---------- Quiz ---------- */
-    #test { background: var(--white); position: relative; overflow: hidden; }
+    #test { background: var(--white); position: relative; overflow: hidden; overflow: clip; }
     .quiz {
       max-width: 680px; margin: 40px auto 0; background: var(--white); border-radius: var(--radius);
       border: 1px solid var(--line); padding: 36px; box-shadow: 0 30px 60px rgba(14, 58, 79, .07);
@@ -260,6 +260,29 @@
       .body-figure svg { max-width: 220px; }
     }
 
+    /* Destacado: el inositol en tu cuerpo */
+    .body-chip { display: inline-flex; align-items: center; gap: 8px; margin: -.4rem 0 1.2rem; padding: 8px 14px; border-radius: 99px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-size: .86rem; border: 1px solid #a9e3d4; animation: chipGlow 2.8s ease-in-out infinite; }
+    .body-chip b { color: var(--accent); white-space: nowrap; }
+    @keyframes chipGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(20, 163, 139, .25); } 50% { box-shadow: 0 0 0 8px rgba(20, 163, 139, 0); } }
+    .body-facts { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 1rem; }
+    .body-facts span { padding: 8px 14px; border-radius: 99px; background: var(--white); border: 1.5px solid var(--line); font-size: .86rem; color: var(--ink); box-shadow: 0 6px 16px rgba(14, 58, 79, .05); }
+    .body-note { background: rgba(255, 255, 255, .1); border-radius: 12px; padding: 10px 12px; font-size: .9rem !important; color: #e6f4f8 !important; }
+    .body-note strong { color: var(--white); }
+    .notice { font-size: .78rem; color: var(--muted); background: #f6f8fa; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 0 0 1.4rem; text-align: left; }
+    .why-take + .notice { margin-top: 10px; }
+    /* Tu rutina, paso a paso */
+    .plan { margin: 14px 0 4px; padding: 16px; border-radius: 18px; border: 1.5px solid var(--line); background: var(--white); }
+    .plan h5 { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.15rem; color: var(--ink); }
+    .plan-sub { font-size: .88rem !important; color: var(--text) !important; margin: .3rem 0 .8rem !important; }
+    .plan-list { list-style: none; display: grid; gap: 10px; position: relative; }
+    .plan-list li { display: flex; gap: 12px; align-items: flex-start; animation: optIn .4s ease; }
+    .pl-ico { flex: none; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); font-size: 1.1rem; }
+    .pl-when { display: block; font-size: .72rem; font-weight: 600; letter-spacing: .03em; color: var(--accent); text-transform: uppercase; }
+    .plan-list strong { display: block; color: var(--ink); font-size: .95rem; }
+    .plan-list p { font-size: .85rem !important; color: var(--text) !important; margin: .1rem 0 0 !important; }
+    .plan-foot { font-size: .8rem !important; color: var(--ink-soft) !important; margin-top: .8rem !important; }
+    /* Envío gratis y regalo: arriba y fijo mientras eliges */
+    .rewards { position: sticky; top: 8px; z-index: 5; background: rgba(255, 255, 255, .96); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1.5px solid #a9e3d4; border-radius: 16px; padding: 12px 14px 4px; margin: 0 0 14px; box-shadow: 0 10px 24px rgba(14, 58, 79, .08); }
     /* Envío gratis y regalo */
     .ship p { font-size: .86rem !important; color: var(--ink) !important; margin-bottom: 10px !important; }
     .rw-bar { position: relative; height: 8px; border-radius: 99px; background: var(--line); margin: 6px 14px 30px 0; }
@@ -461,6 +484,7 @@
     <div class="container hero-grid">
       <div>
         <span class="eyebrow">Test hormonal gratuito · 2 minutos</span>
+        <a href="#cuerpo" class="body-chip"><span>🧬</span> ¿Sabías que el inositol lo fabrica tu propio cuerpo? <b>Descúbrelo →</b></a>
         <h1>¿Cómo están <span class="rotator"><em class="word is-on">tus hormonas</em><em class="word">tu ciclo</em><em class="word">tu energía</em><em class="word">tu piel</em><em class="word">tus antojos</em></span> de verdad?</h1>
         <p class="lead">Ciclos irregulares, cansancio, granitos, antojos, hinchazón… Tu cuerpo te está hablando. Responde un máximo de 10 preguntas y descubre qué te está diciendo.</p>
         <a href="#test" class="btn btn-accent pulse" data-start>Hacer el test gratis →</a>
@@ -504,7 +528,10 @@
     <div class="container center">
       <span class="eyebrow">Lo que quizá no sabías</span>
       <h2>El inositol <em>ya vive en tu cuerpo</em></h2>
-      <p class="section-intro">Tu cuerpo lo fabrica cada día y lo usa en muchas funciones. Toca cada punto para descubrir dónde trabaja.</p>
+      <p class="section-intro">No es algo extraño para ti: <strong>tu propio cuerpo lo fabrica cada día</strong> y lo usa en muchas funciones. Toca cada punto para descubrir dónde trabaja.</p>
+      <div class="body-facts">
+        <span>🧬 Lo fabricas tú</span><span>🍊 Está en frutas, legumbres y frutos secos</span><span>✨ Tus células ya lo conocen</span>
+      </div>
     </div>
     <div class="container body-grid">
       <div class="body-figure reveal">
@@ -553,6 +580,7 @@
         </div>
         <p class="why-take"><strong>Entonces, ¿por qué tomarlo?</strong> Porque en situaciones como el SOP o la resistencia a la insulina se ha visto que el cuerpo lo aprovecha peor. Por eso se estudia como complemento: para darle a tus células más de algo que ya conocen.
           <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8896029/" target="_blank" rel="noopener">📚 Ver revisión científica</a></p>
+        <p class="notice">Las funciones que describimos son las que el inositol cumple de forma natural en el organismo. Los estudios citados son información científica, no declaraciones de propiedades saludables autorizadas del producto.</p>
       </div>
     </div>
   </section>
@@ -616,7 +644,9 @@
 
   <footer>
     <div class="container">
-      <p>Este test es orientativo y no constituye un diagnóstico médico. No sustituye la consulta con un profesional sanitario. Los complementos alimenticios no deben utilizarse como sustitutos de una dieta equilibrada y un modo de vida saludable.</p>
+      <p>Este test es orientativo y no constituye un diagnóstico médico. No sustituye la consulta con un profesional sanitario.</p>
+      <p>Los complementos alimenticios no son medicamentos y no están destinados a diagnosticar, tratar, curar o prevenir ninguna enfermedad. No deben utilizarse como sustitutos de una dieta equilibrada y un modo de vida saludable. No superar la dosis diaria recomendada. Mantener fuera del alcance de los niños. En embarazo, lactancia, si tomas medicación o tienes alguna enfermedad, consulta con tu médico.</p>
+      <p>Los estudios científicos citados se muestran a título informativo; no son declaraciones de propiedades saludables autorizadas y no garantizan resultados. Las experiencias y opiniones mostradas son personales y reales; los resultados pueden variar de una persona a otra.</p>
       <p>© <span id="year"></span> Benissalud · Complementos alimenticios envasados en España.</p>
     </div>
   </footer>
@@ -666,6 +696,20 @@
       { p: "Bisglicinato de Magnesio", t: "Buenísimo producto y atención. Me quedo con él sin lugar a dudas." },
       { p: "Creatina Creapure", t: "Me encanta esta creatina y es Creapure. Para el gym es lo mejor." }
     ];
+    var STUDY_NOTICE = "ℹ️ <strong>Sobre los estudios:</strong> son investigaciones científicas publicadas, hechas en grupos concretos de personas (muchas en mujeres con SOP) y con dosis y duraciones determinadas. Los mostramos a título informativo: no son declaraciones de propiedades saludables autorizadas, no garantizan resultados y no sustituyen el consejo de un profesional sanitario.";
+    // Para qué sirve cada producto y cuándo se toma (fichas de la tienda y declaraciones autorizadas por la UE)
+    var ROUTINE = {
+      inositol: { order: 1, when: "Por la mañana, en ayunas", icon: "🌅", how: "2 g (1 cuchara) en agua o zumo",
+        why: "La molécula que tu cuerpo ya fabrica y usa como mensajero de la insulina y de tus hormonas. Es la base de tu rutina." },
+      vitc: { order: 2, when: "Por la mañana", icon: "🍊", how: "1 cucharadita rasa",
+        why: "Contribuye a la formación normal de colágeno para la piel, a disminuir el cansancio y a absorber el hierro (declaraciones autorizadas UE)." },
+      magnesio: { order: 3, when: "Con la comida", icon: "🍽️", how: "3 g (1 cucharilla) en agua",
+        why: "Contribuye al funcionamiento normal del sistema nervioso, a la función psicológica y a disminuir el cansancio (declaraciones autorizadas UE)." },
+      creatina: { order: 4, when: "Antes o después de entrenar", icon: "🏋️‍♀️", how: "3 g con la cuchara incluida",
+        why: "Con 3 g al día aumenta el rendimiento físico en ejercicios breves e intensos (declaración autorizada UE). También es energía para tus células." },
+      colageno: { order: 5, when: "Cuando quieras", icon: "☕", how: "5 g en tu café, batido o agua",
+        why: "Péptidos de colágeno Peptan®, el colágeno más estudiado en la piel. Combina muy bien con la vitamina C." }
+    };
     var ALT_CODE = "TESTBIENESTAR10"; // 10% cuando el producto principal no es el inositol
     var FREE_SHIPPING = 35; // envío gratis en España a partir de 35 €
     var GIFT_MIN = 60;      // a partir de 60 € (sin contar la vitamina C) regalamos una Vitamina C
@@ -725,7 +769,7 @@
       embarazo: { area: "fertilidad", title: "Estás buscando embarazo", study: "fertilidad",
         text: "En mujeres con SOP, los estudios han visto que el inositol mejora la ovulación y la regularidad del ciclo. Muchas lo combinan con ácido fólico. Coméntalo siempre con tu ginecóloga." },
       perimenopausia: { area: "menopausia", title: "Estás en la perimenopausia", study: "perimenopausia",
-        text: "En esta etapa la insulina gana protagonismo: las mujeres con la insulina más alta a los 47 años empezaron antes con los sofocos y los sudores nocturnos. El inositol actúa como mensajero de la insulina y ayuda a que tu cuerpo la use mejor." },
+        text: "En esta etapa la insulina gana protagonismo: las mujeres con la insulina más alta a los 47 años empezaron antes con los sofocos y los sudores nocturnos. El inositol actúa como mensajero de la insulina, y por eso se estudia en esta etapa." },
       menopausia: { area: "menopausia", title: "Estás en la menopausia", study: "menopausia",
         text: "Con la bajada de estrógenos, cuesta más controlar el azúcar, el peso y el colesterol. En mujeres posmenopáusicas, 2 g de mio-inositol dos veces al día durante 6 meses redujeron la resistencia a la insulina y los triglicéridos y mejoraron el colesterol bueno." },
       ciclo_leve: { area: "ciclo", title: "Tu ciclo a veces se descoloca", study: "ciclo",
@@ -739,23 +783,23 @@
       regla_abundante: { area: "ciclo", title: "Tus reglas son muy abundantes", study: "ciclo",
         text: "Las reglas muy abundantes pueden ir ligadas a un desequilibrio hormonal y te hacen perder hierro. El inositol trabaja el ciclo de fondo; y si sangras mucho, consulta con tu ginecóloga para revisar tu hierro." },
       piel_leve: { area: "piel", title: "Te salen granitos de vez en cuando", study: "piel",
-        text: "Los brotes que van y vienen, como los de antes de la regla, suelen tener un origen hormonal. Al mejorar la sensibilidad a la insulina, el inositol ayuda a reducir los andrógenos, que son los que estimulan la grasa de la piel." },
+        text: "Los brotes que van y vienen, como los de antes de la regla, suelen tener un origen hormonal. En estudios con mujeres con SOP, el inositol se asoció a una bajada de los andrógenos, las hormonas que estimulan la grasa de la piel." },
       acne: { area: "piel", title: "Tienes granitos en barbilla y mandíbula", study: "piel",
         text: "Es el acné hormonal típico, ligado a un exceso de andrógenos. En un estudio, las mujeres que tomaron mio-inositol bajaron la testosterona a los 3 meses y, a los 6 meses, tenían menos acné." },
       vello: { area: "piel", title: "Tienes piel grasa o vello donde no te gustaría", study: "piel",
         text: "Las dos son señales de andrógenos altos. En los estudios, el mio-inositol redujo la testosterona libre y, después de 6 meses, también el vello y el acné." },
       energia_leve: { area: "energia", title: "Tienes un bajón a media tarde", study: "insulina",
-        text: "Ese bajón suele ser un pico y caída de azúcar. El inositol actúa como mensajero de la insulina y ayuda a que tu energía sea más estable a lo largo del día." },
+        text: "Ese bajón suele ser un pico y caída de azúcar. El inositol actúa en tu cuerpo como mensajero de la insulina, la hormona que gestiona ese azúcar." },
       cansancio: { area: "energia", title: "Estás cansada aunque duermas", study: "insulina",
         text: "Cuando las células no responden bien a la insulina, la glucosa no se convierte en energía. Los estudios han visto que el mio-inositol mejora la resistencia a la insulina (el índice HOMA) en mujeres." },
       energia_ciclo: { area: "energia", title: "Tu energía cambia con el ciclo", study: "ciclo",
-        text: "Si tu energía sube y baja según el día del ciclo, tus hormonas están marcando el ritmo. El inositol ayuda a que ese ritmo sea más estable." },
+        text: "Si tu energía sube y baja según el día del ciclo, tus hormonas están marcando el ritmo. El inositol participa en las señales de esas hormonas y se estudia por su papel en el ciclo." },
       antojos_leve: { area: "metabolismo", title: "Tienes antojos de vez en cuando", study: "insulina",
-        text: "Las ganas de dulce suelen aparecer cuando baja la sensibilidad a la insulina, por ejemplo antes de la regla. El inositol ayuda a tu cuerpo a gestionar mejor el azúcar." },
+        text: "Las ganas de dulce suelen aparecer cuando baja la sensibilidad a la insulina, por ejemplo antes de la regla. El inositol participa en cómo tu cuerpo gestiona el azúcar y se ha estudiado en la resistencia a la insulina." },
       antojos: { area: "metabolismo", title: "Necesitas dulce a menudo", study: "insulina",
         text: "Los antojos frecuentes son una señal clásica de que la insulina no está trabajando bien. En los estudios, el mio-inositol bajó la insulina en ayunas y mejoró la sensibilidad a la insulina." },
       retencion: { area: "metabolismo", title: "Notas retención o hinchazón", study: null,
-        text: "La hinchazón suele cambiar a lo largo del ciclo. Con un ciclo más equilibrado, muchas mujeres notan menos altibajos." },
+        text: "La hinchazón suele cambiar a lo largo del ciclo. Observar cómo cambia a lo largo del mes te ayuda a entender a tu cuerpo." },
       peso: { area: "metabolismo", title: "Te cuesta perder la tripa", study: "peso",
         text: "La grasa abdominal está muy ligada a la insulina. Un metaanálisis vio que el mio-inositol reducía el IMC, sobre todo en mujeres con SOP o con sobrepeso. No es una pastilla para adelgazar, pero sí una buena ayuda." },
       peso_subida: { area: "metabolismo", title: "Has ganado peso sin cambiar tus hábitos", study: "peso",
@@ -843,7 +887,7 @@
         cansancio: { why: "Para tu energía", study: "ue",
           text: "El magnesio contribuye a disminuir el cansancio y la fatiga y al metabolismo energético normal (declaraciones autorizadas por la UE). Combinado con el inositol, ayudas a tu cuerpo a convertir la glucosa en energía." },
         insulina: { why: "Para tus antojos", study: "mg_insulina",
-          text: "Un metaanálisis de 21 ensayos vio que tomar magnesio más de 3 meses mejora la resistencia a la insulina. Es el mismo objetivo que el inositol, por una vía distinta: por eso se complementan tan bien." }
+          text: "Un metaanálisis de 21 ensayos vio que tomar magnesio más de 3 meses mejora la resistencia a la insulina. El inositol también se ha estudiado en la insulina, por otra vía: por eso muchas personas los combinan." }
       },
       vitc: {
         hierro: { why: "Para tus reglas abundantes", study: "vitc_hierro",
@@ -879,22 +923,22 @@
 
     // Enfoque del inositol según lo que más le preocupa
     var ANGLES = {
-      ciclo: { title: "Inositol para que tu ciclo recupere su ritmo", cta: "Quiero regular mi ciclo",
-        text: "Tus respuestas apuntan sobre todo a tu ciclo. Es justo donde el inositol tiene más evidencia: la guía internacional de SOP de 2023 lo reconoce como opción para mejorar la regularidad de la regla." },
+      ciclo: { title: "Inositol para cuidar tu ciclo", cta: "Quiero cuidar mi ciclo",
+        text: "Tus respuestas apuntan sobre todo a tu ciclo. Es justo donde el inositol tiene más evidencia: la guía internacional de SOP de 2023 lo recoge como opción que se puede valorar para la regularidad de la regla." },
       piel: { title: "Inositol para cuidar tu piel desde dentro", cta: "Quiero cuidar mi piel",
         text: "Tus respuestas apuntan sobre todo a tu piel. El acné hormonal no se arregla solo con cremas: el inositol actúa sobre los andrógenos, que están en el origen de los brotes." },
-      energia: { title: "Inositol para una energía más estable", cta: "Quiero recuperar mi energía",
-        text: "Tus respuestas apuntan sobre todo a tu energía. El inositol ayuda a tu cuerpo a usar mejor la insulina, para que la glucosa se convierta en energía y no en bajones." },
-      metabolismo: { title: "Inositol para tus antojos y tu metabolismo", cta: "Quiero equilibrar mi metabolismo",
+      energia: { title: "Inositol para cuidar tu energía", cta: "Quiero cuidar mi energía",
+        text: "Tus respuestas apuntan sobre todo a tu energía. El inositol es el mensajero que tu cuerpo usa para que la insulina haga su trabajo con la glucosa, y se ha estudiado en la resistencia a la insulina." },
+      metabolismo: { title: "Inositol para cuidar tu metabolismo", cta: "Quiero cuidar mi metabolismo",
         text: "Tus respuestas apuntan sobre todo a la insulina: antojos, tripa, peso que no se mueve. Es uno de los campos donde el inositol más se ha estudiado." },
-      animo: { title: "Inositol para tu calma y tu descanso", cta: "Quiero sentirme más tranquila",
-        text: "Tus respuestas apuntan sobre todo a tu ánimo y tu descanso. El mio-inositol participa en las señales de la serotonina y en los estudios ha mejorado el sueño y los síntomas premenstruales." },
+      animo: { title: "Inositol para tu calma y tu descanso", cta: "Quiero cuidar mi descanso",
+        text: "Tus respuestas apuntan sobre todo a tu ánimo y tu descanso. El mio-inositol participa en las señales de la serotonina y se ha estudiado en el sueño y en los síntomas premenstruales." },
       menopausia: { title: "Inositol para acompañarte en la menopausia", cta: "Quiero vivir mejor esta etapa",
         text: "En la menopausia, cuidar la insulina es cuidar tu peso, tu corazón y tus sofocos. En mujeres posmenopáusicas, el mio-inositol mejoró la resistencia a la insulina, los triglicéridos y la tensión." },
       fertilidad: { title: "Inositol para preparar tu cuerpo", cta: "Quiero cuidar mi fertilidad",
         text: "Si buscas embarazo, un ciclo regular y una buena ovulación son clave. En mujeres con SOP, el inositol con ácido fólico es uno de los complementos más estudiados. Coméntalo con tu ginecóloga." },
       equilibrio: { title: "Inositol para mantener tu equilibrio", cta: "Quiero cuidar mis hormonas",
-        text: "Tus hormonas están bastante bien. Mantener el equilibrio es mucho más fácil que recuperarlo, y el inositol es una forma sencilla de cuidar tu salud hormonal y metabólica." }
+        text: "Tus hormonas están bastante bien. Mantener el equilibrio es mucho más fácil que recuperarlo, y el inositol es una molécula que tu propio cuerpo fabrica y usa cada día." }
     };
 
     var RESULTS = {
@@ -991,11 +1035,12 @@
         '<img src="' + BEFORE_AFTER_IMG + '" alt="Antes y después del acné hormonal tomando Myo-Inositol" loading="lazy">' +
         '<blockquote class="proof-quote">“' + BEFORE_AFTER_QUOTE + '”<div class="stars">★★★★★</div></blockquote>' +
         (reels ? '<div class="reels">' + reels + '</div>' : '') +
-        '<p class="proof-note">Experiencia personal. Los resultados pueden variar de una persona a otra.</p>' +
+        '<p class="proof-note">Experiencia personal y real. Cada cuerpo es diferente y los resultados pueden variar de una persona a otra. No es un resultado garantizado.</p>' +
         '<h5 class="rev-title">Lo que dicen nuestras clientas</h5>' +
         '<div class="reviews">' + REVIEWS.map(function (r) {
           return '<div class="review"><div class="stars">★★★★★</div><p>“' + r.t + '”</p><span>' + r.p + ' · Opinión en TikTok Shop</span></div>';
         }).join("") + '</div>' +
+        '<p class="proof-note">Opiniones reales de clientas sobre su experiencia personal con nuestros productos.</p>' +
         '</div>';
     }
     function loadInstagram() {
@@ -1059,6 +1104,11 @@
           '<div class="rw-bar"><span style="width:' + Math.min(100, Math.max(giftBase, total) / GIFT_MIN * 100) + '%"></span>' +
           '<i class="mk' + (faltaShip <= 0 ? ' done' : '') + '" style="left:' + (FREE_SHIPPING / GIFT_MIN * 100) + '%">🚚<b>35 €</b></i>' +
           '<i class="mk' + (giftOn ? ' done' : '') + '" style="left:100%">🎁<b>60 €</b></i></div>';
+        document.getElementById("plan-list").innerHTML = keys.slice().sort(function (a, b) { return ROUTINE[a].order - ROUTINE[b].order; }).map(function (k) {
+          var R = ROUTINE[k];
+          return '<li><span class="pl-ico">' + R.icon + '</span><div><span class="pl-when">' + R.when + ' · ' + R.how + '</span>' +
+            '<strong>' + PRODUCTS[k].name + '</strong><p>' + R.why + '</p></div></li>';
+        }).join("");
         var giftRow = document.getElementById("gift-row");
         giftRow.style.display = giftOn ? "" : "none";
         if (giftOn && !box.dataset.gift) { box.dataset.gift = "1"; confettiSmall(); track("GiftUnlocked"); }
@@ -1277,16 +1327,19 @@
         '<h4 class="reasons-title">Crea tu rutina y ahorra hasta un 20%</h4>' +
         '<p class="reasons-sub">Tu ' + PRODUCTS[mainKey].name + ' ya tiene un 10%. Con 2 productos tienes un 15% y con 3 o más, un 20% en <strong>toda tu compra</strong>.</p>' +
         '<div class="tiers"><div class="tiers-bar"><span id="tiers-fill"></span></div>' + tiersHtml + '</div>' +
+        '<div class="ship rewards" id="ship"></div>' +
         '<div class="r-item fixed on" data-key="' + mainKey + '"><div class="r-row">' + productCard(mainKey) + '<span class="incl">✓ Incluido</span></div>' +
         '<p class="dur-label">¿Cuánto tiempo quieres cuidarte?</p>' + optionsHtml(mainKey) + '</div>' +
         itemsHtml +
+        '<div class="plan"><h5>Por qué cada cosa en tu rutina</h5>' +
+        '<p class="plan-sub">Ningún complemento lo hace todo. Cada uno trabaja en un frente distinto y, combinados según tus señales, cubren más que uno solo. Así quedaría tu día:</p>' +
+        '<ol class="plan-list" id="plan-list"></ol><p class="plan-foot">⏱️ Menos de 1 minuto al día · Todo en polvo, se disuelve en agua, zumo o café</p></div>' +
         proofHtml() +
         '<div class="summary">' +
         '<div class="sum-row"><span>Subtotal</span><span id="sum-sub"></span></div>' +
         '<div class="sum-row disc"><span id="sum-disc-label"></span><span id="sum-disc"></span></div>' +
         '<div class="sum-row gift" id="gift-row" style="display:none"><span>🎁 Vitamina C pura de regalo</span><span><s>15,95 €</s> 0,00 €</span></div>' +
         '<div class="sum-row total"><span>Total</span><span id="sum-total"></span></div>' +
-        '<div class="ship" id="ship"></div>' +
         '<p class="nudge" id="nudge"></p>' +
         '<a class="btn btn-accent track-buy" id="buy-routine" data-what="rutina" href="#">Comprar mi rutina →</a>' +
         '<p class="form-note">El descuento se aplica automáticamente al pagar.</p>' +
@@ -1302,19 +1355,21 @@
         '<h4 class="reasons-title">' + (notForHer ? 'Lo que nos dicen tus respuestas' : 'Por qué el inositol encaja contigo') + '</h4>' +
         '<p class="reasons-sub">Según tus respuestas y lo que dicen los estudios:</p>' +
         '<ul class="reasons stagger">' + reasonsHtml + '</ul>' +
+        '<p class="notice">' + STUDY_NOTICE + '</p>' +
         (notForHer
           ? '<div class="reco"><span class="reco-tag">Tu recomendación personalizada</span><h4>Lo que más encaja contigo: ' + PRODUCTS[mainKey].name + '</h4>' +
             '<p>Tus respuestas muestran pocas señales hormonales, así que ahora mismo el inositol no es lo que más necesitas. ' + M.why + ', lo que mejor encaja contigo es el ' + PRODUCTS[mainKey].name + '.</p>' +
             '<p>' + M.text + '</p>' + (STUDIES[M.study] ? '<p class="dose"><a href="' + STUDIES[M.study].url + '" target="_blank" rel="noopener" style="color:#c9f5e8">📚 ' + STUDIES[M.study].label + '</a></p>' : '') +
             productCard(mainKey)
           : '<div class="reco"><span class="reco-tag">Tu recomendación personalizada</span><h4>' + A.title + '</h4><p>' + A.text + '</p>' +
+            '<p class="body-note">🧬 <strong>Una molécula que tu cuerpo ya fabrica.</strong> El Myo-Inositol no es algo ajeno: tus riñones lo producen cada día y tus células lo usan como mensajero.</p>' +
             productCard("inositol") +
             '<p class="dose">Myo-Inositol 100% puro en polvo. Se toma 2 g al día (una cuchara dosificadora) y un tarro da para más de 3 meses, el tiempo en el que los estudios valoran los efectos.</p>') +
         '<p class="price-line"><s>' + PRODUCTS[mainKey].price + '</s> <strong>' + fmt(priceOf(mainKey) * .9) + '</strong> <span class="badge">-10% por hacer el test</span></p>' +
         '<a class="btn btn-accent track-buy" data-what="' + mainKey + '" href="' + mainLink(mainKey, level, angle) + '">' + (notForHer ? 'Quiero mi ' + PRODUCTS[mainKey].name : A.cta) + ' →</a>' +
         '<a class="reco-more" href="#routine">o crea tu rutina y ahorra hasta un 20% ↓</a></div>' +
         routineHtml +
-        '<p class="legal-note">Resultado orientativo. No sustituye la consulta con un profesional sanitario. Si estás embarazada, das el pecho o tomas medicación, consulta antes con tu médico. Los complementos alimenticios no deben utilizarse como sustitutos de una dieta equilibrada y un modo de vida saludable.</p>' +
+        '<p class="legal-note">Resultado orientativo. No sustituye la consulta con un profesional sanitario. Si estás embarazada, das el pecho o tomas medicación, consulta antes con tu médico. Los complementos alimenticios no son medicamentos y no están destinados a diagnosticar, tratar, curar o prevenir ninguna enfermedad, ni deben utilizarse como sustitutos de una dieta equilibrada y un modo de vida saludable.</p>' +
         '<div class="restart"><button type="button" class="btn btn-ghost" id="restart">Repetir el test</button></div>' +
         '</div>';
 
@@ -1479,7 +1534,7 @@
     document.getElementById("ba-section").innerHTML =
       '<img src="' + BEFORE_AFTER_IMG + '" alt="Antes y después del acné hormonal tomando Myo-Inositol" loading="lazy">' +
       '<div><blockquote class="proof-quote">“' + BEFORE_AFTER_QUOTE + '”<div class="stars">★★★★★</div></blockquote>' +
-      '<p class="proof-note">Experiencia personal. Los resultados pueden variar de una persona a otra.</p>' +
+      '<p class="proof-note">Experiencia personal y real. Cada cuerpo es diferente y los resultados pueden variar de una persona a otra. No es un resultado garantizado.</p>' +
       '<a href="#test" class="btn btn-accent" data-start>Hacer mi test gratis →</a></div>';
     document.querySelector("#ba-section [data-start]").addEventListener("click", function (e) { e.preventDefault(); quiz.scrollIntoView({ behavior: "smooth", block: "start" }); });
 
