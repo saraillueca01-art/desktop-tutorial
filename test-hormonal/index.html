@@ -334,7 +334,11 @@
     .check { display: flex; gap: 10px; align-items: flex-start; font-size: .88rem; color: var(--text); cursor: pointer; }
     .check input { flex: none; width: 20px; height: 20px; margin-top: 1px; accent-color: var(--accent); }
     .check a { color: var(--ink-soft); text-decoration: underline; }
-    .form-error { color: #c0392b; font-size: .88rem; min-height: 1em; margin: -4px 0 -6px; }
+    .field input.invalid { border-color: #c0392b; box-shadow: 0 0 0 4px #fbe3e0; }
+    .check.invalid { color: #c0392b; background: #fdf1ef; border-radius: 10px; padding: 8px; margin: -8px; }
+    .shake { animation: shake .4s; }
+    @keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+    .form-error { color: #c0392b; font-weight: 600; font-size: .88rem; min-height: 1em; margin: -4px 0 -6px; }
     .form-note { font-size: .8rem; text-align: center; }
     #lead-form .btn { width: 100%; margin-top: 4px; }
 
@@ -847,27 +851,37 @@
         '<div class="email-step fade-in">' +
         '<span class="q-emoji">💌</span><h3>¡Tu resultado está listo!</h3>' +
         '<p class="hint">Déjanos tu email para ver tu resultado y tu recomendación personalizada con descuento.</p>' +
-        '<form id="lead-form" novalidate>' +
+        '<div id="lead-form">' +
         '<label class="field"><span>Tu nombre</span><input type="text" name="name" autocomplete="given-name" placeholder="Laura"></label>' +
         '<label class="field"><span>Tu email *</span><input type="email" name="email" autocomplete="email" placeholder="tuemail@ejemplo.com" required></label>' +
-        '<label class="check"><input type="checkbox" name="privacy" required><span>He leído y acepto la <a href="' + PRIVACY_URL + '" target="_blank" rel="noopener">política de privacidad</a> *</span></label>' +
+        '<label class="check" id="privacy-row"><input type="checkbox" name="privacy"><span>He leído y acepto la <a href="' + PRIVACY_URL + '" target="_blank" rel="noopener">política de privacidad</a> *</span></label>' +
         '<label class="check"><input type="checkbox" name="marketing"><span>Quiero recibir mi resultado, consejos de salud hormonal y ofertas de Benissalud por email</span></label>' +
         '<p class="form-error" id="form-error"></p>' +
-        '<button type="submit" class="btn btn-accent pulse">Ver mi resultado →</button>' +
+        '<button type="button" class="btn btn-accent pulse" id="lead-submit">Ver mi resultado →</button>' +
         '<p class="form-note">🔒 No compartimos tus datos con nadie. Puedes darte de baja cuando quieras.</p>' +
-        '</form></div>' +
+        '</div></div>' +
         '<div class="quiz-nav"><button type="button" class="btn btn-ghost" id="back">← Atrás</button><span></span></div>';
       document.getElementById("back").addEventListener("click", function () { renderQuestion(); });
-      var form = document.getElementById("lead-form");
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        var email = form.email.value.trim(), err = document.getElementById("form-error");
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = "Escribe un email válido para recibir tu resultado."; form.email.focus(); return; }
-        if (!form.privacy.checked) { err.textContent = "Necesitamos que aceptes la política de privacidad."; return; }
-        lead = { email: email, name: form.name.value.trim(), marketing: form.marketing.checked };
+      // Sin <form>: así funciona también dentro de vistas previas que bloquean los formularios
+      var box = document.getElementById("lead-form");
+      var field = function (n) { return box.querySelector('[name="' + n + '"]'); };
+      var err = document.getElementById("form-error"), privacyRow = document.getElementById("privacy-row");
+      function fail(msg, el) {
+        err.textContent = msg;
+        if (el) { el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake", "invalid"); }
+      }
+      function submitLead() {
+        var email = field("email").value.trim();
+        err.textContent = ""; box.querySelectorAll(".invalid").forEach(function (x) { x.classList.remove("invalid"); });
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { fail("Escribe un email válido para ver tu resultado.", field("email")); field("email").focus(); return; }
+        if (!field("privacy").checked) { fail("Marca la casilla de la política de privacidad para continuar.", privacyRow); return; }
+        lead = { email: email, name: field("name").value.trim(), marketing: field("marketing").checked };
         track("Lead", { content_name: "test_hormonal_email" });
         showLoading();
-      });
+      }
+      document.getElementById("lead-submit").addEventListener("click", submitLead);
+      box.addEventListener("keydown", function (e) { if (e.key === "Enter" && e.target.tagName === "INPUT") { e.preventDefault(); submitLead(); } });
+      field("privacy").addEventListener("change", function () { privacyRow.classList.remove("invalid"); if (field("privacy").checked && /privacidad/.test(err.textContent)) err.textContent = ""; });
       track("ViewEmailStep");
     }
 
