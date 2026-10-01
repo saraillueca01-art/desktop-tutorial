@@ -1248,7 +1248,20 @@
         if (!field("privacy").checked) { fail("Marca la casilla de la política de privacidad para continuar.", privacyRow); return; }
         lead = { email: email, name: field("name").value.trim(), marketing: field("marketing").checked };
         track("Lead", { content_name: "test_hormonal_email" });
-        showLoading();
+        if (onShopify()) {
+          // Guardamos sus respuestas, enviamos el formulario de Shopify y al volver mostramos el resultado
+          var data = showResult(true);
+          lead.sent = true;
+          saveState();
+          showLoading(true);
+          sendLead(data, true);
+          // Red de seguridad: si el envío no sale de la página, mostramos el resultado igualmente
+          setTimeout(function () {
+            if (quiz.querySelector(".loading")) { loadState(); showResult(); }
+          }, 7000);
+        } else {
+          showLoading();
+        }
       }
       document.getElementById("lead-submit").addEventListener("click", submitLead);
       box.addEventListener("keydown", function (e) { if (e.key === "Enter" && e.target.tagName === "INPUT") { e.preventDefault(); submitLead(); } });
@@ -1258,9 +1271,17 @@
 
     // Envía el contacto a Shopify (formularios nativos de la tienda, mismo dominio)
     // Rellena el formulario nativo de Shopify y lo envía en segundo plano (sin salir de la página)
-    function shopifyForm(fields) {
+    function onShopify() { return !!(window.Shopify && window.Shopify.shop); }
+    function shopifyForm(fields, topLevel) {
       try {
         var form = document.getElementById(fields.form_type === "customer" ? "sh-customer" : "sh-contact");
+        if (topLevel) {
+          // Se envía en la propia página: si Shopify pide el captcha antispam, la clienta lo ve y lo resuelve
+          form.removeAttribute("target");
+          var rt = form.querySelector('[name="return_to"]');
+          if (!rt) { rt = document.createElement("input"); rt.type = "hidden"; rt.name = "return_to"; form.appendChild(rt); }
+          rt.value = location.pathname + "?th=resultado";
+        }
         Object.keys(fields).forEach(function (k) {
           if (k === "form_type") return;
           var el = form.querySelector('[name="' + k + '"]');
@@ -1269,29 +1290,41 @@
         if (form.requestSubmit) form.requestSubmit(); else form.submit();
       } catch (e) {}
     }
-    function sendLead(data) {
-      if (!lead) return;
+    function sendLead(data, topLevel) {
+      if (!lead || !onShopify()) return;
       if (lead.marketing) {
         // Con consentimiento: se crea como cliente suscrito al marketing, con etiquetas de su resultado
         var f = { form_type: "customer", "contact[email]": lead.email, "contact[tags]": data.tags.join(", ") };
         if (lead.name) f["contact[first_name]"] = lead.name;
-        shopifyForm(f);
+        shopifyForm(f, topLevel);
       } else {
         // Sin consentimiento de marketing: no se suscribe; la tienda recibe el contacto y su resultado por email
         shopifyForm({
           form_type: "contact", "contact[email]": lead.email, "contact[name]": lead.name || "",
           "contact[body]": "Test hormonal (sin consentimiento de marketing)\n" + data.summary
-        });
+        }, topLevel);
       }
     }
 
-    function showLoading() {
+    // Respuestas guardadas mientras se envía el formulario de Shopify
+    var STATE_KEY = "th_test_state", savedUtm = "";
+    function saveState() {
+      try { sessionStorage.setItem(STATE_KEY, JSON.stringify({ answers: answers, lead: lead, ts: Date.now(), utm: new URLSearchParams(location.search).get("utm_source") || "" })); } catch (e) {}
+    }
+    function loadState() {
+      try {
+        var st = JSON.parse(sessionStorage.getItem(STATE_KEY) || "null");
+        sessionStorage.removeItem(STATE_KEY);
+        return st && Date.now() - st.ts < 30 * 60 * 1000 ? st : null;
+      } catch (e) { return null; }
+    }
+    function showLoading(waitOnly) {
       quiz.innerHTML = '<div class="progress"><span style="width:100%"></span></div>' +
         '<div class="loading fade-in"><div class="spinner"></div><h3>Analizando tus respuestas…</h3><p>Estamos preparando tu perfil hormonal.</p></div>';
-      setTimeout(showResult, 1800);
+      if (!waitOnly) setTimeout(showResult, 1800);
     }
 
-    function showResult() {
+    function showResult(prepareOnly) {
       var score = 0, max = 0, areaPts = {}, picked = [];
       visibleQuestions().forEach(function (item) {
         var opt = item.options[answers[item.id]];
@@ -1339,6 +1372,20 @@
         ? [{ key: "inositol", reason: "mantener", reco: true }].concat(combos.filter(function (c) { return c.key !== mainKey; }).map(function (c) { c.reco = false; return c; }))
         : combos;
       if (notForHer && routineItems.length > 1) routineItems[1].reco = true;
+
+      // Datos del contacto (etiquetas para Shopify y resumen para el email a la tienda)
+      var answered = {}, c1 = notForHer ? (routineItems[1] || routineItems[0]) : combos[0];
+      visibleQuestions().forEach(function (item) { answered[item.q] = item.options[answers[item.id]][0]; });
+      var utm = new URLSearchParams(location.search).get("utm_source") || (savedUtm || "");
+      var leadData = {
+        tags: ["test-hormonal", TAG_PREFIX + "resultado-" + level, TAG_PREFIX + "perfil-" + angle, TAG_PREFIX + "principal-" + mainKey, TAG_PREFIX + "pack-" + c1.key]
+          .concat(utm ? [TAG_PREFIX + "origen-" + utm.toLowerCase().replace(/[^a-z0-9-]/g, "")] : []),
+        summary: "Resultado: " + r.tag + " (" + Math.round(ratio * 100) + "%)\nPerfil: " + A.title +
+          "\nProducto principal: " + PRODUCTS[mainKey].name + "\nComplemento recomendado: " + PRODUCTS[c1.key].name +
+          "\nSeñales: " + picked.map(function (p) { return p.msg.title; }).join("; ") +
+          "\n\nRespuestas:\n" + Object.keys(answered).map(function (q) { return "- " + q + " " + answered[q]; }).join("\n")
+      };
+      if (prepareOnly) return leadData;
       var tiersHtml = TIERS.map(function (t, i) {
         return '<div class="tier" data-i="' + i + '"><strong>-' + t.pct + '%</strong><span>' + t.label + '</span></div>';
       }).join("");
@@ -1417,17 +1464,7 @@
       });
       confetti();
 
-      var answered = {}, c1 = notForHer ? (routineItems[1] || routineItems[0]) : combos[0];
-      visibleQuestions().forEach(function (item) { answered[item.q] = item.options[answers[item.id]][0]; });
-      var utm = new URLSearchParams(location.search).get("utm_source");
-      sendLead({
-        tags: ["test-hormonal", TAG_PREFIX + "resultado-" + level, TAG_PREFIX + "perfil-" + angle, TAG_PREFIX + "principal-" + mainKey, TAG_PREFIX + "pack-" + c1.key]
-          .concat(utm ? [TAG_PREFIX + "origen-" + utm.toLowerCase().replace(/[^a-z0-9-]/g, "")] : []),
-        summary: "Resultado: " + r.tag + " (" + Math.round(ratio * 100) + "%)\nPerfil: " + A.title +
-          "\nProducto principal: " + PRODUCTS[mainKey].name + "\nComplemento recomendado: " + PRODUCTS[c1.key].name +
-          "\nSeñales: " + picked.map(function (p) { return p.msg.title; }).join("; ") +
-          "\n\nRespuestas:\n" + Object.keys(answered).map(function (q) { return "- " + q + " " + answered[q]; }).join("\n")
-      });
+      if (lead && !lead.sent) { lead.sent = true; sendLead(leadData, false); }
       track("CompleteRegistration", { content_name: "test_hormonal", status: level, content_category: angle });
       quiz.querySelectorAll(".track-buy").forEach(function (a) {
         a.addEventListener("click", function () {
@@ -1609,7 +1646,15 @@
     }
 
     document.getElementById("year").textContent = new Date().getFullYear();
-    renderQuestion();
+    var restored = loadState();
+    if (restored && restored.answers && restored.lead) {
+      answers = restored.answers; lead = restored.lead; lead.sent = true; savedUtm = restored.utm || "";
+      current = 1;
+      showResult();
+      setTimeout(function () { quiz.scrollIntoView({ block: "start" }); }, 50);
+    } else {
+      renderQuestion();
+    }
   </script>
 </body>
 </html>
