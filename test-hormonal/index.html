@@ -133,16 +133,7 @@
     .prod strong { display: block; font-size: .92rem; color: var(--ink); line-height: 1.3; }
     .prod span { font-size: .8rem; color: var(--muted); }
     .prod em { display: block; font-style: normal; font-weight: 600; font-size: .85rem; color: var(--ink); white-space: nowrap; }
-    .combo { border: 1.5px solid var(--line); border-radius: 20px; padding: 22px; margin-bottom: 14px; background: var(--white); }
-    .combo.best { border-color: var(--accent); background: #f6fcfa; }
     .combo-tag { display: inline-block; font-size: .72rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: .4rem; }
-    .combo h5 { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.2rem; color: var(--ink); margin-bottom: .9rem; }
-    .combo .prods { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin-bottom: .9rem; }
-    .combo .prods .prod { margin: 0; background: var(--bg); flex-direction: column; text-align: center; padding: 10px; height: 100%; }
-    .combo .plus { font-size: 1.3rem; color: var(--accent); }
-    .combo p { font-size: .93rem; color: var(--text); }
-    .combo .study { display: inline-block; margin: .5rem 0 1rem; font-size: .78rem; color: var(--ink-soft); text-decoration: underline; text-underline-offset: 2px; }
-    .combo .btn { width: 100%; }
     .btn-line { background: var(--white); color: var(--ink); border: 1.5px solid var(--ink); box-shadow: none; }
     .btn-line:hover { background: var(--ink); color: var(--white); }
     .legal-note { font-size: .75rem; color: var(--muted); margin-top: 1rem; }
@@ -204,6 +195,8 @@
       .hero .btn { width: 100%; }
       .quiz { padding: 24px 18px; }
       .sticky-cta { display: block; }
+      .routine { padding: 16px 12px; }
+      .tier strong { font-size: 1.2rem; }
     }
 
     /* ---------- Movimiento e interacción ---------- */
@@ -283,15 +276,55 @@
     .score-row span:last-child { font-size: .85rem; color: var(--muted); }
     .confetti { position: fixed; top: -12px; width: 9px; height: 14px; border-radius: 2px; z-index: 100; pointer-events: none; animation: fall linear forwards; }
     @keyframes fall { to { transform: translateY(105vh) rotate(720deg); opacity: .8; } }
-    .combo { transition: transform .3s, box-shadow .3s; }
-    .combo:hover { transform: translateY(-4px); box-shadow: 0 18px 36px rgba(14, 58, 79, .08); }
-    .combo.best { border-color: var(--accent); background: linear-gradient(180deg, #f2fbf8, #ffffff); }
     .faq-section { background: var(--white); }
     details { transition: background .2s; }
     details[open] { background: linear-gradient(90deg, var(--bg-alt), transparent); border-radius: 12px; padding-left: 12px; }
     summary::after { transition: transform .3s; }
     details[open] summary::after { transform: rotate(180deg); }
 
+    .price-line { margin: -.4rem 0 1rem; color: #cfe6ee; }
+    .price-line s { opacity: .7; }
+    .price-line strong { font-size: 1.3rem; color: var(--white); margin: 0 6px; }
+    .badge { display: inline-block; font-size: .72rem; font-weight: 600; padding: 4px 10px; border-radius: 99px; background: rgba(255,255,255,.16); color: #c9f5e8; }
+    .reco-more { display: block; text-align: center; margin-top: .9rem; font-size: .88rem; color: #c9f5e8; text-decoration: underline; text-underline-offset: 3px; }
+    .routine { margin-top: 1.8rem; padding: 22px; border-radius: 22px; border: 1.5px solid var(--line); background: linear-gradient(180deg, #f3fafc, #ffffff 30%); scroll-margin-top: 16px; }
+    .routine .reasons-title { margin-top: .2rem; }
+    .tiers { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 1rem 0 1.2rem; padding-top: 14px; }
+    .tiers-bar { position: absolute; top: 0; left: 16%; right: 16%; height: 6px; border-radius: 99px; background: var(--line); overflow: hidden; }
+    .tiers-bar span { display: block; height: 100%; width: 0; background: var(--grad); transition: width .5s cubic-bezier(.2, .7, .2, 1); }
+    .tier { text-align: center; padding: 10px 4px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--white); transition: all .3s; }
+    .tier strong { display: block; font-family: "Fraunces", serif; font-weight: 400; font-size: 1.4rem; color: var(--muted); line-height: 1.1; transition: color .3s; }
+    .tier span { font-size: .72rem; color: var(--muted); }
+    .tier.done strong { color: var(--ink-soft); }
+    .tier.active { border-color: var(--accent); background: var(--accent-soft); transform: translateY(-3px); box-shadow: 0 10px 22px rgba(20, 163, 139, .18); }
+    .tier.active strong { color: var(--accent); }
+    .r-item { border: 1.5px solid var(--line); border-radius: 16px; padding: 12px; margin-bottom: 10px; background: var(--white); transition: border-color .25s, background .25s, transform .25s; }
+    .r-item.on, .r-item.fixed { border-color: var(--accent); background: #f2fbf8; }
+    .r-item.reco-item:not(.on) { border-style: dashed; border-color: #9fd9c9; }
+    .r-row { display: flex; align-items: center; gap: 10px; }
+    .r-row .prod { flex: 1; min-width: 0; margin: 0; background: transparent; padding: 0; }
+    .r-row .prod img { width: 48px; height: 48px; }
+    .r-item p { font-size: .9rem; color: var(--text); margin-top: .6rem; }
+    .r-item .study { display: inline-block; margin-top: .4rem; font-size: .76rem; color: var(--ink-soft); text-decoration: underline; text-underline-offset: 2px; }
+    .r-item details { border: 0; padding: 6px 0 0; }
+    .r-item details[open] { background: none; padding-left: 0; }
+    .r-item summary { font-size: .82rem; font-weight: 500; color: var(--ink-soft); }
+    .r-item summary::after { font-size: 1rem; }
+    .incl { flex: none; font-size: .8rem; font-weight: 600; color: var(--accent); padding: 8px 12px; }
+    .toggle { flex: none; position: relative; overflow: hidden; padding: 9px 12px; white-space: nowrap; border-radius: 99px; border: 1.5px solid var(--accent); background: var(--white); color: var(--accent); font: 600 .85rem "Inter", sans-serif; cursor: pointer; transition: all .25s; }
+    .toggle .t-on { display: none; }
+    .toggle[aria-pressed="true"] { background: var(--grad); border-color: transparent; color: var(--white); }
+    .toggle[aria-pressed="true"] .t-on { display: inline; }
+    .toggle[aria-pressed="true"] .t-add { display: none; }
+    .toggle:active { transform: scale(.95); }
+    .summary { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--line); }
+    .sum-row { display: flex; justify-content: space-between; font-size: .92rem; color: var(--text); padding: 3px 0; }
+    .sum-row.disc { color: var(--accent); font-weight: 600; }
+    .sum-row.total { font-size: 1.15rem; font-weight: 700; color: var(--ink); padding-top: 8px; }
+    .bump { display: inline-block; animation: bump .45s cubic-bezier(.2, 1.6, .4, 1); }
+    @keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.18); color: var(--accent); } 100% { transform: scale(1); } }
+    .nudge { font-size: .88rem; color: var(--ink); background: var(--blue-soft); border-radius: 12px; padding: 10px 12px; margin: .8rem 0; }
+    .summary .btn { width: 100%; }
     .email-step h3 { font-size: clamp(1.4rem, 3.2vw, 1.8rem); margin-bottom: .4rem; }
     .email-step .hint { margin-bottom: 1.2rem; }
     #lead-form { display: grid; gap: 14px; }
@@ -428,6 +461,12 @@
     var KLAVIYO_PUBLIC_KEY = "VHa7GD";
     var KLAVIYO_LIST_ID = "WDUiwY";
     var PRIVACY_URL = SHOP + "/policies/privacy-policy";
+    // Descuentos creados en Shopify: solo inositol / +1 producto / +2 o más
+    var TIERS = [
+      { min: 1, pct: 10, code: "TESTHORMONAL10", label: "Solo inositol" },
+      { min: 2, pct: 15, code: "TESTHORMONAL15", label: "+1 producto" },
+      { min: 3, pct: 20, code: "TESTHORMONAL20", label: "+2 productos" }
+    ];
     // variant = ID de la variante de Shopify que se añade al carrito en el pack
     var PRODUCTS = {
       inositol: { name: "Myo-Inositol", detail: "Tarro de cristal 200 g", price: "24,95 €", handle: "myo-inositol", variant: "56619259330885",
@@ -616,11 +655,14 @@
           text: "El músculo es el órgano que más azúcar consume. Ganar músculo con ayuda de la creatina hace que tu cuerpo use mejor la glucosa, igual que el inositol." }
       },
       colageno: {
+        piel: { why: "Para tu piel", study: "peptan",
+          text: "El colágeno es la proteína que da firmeza a la piel y su producción baja a partir de los 25 años. En ensayos con placebo, el colágeno Peptan®, el mismo de este producto, mejoró la hidratación de la piel." },
         menopausia: { why: "Para tu piel en esta etapa", study: "peptan",
           text: "Con la menopausia baja el colágeno de la piel. En ensayos con placebo, el colágeno Peptan®, el mismo de este producto, mejoró la hidratación de la piel." }
       }
     };
     var COMBO_DEFAULT = { key: "magnesio", reason: "cansancio" };
+    var DEFAULT_REASON = { magnesio: "cansancio", vitc: "cansancio", creatina: "animo", colageno: "piel" };
 
     // Enfoque del inositol según lo que más le preocupa
     var ANGLES = {
@@ -681,10 +723,6 @@
     function packLink(keys, level, angle) {
       return withParams(SHOP + "/cart/" + keys.map(function (k) { return PRODUCTS[k].variant + ":1"; }).join(","), level, angle);
     }
-    function euros(keys) {
-      var total = keys.reduce(function (t, k) { return t + parseFloat(PRODUCTS[k].price.replace(",", ".")); }, 0);
-      return total.toFixed(2).replace(".", ",") + " €";
-    }
 
     // Elige los complementos que mejor encajan con sus respuestas
     function pickCombos(picked) {
@@ -699,7 +737,67 @@
       var list = Object.keys(pts).sort(function (a, b) { return pts[b] - pts[a]; })
         .map(function (k) { return { key: k, reason: why[k].r }; });
       if (!list.length) list.push(COMBO_DEFAULT);
-      return list.slice(0, 2);
+      list = list.slice(0, 2).map(function (c) { c.reco = true; return c; });
+      Object.keys(DEFAULT_REASON).forEach(function (k) {
+        if (list.every(function (c) { return c.key !== k; })) list.push({ key: k, reason: DEFAULT_REASON[k], reco: false });
+      });
+      return list;
+    }
+
+    function tierFor(n) { return TIERS.filter(function (t) { return n >= t.min; }).pop(); }
+    function fmt(n) { return n.toFixed(2).replace(".", ",") + " €"; }
+    function priceOf(k) { return parseFloat(PRODUCTS[k].price.replace(",", ".")); }
+    function routineLink(keys, level, angle) {
+      var url = new URL(packLink(keys, level, angle));
+      url.searchParams.set("discount", tierFor(keys.length).code);
+      return url.toString();
+    }
+    function inositolLink(level, angle) {
+      return withParams(SHOP + "/discount/" + TIERS[0].code + "?redirect=" + encodeURIComponent("/products/" + PRODUCTS.inositol.handle), level, angle);
+    }
+
+    function setupRoutine(level, angle, preselect) {
+      var box = document.getElementById("routine"), chosen = [preselect];
+      function update() {
+        var keys = ["inositol"].concat(chosen), t = tierFor(keys.length);
+        var sub = keys.reduce(function (a, k) { return a + priceOf(k); }, 0);
+        // El 10% solo se aplica al inositol; 15% y 20%, a toda la compra
+        var base = t.min === 1 ? priceOf("inositol") : sub, disc = base * t.pct / 100;
+        box.querySelectorAll(".r-item[data-key]").forEach(function (el) {
+          var on = chosen.indexOf(el.dataset.key) > -1;
+          el.classList.toggle("on", on);
+          el.querySelector(".toggle").setAttribute("aria-pressed", on);
+        });
+        box.querySelectorAll(".tier").forEach(function (el, i) { el.classList.toggle("active", TIERS[i] === t); el.classList.toggle("done", TIERS[i].min <= keys.length); });
+        document.getElementById("tiers-fill").style.width = (Math.min(keys.length, 3) - 1) / 2 * 100 + "%";
+        document.getElementById("sum-sub").textContent = fmt(sub);
+        document.getElementById("sum-disc-label").textContent = "Descuento -" + t.pct + "%" + (t.min === 1 ? " (inositol)" : "");
+        document.getElementById("sum-disc").textContent = "-" + fmt(disc);
+        bump(document.getElementById("sum-total"), fmt(sub - disc));
+        var next = TIERS.filter(function (x) { return x.min > keys.length; })[0];
+        document.getElementById("nudge").innerHTML = next
+          ? "👉 Añade " + (next.min - keys.length) + " producto más y consigue un <strong>" + next.pct + "% en toda tu compra</strong>."
+          : "🎉 ¡Tienes el descuento máximo! Te ahorras <strong>" + fmt(disc) + "</strong>.";
+        var buy = document.getElementById("buy-routine");
+        buy.href = routineLink(keys, level, angle);
+        buy.dataset.what = "rutina_" + keys.length;
+        buy.textContent = "Comprar mi rutina con -" + t.pct + "% · " + fmt(sub - disc) + " →";
+      }
+      box.querySelectorAll(".r-item[data-key] .toggle").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          var k = btn.closest(".r-item").dataset.key, i = chosen.indexOf(k);
+          if (i > -1) chosen.splice(i, 1); else chosen.push(k);
+          ripple(btn, e);
+          track("RoutineChange", { content_name: k, value: chosen.length });
+          update();
+        });
+      });
+      update();
+    }
+    function bump(el, text) {
+      if (el.textContent === text) return;
+      el.textContent = text;
+      el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump");
     }
 
     function productCard(key) {
@@ -852,17 +950,33 @@
       }).join("");
 
       var combos = pickCombos(picked);
-      var combosHtml = combos.map(function (c, i) {
-        var C = COMBOS[c.key][c.reason], s = STUDIES[C.study], keys = ["inositol", c.key];
-        return '<div class="combo' + (i === 0 ? ' best' : '') + '">' +
-          '<span class="combo-tag">' + (i === 0 ? '★ Tu pack ideal' : 'También encaja contigo') + ' · ' + C.why + '</span>' +
-          '<h5>Myo-Inositol + ' + PRODUCTS[c.key].name + '</h5>' +
-          '<div class="prods">' + productCard("inositol") + '<b class="plus">+</b>' + productCard(c.key) + '</div>' +
-          '<p>' + C.text + '</p>' +
-          (s ? '<a class="study" href="' + s.url + '" target="_blank" rel="noopener">📚 ' + s.label + '</a>' : '') +
-          '<a class="btn ' + (i === 0 ? 'btn-accent' : 'btn-line') + ' track-buy" data-what="pack_' + c.key + '" href="' + packLink(keys, level, angle) + '">Comprar el pack · ' + euros(keys) + ' →</a>' +
+      var tiersHtml = TIERS.map(function (t, i) {
+        return '<div class="tier" data-i="' + i + '"><strong>-' + t.pct + '%</strong><span>' + t.label + '</span></div>';
+      }).join("");
+      var itemsHtml = combos.map(function (c) {
+        var C = COMBOS[c.key][c.reason], s = STUDIES[C.study];
+        var body = '<p>' + C.text + '</p>' + (s ? '<a class="study" href="' + s.url + '" target="_blank" rel="noopener">📚 ' + s.label + '</a>' : '');
+        return '<div class="r-item' + (c.reco ? ' reco-item' : '') + '" data-key="' + c.key + '">' +
+          (c.reco ? '<span class="combo-tag">★ Recomendado para ti · ' + C.why + '</span>' : '') +
+          '<div class="r-row">' + productCard(c.key) + '<button type="button" class="toggle" aria-pressed="false"><span class="t-add">+ Añadir</span><span class="t-on">✓ Añadido</span></button></div>' +
+          (c.reco ? body : '<details><summary>' + C.why + ': ¿por qué?</summary>' + body + '</details>') +
           '</div>';
       }).join("");
+      var routineHtml = '<div class="routine" id="routine">' +
+        '<span class="combo-tag">🎁 Descuento exclusivo del test</span>' +
+        '<h4 class="reasons-title">Crea tu rutina y ahorra hasta un 20%</h4>' +
+        '<p class="reasons-sub">Tu Myo-Inositol ya tiene un 10%. Añade complementos y el descuento sube para <strong>toda tu compra</strong>.</p>' +
+        '<div class="tiers"><div class="tiers-bar"><span id="tiers-fill"></span></div>' + tiersHtml + '</div>' +
+        '<div class="r-item fixed"><div class="r-row">' + productCard("inositol") + '<span class="incl">✓ Incluido</span></div></div>' +
+        itemsHtml +
+        '<div class="summary">' +
+        '<div class="sum-row"><span>Subtotal</span><span id="sum-sub"></span></div>' +
+        '<div class="sum-row disc"><span id="sum-disc-label"></span><span id="sum-disc"></span></div>' +
+        '<div class="sum-row total"><span>Total</span><span id="sum-total"></span></div>' +
+        '<p class="nudge" id="nudge"></p>' +
+        '<a class="btn btn-accent track-buy" id="buy-routine" data-what="rutina" href="#">Comprar mi rutina →</a>' +
+        '<p class="form-note">El descuento se aplica automáticamente al pagar.</p>' +
+        '</div></div>';
 
       quiz.innerHTML = '<div class="result fade-in">' +
         '<span class="result-tag ' + level + '">' + r.tag + '</span>' +
@@ -877,10 +991,10 @@
         '<div class="reco"><span class="reco-tag">Tu recomendación personalizada</span><h4>' + A.title + '</h4><p>' + A.text + '</p>' +
         productCard("inositol") +
         '<p class="dose">Myo-Inositol puro en polvo. En los estudios se suelen usar entre 2 y 4 g al día y los efectos se valoran a partir de los 3 meses de uso continuado.</p>' +
-        '<a class="btn btn-accent track-buy" data-what="inositol" href="' + productLink("inositol", level, angle) + '">' + A.cta + ' →</a></div>' +
-        '<h4 class="reasons-title">Potencia tu inositol</h4>' +
-        '<p class="reasons-sub">Según tus respuestas, esta es la combinación que más sentido tiene para ti:</p>' +
-        combosHtml +
+        '<p class="price-line"><s>' + PRODUCTS.inositol.price + '</s> <strong>' + fmt(priceOf("inositol") * .9) + '</strong> <span class="badge">-10% por hacer el test</span></p>' +
+        '<a class="btn btn-accent track-buy" data-what="inositol" href="' + inositolLink(level, angle) + '">' + A.cta + ' →</a>' +
+        '<a class="reco-more" href="#routine">o crea tu rutina y ahorra hasta un 20% ↓</a></div>' +
+        routineHtml +
         '<p class="legal-note">Resultado orientativo. No sustituye la consulta con un profesional sanitario. Si estás embarazada, das el pecho o tomas medicación, consulta antes con tu médico. Los complementos alimenticios no deben utilizarse como sustitutos de una dieta equilibrada y un modo de vida saludable.</p>' +
         '<div class="restart"><button type="button" class="btn btn-ghost" id="restart">Repetir el test</button></div>' +
         '</div>';
@@ -890,7 +1004,8 @@
         if (dot) dot.style.left = Math.max(4, Math.min(96, ratio * 100)) + "%";
       }, 60);
       countUp(document.getElementById("score-num"), Math.round(ratio * 100));
-      quiz.querySelectorAll(".stagger > *, .combo, .reco").forEach(function (el, i) {
+      setupRoutine(level, angle, combos[0].key);
+      quiz.querySelectorAll(".stagger > *, .routine, .reco").forEach(function (el, i) {
         el.style.animationDelay = (250 + i * 120) + "ms";
         if (!el.parentNode.classList.contains("stagger")) { el.classList.add("pop-in"); }
       });
