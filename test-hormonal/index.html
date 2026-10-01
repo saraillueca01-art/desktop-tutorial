@@ -10,17 +10,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --ink: #4a2c3a;
-      --ink-soft: #8a5a6e;
-      --text: #3a2f33;
-      --muted: #7a6c70;
-      --bg: #fdf8f5;
-      --bg-alt: #f6ebe6;
+      --ink: #0e3a4f;
+      --ink-soft: #2b7a9a;
+      --text: #1f3340;
+      --muted: #5f7480;
+      --bg: #ffffff;
+      --bg-alt: #f2f9fb;
       --white: #ffffff;
-      --line: #eadcd5;
-      --accent: #c97b84;
-      --accent-soft: #f3d9d6;
-      --sage: #9bb09a;
+      --line: #dceaf0;
+      --accent: #14a38b;
+      --accent-soft: #dcf4ee;
+      --blue: #2f80c8;
+      --blue-soft: #e3f0fb;
+      --sage: #4fbf8f;
+      --grad: linear-gradient(120deg, #2f80c8 0%, #14a38b 100%);
       --radius: 24px;
       --max: 1080px;
     }
@@ -48,20 +51,20 @@
       padding: 17px 34px; border-radius: 999px; border: 0;
       background: var(--ink); color: var(--white); text-decoration: none;
       font: 600 1rem "Inter", sans-serif; letter-spacing: .01em; cursor: pointer;
-      box-shadow: 0 10px 30px rgba(74, 44, 58, .22); transition: transform .15s, background .2s;
+      box-shadow: 0 10px 30px rgba(14, 58, 79, .22); transition: transform .15s, background .2s;
     }
-    .btn:hover { background: #5d3849; transform: translateY(-1px); }
-    .btn-accent { background: var(--accent); box-shadow: 0 10px 30px rgba(201, 123, 132, .35); }
-    .btn-accent:hover { background: #b96a74; }
+    .btn:hover { background: #164e66; transform: translateY(-1px); }
+    .btn-accent { background: var(--accent); box-shadow: 0 10px 30px rgba(20, 163, 139, .35); }
+    .btn-accent:hover { background: #0f8a75; }
     .btn-ghost { background: none; box-shadow: none; color: var(--ink-soft); padding: 10px 14px; font-weight: 500; }
     .btn-ghost:hover { background: none; color: var(--ink); transform: none; }
 
     /* ---------- Barra superior ---------- */
-    .topbar { background: var(--ink); color: #f6e6e3; text-align: center; font-size: .82rem; padding: 9px 16px; }
+    .topbar { background: var(--grad); color: #d9eef5; text-align: center; font-size: .82rem; padding: 9px 16px; }
     .topbar strong { color: var(--white); }
 
     /* ---------- Hero ---------- */
-    .hero { padding: 64px 0 80px; background: radial-gradient(ellipse at 80% 0%, var(--accent-soft) 0%, transparent 55%), radial-gradient(ellipse at 0% 100%, #e4ece2 0%, transparent 50%); }
+    .hero { padding: 64px 0 80px; background: var(--white); position: relative; overflow: hidden; isolation: isolate; }
     .hero-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 56px; align-items: center; }
     .hero h1 { font-size: clamp(2.3rem, 5.4vw, 3.9rem); margin-bottom: 1.3rem; }
     .hero .lead { font-size: 1.12rem; max-width: 520px; margin-bottom: 2rem; color: var(--text); }
@@ -69,7 +72,7 @@
     .hero-meta span::before { content: "✓"; color: var(--sage); font-weight: 700; margin-right: 7px; }
     .hero-card {
       background: var(--white); border-radius: var(--radius); padding: 30px; border: 1px solid var(--line);
-      box-shadow: 0 30px 60px rgba(74, 44, 58, .08);
+      box-shadow: 0 30px 60px rgba(14, 58, 79, .08);
     }
     .hero-card h3 { font-size: 1.25rem; margin-bottom: 1rem; }
     .signs { list-style: none; display: grid; gap: 10px; }
@@ -80,16 +83,16 @@
     /* ---------- Cómo funciona ---------- */
     .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
     .step { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; }
-    .step .num { font-family: "Fraunces", serif; font-size: 2.2rem; color: var(--accent); line-height: 1; margin-bottom: .8rem; }
+    .step .num { font-family: "Fraunces", serif; font-size: 2.2rem; line-height: 1; margin-bottom: .8rem; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline-block; }
     .step h3 { font-size: 1.15rem; margin-bottom: .4rem; }
     h2 { font-size: clamp(1.8rem, 3.6vw, 2.5rem); margin-bottom: .8rem; }
     .section-intro { max-width: 600px; margin: 0 auto; }
 
     /* ---------- Quiz ---------- */
-    #test { background: var(--bg-alt); }
+    #test { background: var(--white); position: relative; overflow: hidden; }
     .quiz {
       max-width: 680px; margin: 40px auto 0; background: var(--white); border-radius: var(--radius);
-      border: 1px solid var(--line); padding: 36px; box-shadow: 0 30px 60px rgba(74, 44, 58, .07);
+      border: 1px solid var(--line); padding: 36px; box-shadow: 0 30px 60px rgba(14, 58, 79, .07);
       scroll-margin-top: 16px;
     }
     .progress { height: 6px; background: var(--bg-alt); border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
@@ -104,7 +107,7 @@
       font: 500 1rem "Inter", sans-serif; color: var(--text); cursor: pointer; transition: border-color .15s, background .15s;
     }
     .option::before { content: ""; flex: none; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--line); transition: all .15s; }
-    .option:hover { border-color: var(--accent); background: #fffafa; }
+    .option:hover { border-color: var(--accent); background: #f6fcfa; }
     .option.selected { border-color: var(--accent); background: var(--accent-soft); }
     .option.selected::before { border-color: var(--accent); background: var(--accent); box-shadow: inset 0 0 0 4px var(--accent-soft); }
     .quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.4rem; min-height: 44px; }
@@ -116,13 +119,13 @@
     .spinner { width: 46px; height: 46px; border-radius: 50%; border: 4px solid var(--accent-soft); border-top-color: var(--accent); margin: 0 auto 1.2rem; animation: spin .9s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .result-tag { display: inline-block; padding: 6px 14px; border-radius: 99px; font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 1rem; }
-    .result-tag.low { background: #e4ece2; color: #4d6a4b; }
-    .result-tag.mid { background: #f8e8d3; color: #8a5a1f; }
-    .result-tag.high { background: var(--accent-soft); color: #8e3f4a; }
+    .result-tag.low { background: #dff3ea; color: #137a63; }
+    .result-tag.mid { background: #e3f0fb; color: #1f5f99; }
+    .result-tag.high { background: var(--accent-soft); color: #0e3a4f; }
     .result h3 { font-size: clamp(1.5rem, 3.4vw, 1.9rem); margin-bottom: .8rem; }
     .result > p { color: var(--text); margin-bottom: 1.2rem; }
     .meter { margin: 1.4rem 0; }
-    .meter-bar { height: 10px; border-radius: 99px; background: linear-gradient(90deg, var(--sage), #e6b980, var(--accent)); position: relative; }
+    .meter-bar { height: 10px; border-radius: 99px; background: linear-gradient(90deg, var(--sage), #2f80c8, var(--accent)); position: relative; }
     .meter-dot { position: absolute; top: 50%; width: 22px; height: 22px; border-radius: 50%; background: var(--white); border: 4px solid var(--ink); transform: translate(-50%, -50%); transition: left .8s ease; left: 0; }
     .meter-labels { display: flex; justify-content: space-between; font-size: .75rem; color: var(--muted); margin-top: 8px; }
     .prod { display: flex; align-items: center; gap: 12px; background: var(--white); border-radius: 14px; padding: 8px 12px 8px 8px; margin: 0 0 1rem; color: var(--text); }
@@ -131,7 +134,7 @@
     .prod span { font-size: .8rem; color: var(--muted); }
     .prod em { display: block; font-style: normal; font-weight: 600; font-size: .85rem; color: var(--ink); white-space: nowrap; }
     .combo { border: 1.5px solid var(--line); border-radius: 20px; padding: 22px; margin-bottom: 14px; background: var(--white); }
-    .combo.best { border-color: var(--accent); background: #fffafa; }
+    .combo.best { border-color: var(--accent); background: #f6fcfa; }
     .combo-tag { display: inline-block; font-size: .72rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: .4rem; }
     .combo h5 { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.2rem; color: var(--ink); margin-bottom: .9rem; }
     .combo .prods { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin-bottom: .9rem; }
@@ -150,11 +153,11 @@
     .reasons li strong { display: block; color: var(--ink); margin-bottom: .3rem; }
     .reasons li p { font-size: .93rem; color: var(--text); }
     .reasons .study { display: inline-block; margin-top: .5rem; font-size: .78rem; color: var(--ink-soft); text-decoration: underline; text-underline-offset: 2px; }
-    .reco-tag { display: inline-block; font-size: .7rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #e9b8bd; margin-bottom: .5rem; }
-    .reco .dose { font-size: .85rem; color: #d9c2c5; border-top: 1px solid rgba(255,255,255,.15); padding-top: .9rem; }
-    .reco { background: var(--ink); color: #f6e6e3; border-radius: 20px; padding: 26px; }
+    .reco-tag { display: inline-block; font-size: .7rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #8fe0cb; margin-bottom: .5rem; }
+    .reco .dose { font-size: .85rem; color: #b9d6e0; border-top: 1px solid rgba(255,255,255,.15); padding-top: .9rem; }
+    .reco { background: linear-gradient(145deg, #0e3a4f 0%, #145b6e 60%, #13806f 100%); color: #d9eef5; border-radius: 20px; padding: 26px; }
     .reco h4 { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.35rem; color: var(--white); margin-bottom: .5rem; }
-    .reco p { color: #ead6d6; margin-bottom: 1.3rem; font-size: .95rem; }
+    .reco p { color: #cfe6ee; margin-bottom: 1.3rem; font-size: .95rem; }
     .reco .btn { width: 100%; }
     .restart { margin-top: 1rem; text-align: center; }
 
@@ -175,10 +178,13 @@
     details p { margin-top: .7rem; }
 
     /* ---------- CTA final y pie ---------- */
-    .final { background: var(--ink); text-align: center; }
+    .final { background: var(--white); text-align: center; }
+    .final-box { background: var(--grad); border-radius: 32px; padding: 64px 24px; position: relative; overflow: hidden; }
     .final h2 { color: var(--white); }
-    .final p { color: #ead6d6; margin-bottom: 2rem; }
-    .final .btn { background: var(--accent); }
+    .final h2 em { color: #c9f5e8; }
+    .final p { color: #cfe6ee; margin-bottom: 2rem; }
+    .final .btn { background: var(--white); color: var(--ink); }
+    .final p { color: #e6f4f8; }
     footer { padding: 32px 0 110px; font-size: .78rem; text-align: center; }
     footer p { max-width: 720px; margin: 0 auto .6rem; }
 
@@ -199,34 +205,143 @@
       .quiz { padding: 24px 18px; }
       .sticky-cta { display: block; }
     }
+
+    /* ---------- Movimiento e interacción ---------- */
+    .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: .55; z-index: -1; pointer-events: none; animation: float 14s ease-in-out infinite alternate; }
+    .b1 { width: 420px; height: 420px; background: #bfe0f7; top: -120px; right: -80px; }
+    .b2 { width: 320px; height: 320px; background: #c4eedf; bottom: -120px; left: -100px; animation-duration: 18s; }
+    .b3 { width: 220px; height: 220px; background: #d6f0f6; top: 40%; left: 45%; animation-duration: 11s; }
+    .b4 { width: 380px; height: 380px; background: #d2ecf9; top: 10%; left: -160px; animation-duration: 16s; }
+    .b5 { width: 340px; height: 340px; background: #cdf1e4; bottom: 0; right: -140px; animation-duration: 20s; }
+    #test > .container { position: relative; z-index: 1; }
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(40px, 30px) scale(1.08); }
+      100% { transform: translate(-30px, 50px) scale(.95); }
+    }
+
+    .rotator { display: inline-grid; vertical-align: bottom; }
+    .rotator .word { grid-area: 1 / 1; opacity: 0; transform: translateY(.5em); transition: opacity .5s, transform .5s; white-space: nowrap;
+      background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .08em; }
+    .rotator .word.is-on { opacity: 1; transform: none; }
+    .rotator .word.is-out { opacity: 0; transform: translateY(-.5em); }
+    h2 em { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s cubic-bezier(.2, .7, .2, 1); }
+    .reveal.in { opacity: 1; transform: none; }
+
+    .btn { position: relative; overflow: hidden; }
+    .btn-accent { background: var(--grad); }
+    .btn-accent:hover { background: var(--grad); filter: brightness(1.08); }
+    .pulse { animation: pulse 2.4s ease-in-out infinite; }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 10px 30px rgba(20, 163, 139, .30), 0 0 0 0 rgba(20, 163, 139, .35); }
+      50% { box-shadow: 0 10px 30px rgba(20, 163, 139, .30), 0 0 0 12px rgba(20, 163, 139, 0); }
+    }
+    .ripple { position: absolute; border-radius: 50%; transform: scale(0); background: rgba(255, 255, 255, .45); animation: ripple .6s ease-out; pointer-events: none; }
+    .option .ripple { background: rgba(20, 163, 139, .25); }
+    @keyframes ripple { to { transform: scale(4); opacity: 0; } }
+
+    .hero-card { transition: transform .4s ease, box-shadow .4s ease; }
+    .signs-hint { margin: -.6rem 0 .8rem; font-size: .85rem; }
+    .signs li { padding: 0; background: none; }
+    .sign { width: 100%; display: flex; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 14px; border: 1.5px solid transparent;
+      background: var(--bg-alt); font: 400 .95rem "Inter", sans-serif; color: var(--text); text-align: left; cursor: pointer; transition: all .25s; }
+    .sign b { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; border: 1.5px solid var(--line); background: var(--white); color: transparent; font-size: .8rem; transition: all .25s; }
+    .sign:hover { transform: translateX(4px); border-color: var(--line); }
+    .sign.on { background: var(--accent-soft); border-color: var(--accent); }
+    .sign.on b { background: var(--accent); border-color: var(--accent); color: var(--white); transform: scale(1.1); }
+    .signs-meter { height: 6px; background: var(--bg-alt); border-radius: 99px; overflow: hidden; margin-top: 1rem; }
+    .signs-meter span { display: block; height: 100%; width: 0; background: var(--grad); transition: width .5s cubic-bezier(.2, .7, .2, 1); }
+    #signs-msg { transition: color .3s; }
+    #signs-msg.hot { color: var(--ink); font-weight: 600; }
+    .signs-cta { width: 100%; margin-top: 1rem; display: none; }
+    .signs-cta.show { display: inline-flex; animation: pop .45s cubic-bezier(.2, 1.4, .4, 1); }
+    @keyframes pop { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: none; } }
+
+    .step, .quote { transition: transform .35s ease, box-shadow .35s ease, border-color .35s; }
+    .step:hover, .quote:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(14, 58, 79, .08); border-color: #b9dbe8; }
+    .step .ico { float: right; font-size: 1.6rem; transition: transform .4s; }
+    .step:hover .ico { transform: rotate(-12deg) scale(1.2); }
+
+    .progress span { background: var(--grad); position: relative; }
+    .progress span::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent); animation: shimmer 1.6s infinite; }
+    @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+    .option { position: relative; overflow: hidden; opacity: 0; animation: optIn .45s ease forwards; transition: border-color .15s, background .15s, transform .15s; }
+    .option:hover { transform: translateX(4px); background: var(--bg-alt); }
+    .option:active { transform: scale(.98); }
+    .option.selected::before { box-shadow: inset 0 0 0 4px var(--accent-soft); }
+    @keyframes optIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+    .question.fade-in { animation: slideIn .4s ease; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: none; } }
+    .q-emoji { font-size: 2rem; display: inline-block; margin-bottom: .4rem; animation: bob 2.4s ease-in-out infinite; }
+    @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+    .stagger > *, .pop-in { opacity: 0; animation: optIn .55s ease forwards; }
+    .score-num { font-family: "Fraunces", serif; font-size: 2.6rem; line-height: 1; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .score-row { display: flex; align-items: baseline; gap: 10px; margin: .4rem 0 .2rem; }
+    .score-row span:last-child { font-size: .85rem; color: var(--muted); }
+    .confetti { position: fixed; top: -12px; width: 9px; height: 14px; border-radius: 2px; z-index: 100; pointer-events: none; animation: fall linear forwards; }
+    @keyframes fall { to { transform: translateY(105vh) rotate(720deg); opacity: .8; } }
+    .combo { transition: transform .3s, box-shadow .3s; }
+    .combo:hover { transform: translateY(-4px); box-shadow: 0 18px 36px rgba(14, 58, 79, .08); }
+    .combo.best { border-color: var(--accent); background: linear-gradient(180deg, #f2fbf8, #ffffff); }
+    .faq-section { background: var(--white); }
+    details { transition: background .2s; }
+    details[open] { background: linear-gradient(90deg, var(--bg-alt), transparent); border-radius: 12px; padding-left: 12px; }
+    summary::after { transition: transform .3s; }
+    details[open] summary::after { transform: rotate(180deg); }
+
+    .email-step h3 { font-size: clamp(1.4rem, 3.2vw, 1.8rem); margin-bottom: .4rem; }
+    .email-step .hint { margin-bottom: 1.2rem; }
+    #lead-form { display: grid; gap: 14px; }
+    .field span { display: block; font-size: .85rem; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .field input { width: 100%; padding: 15px 16px; border-radius: 14px; border: 1.5px solid var(--line); font: 400 1rem "Inter", sans-serif; color: var(--text); background: var(--white); transition: border-color .2s, box-shadow .2s; }
+    .field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+    .check { display: flex; gap: 10px; align-items: flex-start; font-size: .88rem; color: var(--text); cursor: pointer; }
+    .check input { flex: none; width: 20px; height: 20px; margin-top: 1px; accent-color: var(--accent); }
+    .check a { color: var(--ink-soft); text-decoration: underline; }
+    .form-error { color: #c0392b; font-size: .88rem; min-height: 1em; margin: -4px 0 -6px; }
+    .form-note { font-size: .8rem; text-align: center; }
+    #lead-form .btn { width: 100%; margin-top: 4px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal, .option, .stagger > * { opacity: 1; transform: none; }
+    }
   </style>
 </head>
 <body>
 
-  <div class="topbar">🎁 <strong>Test 100% gratuito</strong> · Resultado al instante · Sin registrarte</div>
+  <div class="topbar">🎁 <strong>Test 100% gratuito</strong> · Resultado al instante · 2 minutos</div>
 
   <!-- ---------- Hero ---------- -->
   <header class="hero">
+    <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
     <div class="container hero-grid">
       <div>
         <span class="eyebrow">Test hormonal gratuito · 2 minutos</span>
-        <h1>¿Cómo están <em>tus hormonas</em> de verdad?</h1>
+        <h1>¿Cómo están <span class="rotator"><em class="word is-on">tus hormonas</em><em class="word">tu ciclo</em><em class="word">tu energía</em><em class="word">tu piel</em><em class="word">tus antojos</em></span> de verdad?</h1>
         <p class="lead">Ciclos irregulares, cansancio, granitos, antojos, hinchazón… Tu cuerpo te está hablando. Responde un máximo de 10 preguntas y descubre qué te está diciendo.</p>
-        <a href="#test" class="btn btn-accent" data-start>Hacer el test gratis →</a>
+        <a href="#test" class="btn btn-accent pulse" data-start>Hacer el test gratis →</a>
         <div class="hero-meta">
-          <span>Gratis</span><span>Anónimo</span><span>Resultado al momento</span>
+          <span>Gratis</span><span>2 minutos</span><span>Recomendación personalizada</span>
         </div>
       </div>
-      <aside class="hero-card">
+      <aside class="hero-card reveal">
         <h3>¿Te suena alguna de estas señales?</h3>
+        <p class="signs-hint">Toca las que te pasen 👇</p>
         <ul class="signs">
-          <li><b>1</b>Reglas irregulares o muy dolorosas</li>
-          <li><b>2</b>Cansancio aunque duermas bien</li>
-          <li><b>3</b>Granitos en barbilla y mandíbula</li>
-          <li><b>4</b>Antojos de dulce y cambios de humor</li>
-          <li><b>5</b>Te cuesta perder peso en la tripa</li>
+          <li><button type="button" class="sign"><b>✓</b>Reglas irregulares o muy dolorosas</button></li>
+          <li><button type="button" class="sign"><b>✓</b>Cansancio aunque duermas bien</button></li>
+          <li><button type="button" class="sign"><b>✓</b>Granitos en barbilla y mandíbula</button></li>
+          <li><button type="button" class="sign"><b>✓</b>Antojos de dulce y cambios de humor</button></li>
+          <li><button type="button" class="sign"><b>✓</b>Te cuesta perder peso en la tripa</button></li>
+          <li><button type="button" class="sign"><b>✓</b>Sofocos o duermo peor que antes</button></li>
         </ul>
-        <p>Si te has identificado con dos o más, este test es para ti.</p>
+        <div class="signs-meter"><span id="signs-bar"></span></div>
+        <p id="signs-msg">Si te has identificado con dos o más, este test es para ti.</p>
+        <a href="#test" class="btn btn-accent signs-cta" id="signs-cta" data-start>Descubrir qué significan →</a>
       </aside>
     </div>
   </header>
@@ -237,22 +352,23 @@
       <span class="eyebrow">Cómo funciona</span>
       <h2>Tres pasos, <em>cero complicaciones</em></h2>
       <div class="steps">
-        <div class="step"><div class="num">01</div><h3>Responde</h3><p>10 preguntas rápidas sobre tu etapa, tu ciclo, tu energía, tu piel y tu ánimo.</p></div>
-        <div class="step"><div class="num">02</div><h3>Descubre</h3><p>Recibe al instante tu perfil hormonal y las áreas que más te conviene cuidar.</p></div>
-        <div class="step"><div class="num">03</div><h3>Actúa</h3><p>Te recomendamos el complemento y la combinación que mejor encajan contigo, con los estudios que lo respaldan.</p></div>
+        <div class="step reveal"><div class="num">01</div><div class="ico">📝</div><h3>Responde</h3><p>10 preguntas rápidas sobre tu etapa, tu ciclo, tu energía, tu piel y tu ánimo.</p></div>
+        <div class="step reveal"><div class="num">02</div><div class="ico">🔍</div><h3>Descubre</h3><p>Recibe al instante tu perfil hormonal y las áreas que más te conviene cuidar.</p></div>
+        <div class="step reveal"><div class="num">03</div><div class="ico">🌿</div><h3>Actúa</h3><p>Te recomendamos el complemento y la combinación que mejor encajan contigo, con los estudios que lo respaldan.</p></div>
       </div>
     </div>
   </section>
 
   <!-- ---------- Test ---------- -->
   <section id="test">
+    <div class="blob b4"></div><div class="blob b5"></div>
     <div class="container center">
       <span class="eyebrow">Tu test</span>
       <h2>Empieza ahora, <em>es gratis</em></h2>
       <p class="section-intro">Elige la respuesta que más se parezca a cómo te has sentido en los últimos 3 meses.</p>
     </div>
     <div class="container">
-      <div class="quiz" id="quiz" aria-live="polite"></div>
+      <div class="quiz reveal" id="quiz" aria-live="polite"></div>
     </div>
   </section>
 
@@ -262,36 +378,36 @@
       <span class="eyebrow">Lo que dicen</span>
       <h2>Mujeres que ya <em>escuchan a su cuerpo</em></h2>
       <div class="quotes">
-        <div class="quote"><div class="stars">★★★★★</div><p>“Hice el test por curiosidad y me describió tal cual. Por fin entendí por qué me sentía así.”</p><span>— Laura, 29 años</span></div>
-        <div class="quote"><div class="stars">★★★★★</div><p>“Llevaba años con reglas irregulares y nadie me lo explicaba de forma tan sencilla.”</p><span>— Marta, 34 años</span></div>
-        <div class="quote"><div class="stars">★★★★★</div><p>“En dos minutos tenía mi resultado. Muy fácil y sin tener que dejar mis datos.”</p><span>— Cristina, 31 años</span></div>
+        <div class="quote reveal"><div class="stars">★★★★★</div><p>“Hice el test por curiosidad y me describió tal cual. Por fin entendí por qué me sentía así.”</p><span>— Laura, 29 años</span></div>
+        <div class="quote reveal"><div class="stars">★★★★★</div><p>“Llevaba años con reglas irregulares y nadie me lo explicaba de forma tan sencilla.”</p><span>— Marta, 34 años</span></div>
+        <div class="quote reveal"><div class="stars">★★★★★</div><p>“En dos minutos tenía mi resultado. Muy fácil y con una recomendación hecha para mí.”</p><span>— Cristina, 31 años</span></div>
       </div>
     </div>
   </section>
 
   <!-- ---------- FAQ ---------- -->
-  <section style="background: var(--bg-alt);">
+  <section class="faq-section">
     <div class="container center">
       <span class="eyebrow">Preguntas frecuentes</span>
       <h2>Lo que <em>te estarás preguntando</em></h2>
     </div>
     <div class="container">
       <div class="faq">
-        <details><summary>¿El test es realmente gratis?</summary><p>Sí. No te pedimos tarjeta, ni email, ni que te registres. Respondes y ves tu resultado al momento.</p></details>
-        <details><summary>¿Cuánto tarda?</summary><p>Unos 2 minutos. Son 10 preguntas como máximo de respuesta rápida.</p></details>
-        <details><summary>¿Guardáis mis respuestas?</summary><p>No. El test se calcula en tu propio móvil u ordenador y tus respuestas no se envían a ningún sitio.</p></details>
-        <details><summary>¿Sustituye a una analítica o a ir al médico?</summary><p>No. Es una herramienta orientativa para que conozcas mejor las señales de tu cuerpo. Si tienes síntomas intensos o persistentes, consulta con tu médico o ginecóloga.</p></details>
+        <details class="reveal"><summary>¿El test es realmente gratis?</summary><p>Sí. No te pedimos tarjeta ni que te registres. Solo tu email al final, para enviarte tu resultado y tu recomendación.</p></details>
+        <details class="reveal"><summary>¿Cuánto tarda?</summary><p>Unos 2 minutos. Son 10 preguntas como máximo de respuesta rápida.</p></details>
+        <details class="reveal"><summary>¿Qué hacéis con mis datos?</summary><p>Guardamos tu email y tu resultado para enviarte tu recomendación. No compartimos tus datos con nadie y puedes darte de baja cuando quieras.</p></details>
+        <details class="reveal"><summary>¿Sustituye a una analítica o a ir al médico?</summary><p>No. Es una herramienta orientativa para que conozcas mejor las señales de tu cuerpo. Si tienes síntomas intensos o persistentes, consulta con tu médico o ginecóloga.</p></details>
       </div>
     </div>
   </section>
 
   <!-- ---------- CTA final ---------- -->
   <section class="final">
-    <div class="container">
+    <div class="container"><div class="final-box reveal">
       <h2>Tu cuerpo te está hablando. <em>Escúchalo.</em></h2>
       <p>Descubre en 2 minutos cómo están tus hormonas.</p>
-      <a href="#test" class="btn" data-start>Hacer el test gratis →</a>
-    </div>
+      <a href="#test" class="btn pulse" data-start>Hacer el test gratis →</a>
+    </div></div>
   </section>
 
   <footer>
@@ -308,6 +424,10 @@
        CONFIGURACIÓN — cambia aquí el enlace a la página del inositol
        ==================================================================== */
     var SHOP = "https://www.benissalud.com";
+    // Klaviyo de Benissalud: clave pública y lista "Test hormonal (landing)"
+    var KLAVIYO_PUBLIC_KEY = "VHa7GD";
+    var KLAVIYO_LIST_ID = "WDUiwY";
+    var PRIVACY_URL = SHOP + "/policies/privacy-policy";
     // variant = ID de la variante de Shopify que se añade al carrito en el pack
     var PRODUCTS = {
       inositol: { name: "Myo-Inositol", detail: "Tarro de cristal 200 g", price: "24,95 €", handle: "myo-inositol", variant: "56619259330885",
@@ -412,27 +532,27 @@
 
     // Cada opción: [texto, puntos, mensaje del inositol]
     var QUESTIONS = [
-      { id: "etapa", q: "¿En qué etapa de tu vida estás?", hint: "Así adaptamos el test a ti.",
+      { id: "etapa", emoji: "🌸", q: "¿En qué etapa de tu vida estás?", hint: "Así adaptamos el test a ti.",
         options: [["Tengo reglas (edad fértil)", 0, "fertil"], ["Estoy buscando embarazo", 0, "embarazo"], ["Perimenopausia: mis reglas están cambiando (40+)", 1, "perimenopausia"], ["Menopausia: más de 12 meses sin regla", 1, "menopausia"]] },
-      { id: "ciclo", q: "¿Cómo es tu ciclo menstrual?", hint: "Piensa en los últimos 3–6 meses.", show: hasCycle,
+      { id: "ciclo", emoji: "📅", q: "¿Cómo es tu ciclo menstrual?", hint: "Piensa en los últimos 3–6 meses.", show: hasCycle,
         options: [["Regular, cada 26–32 días", 0, null], ["A veces se adelanta o se retrasa", 1, "ciclo_leve"], ["Muy irregular o tengo faltas", 3, "ciclo_irregular"], ["Tomo anticonceptivos / no lo sé", 1, "pildora"]] },
-      { id: "regla", q: "¿Cómo son tus reglas y los días previos?", hint: "Dolor, hinchazón, sensibilidad en el pecho…", show: fertile,
+      { id: "regla", emoji: "🩸", q: "¿Cómo son tus reglas y los días previos?", hint: "Dolor, hinchazón, sensibilidad en el pecho…", show: fertile,
         options: [["Llevaderas, apenas noto nada", 0, null], ["Algo de dolor o hinchazón", 1, "retencion"], ["Dolorosas, me condicionan el día", 2, "regla_dolor"], ["Muy intensas o muy abundantes", 3, "regla_abundante"]] },
-      { id: "sofocos", q: "¿Tienes sofocos o sudores nocturnos?", hint: "", show: isMeno,
+      { id: "sofocos", emoji: "🔥", q: "¿Tienes sofocos o sudores nocturnos?", hint: "", show: isMeno,
         options: [["No, nunca", 0, null], ["Alguno de vez en cuando", 1, "sofocos_leve"], ["Varias veces por semana", 2, "sofocos"], ["Cada día, me afectan mucho", 3, "sofocos"]] },
-      { id: "piel", q: "¿Cómo está tu piel?", hint: "Especialmente barbilla, mandíbula y espalda.",
+      { id: "piel", emoji: "✨", q: "¿Cómo está tu piel?", hint: "Especialmente barbilla, mandíbula y espalda.",
         options: [["Limpia y estable", 0, null], ["Algún granito antes de la regla", 1, "piel_leve"], ["Granitos frecuentes en barbilla o mandíbula", 3, "acne"], ["Piel grasa y vello donde no me gustaría", 3, "vello"]] },
-      { id: "energia", q: "¿Cómo es tu energía durante el día?", hint: "",
+      { id: "energia", emoji: "⚡", q: "¿Cómo es tu energía durante el día?", hint: "",
         options: [["Me levanto con energía y me dura", 0, null], ["Bajón a media tarde", 1, "energia_leve"], ["Cansada casi siempre, aunque duerma", 3, "cansancio"], ["Muy variable según el día", 2, "energia_ciclo"]] },
-      { id: "antojos", q: "¿Tienes antojos de dulce o hambre después de comer?", hint: "",
+      { id: "antojos", emoji: "🍫", q: "¿Tienes antojos de dulce o hambre después de comer?", hint: "",
         options: [["Casi nunca", 0, null], ["A veces, sobre todo antes de la regla", 1, "antojos_leve"], ["A menudo, necesito algo dulce", 2, "antojos"], ["Constantemente, me cuesta controlarlo", 3, "antojos"]] },
-      { id: "peso", q: "¿Cómo va tu peso?", hint: "",
+      { id: "peso", emoji: "⚖️", q: "¿Cómo va tu peso?", hint: "",
         options: [["Estable, sin cambios", 0, null], ["Algo de retención o hinchazón", 1, "retencion"], ["Me cuesta perder peso, sobre todo en la tripa", 3, "peso"], ["He ganado peso sin cambiar mis hábitos", 3, "peso_subida"]] },
-      { id: "animo", q: "¿Cómo está tu estado de ánimo?", hint: "",
+      { id: "animo", emoji: "💭", q: "¿Cómo está tu estado de ánimo?", hint: "",
         options: [["Tranquila y estable", 0, null], ["Algo más sensible antes de la regla", 1, "animo_leve"], ["Irritable, ansiosa o con altibajos", 2, "ansiedad"], ["Me siento desbordada a menudo", 3, "ansiedad"]] },
-      { id: "sueno", q: "¿Cómo duermes?", hint: "",
+      { id: "sueno", emoji: "🌙", q: "¿Cómo duermes?", hint: "",
         options: [["Duermo bien y me levanto descansada", 0, null], ["Me cuesta un poco dormirme", 1, "sueno_leve"], ["Me despierto por la noche", 2, "sueno"], ["Duermo mal casi todas las noches", 3, "sueno"]] },
-      { id: "ejercicio", q: "¿Haces ejercicio?", hint: "Última pregunta: nos ayuda a elegir qué combinar con tu inositol.", score: false,
+      { id: "ejercicio", emoji: "🏃‍♀️", q: "¿Haces ejercicio?", hint: "Última pregunta: nos ayuda a elegir qué combinar con tu inositol.", score: false,
         options: [["Casi nada", 0, null], ["Camino o hago algo suave", 0, null], ["Fuerza o deporte 2–3 días por semana", 0, null], ["Entreno casi a diario", 0, null]] }
     ];
 
@@ -593,11 +713,11 @@
       var pct = Math.round((current / list.length) * 100);
       var html = '<div class="progress"><span style="width:' + pct + '%"></span></div>' +
         '<div class="progress-label">Pregunta ' + (current + 1) + ' de ' + list.length + '</div>' +
-        '<div class="question fade-in"><h3>' + item.q + '</h3>' +
+        '<div class="question fade-in"><span class="q-emoji">' + item.emoji + '</span><h3>' + item.q + '</h3>' +
         '<p class="hint">' + (item.hint || "&nbsp;") + '</p><div class="options">';
       item.options.forEach(function (opt, i) {
         var sel = answers[item.id] === i ? " selected" : "";
-        html += '<button type="button" class="option' + sel + '" data-i="' + i + '">' + opt[0] + '</button>';
+        html += '<button type="button" class="option' + sel + '" data-i="' + i + '" style="animation-delay:' + (i * 70) + 'ms">' + opt[0] + '</button>';
       });
       html += '</div></div><div class="quiz-nav">' +
         (current > 0 ? '<button type="button" class="btn btn-ghost" id="back">← Atrás</button>' : '<span></span>') +
@@ -605,12 +725,13 @@
       quiz.innerHTML = html;
 
       quiz.querySelectorAll(".option").forEach(function (btn) {
-        btn.addEventListener("click", function () {
+        btn.addEventListener("click", function (e) {
           quiz.querySelectorAll(".option").forEach(function (b) { b.classList.remove("selected"); });
           btn.classList.add("selected");
+          ripple(btn, e);
           answers[item.id] = Number(btn.dataset.i);
           if (current === 0) track("StartTest");
-          setTimeout(next, 280);
+          setTimeout(next, 380);
         });
       });
       var back = document.getElementById("back");
@@ -619,7 +740,70 @@
 
     function next() {
       if (current < visibleQuestions().length - 1) { current++; renderQuestion(); }
-      else showLoading();
+      else showEmailStep();
+    }
+
+    // Paso del email: se pide antes de enseñar el resultado
+    var lead = null;
+    function showEmailStep() {
+      quiz.innerHTML = '<div class="progress"><span style="width:100%"></span></div>' +
+        '<div class="email-step fade-in">' +
+        '<span class="q-emoji">💌</span><h3>¡Tu resultado está listo!</h3>' +
+        '<p class="hint">¿A dónde te lo enviamos? Así lo tienes guardado junto con tu recomendación personalizada.</p>' +
+        '<form id="lead-form" novalidate>' +
+        '<label class="field"><span>Tu nombre</span><input type="text" name="name" autocomplete="given-name" placeholder="Laura"></label>' +
+        '<label class="field"><span>Tu email *</span><input type="email" name="email" autocomplete="email" placeholder="tuemail@ejemplo.com" required></label>' +
+        '<label class="check"><input type="checkbox" name="privacy" required><span>He leído y acepto la <a href="' + PRIVACY_URL + '" target="_blank" rel="noopener">política de privacidad</a> *</span></label>' +
+        '<label class="check"><input type="checkbox" name="marketing"><span>Quiero recibir consejos de salud hormonal y ofertas de Benissalud por email</span></label>' +
+        '<p class="form-error" id="form-error"></p>' +
+        '<button type="submit" class="btn btn-accent pulse">Ver mi resultado →</button>' +
+        '<p class="form-note">🔒 No compartimos tus datos con nadie. Puedes darte de baja cuando quieras.</p>' +
+        '</form></div>' +
+        '<div class="quiz-nav"><button type="button" class="btn btn-ghost" id="back">← Atrás</button><span></span></div>';
+      document.getElementById("back").addEventListener("click", function () { renderQuestion(); });
+      var form = document.getElementById("lead-form");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var email = form.email.value.trim(), err = document.getElementById("form-error");
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = "Escribe un email válido para recibir tu resultado."; form.email.focus(); return; }
+        if (!form.privacy.checked) { err.textContent = "Necesitamos que aceptes la política de privacidad."; return; }
+        lead = { email: email, name: form.name.value.trim(), marketing: form.marketing.checked };
+        track("Lead", { content_name: "test_hormonal_email" });
+        showLoading();
+      });
+      track("ViewEmailStep");
+    }
+
+    // Envía el contacto y su resultado a Klaviyo (no bloquea el resultado si falla)
+    function klaviyo(path, body) {
+      try {
+        return fetch("https://a.klaviyo.com/client/" + path + "/?company_id=" + KLAVIYO_PUBLIC_KEY, {
+          method: "POST", keepalive: true,
+          headers: { "Content-Type": "application/vnd.api+json", "revision": "2024-10-15" },
+          body: JSON.stringify(body)
+        }).catch(function () {});
+      } catch (e) {}
+    }
+    function sendLead(data) {
+      if (!lead) return;
+      var profile = { email: lead.email, properties: {
+        test_resultado: data.tag, test_porcentaje: data.pct, test_perfil: data.angleTitle,
+        test_pack_recomendado: data.packName, test_fecha: new Date().toISOString(), test_utm_source: new URLSearchParams(location.search).get("utm_source") || ""
+      } };
+      if (lead.name) profile.first_name = lead.name;
+      klaviyo("events", { data: { type: "event", attributes: {
+        metric: { data: { type: "metric", attributes: { name: "Completó test hormonal" } } },
+        profile: { data: { type: "profile", attributes: profile } },
+        properties: {
+          resultado: data.tag, porcentaje: data.pct, perfil: data.angleTitle, etapa: data.stage,
+          senales: data.signals, pack_recomendado: data.packName, pack_url: data.packUrl,
+          producto_url: data.productUrl, respuestas: data.answers
+        }
+      } } });
+      if (lead.marketing) klaviyo("subscriptions", { data: { type: "subscription", attributes: {
+        custom_source: "Landing test hormonal",
+        profile: { data: { type: "profile", attributes: { email: lead.email, subscriptions: { email: { marketing: { consent: "SUBSCRIBED" } } } } } }
+      }, relationships: { list: { data: { type: "list", id: KLAVIYO_LIST_ID } } } } });
     }
 
     function showLoading() {
@@ -682,12 +866,14 @@
 
       quiz.innerHTML = '<div class="result fade-in">' +
         '<span class="result-tag ' + level + '">' + r.tag + '</span>' +
-        '<h3>' + r.title + '</h3><p>' + r.text + '</p>' +
+        '<h3>' + r.title + '</h3>' +
+        '<div class="score-row"><span class="score-num" id="score-num">0%</span><span>de señales hormonales detectadas</span></div>' +
+        '<p>' + r.text + '</p>' +
         '<div class="meter"><div class="meter-bar"><span class="meter-dot" id="dot"></span></div>' +
         '<div class="meter-labels"><span>En equilibrio</span><span>Señales leves</span><span>Señales claras</span></div></div>' +
         '<h4 class="reasons-title">Por qué el inositol encaja contigo</h4>' +
         '<p class="reasons-sub">Según tus respuestas y lo que dicen los estudios:</p>' +
-        '<ul class="reasons">' + reasonsHtml + '</ul>' +
+        '<ul class="reasons stagger">' + reasonsHtml + '</ul>' +
         '<div class="reco"><span class="reco-tag">Tu recomendación personalizada</span><h4>' + A.title + '</h4><p>' + A.text + '</p>' +
         productCard("inositol") +
         '<p class="dose">Myo-Inositol puro en polvo. En los estudios se suelen usar entre 2 y 4 g al día y los efectos se valoran a partir de los 3 meses de uso continuado.</p>' +
@@ -703,7 +889,23 @@
         var dot = document.getElementById("dot");
         if (dot) dot.style.left = Math.max(4, Math.min(96, ratio * 100)) + "%";
       }, 60);
+      countUp(document.getElementById("score-num"), Math.round(ratio * 100));
+      quiz.querySelectorAll(".stagger > *, .combo, .reco").forEach(function (el, i) {
+        el.style.animationDelay = (250 + i * 120) + "ms";
+        if (!el.parentNode.classList.contains("stagger")) { el.classList.add("pop-in"); }
+      });
+      confetti();
 
+      var bestKeys = ["inositol", combos[0].key], answered = {};
+      visibleQuestions().forEach(function (item) { answered[item.q] = item.options[answers[item.id]][0]; });
+      sendLead({
+        tag: r.tag, pct: Math.round(ratio * 100), angleTitle: A.title,
+        stage: QUESTIONS[0].options[answers.etapa][0],
+        signals: picked.map(function (p) { return p.msg.title; }),
+        packName: "Myo-Inositol + " + PRODUCTS[combos[0].key].name,
+        packUrl: packLink(bestKeys, level, angle), productUrl: productLink("inositol", level, angle),
+        answers: answered
+      });
       track("CompleteRegistration", { content_name: "test_hormonal", status: level, content_category: angle });
       quiz.querySelectorAll(".track-buy").forEach(function (a) {
         a.addEventListener("click", function () {
@@ -711,7 +913,7 @@
         });
       });
       document.getElementById("restart").addEventListener("click", function () {
-        answers = {}; current = 0; renderQuestion();
+        answers = {}; current = 0; lead = null; renderQuestion();
       });
       quiz.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -730,6 +932,99 @@
       new IntersectionObserver(function (entries) {
         sticky.classList.toggle("hidden", entries[0].isIntersecting);
       }, { threshold: 0.15 }).observe(document.getElementById("test"));
+    }
+
+    // Efecto onda al pulsar
+    function ripple(el, e) {
+      var r = el.getBoundingClientRect(), d = Math.max(r.width, r.height), sp = document.createElement("span");
+      sp.className = "ripple";
+      sp.style.width = sp.style.height = d + "px";
+      sp.style.left = ((e && e.clientX ? e.clientX - r.left : r.width / 2) - d / 2) + "px";
+      sp.style.top = ((e && e.clientY ? e.clientY - r.top : r.height / 2) - d / 2) + "px";
+      el.appendChild(sp);
+      setTimeout(function () { sp.remove(); }, 650);
+    }
+    document.querySelectorAll(".btn").forEach(function (b) { b.addEventListener("click", function (e) { ripple(b, e); }); });
+
+    var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function countUp(el, to) {
+      if (!el) return;
+      if (reduce) { el.textContent = to + "%"; return; }
+      var start = null;
+      function step(t) {
+        if (!start) start = t;
+        var k = Math.min(1, (t - start) / 1200), v = Math.round(to * (1 - Math.pow(1 - k, 3)));
+        el.textContent = v + "%";
+        if (k < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function confetti() {
+      if (reduce) return;
+      var colors = ["#2f80c8", "#14a38b", "#4fbf8f", "#8fd3f4", "#0e3a4f"];
+      for (var i = 0; i < 70; i++) {
+        var c = document.createElement("span");
+        c.className = "confetti";
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.background = colors[i % colors.length];
+        c.style.animationDuration = (1.8 + Math.random() * 1.8) + "s";
+        c.style.animationDelay = (Math.random() * .5) + "s";
+        c.style.transform = "rotate(" + Math.random() * 360 + "deg)";
+        document.body.appendChild(c);
+        (function (n) { setTimeout(function () { n.remove(); }, 4200); })(c);
+      }
+    }
+
+    // Palabra que cambia en el titular
+    var words = document.querySelectorAll(".rotator .word"), w = 0;
+    if (!reduce && words.length) setInterval(function () {
+      var cur = words[w];
+      cur.classList.remove("is-on"); cur.classList.add("is-out");
+      setTimeout(function () { cur.classList.remove("is-out"); }, 500);
+      w = (w + 1) % words.length;
+      words[w].classList.add("is-on");
+    }, 2200);
+
+    // Señales del hero que se pueden marcar
+    var signs = document.querySelectorAll(".sign"), signsMsg = document.getElementById("signs-msg");
+    signs.forEach(function (sgn) {
+      sgn.addEventListener("click", function () {
+        sgn.classList.toggle("on");
+        var n = document.querySelectorAll(".sign.on").length;
+        document.getElementById("signs-bar").style.width = (n / signs.length * 100) + "%";
+        signsMsg.classList.toggle("hot", n >= 2);
+        signsMsg.textContent = n === 0 ? "Si te has identificado con dos o más, este test es para ti."
+          : n === 1 ? "1 señal marcada. ¿Te pasa alguna más?"
+          : n + " señales marcadas: tu cuerpo te está pidiendo atención. Descubre qué significan.";
+        document.getElementById("signs-cta").classList.toggle("show", n >= 2);
+        if (n === 1) track("SignsTapped");
+      });
+    });
+
+    // Aparecer al hacer scroll
+    var revealEls = document.querySelectorAll(".reveal");
+    if ("IntersectionObserver" in window && !reduce) {
+      var ro = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { en.target.classList.add("in"); ro.unobserve(en.target); }
+        });
+      }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+      revealEls.forEach(function (el, i) {
+        el.style.transitionDelay = ((i % 3) * 90) + "ms";
+        ro.observe(el);
+      });
+    } else revealEls.forEach(function (el) { el.classList.add("in"); });
+
+    // Ligero efecto 3D en la tarjeta del hero (ordenador)
+    var card = document.querySelector(".hero-card");
+    if (card && !reduce && matchMedia("(hover: hover)").matches) {
+      card.addEventListener("mousemove", function (e) {
+        var r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+        card.style.transform = "perspective(900px) rotateY(" + (x * 6) + "deg) rotateX(" + (-y * 6) + "deg)";
+      });
+      card.addEventListener("mouseleave", function () { card.style.transform = ""; });
     }
 
     document.getElementById("year").textContent = new Date().getFullYear();
