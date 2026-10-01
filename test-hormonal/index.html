@@ -529,8 +529,8 @@
         text: "Unas reglas difíciles suelen ir de la mano de un ciclo desequilibrado. El inositol se ha estudiado sobre todo para devolver la regularidad al ciclo. Si el dolor es intenso, consulta también con tu ginecóloga." },
       regla_abundante: { area: "ciclo", title: "Tus reglas son muy abundantes", study: "ciclo",
         text: "Las reglas muy abundantes pueden ir ligadas a un desequilibrio hormonal y te hacen perder hierro. El inositol trabaja el ciclo de fondo; y si sangras mucho, consulta con tu ginecóloga para revisar tu hierro." },
-      piel_leve: { area: "piel", title: "Te salen granitos antes de la regla", study: "piel",
-        text: "Los brotes premenstruales tienen un origen hormonal. Al mejorar la sensibilidad a la insulina, el inositol ayuda a reducir los andrógenos, que son los que estimulan la grasa de la piel." },
+      piel_leve: { area: "piel", title: "Te salen granitos de vez en cuando", study: "piel",
+        text: "Los brotes que van y vienen, como los de antes de la regla, suelen tener un origen hormonal. Al mejorar la sensibilidad a la insulina, el inositol ayuda a reducir los andrógenos, que son los que estimulan la grasa de la piel." },
       acne: { area: "piel", title: "Tienes granitos en barbilla y mandíbula", study: "piel",
         text: "Es el acné hormonal típico, ligado a un exceso de andrógenos. En un estudio, las mujeres que tomaron mio-inositol bajaron la testosterona a los 3 meses y, a los 6 meses, tenían menos acné." },
       vello: { area: "piel", title: "Tienes piel grasa o vello donde no te gustaría", study: "piel",
@@ -541,8 +541,8 @@
         text: "Cuando las células no responden bien a la insulina, la glucosa no se convierte en energía. Los estudios han visto que el mio-inositol mejora la resistencia a la insulina (el índice HOMA) en mujeres." },
       energia_ciclo: { area: "energia", title: "Tu energía cambia con el ciclo", study: "ciclo",
         text: "Si tu energía sube y baja según el día del ciclo, tus hormonas están marcando el ritmo. El inositol ayuda a que ese ritmo sea más estable." },
-      antojos_leve: { area: "metabolismo", title: "Tienes antojos antes de la regla", study: "insulina",
-        text: "En la fase premenstrual baja la sensibilidad a la insulina y aparecen las ganas de dulce. El inositol ayuda a tu cuerpo a gestionar mejor el azúcar." },
+      antojos_leve: { area: "metabolismo", title: "Tienes antojos de vez en cuando", study: "insulina",
+        text: "Las ganas de dulce suelen aparecer cuando baja la sensibilidad a la insulina, por ejemplo antes de la regla. El inositol ayuda a tu cuerpo a gestionar mejor el azúcar." },
       antojos: { area: "metabolismo", title: "Necesitas dulce a menudo", study: "insulina",
         text: "Los antojos frecuentes son una señal clásica de que la insulina no está trabajando bien. En los estudios, el mio-inositol bajó la insulina en ayunas y mejoró la sensibilidad a la insulina." },
       retencion: { area: "metabolismo", title: "Notas retención o hinchazón", study: null,
@@ -551,7 +551,7 @@
         text: "La grasa abdominal está muy ligada a la insulina. Un metaanálisis vio que el mio-inositol reducía el IMC, sobre todo en mujeres con SOP o con sobrepeso. No es una pastilla para adelgazar, pero sí una buena ayuda." },
       peso_subida: { area: "metabolismo", title: "Has ganado peso sin cambiar tus hábitos", study: "peso",
         text: "Cuando el peso sube sin motivo aparente, suele haber un cambio hormonal o en la insulina. En mujeres con SOP, 6 meses de mio-inositol se asociaron a una bajada media de unos 2 kg, mayor cuanto más resistencia a la insulina había." },
-      animo_leve: { area: "animo", title: "Estás más sensible antes de la regla", study: "animo",
+      animo_leve: { area: "animo", title: "Estás más sensible algunos días", study: "animo",
         text: "El mio-inositol participa en las señales de la serotonina, la hormona del bienestar. En un estudio con mujeres con síntomas premenstruales intensos, mejoró el ánimo y los síntomas diarios." },
       ansiedad: { area: "animo", title: "Estás irritable o con altibajos", study: "animo",
         text: "El mio-inositol actúa como mensajero de la serotonina. En un ensayo con mujeres con síndrome premenstrual intenso, mejoró los síntomas de ánimo. Los resultados aún son variados, así que si te sientes así a menudo, busca también apoyo profesional." },
@@ -580,15 +580,15 @@
       { id: "sofocos", emoji: "🔥", q: "¿Tienes sofocos o sudores nocturnos?", hint: "", show: isMeno,
         options: [["No, nunca", 0, null], ["Alguno de vez en cuando", 1, "sofocos_leve"], ["Varias veces por semana", 2, "sofocos"], ["Cada día, me afectan mucho", 3, "sofocos"]] },
       { id: "piel", emoji: "✨", q: "¿Cómo está tu piel?", hint: "Especialmente barbilla, mandíbula y espalda.",
-        options: [["Limpia y estable", 0, null], ["Algún granito antes de la regla", 1, "piel_leve"], ["Granitos frecuentes en barbilla o mandíbula", 3, "acne"], ["Piel grasa y vello donde no me gustaría", 3, "vello"]] },
+        options: [["Limpia y estable", 0, null], ["Algún granito de vez en cuando", 1, "piel_leve"], ["Granitos frecuentes en barbilla o mandíbula", 3, "acne"], ["Piel grasa y vello donde no me gustaría", 3, "vello"]] },
       { id: "energia", emoji: "⚡", q: "¿Cómo es tu energía durante el día?", hint: "",
         options: [["Me levanto con energía y me dura", 0, null], ["Bajón a media tarde", 1, "energia_leve"], ["Cansada casi siempre, aunque duerma", 3, "cansancio"], ["Muy variable según el día", 2, "energia_ciclo"]] },
       { id: "antojos", emoji: "🍫", q: "¿Tienes antojos de dulce o hambre después de comer?", hint: "",
-        options: [["Casi nunca", 0, null], ["A veces, sobre todo antes de la regla", 1, "antojos_leve"], ["A menudo, necesito algo dulce", 2, "antojos"], ["Constantemente, me cuesta controlarlo", 3, "antojos"]] },
+        options: [["Casi nunca", 0, null], ["A veces (por ejemplo, antes de la regla)", 1, "antojos_leve"], ["A menudo, necesito algo dulce", 2, "antojos"], ["Constantemente, me cuesta controlarlo", 3, "antojos"]] },
       { id: "peso", emoji: "⚖️", q: "¿Cómo va tu peso?", hint: "",
         options: [["Estable, sin cambios", 0, null], ["Algo de retención o hinchazón", 1, "retencion"], ["Me cuesta perder peso, sobre todo en la tripa", 3, "peso"], ["He ganado peso sin cambiar mis hábitos", 3, "peso_subida"]] },
       { id: "animo", emoji: "💭", q: "¿Cómo está tu estado de ánimo?", hint: "",
-        options: [["Tranquila y estable", 0, null], ["Algo más sensible antes de la regla", 1, "animo_leve"], ["Irritable, ansiosa o con altibajos", 2, "ansiedad"], ["Me siento desbordada a menudo", 3, "ansiedad"]] },
+        options: [["Tranquila y estable", 0, null], ["Algo más sensible algunos días", 1, "animo_leve"], ["Irritable, ansiosa o con altibajos", 2, "ansiedad"], ["Me siento desbordada a menudo", 3, "ansiedad"]] },
       { id: "sueno", emoji: "🌙", q: "¿Cómo duermes?", hint: "",
         options: [["Duermo bien y me levanto descansada", 0, null], ["Me cuesta un poco dormirme", 1, "sueno_leve"], ["Me despierto por la noche", 2, "sueno"], ["Duermo mal casi todas las noches", 3, "sueno"]] },
       { id: "ejercicio", emoji: "🏃‍♀️", q: "¿Haces ejercicio?", hint: "Última pregunta: nos ayuda a elegir qué combinar con tu inositol.", score: false,
@@ -892,11 +892,7 @@
       klaviyo("events", { data: { type: "event", attributes: {
         metric: { data: { type: "metric", attributes: { name: "Completó test hormonal" } } },
         profile: { data: { type: "profile", attributes: profile } },
-        properties: {
-          resultado: data.tag, porcentaje: data.pct, perfil: data.angleTitle, etapa: data.stage,
-          senales: data.signals, pack_recomendado: data.packName, pack_url: data.packUrl,
-          producto_url: data.productUrl, respuestas: data.answers
-        }
+        properties: data.event
       } } });
       if (lead.marketing) klaviyo("subscriptions", { data: { type: "subscription", attributes: {
         custom_source: "Landing test hormonal",
@@ -1013,13 +1009,31 @@
 
       var bestKeys = ["inositol", combos[0].key], answered = {};
       visibleQuestions().forEach(function (item) { answered[item.q] = item.options[answers[item.id]][0]; });
+      // Todo lo que necesita el email de Klaviyo para personalizarse
+      var c1 = combos[0], c2 = combos[1], C1 = COMBOS[c1.key][c1.reason], S1 = STUDIES[C1.study] || {};
+      var pack3 = ["inositol", c1.key, c2.key];
+      var sum = function (keys) { return keys.reduce(function (a, k) { return a + priceOf(k); }, 0); };
       sendLead({
         tag: r.tag, pct: Math.round(ratio * 100), angleTitle: A.title,
-        stage: QUESTIONS[0].options[answers.etapa][0],
-        signals: picked.map(function (p) { return p.msg.title; }),
-        packName: "Myo-Inositol + " + PRODUCTS[combos[0].key].name,
-        packUrl: packLink(bestKeys, level, angle), productUrl: productLink("inositol", level, angle),
-        answers: answered
+        packName: "Myo-Inositol + " + PRODUCTS[c1.key].name,
+        event: {
+          resultado: r.tag, resultado_titulo: r.title, resultado_texto: r.text, porcentaje: Math.round(ratio * 100),
+          perfil: A.title, perfil_texto: A.text, etapa: QUESTIONS[0].options[answers.etapa][0],
+          senales: picked.map(function (p) { return p.msg.title; }),
+          motivos: reasons.map(function (p) {
+            var st = STUDIES[p.msg.study] || {};
+            return { titulo: p.msg.title, texto: p.msg.text, estudio: st.label || "", estudio_url: st.url || "" };
+          }),
+          inositol_img: PRODUCTS.inositol.img, inositol_precio: PRODUCTS.inositol.price,
+          inositol_precio_final: fmt(priceOf("inositol") * .9), inositol_url: inositolLink(level, angle),
+          complemento: PRODUCTS[c1.key].name, complemento_img: PRODUCTS[c1.key].img, complemento_precio: PRODUCTS[c1.key].price,
+          complemento_motivo: C1.why, complemento_texto: C1.text, complemento_estudio: S1.label || "", complemento_estudio_url: S1.url || "",
+          pack_recomendado: "Myo-Inositol + " + PRODUCTS[c1.key].name,
+          pack_precio: fmt(sum(bestKeys)), pack_precio_final: fmt(sum(bestKeys) * .85), pack_url: routineLink(bestKeys, level, angle),
+          complemento2: PRODUCTS[c2.key].name, complemento2_img: PRODUCTS[c2.key].img,
+          rutina_precio: fmt(sum(pack3)), rutina_precio_final: fmt(sum(pack3) * .8), rutina_url: routineLink(pack3, level, angle),
+          respuestas: answered
+        }
       });
       track("CompleteRegistration", { content_name: "test_hormonal", status: level, content_category: angle });
       quiz.querySelectorAll(".track-buy").forEach(function (a) {

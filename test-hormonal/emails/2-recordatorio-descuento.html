@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Tu descuento del test sigue activo</title></head>
+<body style="margin:0;padding:0;background:#f2f9fb;font-family:Arial,Helvetica,sans-serif;color:#1f3340;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f2f9fb;"><tr><td align="center" style="padding:24px 12px;">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:20px;overflow:hidden;">
+
+<tr><td style="background:#2f80c8;background-image:linear-gradient(120deg,#2f80c8,#14a38b);padding:28px;color:#ffffff;">
+  <p style="margin:0 0 6px;font-size:12px;letter-spacing:2px;text-transform:uppercase;opacity:.9;">Tu test hormonal · Benissalud</p>
+  <h1 style="margin:0;font-family:Georgia,serif;font-weight:normal;font-size:27px;line-height:1.2;">{% if person.first_name %}{{ person.first_name }}, tu{% else %}Tu{% endif %} cuerpo te dio {{ event.senales|length }} señales</h1>
+</td></tr>
+
+<tr><td style="padding:26px 28px 6px;">
+  <p style="margin:0 0 12px;font-size:15px;line-height:1.6;">Hace un par de días hiciste nuestro test y tu resultado fue <strong>{{ event.resultado|lower }}</strong>. Estas fueron algunas de las señales que detectamos:</p>
+  <ul style="margin:0 0 14px;padding-left:20px;font-size:15px;line-height:1.7;color:#0e3a4f;">
+    {% for s in event.senales|slice:":4" %}<li>{{ s }}</li>{% endfor %}
+  </ul>
+  <p style="margin:0;font-size:15px;line-height:1.6;">El inositol no es magia: en los estudios, los cambios se valoran <strong>a partir de los 3 meses</strong> de uso continuado. Por eso, cuanto antes empieces, antes notarás la diferencia.</p>
+</td></tr>
+
+<tr><td style="padding:20px 28px 6px;">
+  <h3 style="margin:0 0 12px;font-family:Georgia,serif;font-weight:normal;font-size:20px;color:#0e3a4f;">Tu descuento del test sigue activo</h3>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+      <td width="33%" align="center" style="padding:4px;"><table role="presentation" width="100%" style="border:1px solid #dceaf0;border-radius:12px;"><tr><td align="center" style="padding:12px 4px;"><span style="font-family:Georgia,serif;font-size:24px;color:#2b7a9a;">-10%</span><br><span style="font-size:12px;color:#5f7480;">Solo inositol</span></td></tr></table></td>
+      <td width="33%" align="center" style="padding:4px;"><table role="presentation" width="100%" style="border:2px solid #14a38b;border-radius:12px;background:#dcf4ee;"><tr><td align="center" style="padding:12px 4px;"><span style="font-family:Georgia,serif;font-size:24px;color:#14a38b;">-15%</span><br><span style="font-size:12px;color:#0e3a4f;">+1 producto</span></td></tr></table></td>
+      <td width="33%" align="center" style="padding:4px;"><table role="presentation" width="100%" style="border:1px solid #dceaf0;border-radius:12px;"><tr><td align="center" style="padding:12px 4px;"><span style="font-family:Georgia,serif;font-size:24px;color:#2b7a9a;">-20%</span><br><span style="font-size:12px;color:#5f7480;">+2 productos</span></td></tr></table></td>
+    </tr>
+  </table>
+</td></tr>
+
+<tr><td style="padding:14px 28px 4px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:2px solid #14a38b;border-radius:14px;"><tr><td style="padding:16px;">
+    <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+      <td style="padding-right:8px;"><img src="{{ event.inositol_img }}" width="56" height="56" alt="Myo-Inositol" style="display:block;border-radius:8px;"></td>
+      <td style="padding-right:8px;font-size:20px;color:#14a38b;">+</td>
+      <td style="padding-right:12px;"><img src="{{ event.complemento_img }}" width="56" height="56" alt="{{ event.complemento }}" style="display:block;border-radius:8px;"></td>
+      <td style="font-size:14px;color:#0e3a4f;"><strong>Tu pack ideal</strong><br>Myo-Inositol + {{ event.complemento }}</td>
+    </tr></table>
+    <p style="margin:12px 0 0;font-size:14px;"><span style="text-decoration:line-through;color:#5f7480;">{{ event.pack_precio }}</span> <strong style="font-size:18px;color:#0e3a4f;">{{ event.pack_precio_final }}</strong> <span style="color:#14a38b;font-weight:bold;">-15%</span></p>
+    <p style="margin:12px 0 0;text-align:center;"><a href="{{ event.pack_url }}" style="display:inline-block;background:#14a38b;color:#ffffff;text-decoration:none;font-weight:bold;font-size:15px;padding:14px 26px;border-radius:99px;">Comprar mi pack con -15% →</a></p>
+  </td></tr></table>
+  <p style="margin:14px 0 0;text-align:center;font-size:14px;"><a href="{{ event.rutina_url }}" style="color:#0e3a4f;font-weight:bold;">Rutina completa con -20%: {{ event.rutina_precio_final }} →</a></p>
+  <p style="margin:8px 0 0;text-align:center;font-size:14px;"><a href="{{ event.inositol_url }}" style="color:#2b7a9a;">Solo el Myo-Inositol con -10% →</a></p>
+</td></tr>
+
+<tr><td style="padding:24px 28px 26px;">
+  <p style="margin:0 0 8px;font-size:11px;line-height:1.5;color:#5f7480;">Resultado orientativo. No sustituye la consulta con un profesional sanitario. Los complementos alimenticios no deben utilizarse como sustitutos de una dieta equilibrada y un modo de vida saludable.</p>
+  <p style="margin:0;font-size:11px;color:#5f7480;">Benissalud · {% unsubscribe 'Darme de baja' %}</p>
+</td></tr>
+
+</table></td></tr></table>
+</body></html>
