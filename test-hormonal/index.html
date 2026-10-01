@@ -125,14 +125,37 @@
     .meter-bar { height: 10px; border-radius: 99px; background: linear-gradient(90deg, var(--sage), #e6b980, var(--accent)); position: relative; }
     .meter-dot { position: absolute; top: 50%; width: 22px; height: 22px; border-radius: 50%; background: var(--white); border: 4px solid var(--ink); transform: translate(-50%, -50%); transition: left .8s ease; left: 0; }
     .meter-labels { display: flex; justify-content: space-between; font-size: .75rem; color: var(--muted); margin-top: 8px; }
-    .areas { list-style: none; display: grid; gap: 8px; margin: 1rem 0 1.6rem; }
-    .areas li { padding: 12px 14px; background: var(--bg); border-radius: 12px; font-size: .93rem; color: var(--text); }
-    .areas li strong { color: var(--ink); }
+    .prod { display: flex; align-items: center; gap: 12px; background: var(--white); border-radius: 14px; padding: 8px 12px 8px 8px; margin: 0 0 1rem; color: var(--text); }
+    .prod img { width: 56px; height: 56px; object-fit: cover; border-radius: 10px; flex: none; background: var(--bg-alt); }
+    .prod strong { display: block; font-size: .92rem; color: var(--ink); line-height: 1.3; }
+    .prod span { font-size: .8rem; color: var(--muted); }
+    .prod em { display: block; font-style: normal; font-weight: 600; font-size: .85rem; color: var(--ink); white-space: nowrap; }
+    .combo { border: 1.5px solid var(--line); border-radius: 20px; padding: 22px; margin-bottom: 14px; background: var(--white); }
+    .combo.best { border-color: var(--accent); background: #fffafa; }
+    .combo-tag { display: inline-block; font-size: .72rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: .4rem; }
+    .combo h5 { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.2rem; color: var(--ink); margin-bottom: .9rem; }
+    .combo .prods { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin-bottom: .9rem; }
+    .combo .prods .prod { margin: 0; background: var(--bg); flex-direction: column; text-align: center; padding: 10px; height: 100%; }
+    .combo .plus { font-size: 1.3rem; color: var(--accent); }
+    .combo p { font-size: .93rem; color: var(--text); }
+    .combo .study { display: inline-block; margin: .5rem 0 1rem; font-size: .78rem; color: var(--ink-soft); text-decoration: underline; text-underline-offset: 2px; }
+    .combo .btn { width: 100%; }
+    .btn-line { background: var(--white); color: var(--ink); border: 1.5px solid var(--ink); box-shadow: none; }
+    .btn-line:hover { background: var(--ink); color: var(--white); }
+    .legal-note { font-size: .75rem; color: var(--muted); margin-top: 1rem; }
+    .reasons-title { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.3rem; color: var(--ink); margin-top: 1.6rem; }
+    .reasons-sub { font-size: .9rem; margin-bottom: .8rem; }
+    .reasons { list-style: none; display: grid; gap: 10px; margin-bottom: 1.6rem; }
+    .reasons li { padding: 16px; background: var(--bg); border-radius: 14px; border-left: 3px solid var(--accent); }
+    .reasons li strong { display: block; color: var(--ink); margin-bottom: .3rem; }
+    .reasons li p { font-size: .93rem; color: var(--text); }
+    .reasons .study { display: inline-block; margin-top: .5rem; font-size: .78rem; color: var(--ink-soft); text-decoration: underline; text-underline-offset: 2px; }
+    .reco-tag { display: inline-block; font-size: .7rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #e9b8bd; margin-bottom: .5rem; }
+    .reco .dose { font-size: .85rem; color: #d9c2c5; border-top: 1px solid rgba(255,255,255,.15); padding-top: .9rem; }
     .reco { background: var(--ink); color: #f6e6e3; border-radius: 20px; padding: 26px; }
     .reco h4 { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.35rem; color: var(--white); margin-bottom: .5rem; }
     .reco p { color: #ead6d6; margin-bottom: 1.3rem; font-size: .95rem; }
     .reco .btn { width: 100%; }
-    .reco small { display: block; margin-top: .9rem; text-align: center; font-size: .78rem; color: #cbb3b7; }
     .restart { margin-top: 1rem; text-align: center; }
 
     /* ---------- Testimonios ---------- */
@@ -188,7 +211,7 @@
       <div>
         <span class="eyebrow">Test hormonal gratuito · 2 minutos</span>
         <h1>¿Cómo están <em>tus hormonas</em> de verdad?</h1>
-        <p class="lead">Ciclos irregulares, cansancio, granitos, antojos, hinchazón… Tu cuerpo te está hablando. Responde 8 preguntas y descubre qué te está diciendo.</p>
+        <p class="lead">Ciclos irregulares, cansancio, granitos, antojos, hinchazón… Tu cuerpo te está hablando. Responde un máximo de 10 preguntas y descubre qué te está diciendo.</p>
         <a href="#test" class="btn btn-accent" data-start>Hacer el test gratis →</a>
         <div class="hero-meta">
           <span>Gratis</span><span>Anónimo</span><span>Resultado al momento</span>
@@ -214,9 +237,9 @@
       <span class="eyebrow">Cómo funciona</span>
       <h2>Tres pasos, <em>cero complicaciones</em></h2>
       <div class="steps">
-        <div class="step"><div class="num">01</div><h3>Responde</h3><p>8 preguntas rápidas sobre tu ciclo, tu energía, tu piel y tu ánimo.</p></div>
+        <div class="step"><div class="num">01</div><h3>Responde</h3><p>10 preguntas rápidas sobre tu etapa, tu ciclo, tu energía, tu piel y tu ánimo.</p></div>
         <div class="step"><div class="num">02</div><h3>Descubre</h3><p>Recibe al instante tu perfil hormonal y las áreas que más te conviene cuidar.</p></div>
-        <div class="step"><div class="num">03</div><h3>Actúa</h3><p>Te enseñamos el siguiente paso para empezar a sentirte en equilibrio.</p></div>
+        <div class="step"><div class="num">03</div><h3>Actúa</h3><p>Te recomendamos el complemento y la combinación que mejor encajan contigo, con los estudios que lo respaldan.</p></div>
       </div>
     </div>
   </section>
@@ -255,7 +278,7 @@
     <div class="container">
       <div class="faq">
         <details><summary>¿El test es realmente gratis?</summary><p>Sí. No te pedimos tarjeta, ni email, ni que te registres. Respondes y ves tu resultado al momento.</p></details>
-        <details><summary>¿Cuánto tarda?</summary><p>Unos 2 minutos. Son 8 preguntas de respuesta rápida.</p></details>
+        <details><summary>¿Cuánto tarda?</summary><p>Unos 2 minutos. Son 10 preguntas como máximo de respuesta rápida.</p></details>
         <details><summary>¿Guardáis mis respuestas?</summary><p>No. El test se calcula en tu propio móvil u ordenador y tus respuestas no se envían a ningún sitio.</p></details>
         <details><summary>¿Sustituye a una analítica o a ir al médico?</summary><p>No. Es una herramienta orientativa para que conozcas mejor las señales de tu cuerpo. Si tienes síntomas intensos o persistentes, consulta con tu médico o ginecóloga.</p></details>
       </div>
@@ -274,7 +297,7 @@
   <footer>
     <div class="container">
       <p>Este test es orientativo y no constituye un diagnóstico médico. No sustituye la consulta con un profesional sanitario. Los complementos alimenticios no deben utilizarse como sustitutos de una dieta equilibrada y un modo de vida saludable.</p>
-      <p>© <span id="year"></span> Todos los derechos reservados.</p>
+      <p>© <span id="year"></span> Benissalud · Complementos alimenticios envasados en España.</p>
     </div>
   </footer>
 
@@ -284,52 +307,237 @@
     /* ====================================================================
        CONFIGURACIÓN — cambia aquí el enlace a la página del inositol
        ==================================================================== */
-    var PRODUCT_URL = "https://TU-TIENDA.com/products/inositol";
-    var PRODUCT_NAME = "Inositol";
+    var SHOP = "https://www.benissalud.com";
+    // variant = ID de la variante de Shopify que se añade al carrito en el pack
+    var PRODUCTS = {
+      inositol: { name: "Myo-Inositol", detail: "Tarro de cristal 200 g", price: "24,95 €", handle: "myo-inositol", variant: "56619259330885",
+        img: "https://cdn.shopify.com/s/files/1/1007/7516/6277/files/31_f09196dd-dcfe-41bc-968b-b9e53e9bd31b.png?v=1783611771" },
+      magnesio: { name: "Bisglicinato de Magnesio Albion®", detail: "Tarro de cristal 100 g", price: "19,95 €", handle: "bisglicinato-de-magnesio-albion®-chelate-magnesio-en-polvo-benissalud", variant: "58574868283717",
+        img: "https://cdn.shopify.com/s/files/1/1007/7516/6277/files/42E514FE-228D-4A37-B0D8-B6210A1140E9.png?v=1789659803" },
+      vitc: { name: "Vitamina C pura", detail: "Tarro 100 g", price: "15,95 €", handle: "vitamina-c-sistema-inmune-500mg", variant: "56590721024325",
+        img: "https://cdn.shopify.com/s/files/1/1007/7516/6277/files/19_29da44c8-43ac-4ccf-94d7-dd96c962d39d.png?v=1783595729" },
+      creatina: { name: "Creatina Creapure®", detail: "150 g", price: "10,95 €", handle: "creatina-creapure", variant: "56619269882181",
+        img: "https://cdn.shopify.com/s/files/1/1007/7516/6277/files/21_4b80701a-2dc4-4113-828b-9d8cf0ee91da.png?v=1765493529" },
+      colageno: { name: "Colágeno Marino Peptan®", detail: "120 g", price: "14,95 €", handle: "colageno-marino-peptan®", variant: "56749441057093",
+        img: "https://cdn.shopify.com/s/files/1/1007/7516/6277/files/46.png?v=1783613746" }
+    };
     /* ==================================================================== */
 
+    /* --------------------------------------------------------------------
+       Estudios científicos en los que se basa cada recomendación
+       -------------------------------------------------------------------- */
+    var STUDIES = {
+      ciclo: { label: "Revisión y metaanálisis para la guía internacional de SOP 2023 (J Clin Endocrinol Metab)", url: "https://academic.oup.com/jcem/article/109/6/1630/7504796" },
+      piel: { label: "Mio-inositol en problemas de piel de mujeres jóvenes con SOP (Gynecological Endocrinology, 2009)", url: "https://pubmed.ncbi.nlm.nih.gov/19551544/" },
+      insulina: { label: "Mio-inositol en resistencia a la insulina y síndrome metabólico, revisión (2022)", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8896029/" },
+      peso: { label: "Inositol e índice de masa corporal: metaanálisis de ensayos clínicos (Obesity Science & Practice, 2022)", url: "https://onlinelibrary.wiley.com/doi/full/10.1002/osp4.569" },
+      animo: { label: "Mio-inositol en el trastorno disfórico premenstrual (Human Psychopharmacology, 2011)", url: "https://www.researchgate.net/publication/51749049_Myo-inositol_in_the_treatment_of_premenstrual_dysphoric_disorder" },
+      sueno: { label: "Mio-inositol y calidad del sueño: ensayo aleatorizado con placebo (2020)", url: "https://pubmed.ncbi.nlm.nih.gov/32933356/" },
+      perimenopausia: { label: "La insulina en la perimenopausia y la aparición de sofocos (J Clin Endocrinol Metab, 2025)", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC13183428/" },
+      menopausia: { label: "Efectos de un año de mio-inositol en mujeres posmenopáusicas con síndrome metabólico (2012)", url: "https://pubmed.ncbi.nlm.nih.gov/22192068/" },
+      sofocos: { label: "Suplemento de mio-inositol y flavonoides en mujeres posmenopáusicas: ensayo aleatorizado (2014)", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC4164131/" },
+      fertilidad: { label: "Inositol en el SOP: metaanálisis de ensayos aleatorizados (Reprod Biol Endocrinol, 2023)", url: "https://link.springer.com/article/10.1186/s12958-023-01055-z" },
+      ue: { label: "Declaraciones de propiedades saludables autorizadas por la UE (Reglamento UE 432/2012)", url: "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32012R0432" },
+      mg_regla: { label: "Magnesio en obstetricia y ginecología, revisión", url: "https://www.gynaecology-obstetrics-journal.com/wp-content/uploads/2020/11/06.pdf" },
+      mg_sueno: { label: "Bisglicinato de magnesio en adultos que duermen mal: ensayo aleatorizado con placebo (Nature and Science of Sleep, 2025)", url: "https://pubmed.ncbi.nlm.nih.gov/40918053/" },
+      mg_ansiedad: { label: "Efectos del magnesio sobre la ansiedad y el estrés: revisión sistemática (Nutrients, 2017)", url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5452159/" },
+      mg_insulina: { label: "Magnesio y sensibilidad a la insulina: metaanálisis de 21 ensayos (Pharmacological Research, 2016)", url: "https://www.researchgate.net/publication/304144967_A_systematic_review_and_meta-analysis_of_randomized_controlled_trials_on_the_effects_of_magnesium_supplementation_on_insulin_sensitivity_and_glucose_control" },
+      vitc_hierro: { label: "Vitamina C y absorción del hierro (The Blood Project)", url: "https://www.thebloodproject.com/oral-iron-and-vitamin-c/" },
+      creatina_mujer: { label: "La creatina en la salud de la mujer a lo largo de la vida (Nutrients, 2021)", url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7998865/" },
+      creatina_meno: { label: "Creatina y salud femenina: de la menstruación a la menopausia (2025)", url: "https://pubmed.ncbi.nlm.nih.gov/40371844/" },
+      peptan: { label: "Colágeno Peptan® e hidratación de la piel: ensayos aleatorizados con placebo (J Cosmet Dermatol, 2015)", url: "https://onlinelibrary.wiley.com/doi/10.1111/jocd.12174" }
+    };
+
+    /* --------------------------------------------------------------------
+       Cómo se recomienda el inositol según cada respuesta
+       -------------------------------------------------------------------- */
+    var MSGS = {
+      fertil: { area: "ciclo", title: "Estás en edad fértil", study: null,
+        text: "Es la etapa en la que el equilibrio entre insulina y hormonas sexuales más se nota en tu ciclo, tu piel y tu energía. Por eso el inositol es tan popular entre mujeres de tu edad." },
+      embarazo: { area: "fertilidad", title: "Estás buscando embarazo", study: "fertilidad",
+        text: "En mujeres con SOP, los estudios han visto que el inositol mejora la ovulación y la regularidad del ciclo. Muchas lo combinan con ácido fólico. Coméntalo siempre con tu ginecóloga." },
+      perimenopausia: { area: "menopausia", title: "Estás en la perimenopausia", study: "perimenopausia",
+        text: "En esta etapa la insulina gana protagonismo: las mujeres con la insulina más alta a los 47 años empezaron antes con los sofocos y los sudores nocturnos. El inositol actúa como mensajero de la insulina y ayuda a que tu cuerpo la use mejor." },
+      menopausia: { area: "menopausia", title: "Estás en la menopausia", study: "menopausia",
+        text: "Con la bajada de estrógenos, cuesta más controlar el azúcar, el peso y el colesterol. En mujeres posmenopáusicas, 2 g de mio-inositol dos veces al día durante 6 meses redujeron la resistencia a la insulina y los triglicéridos y mejoraron el colesterol bueno." },
+      ciclo_leve: { area: "ciclo", title: "Tu ciclo a veces se descoloca", study: "ciclo",
+        text: "Los pequeños desajustes suelen ser la primera señal. El inositol es uno de los complementos más estudiados para que el ciclo recupere su ritmo." },
+      ciclo_irregular: { area: "ciclo", title: "Tu ciclo es irregular", study: "ciclo",
+        text: "Es la señal en la que el inositol tiene más evidencia. En mujeres con SOP, las que tomaban inositol tenían 1,8 veces más probabilidades de tener reglas regulares que las que tomaban placebo, e incluso superó a la metformina en este punto." },
+      pildora: { area: "ciclo", title: "Tomas anticonceptivos o no conoces tu ciclo", study: null,
+        text: "La píldora puede tapar las señales de tu ciclo, pero no la forma en que tu cuerpo usa la insulina. El inositol actúa justo ahí. Si la tomas, consulta con tu ginecóloga antes de empezar cualquier complemento." },
+      regla_dolor: { area: "ciclo", title: "Tus reglas te condicionan", study: "ciclo",
+        text: "Unas reglas difíciles suelen ir de la mano de un ciclo desequilibrado. El inositol se ha estudiado sobre todo para devolver la regularidad al ciclo. Si el dolor es intenso, consulta también con tu ginecóloga." },
+      regla_abundante: { area: "ciclo", title: "Tus reglas son muy abundantes", study: "ciclo",
+        text: "Las reglas muy abundantes pueden ir ligadas a un desequilibrio hormonal y te hacen perder hierro. El inositol trabaja el ciclo de fondo; y si sangras mucho, consulta con tu ginecóloga para revisar tu hierro." },
+      piel_leve: { area: "piel", title: "Te salen granitos antes de la regla", study: "piel",
+        text: "Los brotes premenstruales tienen un origen hormonal. Al mejorar la sensibilidad a la insulina, el inositol ayuda a reducir los andrógenos, que son los que estimulan la grasa de la piel." },
+      acne: { area: "piel", title: "Tienes granitos en barbilla y mandíbula", study: "piel",
+        text: "Es el acné hormonal típico, ligado a un exceso de andrógenos. En un estudio, las mujeres que tomaron mio-inositol bajaron la testosterona a los 3 meses y, a los 6 meses, tenían menos acné." },
+      vello: { area: "piel", title: "Tienes piel grasa o vello donde no te gustaría", study: "piel",
+        text: "Las dos son señales de andrógenos altos. En los estudios, el mio-inositol redujo la testosterona libre y, después de 6 meses, también el vello y el acné." },
+      energia_leve: { area: "energia", title: "Tienes un bajón a media tarde", study: "insulina",
+        text: "Ese bajón suele ser un pico y caída de azúcar. El inositol actúa como mensajero de la insulina y ayuda a que tu energía sea más estable a lo largo del día." },
+      cansancio: { area: "energia", title: "Estás cansada aunque duermas", study: "insulina",
+        text: "Cuando las células no responden bien a la insulina, la glucosa no se convierte en energía. Los estudios han visto que el mio-inositol mejora la resistencia a la insulina (el índice HOMA) en mujeres." },
+      energia_ciclo: { area: "energia", title: "Tu energía cambia con el ciclo", study: "ciclo",
+        text: "Si tu energía sube y baja según el día del ciclo, tus hormonas están marcando el ritmo. El inositol ayuda a que ese ritmo sea más estable." },
+      antojos_leve: { area: "metabolismo", title: "Tienes antojos antes de la regla", study: "insulina",
+        text: "En la fase premenstrual baja la sensibilidad a la insulina y aparecen las ganas de dulce. El inositol ayuda a tu cuerpo a gestionar mejor el azúcar." },
+      antojos: { area: "metabolismo", title: "Necesitas dulce a menudo", study: "insulina",
+        text: "Los antojos frecuentes son una señal clásica de que la insulina no está trabajando bien. En los estudios, el mio-inositol bajó la insulina en ayunas y mejoró la sensibilidad a la insulina." },
+      retencion: { area: "metabolismo", title: "Notas retención o hinchazón", study: null,
+        text: "La hinchazón suele cambiar a lo largo del ciclo. Con un ciclo más equilibrado, muchas mujeres notan menos altibajos." },
+      peso: { area: "metabolismo", title: "Te cuesta perder la tripa", study: "peso",
+        text: "La grasa abdominal está muy ligada a la insulina. Un metaanálisis vio que el mio-inositol reducía el IMC, sobre todo en mujeres con SOP o con sobrepeso. No es una pastilla para adelgazar, pero sí una buena ayuda." },
+      peso_subida: { area: "metabolismo", title: "Has ganado peso sin cambiar tus hábitos", study: "peso",
+        text: "Cuando el peso sube sin motivo aparente, suele haber un cambio hormonal o en la insulina. En mujeres con SOP, 6 meses de mio-inositol se asociaron a una bajada media de unos 2 kg, mayor cuanto más resistencia a la insulina había." },
+      animo_leve: { area: "animo", title: "Estás más sensible antes de la regla", study: "animo",
+        text: "El mio-inositol participa en las señales de la serotonina, la hormona del bienestar. En un estudio con mujeres con síntomas premenstruales intensos, mejoró el ánimo y los síntomas diarios." },
+      ansiedad: { area: "animo", title: "Estás irritable o con altibajos", study: "animo",
+        text: "El mio-inositol actúa como mensajero de la serotonina. En un ensayo con mujeres con síndrome premenstrual intenso, mejoró los síntomas de ánimo. Los resultados aún son variados, así que si te sientes así a menudo, busca también apoyo profesional." },
+      sueno_leve: { area: "animo", title: "Te cuesta dormirte", study: "sueno",
+        text: "El mio-inositol influye en los neurotransmisores que regulan el sueño. En un ensayo con placebo, 2 g diarios mejoraron la calidad del sueño." },
+      sueno: { area: "animo", title: "Te despiertas o duermes mal", study: "sueno",
+        text: "En un ensayo aleatorizado con placebo, las mujeres que tomaron 2 g diarios de mio-inositol durante 10 semanas durmieron más tiempo y mejor." },
+      sofocos_leve: { area: "menopausia", title: "Tienes algún sofoco", study: "sofocos",
+        text: "Los sofocos están relacionados con la resistencia a la insulina. En un ensayo con mujeres posmenopáusicas, un suplemento de mio-inositol con flavonoides redujo la frecuencia y la intensidad de los sofocos." },
+      sofocos: { area: "menopausia", title: "Tienes sofocos o sudores nocturnos frecuentes", study: "sofocos",
+        text: "Las mujeres con más resistencia a la insulina tienen más sofocos. En un ensayo aleatorizado, un suplemento de mio-inositol con flavonoides redujo la frecuencia y la intensidad de los sofocos en mujeres posmenopáusicas." }
+    };
+
+    var isMeno = function (a) { return a.etapa === 2 || a.etapa === 3; };
+    var hasCycle = function (a) { return a.etapa !== 3; };
+    var fertile = function (a) { return a.etapa === 0 || a.etapa === 1; };
+
+    // Cada opción: [texto, puntos, mensaje del inositol]
     var QUESTIONS = [
-      { q: "¿Cómo es tu ciclo menstrual?", hint: "Piensa en los últimos 3–6 meses.", area: "ciclo",
-        options: [["Regular, cada 26–32 días", 0], ["A veces se adelanta o se retrasa", 1], ["Muy irregular o tengo faltas", 3], ["Tomo anticonceptivos / no lo sé", 1]] },
-      { q: "¿Cómo son tus reglas y los días previos?", hint: "Dolor, hinchazón, sensibilidad en el pecho…", area: "ciclo",
-        options: [["Llevaderas, apenas noto nada", 0], ["Algo de dolor o hinchazón", 1], ["Dolorosas, me condicionan el día", 2], ["Muy intensas o muy abundantes", 3]] },
-      { q: "¿Cómo está tu piel?", hint: "Especialmente barbilla, mandíbula y espalda.", area: "piel",
-        options: [["Limpia y estable", 0], ["Algún granito antes de la regla", 1], ["Granitos frecuentes en barbilla o mandíbula", 3], ["Piel grasa y vello donde no me gustaría", 3]] },
-      { q: "¿Cómo es tu energía durante el día?", hint: "", area: "energia",
-        options: [["Me levanto con energía y me dura", 0], ["Bajón a media tarde", 1], ["Cansada casi siempre, aunque duerma", 3], ["Muy variable según el día del ciclo", 2]] },
-      { q: "¿Tienes antojos de dulce o hambre después de comer?", hint: "", area: "metabolismo",
-        options: [["Casi nunca", 0], ["A veces, sobre todo antes de la regla", 1], ["A menudo, necesito algo dulce", 2], ["Constantemente, me cuesta controlarlo", 3]] },
-      { q: "¿Cómo va tu peso?", hint: "", area: "metabolismo",
-        options: [["Estable, sin cambios", 0], ["Algo de retención o hinchazón", 1], ["Me cuesta perder peso, sobre todo en la tripa", 3], ["He ganado peso sin cambiar mis hábitos", 3]] },
-      { q: "¿Cómo está tu estado de ánimo?", hint: "", area: "animo",
-        options: [["Tranquila y estable", 0], ["Algo más sensible antes de la regla", 1], ["Irritable, ansiosa o con altibajos", 2], ["Me siento desbordada a menudo", 3]] },
-      { q: "¿Cómo duermes?", hint: "", area: "animo",
-        options: [["Duermo bien y me levanto descansada", 0], ["Me cuesta un poco dormirme", 1], ["Me despierto por la noche", 2], ["Duermo mal casi todas las noches", 3]] }
+      { id: "etapa", q: "¿En qué etapa de tu vida estás?", hint: "Así adaptamos el test a ti.",
+        options: [["Tengo reglas (edad fértil)", 0, "fertil"], ["Estoy buscando embarazo", 0, "embarazo"], ["Perimenopausia: mis reglas están cambiando (40+)", 1, "perimenopausia"], ["Menopausia: más de 12 meses sin regla", 1, "menopausia"]] },
+      { id: "ciclo", q: "¿Cómo es tu ciclo menstrual?", hint: "Piensa en los últimos 3–6 meses.", show: hasCycle,
+        options: [["Regular, cada 26–32 días", 0, null], ["A veces se adelanta o se retrasa", 1, "ciclo_leve"], ["Muy irregular o tengo faltas", 3, "ciclo_irregular"], ["Tomo anticonceptivos / no lo sé", 1, "pildora"]] },
+      { id: "regla", q: "¿Cómo son tus reglas y los días previos?", hint: "Dolor, hinchazón, sensibilidad en el pecho…", show: fertile,
+        options: [["Llevaderas, apenas noto nada", 0, null], ["Algo de dolor o hinchazón", 1, "retencion"], ["Dolorosas, me condicionan el día", 2, "regla_dolor"], ["Muy intensas o muy abundantes", 3, "regla_abundante"]] },
+      { id: "sofocos", q: "¿Tienes sofocos o sudores nocturnos?", hint: "", show: isMeno,
+        options: [["No, nunca", 0, null], ["Alguno de vez en cuando", 1, "sofocos_leve"], ["Varias veces por semana", 2, "sofocos"], ["Cada día, me afectan mucho", 3, "sofocos"]] },
+      { id: "piel", q: "¿Cómo está tu piel?", hint: "Especialmente barbilla, mandíbula y espalda.",
+        options: [["Limpia y estable", 0, null], ["Algún granito antes de la regla", 1, "piel_leve"], ["Granitos frecuentes en barbilla o mandíbula", 3, "acne"], ["Piel grasa y vello donde no me gustaría", 3, "vello"]] },
+      { id: "energia", q: "¿Cómo es tu energía durante el día?", hint: "",
+        options: [["Me levanto con energía y me dura", 0, null], ["Bajón a media tarde", 1, "energia_leve"], ["Cansada casi siempre, aunque duerma", 3, "cansancio"], ["Muy variable según el día", 2, "energia_ciclo"]] },
+      { id: "antojos", q: "¿Tienes antojos de dulce o hambre después de comer?", hint: "",
+        options: [["Casi nunca", 0, null], ["A veces, sobre todo antes de la regla", 1, "antojos_leve"], ["A menudo, necesito algo dulce", 2, "antojos"], ["Constantemente, me cuesta controlarlo", 3, "antojos"]] },
+      { id: "peso", q: "¿Cómo va tu peso?", hint: "",
+        options: [["Estable, sin cambios", 0, null], ["Algo de retención o hinchazón", 1, "retencion"], ["Me cuesta perder peso, sobre todo en la tripa", 3, "peso"], ["He ganado peso sin cambiar mis hábitos", 3, "peso_subida"]] },
+      { id: "animo", q: "¿Cómo está tu estado de ánimo?", hint: "",
+        options: [["Tranquila y estable", 0, null], ["Algo más sensible antes de la regla", 1, "animo_leve"], ["Irritable, ansiosa o con altibajos", 2, "ansiedad"], ["Me siento desbordada a menudo", 3, "ansiedad"]] },
+      { id: "sueno", q: "¿Cómo duermes?", hint: "",
+        options: [["Duermo bien y me levanto descansada", 0, null], ["Me cuesta un poco dormirme", 1, "sueno_leve"], ["Me despierto por la noche", 2, "sueno"], ["Duermo mal casi todas las noches", 3, "sueno"]] },
+      { id: "ejercicio", q: "¿Haces ejercicio?", hint: "Última pregunta: nos ayuda a elegir qué combinar con tu inositol.", score: false,
+        options: [["Casi nada", 0, null], ["Camino o hago algo suave", 0, null], ["Fuerza o deporte 2–3 días por semana", 0, null], ["Entreno casi a diario", 0, null]] }
     ];
 
-    var AREAS = {
-      ciclo: { name: "Ciclo menstrual", text: "tu ciclo muestra señales de que tus hormonas no están del todo sincronizadas." },
-      piel: { name: "Piel", text: "los granitos en la zona hormonal suelen relacionarse con un exceso de andrógenos." },
-      energia: { name: "Energía", text: "el cansancio persistente puede estar ligado a cómo tu cuerpo gestiona el azúcar." },
-      metabolismo: { name: "Metabolismo y antojos", text: "los antojos y la grasa abdominal son señales típicas de una sensibilidad a la insulina mejorable." },
-      animo: { name: "Ánimo y descanso", text: "los altibajos y el mal descanso también tienen un componente hormonal." }
+    /* --------------------------------------------------------------------
+       VENTA CRUZADA — qué complemento combinar con el inositol.
+       Cada respuesta suma puntos a un complemento y el motivo con más
+       puntos es el que se explica.
+       -------------------------------------------------------------------- */
+    var COMBO_RULES = {
+      regla_dolor:     [["magnesio", 3, "regla"]],
+      retencion:       [["magnesio", 1, "regla"]],
+      regla_abundante: [["vitc", 4, "hierro"], ["magnesio", 1, "regla"]],
+      animo_leve:      [["magnesio", 2, "animo"]],
+      ansiedad:        [["magnesio", 3, "animo"], ["creatina", 1, "animo"]],
+      sueno_leve:      [["magnesio", 2, "sueno"]],
+      sueno:           [["magnesio", 4, "sueno"]],
+      cansancio:       [["magnesio", 2, "cansancio"], ["vitc", 1, "cansancio"], ["creatina", 1, "animo"]],
+      energia_leve:    [["magnesio", 1, "cansancio"]],
+      antojos:         [["magnesio", 2, "insulina"]],
+      peso:            [["magnesio", 1, "insulina"], ["creatina", 1, "musculo"]],
+      peso_subida:     [["magnesio", 1, "insulina"], ["creatina", 1, "musculo"]],
+      acne:            [["vitc", 2, "piel"]],
+      vello:           [["vitc", 1, "piel"]],
+      piel_leve:       [["vitc", 1, "piel"]],
+      perimenopausia:  [["creatina", 2, "menopausia"], ["magnesio", 1, "sueno"], ["colageno", 2, "menopausia"]],
+      menopausia:      [["creatina", 3, "menopausia"], ["colageno", 3, "menopausia"]],
+      sofocos:         [["magnesio", 1, "sueno"]]
+    };
+    // Según la respuesta de ejercicio (índice de la opción)
+    var EXERCISE_RULES = [[], [], [["creatina", 3, "ejercicio"]], [["creatina", 4, "ejercicio"]]];
+
+    var COMBOS = {
+      magnesio: {
+        regla: { why: "Para tus reglas", study: "mg_regla",
+          text: "El magnesio relaja el músculo y es uno de los minerales más estudiados para el dolor de regla: en un ensayo, 250 mg al día durante 3 ciclos redujeron los calambres frente a placebo. El inositol trabaja el ciclo de fondo y el magnesio, los síntomas." },
+        sueno: { why: "Para dormir mejor", study: "mg_sueno",
+          text: "En un ensayo de 2025 con 155 adultos que dormían mal, el bisglicinato de magnesio, la misma forma que este, mejoró el insomnio frente a placebo, sobre todo en quienes tomaban poco magnesio en la dieta." },
+        animo: { why: "Para tu calma", study: "mg_ansiedad",
+          text: "El magnesio contribuye a la función psicológica normal y al funcionamiento normal del sistema nervioso. Una revisión sistemática encontró indicios de que ayuda con la ansiedad leve y el estrés. Junto al inositol, que participa en las señales de la serotonina, son una pareja clásica." },
+        cansancio: { why: "Para tu energía", study: "ue",
+          text: "El magnesio contribuye a disminuir el cansancio y la fatiga y al metabolismo energético normal (declaraciones autorizadas por la UE). Combinado con el inositol, ayudas a tu cuerpo a convertir la glucosa en energía." },
+        insulina: { why: "Para tus antojos", study: "mg_insulina",
+          text: "Un metaanálisis de 21 ensayos vio que tomar magnesio más de 3 meses mejora la resistencia a la insulina. Es el mismo objetivo que el inositol, por una vía distinta: por eso se complementan tan bien." }
+      },
+      vitc: {
+        hierro: { why: "Para tus reglas abundantes", study: "vitc_hierro",
+          text: "Con reglas abundantes se pierde hierro. La vitamina C aumenta la absorción del hierro (declaración autorizada por la UE): tomada con una comida rica en hierro, puede multiplicar su absorción por 2 o 3." },
+        piel: { why: "Para tu piel", study: "ue",
+          text: "La vitamina C contribuye a la formación normal de colágeno para el funcionamiento normal de la piel y protege las células frente al daño oxidativo (declaraciones autorizadas por la UE). El inositol trabaja los granitos desde las hormonas y la vitamina C cuida la piel." },
+        cansancio: { why: "Para tu energía", study: "ue",
+          text: "La vitamina C contribuye a disminuir el cansancio y la fatiga y al metabolismo energético normal (declaraciones autorizadas por la UE)." }
+      },
+      creatina: {
+        ejercicio: { why: "Para tus entrenos", study: "creatina_mujer",
+          text: "La creatina es uno de los complementos deportivos más estudiados. En mujeres mejora la fuerza y el rendimiento, y 3 g al día aumentan el rendimiento físico en ejercicios intensos y cortos (declaración autorizada por la UE)." },
+        menopausia: { why: "Para tu músculo y tus huesos", study: "creatina_meno",
+          text: "Con la bajada de estrógenos se pierde músculo y hueso más rápido. Las revisiones científicas señalan la menopausia como una de las etapas en las que más sentido tiene la creatina, sobre todo si se combina con ejercicio de fuerza." },
+        animo: { why: "Para tu energía mental", study: "creatina_mujer",
+          text: "La creatina no es solo para el músculo: también es energía para el cerebro. Hay estudios que muestran efectos positivos sobre el ánimo y la concentración en mujeres." },
+        musculo: { why: "Para tu metabolismo", study: "creatina_mujer",
+          text: "El músculo es el órgano que más azúcar consume. Ganar músculo con ayuda de la creatina hace que tu cuerpo use mejor la glucosa, igual que el inositol." }
+      },
+      colageno: {
+        menopausia: { why: "Para tu piel en esta etapa", study: "peptan",
+          text: "Con la menopausia baja el colágeno de la piel. En ensayos con placebo, el colágeno Peptan®, el mismo de este producto, mejoró la hidratación de la piel." }
+      }
+    };
+    var COMBO_DEFAULT = { key: "magnesio", reason: "cansancio" };
+
+    // Enfoque del inositol según lo que más le preocupa
+    var ANGLES = {
+      ciclo: { title: "Inositol para que tu ciclo recupere su ritmo", cta: "Quiero regular mi ciclo",
+        text: "Tus respuestas apuntan sobre todo a tu ciclo. Es justo donde el inositol tiene más evidencia: la guía internacional de SOP de 2023 lo reconoce como opción para mejorar la regularidad de la regla." },
+      piel: { title: "Inositol para cuidar tu piel desde dentro", cta: "Quiero cuidar mi piel",
+        text: "Tus respuestas apuntan sobre todo a tu piel. El acné hormonal no se arregla solo con cremas: el inositol actúa sobre los andrógenos, que están en el origen de los brotes." },
+      energia: { title: "Inositol para una energía más estable", cta: "Quiero recuperar mi energía",
+        text: "Tus respuestas apuntan sobre todo a tu energía. El inositol ayuda a tu cuerpo a usar mejor la insulina, para que la glucosa se convierta en energía y no en bajones." },
+      metabolismo: { title: "Inositol para tus antojos y tu metabolismo", cta: "Quiero equilibrar mi metabolismo",
+        text: "Tus respuestas apuntan sobre todo a la insulina: antojos, tripa, peso que no se mueve. Es uno de los campos donde el inositol más se ha estudiado." },
+      animo: { title: "Inositol para tu calma y tu descanso", cta: "Quiero sentirme más tranquila",
+        text: "Tus respuestas apuntan sobre todo a tu ánimo y tu descanso. El mio-inositol participa en las señales de la serotonina y en los estudios ha mejorado el sueño y los síntomas premenstruales." },
+      menopausia: { title: "Inositol para acompañarte en la menopausia", cta: "Quiero vivir mejor esta etapa",
+        text: "En la menopausia, cuidar la insulina es cuidar tu peso, tu corazón y tus sofocos. En mujeres posmenopáusicas, el mio-inositol mejoró la resistencia a la insulina, los triglicéridos y la tensión." },
+      fertilidad: { title: "Inositol para preparar tu cuerpo", cta: "Quiero cuidar mi fertilidad",
+        text: "Si buscas embarazo, un ciclo regular y una buena ovulación son clave. En mujeres con SOP, el inositol con ácido fólico es uno de los complementos más estudiados. Coméntalo con tu ginecóloga." },
+      equilibrio: { title: "Inositol para mantener tu equilibrio", cta: "Quiero cuidar mis hormonas",
+        text: "Tus hormonas están bastante bien. Mantener el equilibrio es mucho más fácil que recuperarlo, y el inositol es una forma sencilla de cuidar tu salud hormonal y metabólica." }
     };
 
     var RESULTS = {
       low: { tag: "Equilibrio bueno", title: "Tus hormonas parecen estar bastante en equilibrio",
-        text: "¡Buenas noticias! Tus respuestas muestran pocas señales de desequilibrio. Aun así, hay detalles que puedes cuidar para mantenerte así a largo plazo.",
-        reco: "Mantener tu equilibrio es más fácil que recuperarlo. Descubre cómo el inositol puede formar parte de tu rutina de cuidado hormonal." },
+        text: "¡Buenas noticias! Tus respuestas muestran pocas señales de desequilibrio. Aun así, hay detalles que puedes cuidar para mantenerte así a largo plazo." },
       mid: { tag: "Señales leves", title: "Tu cuerpo te está dando algunas señales",
-        text: "Tus respuestas muestran señales de un desequilibrio hormonal leve. Es muy común y la buena noticia es que suele responder bien a pequeños cambios en tu rutina.",
-        reco: "El inositol es uno de los complementos más utilizados por mujeres con síntomas como los tuyos. Descubre cómo puede acompañarte." },
+        text: "Tus respuestas muestran señales de un desequilibrio hormonal leve. Es muy común y suele responder bien a pequeños cambios en tu rutina." },
       high: { tag: "Señales claras", title: "Tus hormonas te están pidiendo atención",
-        text: "Tus respuestas muestran varias señales claras de desequilibrio hormonal. No estás sola: es algo que viven muchísimas mujeres, y hay formas de empezar a sentirte mejor.",
-        reco: "El inositol es uno de los complementos más elegidos por mujeres con ciclos irregulares, granitos y antojos. Descubre cómo puede ayudarte a recuperar tu equilibrio." }
+        text: "Tus respuestas muestran varias señales claras de desequilibrio hormonal. No estás sola: les pasa a muchísimas mujeres y hay formas de empezar a sentirte mejor." }
     };
 
     var quiz = document.getElementById("quiz");
-    var answers = [];
+    var answers = {};
     var current = 0;
+
+    function visibleQuestions() {
+      return QUESTIONS.filter(function (item) { return !item.show || item.show(answers); });
+    }
 
     function track(event, params) {
       try { if (window.fbq) fbq("track", event, params || {}); } catch (e) {}
@@ -337,25 +545,58 @@
     }
 
     // Lleva los parámetros del anuncio (utm_*, fbclid…) hasta la página del producto
-    function productLink(level) {
+    function withParams(href, level, angle) {
       try {
-        var url = new URL(PRODUCT_URL);
+        var url = new URL(href);
         new URLSearchParams(location.search).forEach(function (v, k) { if (!url.searchParams.has(k)) url.searchParams.set(k, v); });
         url.searchParams.set("test_resultado", level);
+        url.searchParams.set("test_perfil", angle);
         return url.toString();
-      } catch (e) { return PRODUCT_URL; }
+      } catch (e) { return href; }
+    }
+    function productLink(key, level, angle) {
+      return withParams(SHOP + "/products/" + encodeURIComponent(PRODUCTS[key].handle), level, angle);
+    }
+    // Enlace de carrito de Shopify: añade todos los productos y va directo a pagar
+    function packLink(keys, level, angle) {
+      return withParams(SHOP + "/cart/" + keys.map(function (k) { return PRODUCTS[k].variant + ":1"; }).join(","), level, angle);
+    }
+    function euros(keys) {
+      var total = keys.reduce(function (t, k) { return t + parseFloat(PRODUCTS[k].price.replace(",", ".")); }, 0);
+      return total.toFixed(2).replace(".", ",") + " €";
+    }
+
+    // Elige los complementos que mejor encajan con sus respuestas
+    function pickCombos(picked) {
+      var pts = {}, why = {};
+      function add(rule) {
+        var k = rule[0], p = rule[1], r = rule[2];
+        pts[k] = (pts[k] || 0) + p;
+        if (!why[k] || p > why[k].p) why[k] = { r: r, p: p };
+      }
+      picked.forEach(function (p) { (COMBO_RULES[p.key] || []).forEach(add); });
+      (EXERCISE_RULES[answers.ejercicio] || []).forEach(add);
+      var list = Object.keys(pts).sort(function (a, b) { return pts[b] - pts[a]; })
+        .map(function (k) { return { key: k, reason: why[k].r }; });
+      if (!list.length) list.push(COMBO_DEFAULT);
+      return list.slice(0, 2);
+    }
+
+    function productCard(key) {
+      var P = PRODUCTS[key];
+      return '<div class="prod"><img src="' + P.img + '" alt="' + P.name + '" loading="lazy"><div><strong>' + P.name + '</strong><span>' + P.detail + '</span><em>' + P.price + '</em></div></div>';
     }
 
     function renderQuestion() {
-      var item = QUESTIONS[current];
-      var pct = Math.round((current / QUESTIONS.length) * 100);
+      var list = visibleQuestions();
+      var item = list[current];
+      var pct = Math.round((current / list.length) * 100);
       var html = '<div class="progress"><span style="width:' + pct + '%"></span></div>' +
-        '<div class="progress-label">Pregunta ' + (current + 1) + ' de ' + QUESTIONS.length + '</div>' +
+        '<div class="progress-label">Pregunta ' + (current + 1) + ' de ' + list.length + '</div>' +
         '<div class="question fade-in"><h3>' + item.q + '</h3>' +
-        (item.hint ? '<p class="hint">' + item.hint + '</p>' : '<p class="hint">&nbsp;</p>') +
-        '<div class="options">';
+        '<p class="hint">' + (item.hint || "&nbsp;") + '</p><div class="options">';
       item.options.forEach(function (opt, i) {
-        var sel = answers[current] === i ? " selected" : "";
+        var sel = answers[item.id] === i ? " selected" : "";
         html += '<button type="button" class="option' + sel + '" data-i="' + i + '">' + opt[0] + '</button>';
       });
       html += '</div></div><div class="quiz-nav">' +
@@ -367,7 +608,7 @@
         btn.addEventListener("click", function () {
           quiz.querySelectorAll(".option").forEach(function (b) { b.classList.remove("selected"); });
           btn.classList.add("selected");
-          answers[current] = Number(btn.dataset.i);
+          answers[item.id] = Number(btn.dataset.i);
           if (current === 0) track("StartTest");
           setTimeout(next, 280);
         });
@@ -377,7 +618,7 @@
     }
 
     function next() {
-      if (current < QUESTIONS.length - 1) { current++; renderQuestion(); }
+      if (current < visibleQuestions().length - 1) { current++; renderQuestion(); }
       else showLoading();
     }
 
@@ -388,33 +629,73 @@
     }
 
     function showResult() {
-      var score = 0, max = 0, byArea = {};
-      QUESTIONS.forEach(function (item, i) {
-        var pts = item.options[answers[i]][1];
-        var top = Math.max.apply(null, item.options.map(function (o) { return o[1]; }));
-        score += pts; max += top;
-        byArea[item.area] = (byArea[item.area] || 0) + pts;
+      var score = 0, max = 0, areaPts = {}, picked = [];
+      visibleQuestions().forEach(function (item) {
+        var opt = item.options[answers[item.id]];
+        if (item.score === false) return;
+        score += opt[1];
+        max += Math.max.apply(null, item.options.map(function (o) { return o[1]; }));
+        if (opt[2] && picked.every(function (p) { return p.key !== opt[2]; })) {
+          var m = MSGS[opt[2]];
+          picked.push({ key: opt[2], pts: opt[1], msg: m });
+          areaPts[m.area] = (areaPts[m.area] || 0) + opt[1];
+        }
       });
-      var ratio = score / max;
+      var ratio = max ? score / max : 0;
       var level = ratio < 0.25 ? "low" : ratio < 0.55 ? "mid" : "high";
       var r = RESULTS[level];
 
-      var top = Object.keys(byArea).filter(function (a) { return byArea[a] >= 2; })
-        .sort(function (a, b) { return byArea[b] - byArea[a]; }).slice(0, 3);
-      var areasHtml = top.length
-        ? '<p><strong>Las áreas en las que más señales hemos detectado:</strong></p><ul class="areas">' +
-          top.map(function (a) { return '<li><strong>' + AREAS[a].name + ':</strong> ' + AREAS[a].text + '</li>'; }).join("") + '</ul>'
-        : "";
+      // Enfoque: la etapa manda (menopausia / embarazo); si no, el área con más señales
+      var stageKey = QUESTIONS[0].options[answers.etapa][2];
+      var angle;
+      if (stageKey === "menopausia" || stageKey === "perimenopausia") angle = "menopausia";
+      else if (stageKey === "embarazo") angle = "fertilidad";
+      else {
+        angle = Object.keys(areaPts).sort(function (a, b) { return areaPts[b] - areaPts[a]; })[0];
+        if (!angle || areaPts[angle] < 2) angle = "equilibrio";
+      }
+      var A = ANGLES[angle];
+
+      // Motivos personalizados: la etapa primero y después las señales más fuertes
+      var stage = picked.filter(function (p) { return p.key === stageKey; });
+      var rest = picked.filter(function (p) { return p.key !== stageKey; }).sort(function (a, b) { return b.pts - a.pts; });
+      var reasons = stage.concat(rest).slice(0, 4);
+
+      var reasonsHtml = reasons.map(function (p) {
+        var s = p.msg.study && STUDIES[p.msg.study];
+        return '<li><strong>' + p.msg.title + '</strong><p>' + p.msg.text + '</p>' +
+          (s ? '<a class="study" href="' + s.url + '" target="_blank" rel="noopener">📚 ' + s.label + '</a>' : '') + '</li>';
+      }).join("");
+
+      var combos = pickCombos(picked);
+      var combosHtml = combos.map(function (c, i) {
+        var C = COMBOS[c.key][c.reason], s = STUDIES[C.study], keys = ["inositol", c.key];
+        return '<div class="combo' + (i === 0 ? ' best' : '') + '">' +
+          '<span class="combo-tag">' + (i === 0 ? '★ Tu pack ideal' : 'También encaja contigo') + ' · ' + C.why + '</span>' +
+          '<h5>Myo-Inositol + ' + PRODUCTS[c.key].name + '</h5>' +
+          '<div class="prods">' + productCard("inositol") + '<b class="plus">+</b>' + productCard(c.key) + '</div>' +
+          '<p>' + C.text + '</p>' +
+          (s ? '<a class="study" href="' + s.url + '" target="_blank" rel="noopener">📚 ' + s.label + '</a>' : '') +
+          '<a class="btn ' + (i === 0 ? 'btn-accent' : 'btn-line') + ' track-buy" data-what="pack_' + c.key + '" href="' + packLink(keys, level, angle) + '">Comprar el pack · ' + euros(keys) + ' →</a>' +
+          '</div>';
+      }).join("");
 
       quiz.innerHTML = '<div class="result fade-in">' +
         '<span class="result-tag ' + level + '">' + r.tag + '</span>' +
         '<h3>' + r.title + '</h3><p>' + r.text + '</p>' +
         '<div class="meter"><div class="meter-bar"><span class="meter-dot" id="dot"></span></div>' +
         '<div class="meter-labels"><span>En equilibrio</span><span>Señales leves</span><span>Señales claras</span></div></div>' +
-        areasHtml +
-        '<div class="reco"><h4>Tu siguiente paso: ' + PRODUCT_NAME + '</h4><p>' + r.reco + '</p>' +
-        '<a class="btn btn-accent" id="go-product" href="' + productLink(level) + '">Descubrir el ' + PRODUCT_NAME.toLowerCase() + ' →</a>' +
-        '<small>Resultado orientativo. No sustituye la consulta con un profesional sanitario.</small></div>' +
+        '<h4 class="reasons-title">Por qué el inositol encaja contigo</h4>' +
+        '<p class="reasons-sub">Según tus respuestas y lo que dicen los estudios:</p>' +
+        '<ul class="reasons">' + reasonsHtml + '</ul>' +
+        '<div class="reco"><span class="reco-tag">Tu recomendación personalizada</span><h4>' + A.title + '</h4><p>' + A.text + '</p>' +
+        productCard("inositol") +
+        '<p class="dose">Myo-Inositol puro en polvo. En los estudios se suelen usar entre 2 y 4 g al día y los efectos se valoran a partir de los 3 meses de uso continuado.</p>' +
+        '<a class="btn btn-accent track-buy" data-what="inositol" href="' + productLink("inositol", level, angle) + '">' + A.cta + ' →</a></div>' +
+        '<h4 class="reasons-title">Potencia tu inositol</h4>' +
+        '<p class="reasons-sub">Según tus respuestas, esta es la combinación que más sentido tiene para ti:</p>' +
+        combosHtml +
+        '<p class="legal-note">Resultado orientativo. No sustituye la consulta con un profesional sanitario. Si estás embarazada, das el pecho o tomas medicación, consulta antes con tu médico. Los complementos alimenticios no deben utilizarse como sustitutos de una dieta equilibrada y un modo de vida saludable.</p>' +
         '<div class="restart"><button type="button" class="btn btn-ghost" id="restart">Repetir el test</button></div>' +
         '</div>';
 
@@ -423,12 +704,14 @@
         if (dot) dot.style.left = Math.max(4, Math.min(96, ratio * 100)) + "%";
       }, 60);
 
-      track("CompleteRegistration", { content_name: "test_hormonal", status: level });
-      document.getElementById("go-product").addEventListener("click", function () {
-        track("Lead", { content_name: "test_hormonal", status: level });
+      track("CompleteRegistration", { content_name: "test_hormonal", status: level, content_category: angle });
+      quiz.querySelectorAll(".track-buy").forEach(function (a) {
+        a.addEventListener("click", function () {
+          track("Lead", { content_name: a.dataset.what, status: level, content_category: angle });
+        });
       });
       document.getElementById("restart").addEventListener("click", function () {
-        answers = []; current = 0; renderQuestion();
+        answers = {}; current = 0; renderQuestion();
       });
       quiz.scrollIntoView({ behavior: "smooth", block: "start" });
     }
