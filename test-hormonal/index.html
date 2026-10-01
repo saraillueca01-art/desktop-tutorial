@@ -426,9 +426,9 @@
     </div>
     <div class="container">
       <div class="faq">
-        <details class="reveal"><summary>¿El test es realmente gratis?</summary><p>Sí. No te pedimos tarjeta ni que te registres. Solo tu email al final, para enviarte tu resultado y tu recomendación.</p></details>
+        <details class="reveal"><summary>¿El test es realmente gratis?</summary><p>Sí. No te pedimos tarjeta ni que te registres. Solo tu email al final, para enseñarte tu resultado y tu recomendación.</p></details>
         <details class="reveal"><summary>¿Cuánto tarda?</summary><p>Unos 2 minutos. Son 10 preguntas como máximo de respuesta rápida.</p></details>
-        <details class="reveal"><summary>¿Qué hacéis con mis datos?</summary><p>Guardamos tu email y tu resultado para enviarte tu recomendación. No compartimos tus datos con nadie y puedes darte de baja cuando quieras.</p></details>
+        <details class="reveal"><summary>¿Qué hacéis con mis datos?</summary><p>Guardamos tu email y tu resultado en nuestra tienda. Solo te escribiremos si nos das permiso, no compartimos tus datos con nadie y puedes darte de baja cuando quieras.</p></details>
         <details class="reveal"><summary>¿Sustituye a una analítica o a ir al médico?</summary><p>No. Es una herramienta orientativa para que conozcas mejor las señales de tu cuerpo. Si tienes síntomas intensos o persistentes, consulta con tu médico o ginecóloga.</p></details>
       </div>
     </div>
@@ -457,9 +457,8 @@
        CONFIGURACIÓN — cambia aquí el enlace a la página del inositol
        ==================================================================== */
     var SHOP = "https://www.benissalud.com";
-    // Klaviyo de Benissalud: clave pública y lista "Test hormonal (landing)"
-    var KLAVIYO_PUBLIC_KEY = "VHa7GD";
-    var KLAVIYO_LIST_ID = "WDUiwY";
+    // Los contactos se guardan en Shopify → Clientes, con estas etiquetas para Shopify Email
+    var TAG_PREFIX = "th-";
     var PRIVACY_URL = SHOP + "/policies/privacy-policy";
     // Descuentos creados en Shopify: solo inositol / +1 producto / +2 o más
     var TIERS = [
@@ -847,12 +846,12 @@
       quiz.innerHTML = '<div class="progress"><span style="width:100%"></span></div>' +
         '<div class="email-step fade-in">' +
         '<span class="q-emoji">💌</span><h3>¡Tu resultado está listo!</h3>' +
-        '<p class="hint">¿A dónde te lo enviamos? Así lo tienes guardado junto con tu recomendación personalizada.</p>' +
+        '<p class="hint">Déjanos tu email para ver tu resultado y tu recomendación personalizada con descuento.</p>' +
         '<form id="lead-form" novalidate>' +
         '<label class="field"><span>Tu nombre</span><input type="text" name="name" autocomplete="given-name" placeholder="Laura"></label>' +
         '<label class="field"><span>Tu email *</span><input type="email" name="email" autocomplete="email" placeholder="tuemail@ejemplo.com" required></label>' +
         '<label class="check"><input type="checkbox" name="privacy" required><span>He leído y acepto la <a href="' + PRIVACY_URL + '" target="_blank" rel="noopener">política de privacidad</a> *</span></label>' +
-        '<label class="check"><input type="checkbox" name="marketing"><span>Quiero recibir consejos de salud hormonal y ofertas de Benissalud por email</span></label>' +
+        '<label class="check"><input type="checkbox" name="marketing"><span>Quiero recibir mi resultado, consejos de salud hormonal y ofertas de Benissalud por email</span></label>' +
         '<p class="form-error" id="form-error"></p>' +
         '<button type="submit" class="btn btn-accent pulse">Ver mi resultado →</button>' +
         '<p class="form-note">🔒 No compartimos tus datos con nadie. Puedes darte de baja cuando quieras.</p>' +
@@ -872,32 +871,29 @@
       track("ViewEmailStep");
     }
 
-    // Envía el contacto y su resultado a Klaviyo (no bloquea el resultado si falla)
-    function klaviyo(path, body) {
+    // Envía el contacto a Shopify (formularios nativos de la tienda, mismo dominio)
+    function shopifyForm(fields) {
       try {
-        return fetch("https://a.klaviyo.com/client/" + path + "/?company_id=" + KLAVIYO_PUBLIC_KEY, {
-          method: "POST", keepalive: true,
-          headers: { "Content-Type": "application/vnd.api+json", "revision": "2024-10-15" },
-          body: JSON.stringify(body)
-        }).catch(function () {});
+        var fd = new URLSearchParams();
+        fd.set("utf8", "✓");
+        Object.keys(fields).forEach(function (k) { fd.set(k, fields[k]); });
+        return fetch("/contact", { method: "POST", body: fd, credentials: "same-origin", keepalive: true }).catch(function () {});
       } catch (e) {}
     }
     function sendLead(data) {
       if (!lead) return;
-      var profile = { email: lead.email, properties: {
-        test_resultado: data.tag, test_porcentaje: data.pct, test_perfil: data.angleTitle,
-        test_pack_recomendado: data.packName, test_fecha: new Date().toISOString(), test_utm_source: new URLSearchParams(location.search).get("utm_source") || ""
-      } };
-      if (lead.name) profile.first_name = lead.name;
-      klaviyo("events", { data: { type: "event", attributes: {
-        metric: { data: { type: "metric", attributes: { name: "Completó test hormonal" } } },
-        profile: { data: { type: "profile", attributes: profile } },
-        properties: data.event
-      } } });
-      if (lead.marketing) klaviyo("subscriptions", { data: { type: "subscription", attributes: {
-        custom_source: "Landing test hormonal",
-        profile: { data: { type: "profile", attributes: { email: lead.email, subscriptions: { email: { marketing: { consent: "SUBSCRIBED" } } } } } }
-      }, relationships: { list: { data: { type: "list", id: KLAVIYO_LIST_ID } } } } });
+      if (lead.marketing) {
+        // Con consentimiento: se crea como cliente suscrito al marketing, con etiquetas de su resultado
+        var f = { form_type: "customer", "contact[email]": lead.email, "contact[tags]": data.tags.join(", ") };
+        if (lead.name) f["contact[first_name]"] = lead.name;
+        shopifyForm(f);
+      } else {
+        // Sin consentimiento de marketing: no se suscribe; la tienda recibe el contacto y su resultado por email
+        shopifyForm({
+          form_type: "contact", "contact[email]": lead.email, "contact[name]": lead.name || "",
+          "contact[body]": "Test hormonal (sin consentimiento de marketing)\n" + data.summary
+        });
+      }
     }
 
     function showLoading() {
@@ -1007,33 +1003,16 @@
       });
       confetti();
 
-      var bestKeys = ["inositol", combos[0].key], answered = {};
+      var answered = {}, c1 = combos[0];
       visibleQuestions().forEach(function (item) { answered[item.q] = item.options[answers[item.id]][0]; });
-      // Todo lo que necesita el email de Klaviyo para personalizarse
-      var c1 = combos[0], c2 = combos[1], C1 = COMBOS[c1.key][c1.reason], S1 = STUDIES[C1.study] || {};
-      var pack3 = ["inositol", c1.key, c2.key];
-      var sum = function (keys) { return keys.reduce(function (a, k) { return a + priceOf(k); }, 0); };
+      var utm = new URLSearchParams(location.search).get("utm_source");
       sendLead({
-        tag: r.tag, pct: Math.round(ratio * 100), angleTitle: A.title,
-        packName: "Myo-Inositol + " + PRODUCTS[c1.key].name,
-        event: {
-          resultado: r.tag, resultado_titulo: r.title, resultado_texto: r.text, porcentaje: Math.round(ratio * 100),
-          perfil: A.title, perfil_texto: A.text, etapa: QUESTIONS[0].options[answers.etapa][0],
-          senales: picked.map(function (p) { return p.msg.title; }),
-          motivos: reasons.map(function (p) {
-            var st = STUDIES[p.msg.study] || {};
-            return { titulo: p.msg.title, texto: p.msg.text, estudio: st.label || "", estudio_url: st.url || "" };
-          }),
-          inositol_img: PRODUCTS.inositol.img, inositol_precio: PRODUCTS.inositol.price,
-          inositol_precio_final: fmt(priceOf("inositol") * .9), inositol_url: inositolLink(level, angle),
-          complemento: PRODUCTS[c1.key].name, complemento_img: PRODUCTS[c1.key].img, complemento_precio: PRODUCTS[c1.key].price,
-          complemento_motivo: C1.why, complemento_texto: C1.text, complemento_estudio: S1.label || "", complemento_estudio_url: S1.url || "",
-          pack_recomendado: "Myo-Inositol + " + PRODUCTS[c1.key].name,
-          pack_precio: fmt(sum(bestKeys)), pack_precio_final: fmt(sum(bestKeys) * .85), pack_url: routineLink(bestKeys, level, angle),
-          complemento2: PRODUCTS[c2.key].name, complemento2_img: PRODUCTS[c2.key].img,
-          rutina_precio: fmt(sum(pack3)), rutina_precio_final: fmt(sum(pack3) * .8), rutina_url: routineLink(pack3, level, angle),
-          respuestas: answered
-        }
+        tags: ["test-hormonal", TAG_PREFIX + "resultado-" + level, TAG_PREFIX + "perfil-" + angle, TAG_PREFIX + "pack-" + c1.key]
+          .concat(utm ? [TAG_PREFIX + "origen-" + utm.toLowerCase().replace(/[^a-z0-9-]/g, "")] : []),
+        summary: "Resultado: " + r.tag + " (" + Math.round(ratio * 100) + "%)\nPerfil: " + A.title +
+          "\nPack recomendado: Myo-Inositol + " + PRODUCTS[c1.key].name +
+          "\nSeñales: " + picked.map(function (p) { return p.msg.title; }).join("; ") +
+          "\n\nRespuestas:\n" + Object.keys(answered).map(function (q) { return "- " + q + " " + answered[q]; }).join("\n")
       });
       track("CompleteRegistration", { content_name: "test_hormonal", status: level, content_category: angle });
       quiz.querySelectorAll(".track-buy").forEach(function (a) {
