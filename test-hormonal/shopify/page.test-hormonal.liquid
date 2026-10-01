@@ -260,7 +260,15 @@
       .body-figure svg { max-width: 220px; }
     }
 
-    /* Envío gratis */
+    /* Envío gratis y regalo */
+    .ship p { font-size: .86rem !important; color: var(--ink) !important; margin-bottom: 10px !important; }
+    .rw-bar { position: relative; height: 8px; border-radius: 99px; background: var(--line); margin: 6px 14px 30px 0; }
+    .rw-bar span { display: block; height: 100%; border-radius: 99px; background: var(--grad); transition: width .5s cubic-bezier(.2, .7, .2, 1); }
+    .rw-bar .mk { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 28px; height: 28px; border-radius: 50%; background: var(--white); border: 2px solid var(--line); display: grid; place-items: center; font-style: normal; font-size: .8rem; transition: all .3s; }
+    .rw-bar .mk b { position: absolute; top: 30px; font-size: .66rem; color: var(--muted); white-space: nowrap; }
+    .rw-bar .mk.done { border-color: var(--accent); background: var(--accent-soft); transform: translate(-50%, -50%) scale(1.15); }
+    .sum-row.gift { color: var(--accent); font-weight: 600; animation: pop .45s cubic-bezier(.2, 1.4, .4, 1); }
+    .sum-row.gift s { color: var(--muted); font-weight: 400; margin-right: 4px; }
     .ship { margin: .6rem 0 .2rem; font-size: .85rem; color: var(--ink); }
     .ship-bar { height: 6px; border-radius: 99px; background: var(--line); overflow: hidden; margin-top: 6px; }
     .ship-bar span { display: block; height: 100%; width: 0; background: var(--grad); transition: width .5s cubic-bezier(.2, .7, .2, 1); }
@@ -445,7 +453,7 @@
 </head>
 <body>
 
-  <div class="topbar">🎁 <strong>Test 100% gratuito</strong> · Resultado al instante · 2 minutos</div>
+  <div class="topbar">🎁 <strong>Test 100% gratuito</strong> · Envío gratis desde 35 € · <strong>Vitamina C de regalo</strong> desde 60 €</div>
 
   <!-- ---------- Hero ---------- -->
   <header class="hero">
@@ -588,6 +596,7 @@
         <details class="reveal"><summary>¿Cuándo notaré los resultados?</summary><p>Los complementos trabajan con el tiempo. En los estudios los efectos se valoran a partir de los 3 meses de uso continuado, y en la piel la mejora se vio a los 6 meses. Cada cuerpo es diferente y los resultados pueden variar.</p></details>
         <details class="reveal"><summary>¿Lo puedo combinar con otros complementos?</summary><p>Sí, el Myo-Inositol se puede combinar con otros complementos, como el magnesio, la vitamina C, la creatina o el colágeno. Si tomas medicación o anticonceptivos, consúltalo antes con tu médico.</p></details>
         <details class="reveal"><summary>¿Puedo tomarlo si estoy embarazada o dando el pecho?</summary><p>En el embarazo, la lactancia o si tienes alguna enfermedad, consulta siempre con tu médico o ginecóloga antes de tomar cualquier complemento.</p></details>
+        <details class="reveal"><summary>¿Tenéis algún regalo?</summary><p>Sí: en compras de más de 60 € te regalamos una Vitamina C pura (tarro de 100 g, valor 15,95 €). Se añade sola al carrito desde tu rutina personalizada.</p></details>
         <details class="reveal"><summary>¿Cómo funcionan los descuentos del test?</summary><p>Se aplican solos al pagar: un 10% en el Myo-Inositol, un 15% en toda tu compra con 2 productos y un 20% con 3 o más. Los descuentos no se pueden sumar entre sí.</p></details>
         <details class="reveal"><summary>¿Y si quiero devolverlo?</summary><p>Tienes 30 días desde que lo recibes para solicitar una devolución, con el producto sin abrir y en su embalaje original. Escríbenos y te ayudamos.</p></details>
         <details class="reveal"><summary>¿Qué hacéis con mis datos?</summary><p>Guardamos tu email y tu resultado en nuestra tienda. Solo te escribiremos si nos das permiso, no compartimos tus datos con nadie y puedes darte de baja cuando quieras.</p></details>
@@ -659,6 +668,8 @@
     ];
     var ALT_CODE = "TESTBIENESTAR10"; // 10% cuando el producto principal no es el inositol
     var FREE_SHIPPING = 35; // envío gratis en España a partir de 35 €
+    var GIFT_MIN = 60;      // a partir de 60 € (sin contar la vitamina C) regalamos una Vitamina C
+    var GIFT_VARIANT = "56590721024325"; // Vitamina C pura, tarro 100 g
     // Descuentos creados en Shopify: solo inositol / +1 producto / +2 o más
     var TIERS = [
       { min: 1, pct: 10, code: "TESTHORMONAL10", label: "Solo inositol" },
@@ -1036,19 +1047,30 @@
         document.getElementById("sum-disc-label").textContent = "Descuento -" + t.pct + "%" + (t.min === 1 ? " (" + PRODUCTS[mainKey].name + ")" : "");
         document.getElementById("sum-disc").textContent = "-" + fmt(disc);
         bump(document.getElementById("sum-total"), fmt(total));
-        var falta = FREE_SHIPPING - total;
-        document.getElementById("ship").innerHTML = (falta > 0
-          ? "🚚 Te faltan <strong>" + fmt(falta) + "</strong> para el envío gratis"
-          : "🚚 <strong>¡Envío gratis!</strong> Llega en 2–7 días hábiles") +
-          '<div class="ship-bar"><span style="width:' + Math.min(100, total / FREE_SHIPPING * 100) + '%"></span></div>';
+        // Regalo: cuenta lo que se paga en productos que no son vitamina C, ya con el descuento
+        var giftBase = keys.reduce(function (a, k, i) { return k === "vitc" ? a : a + lines[i].p; }, 0) * (1 - t.pct / 100);
+        var giftOn = giftBase >= GIFT_MIN, faltaShip = FREE_SHIPPING - total, faltaGift = GIFT_MIN - giftBase;
+        var msg = giftOn
+          ? "🎉 <strong>¡Envío gratis + Vitamina C de regalo!</strong> (valor 15,95 €)"
+          : faltaShip > 0
+            ? "🚚 Te faltan <strong>" + fmt(faltaShip) + "</strong> para el envío gratis y <strong>" + fmt(faltaGift) + "</strong> para tu Vitamina C de regalo 🎁"
+            : "🚚 <strong>¡Envío gratis!</strong> Te faltan <strong>" + fmt(faltaGift) + "</strong> para llevarte una Vitamina C de regalo 🎁";
+        document.getElementById("ship").innerHTML = '<p>' + msg + '</p>' +
+          '<div class="rw-bar"><span style="width:' + Math.min(100, Math.max(giftBase, total) / GIFT_MIN * 100) + '%"></span>' +
+          '<i class="mk' + (faltaShip <= 0 ? ' done' : '') + '" style="left:' + (FREE_SHIPPING / GIFT_MIN * 100) + '%">🚚<b>35 €</b></i>' +
+          '<i class="mk' + (giftOn ? ' done' : '') + '" style="left:100%">🎁<b>60 €</b></i></div>';
+        var giftRow = document.getElementById("gift-row");
+        giftRow.style.display = giftOn ? "" : "none";
+        if (giftOn && !box.dataset.gift) { box.dataset.gift = "1"; confettiSmall(); track("GiftUnlocked"); }
+        if (!giftOn) delete box.dataset.gift;
         var next = TIERS.filter(function (x) { return x.min > count; })[0];
         document.getElementById("nudge").innerHTML = next
           ? "👉 Añade " + (next.min - count) + " producto más o elige un tratamiento más largo y consigue un <strong>" + next.pct + "% en toda tu compra</strong>."
           : "🎉 ¡Tienes el descuento máximo! Te ahorras <strong>" + fmt(disc) + "</strong>.";
         var buy = document.getElementById("buy-routine");
-        buy.href = linesLink(lines, code, level, angle);
+        buy.href = linesLink(giftOn ? lines.concat([{ v: GIFT_VARIANT, q: 1 }]) : lines, code, level, angle);
         buy.dataset.what = "rutina_" + count;
-        buy.textContent = "Comprar mi rutina con -" + t.pct + "% · " + fmt(total) + " →";
+        buy.textContent = "Comprar mi rutina con -" + t.pct + "% · " + fmt(total) + (giftOn ? " + regalo" : "") + " →";
       }
 
       box.querySelectorAll(".r-item[data-key] .toggle").forEach(function (btn) {
@@ -1262,6 +1284,7 @@
         '<div class="summary">' +
         '<div class="sum-row"><span>Subtotal</span><span id="sum-sub"></span></div>' +
         '<div class="sum-row disc"><span id="sum-disc-label"></span><span id="sum-disc"></span></div>' +
+        '<div class="sum-row gift" id="gift-row" style="display:none"><span>🎁 Vitamina C pura de regalo</span><span><s>15,95 €</s> 0,00 €</span></div>' +
         '<div class="sum-row total"><span>Total</span><span id="sum-total"></span></div>' +
         '<div class="ship" id="ship"></div>' +
         '<p class="nudge" id="nudge"></p>' +
@@ -1374,6 +1397,19 @@
       requestAnimationFrame(step);
     }
 
+    function confettiSmall() {
+      if (reduce) return;
+      var colors = ["#2f80c8", "#14a38b", "#ffd54a"];
+      for (var i = 0; i < 26; i++) {
+        var c = document.createElement("span");
+        c.className = "confetti";
+        c.style.left = (35 + Math.random() * 30) + "vw";
+        c.style.background = colors[i % colors.length];
+        c.style.animationDuration = (1.4 + Math.random()) + "s";
+        document.body.appendChild(c);
+        (function (n) { setTimeout(function () { n.remove(); }, 2600); })(c);
+      }
+    }
     function confetti() {
       if (reduce) return;
       var colors = ["#2f80c8", "#14a38b", "#4fbf8f", "#8fd3f4", "#0e3a4f"];
