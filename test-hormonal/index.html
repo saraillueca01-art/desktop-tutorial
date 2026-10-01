@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Test hormonal gratis | Descubre cómo están tus hormonas</title>
+  <meta name="description" content="Haz el test hormonal gratuito en 2 minutos y descubre qué te está diciendo tu cuerpo: ciclo, energía, piel, ánimo y antojos.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #4a2c3a;
+      --ink-soft: #8a5a6e;
+      --text: #3a2f33;
+      --muted: #7a6c70;
+      --bg: #fdf8f5;
+      --bg-alt: #f6ebe6;
+      --white: #ffffff;
+      --line: #eadcd5;
+      --accent: #c97b84;
+      --accent-soft: #f3d9d6;
+      --sage: #9bb09a;
+      --radius: 24px;
+      --max: 1080px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Inter", system-ui, sans-serif; color: var(--text); background: var(--bg);
+      line-height: 1.65; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 400; color: var(--ink); line-height: 1.15; letter-spacing: -.01em; }
+    h1 em, h2 em { font-style: italic; color: var(--accent); }
+    p { color: var(--muted); }
+    .container { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 20px; }
+    section { padding: 88px 0; }
+    .eyebrow {
+      display: inline-block; font-size: .72rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--ink-soft); margin-bottom: 1rem;
+    }
+    .center { text-align: center; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 17px 34px; border-radius: 999px; border: 0;
+      background: var(--ink); color: var(--white); text-decoration: none;
+      font: 600 1rem "Inter", sans-serif; letter-spacing: .01em; cursor: pointer;
+      box-shadow: 0 10px 30px rgba(74, 44, 58, .22); transition: transform .15s, background .2s;
+    }
+    .btn:hover { background: #5d3849; transform: translateY(-1px); }
+    .btn-accent { background: var(--accent); box-shadow: 0 10px 30px rgba(201, 123, 132, .35); }
+    .btn-accent:hover { background: #b96a74; }
+    .btn-ghost { background: none; box-shadow: none; color: var(--ink-soft); padding: 10px 14px; font-weight: 500; }
+    .btn-ghost:hover { background: none; color: var(--ink); transform: none; }
+
+    /* ---------- Barra superior ---------- */
+    .topbar { background: var(--ink); color: #f6e6e3; text-align: center; font-size: .82rem; padding: 9px 16px; }
+    .topbar strong { color: var(--white); }
+
+    /* ---------- Hero ---------- */
+    .hero { padding: 64px 0 80px; background: radial-gradient(ellipse at 80% 0%, var(--accent-soft) 0%, transparent 55%), radial-gradient(ellipse at 0% 100%, #e4ece2 0%, transparent 50%); }
+    .hero-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 56px; align-items: center; }
+    .hero h1 { font-size: clamp(2.3rem, 5.4vw, 3.9rem); margin-bottom: 1.3rem; }
+    .hero .lead { font-size: 1.12rem; max-width: 520px; margin-bottom: 2rem; color: var(--text); }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 1.6rem; font-size: .88rem; color: var(--muted); }
+    .hero-meta span::before { content: "✓"; color: var(--sage); font-weight: 700; margin-right: 7px; }
+    .hero-card {
+      background: var(--white); border-radius: var(--radius); padding: 30px; border: 1px solid var(--line);
+      box-shadow: 0 30px 60px rgba(74, 44, 58, .08);
+    }
+    .hero-card h3 { font-size: 1.25rem; margin-bottom: 1rem; }
+    .signs { list-style: none; display: grid; gap: 10px; }
+    .signs li { display: flex; gap: 12px; align-items: center; padding: 12px 14px; background: var(--bg); border-radius: 14px; font-size: .95rem; color: var(--text); }
+    .signs li b { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); color: var(--ink); font-weight: 600; font-size: .85rem; }
+    .hero-card p { margin-top: 1rem; font-size: .9rem; }
+
+    /* ---------- Cómo funciona ---------- */
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
+    .step { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; }
+    .step .num { font-family: "Fraunces", serif; font-size: 2.2rem; color: var(--accent); line-height: 1; margin-bottom: .8rem; }
+    .step h3 { font-size: 1.15rem; margin-bottom: .4rem; }
+    h2 { font-size: clamp(1.8rem, 3.6vw, 2.5rem); margin-bottom: .8rem; }
+    .section-intro { max-width: 600px; margin: 0 auto; }
+
+    /* ---------- Quiz ---------- */
+    #test { background: var(--bg-alt); }
+    .quiz {
+      max-width: 680px; margin: 40px auto 0; background: var(--white); border-radius: var(--radius);
+      border: 1px solid var(--line); padding: 36px; box-shadow: 0 30px 60px rgba(74, 44, 58, .07);
+      scroll-margin-top: 16px;
+    }
+    .progress { height: 6px; background: var(--bg-alt); border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
+    .progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--ink-soft)); transition: width .35s ease; }
+    .progress-label { font-size: .8rem; color: var(--muted); margin-bottom: 1.6rem; }
+    .question h3 { font-size: clamp(1.3rem, 3vw, 1.6rem); margin-bottom: .4rem; }
+    .question .hint { font-size: .9rem; margin-bottom: 1.4rem; }
+    .options { display: grid; gap: 10px; }
+    .option {
+      display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
+      padding: 16px 18px; border-radius: 16px; border: 1.5px solid var(--line); background: var(--white);
+      font: 500 1rem "Inter", sans-serif; color: var(--text); cursor: pointer; transition: border-color .15s, background .15s;
+    }
+    .option::before { content: ""; flex: none; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--line); transition: all .15s; }
+    .option:hover { border-color: var(--accent); background: #fffafa; }
+    .option.selected { border-color: var(--accent); background: var(--accent-soft); }
+    .option.selected::before { border-color: var(--accent); background: var(--accent); box-shadow: inset 0 0 0 4px var(--accent-soft); }
+    .quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.4rem; min-height: 44px; }
+    .fade-in { animation: fade .35s ease; }
+    @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    /* ---------- Cargando y resultado ---------- */
+    .loading { text-align: center; padding: 30px 0; }
+    .spinner { width: 46px; height: 46px; border-radius: 50%; border: 4px solid var(--accent-soft); border-top-color: var(--accent); margin: 0 auto 1.2rem; animation: spin .9s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .result-tag { display: inline-block; padding: 6px 14px; border-radius: 99px; font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 1rem; }
+    .result-tag.low { background: #e4ece2; color: #4d6a4b; }
+    .result-tag.mid { background: #f8e8d3; color: #8a5a1f; }
+    .result-tag.high { background: var(--accent-soft); color: #8e3f4a; }
+    .result h3 { font-size: clamp(1.5rem, 3.4vw, 1.9rem); margin-bottom: .8rem; }
+    .result > p { color: var(--text); margin-bottom: 1.2rem; }
+    .meter { margin: 1.4rem 0; }
+    .meter-bar { height: 10px; border-radius: 99px; background: linear-gradient(90deg, var(--sage), #e6b980, var(--accent)); position: relative; }
+    .meter-dot { position: absolute; top: 50%; width: 22px; height: 22px; border-radius: 50%; background: var(--white); border: 4px solid var(--ink); transform: translate(-50%, -50%); transition: left .8s ease; left: 0; }
+    .meter-labels { display: flex; justify-content: space-between; font-size: .75rem; color: var(--muted); margin-top: 8px; }
+    .areas { list-style: none; display: grid; gap: 8px; margin: 1rem 0 1.6rem; }
+    .areas li { padding: 12px 14px; background: var(--bg); border-radius: 12px; font-size: .93rem; color: var(--text); }
+    .areas li strong { color: var(--ink); }
+    .reco { background: var(--ink); color: #f6e6e3; border-radius: 20px; padding: 26px; }
+    .reco h4 { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.35rem; color: var(--white); margin-bottom: .5rem; }
+    .reco p { color: #ead6d6; margin-bottom: 1.3rem; font-size: .95rem; }
+    .reco .btn { width: 100%; }
+    .reco small { display: block; margin-top: .9rem; text-align: center; font-size: .78rem; color: #cbb3b7; }
+    .restart { margin-top: 1rem; text-align: center; }
+
+    /* ---------- Testimonios ---------- */
+    .quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
+    .quote { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; }
+    .quote .stars { color: #e0a85a; letter-spacing: 2px; margin-bottom: .6rem; }
+    .quote p { color: var(--text); font-size: .96rem; margin-bottom: 1rem; }
+    .quote span { font-size: .85rem; color: var(--muted); }
+
+    /* ---------- FAQ ---------- */
+    .faq { max-width: 720px; margin: 40px auto 0; }
+    details { border-bottom: 1px solid var(--line); padding: 18px 0; }
+    summary { cursor: pointer; list-style: none; font-weight: 600; color: var(--ink); display: flex; justify-content: space-between; gap: 16px; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; font-size: 1.3rem; line-height: 1; color: var(--accent); }
+    details[open] summary::after { content: "–"; }
+    details p { margin-top: .7rem; }
+
+    /* ---------- CTA final y pie ---------- */
+    .final { background: var(--ink); text-align: center; }
+    .final h2 { color: var(--white); }
+    .final p { color: #ead6d6; margin-bottom: 2rem; }
+    .final .btn { background: var(--accent); }
+    footer { padding: 32px 0 110px; font-size: .78rem; text-align: center; }
+    footer p { max-width: 720px; margin: 0 auto .6rem; }
+
+    /* Botón fijo en móvil */
+    .sticky-cta {
+      position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 40; display: none;
+      transition: transform .3s, opacity .3s;
+    }
+    .sticky-cta .btn { width: 100%; }
+    .sticky-cta.hidden { transform: translateY(140%); opacity: 0; pointer-events: none; }
+
+    @media (max-width: 860px) {
+      section { padding: 64px 0; }
+      .hero { padding: 40px 0 56px; }
+      .hero-grid, .steps, .quotes { grid-template-columns: 1fr; }
+      .hero-grid { gap: 36px; }
+      .hero .btn { width: 100%; }
+      .quiz { padding: 24px 18px; }
+      .sticky-cta { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">🎁 <strong>Test 100% gratuito</strong> · Resultado al instante · Sin registrarte</div>
+
+  <!-- ---------- Hero ---------- -->
+  <header class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">Test hormonal gratuito · 2 minutos</span>
+        <h1>¿Cómo están <em>tus hormonas</em> de verdad?</h1>
+        <p class="lead">Ciclos irregulares, cansancio, granitos, antojos, hinchazón… Tu cuerpo te está hablando. Responde 8 preguntas y descubre qué te está diciendo.</p>
+        <a href="#test" class="btn btn-accent" data-start>Hacer el test gratis →</a>
+        <div class="hero-meta">
+          <span>Gratis</span><span>Anónimo</span><span>Resultado al momento</span>
+        </div>
+      </div>
+      <aside class="hero-card">
+        <h3>¿Te suena alguna de estas señales?</h3>
+        <ul class="signs">
+          <li><b>1</b>Reglas irregulares o muy dolorosas</li>
+          <li><b>2</b>Cansancio aunque duermas bien</li>
+          <li><b>3</b>Granitos en barbilla y mandíbula</li>
+          <li><b>4</b>Antojos de dulce y cambios de humor</li>
+          <li><b>5</b>Te cuesta perder peso en la tripa</li>
+        </ul>
+        <p>Si te has identificado con dos o más, este test es para ti.</p>
+      </aside>
+    </div>
+  </header>
+
+  <!-- ---------- Cómo funciona ---------- -->
+  <section>
+    <div class="container center">
+      <span class="eyebrow">Cómo funciona</span>
+      <h2>Tres pasos, <em>cero complicaciones</em></h2>
+      <div class="steps">
+        <div class="step"><div class="num">01</div><h3>Responde</h3><p>8 preguntas rápidas sobre tu ciclo, tu energía, tu piel y tu ánimo.</p></div>
+        <div class="step"><div class="num">02</div><h3>Descubre</h3><p>Recibe al instante tu perfil hormonal y las áreas que más te conviene cuidar.</p></div>
+        <div class="step"><div class="num">03</div><h3>Actúa</h3><p>Te enseñamos el siguiente paso para empezar a sentirte en equilibrio.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- Test ---------- -->
+  <section id="test">
+    <div class="container center">
+      <span class="eyebrow">Tu test</span>
+      <h2>Empieza ahora, <em>es gratis</em></h2>
+      <p class="section-intro">Elige la respuesta que más se parezca a cómo te has sentido en los últimos 3 meses.</p>
+    </div>
+    <div class="container">
+      <div class="quiz" id="quiz" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ---------- Testimonios ---------- -->
+  <section>
+    <div class="container center">
+      <span class="eyebrow">Lo que dicen</span>
+      <h2>Mujeres que ya <em>escuchan a su cuerpo</em></h2>
+      <div class="quotes">
+        <div class="quote"><div class="stars">★★★★★</div><p>“Hice el test por curiosidad y me describió tal cual. Por fin entendí por qué me sentía así.”</p><span>— Laura, 29 años</span></div>
+        <div class="quote"><div class="stars">★★★★★</div><p>“Llevaba años con reglas irregulares y nadie me lo explicaba de forma tan sencilla.”</p><span>— Marta, 34 años</span></div>
+        <div class="quote"><div class="stars">★★★★★</div><p>“En dos minutos tenía mi resultado. Muy fácil y sin tener que dejar mis datos.”</p><span>— Cristina, 31 años</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- FAQ ---------- -->
+  <section style="background: var(--bg-alt);">
+    <div class="container center">
+      <span class="eyebrow">Preguntas frecuentes</span>
+      <h2>Lo que <em>te estarás preguntando</em></h2>
+    </div>
+    <div class="container">
+      <div class="faq">
+        <details><summary>¿El test es realmente gratis?</summary><p>Sí. No te pedimos tarjeta, ni email, ni que te registres. Respondes y ves tu resultado al momento.</p></details>
+        <details><summary>¿Cuánto tarda?</summary><p>Unos 2 minutos. Son 8 preguntas de respuesta rápida.</p></details>
+        <details><summary>¿Guardáis mis respuestas?</summary><p>No. El test se calcula en tu propio móvil u ordenador y tus respuestas no se envían a ningún sitio.</p></details>
+        <details><summary>¿Sustituye a una analítica o a ir al médico?</summary><p>No. Es una herramienta orientativa para que conozcas mejor las señales de tu cuerpo. Si tienes síntomas intensos o persistentes, consulta con tu médico o ginecóloga.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- CTA final ---------- -->
+  <section class="final">
+    <div class="container">
+      <h2>Tu cuerpo te está hablando. <em>Escúchalo.</em></h2>
+      <p>Descubre en 2 minutos cómo están tus hormonas.</p>
+      <a href="#test" class="btn" data-start>Hacer el test gratis →</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>Este test es orientativo y no constituye un diagnóstico médico. No sustituye la consulta con un profesional sanitario. Los complementos alimenticios no deben utilizarse como sustitutos de una dieta equilibrada y un modo de vida saludable.</p>
+      <p>© <span id="year"></span> Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <div class="sticky-cta" id="sticky-cta"><a href="#test" class="btn btn-accent" data-start>Hacer el test gratis →</a></div>
+
+  <script>
+    /* ====================================================================
+       CONFIGURACIÓN — cambia aquí el enlace a la página del inositol
+       ==================================================================== */
+    var PRODUCT_URL = "https://TU-TIENDA.com/products/inositol";
+    var PRODUCT_NAME = "Inositol";
+    /* ==================================================================== */
+
+    var QUESTIONS = [
+      { q: "¿Cómo es tu ciclo menstrual?", hint: "Piensa en los últimos 3–6 meses.", area: "ciclo",
+        options: [["Regular, cada 26–32 días", 0], ["A veces se adelanta o se retrasa", 1], ["Muy irregular o tengo faltas", 3], ["Tomo anticonceptivos / no lo sé", 1]] },
+      { q: "¿Cómo son tus reglas y los días previos?", hint: "Dolor, hinchazón, sensibilidad en el pecho…", area: "ciclo",
+        options: [["Llevaderas, apenas noto nada", 0], ["Algo de dolor o hinchazón", 1], ["Dolorosas, me condicionan el día", 2], ["Muy intensas o muy abundantes", 3]] },
+      { q: "¿Cómo está tu piel?", hint: "Especialmente barbilla, mandíbula y espalda.", area: "piel",
+        options: [["Limpia y estable", 0], ["Algún granito antes de la regla", 1], ["Granitos frecuentes en barbilla o mandíbula", 3], ["Piel grasa y vello donde no me gustaría", 3]] },
+      { q: "¿Cómo es tu energía durante el día?", hint: "", area: "energia",
+        options: [["Me levanto con energía y me dura", 0], ["Bajón a media tarde", 1], ["Cansada casi siempre, aunque duerma", 3], ["Muy variable según el día del ciclo", 2]] },
+      { q: "¿Tienes antojos de dulce o hambre después de comer?", hint: "", area: "metabolismo",
+        options: [["Casi nunca", 0], ["A veces, sobre todo antes de la regla", 1], ["A menudo, necesito algo dulce", 2], ["Constantemente, me cuesta controlarlo", 3]] },
+      { q: "¿Cómo va tu peso?", hint: "", area: "metabolismo",
+        options: [["Estable, sin cambios", 0], ["Algo de retención o hinchazón", 1], ["Me cuesta perder peso, sobre todo en la tripa", 3], ["He ganado peso sin cambiar mis hábitos", 3]] },
+      { q: "¿Cómo está tu estado de ánimo?", hint: "", area: "animo",
+        options: [["Tranquila y estable", 0], ["Algo más sensible antes de la regla", 1], ["Irritable, ansiosa o con altibajos", 2], ["Me siento desbordada a menudo", 3]] },
+      { q: "¿Cómo duermes?", hint: "", area: "animo",
+        options: [["Duermo bien y me levanto descansada", 0], ["Me cuesta un poco dormirme", 1], ["Me despierto por la noche", 2], ["Duermo mal casi todas las noches", 3]] }
+    ];
+
+    var AREAS = {
+      ciclo: { name: "Ciclo menstrual", text: "tu ciclo muestra señales de que tus hormonas no están del todo sincronizadas." },
+      piel: { name: "Piel", text: "los granitos en la zona hormonal suelen relacionarse con un exceso de andrógenos." },
+      energia: { name: "Energía", text: "el cansancio persistente puede estar ligado a cómo tu cuerpo gestiona el azúcar." },
+      metabolismo: { name: "Metabolismo y antojos", text: "los antojos y la grasa abdominal son señales típicas de una sensibilidad a la insulina mejorable." },
+      animo: { name: "Ánimo y descanso", text: "los altibajos y el mal descanso también tienen un componente hormonal." }
+    };
+
+    var RESULTS = {
+      low: { tag: "Equilibrio bueno", title: "Tus hormonas parecen estar bastante en equilibrio",
+        text: "¡Buenas noticias! Tus respuestas muestran pocas señales de desequilibrio. Aun así, hay detalles que puedes cuidar para mantenerte así a largo plazo.",
+        reco: "Mantener tu equilibrio es más fácil que recuperarlo. Descubre cómo el inositol puede formar parte de tu rutina de cuidado hormonal." },
+      mid: { tag: "Señales leves", title: "Tu cuerpo te está dando algunas señales",
+        text: "Tus respuestas muestran señales de un desequilibrio hormonal leve. Es muy común y la buena noticia es que suele responder bien a pequeños cambios en tu rutina.",
+        reco: "El inositol es uno de los complementos más utilizados por mujeres con síntomas como los tuyos. Descubre cómo puede acompañarte." },
+      high: { tag: "Señales claras", title: "Tus hormonas te están pidiendo atención",
+        text: "Tus respuestas muestran varias señales claras de desequilibrio hormonal. No estás sola: es algo que viven muchísimas mujeres, y hay formas de empezar a sentirte mejor.",
+        reco: "El inositol es uno de los complementos más elegidos por mujeres con ciclos irregulares, granitos y antojos. Descubre cómo puede ayudarte a recuperar tu equilibrio." }
+    };
+
+    var quiz = document.getElementById("quiz");
+    var answers = [];
+    var current = 0;
+
+    function track(event, params) {
+      try { if (window.fbq) fbq("track", event, params || {}); } catch (e) {}
+      try { if (window.gtag) gtag("event", event, params || {}); } catch (e) {}
+    }
+
+    // Lleva los parámetros del anuncio (utm_*, fbclid…) hasta la página del producto
+    function productLink(level) {
+      try {
+        var url = new URL(PRODUCT_URL);
+        new URLSearchParams(location.search).forEach(function (v, k) { if (!url.searchParams.has(k)) url.searchParams.set(k, v); });
+        url.searchParams.set("test_resultado", level);
+        return url.toString();
+      } catch (e) { return PRODUCT_URL; }
+    }
+
+    function renderQuestion() {
+      var item = QUESTIONS[current];
+      var pct = Math.round((current / QUESTIONS.length) * 100);
+      var html = '<div class="progress"><span style="width:' + pct + '%"></span></div>' +
+        '<div class="progress-label">Pregunta ' + (current + 1) + ' de ' + QUESTIONS.length + '</div>' +
+        '<div class="question fade-in"><h3>' + item.q + '</h3>' +
+        (item.hint ? '<p class="hint">' + item.hint + '</p>' : '<p class="hint">&nbsp;</p>') +
+        '<div class="options">';
+      item.options.forEach(function (opt, i) {
+        var sel = answers[current] === i ? " selected" : "";
+        html += '<button type="button" class="option' + sel + '" data-i="' + i + '">' + opt[0] + '</button>';
+      });
+      html += '</div></div><div class="quiz-nav">' +
+        (current > 0 ? '<button type="button" class="btn btn-ghost" id="back">← Atrás</button>' : '<span></span>') +
+        '<span></span></div>';
+      quiz.innerHTML = html;
+
+      quiz.querySelectorAll(".option").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          quiz.querySelectorAll(".option").forEach(function (b) { b.classList.remove("selected"); });
+          btn.classList.add("selected");
+          answers[current] = Number(btn.dataset.i);
+          if (current === 0) track("StartTest");
+          setTimeout(next, 280);
+        });
+      });
+      var back = document.getElementById("back");
+      if (back) back.addEventListener("click", function () { current--; renderQuestion(); });
+    }
+
+    function next() {
+      if (current < QUESTIONS.length - 1) { current++; renderQuestion(); }
+      else showLoading();
+    }
+
+    function showLoading() {
+      quiz.innerHTML = '<div class="progress"><span style="width:100%"></span></div>' +
+        '<div class="loading fade-in"><div class="spinner"></div><h3>Analizando tus respuestas…</h3><p>Estamos preparando tu perfil hormonal.</p></div>';
+      setTimeout(showResult, 1800);
+    }
+
+    function showResult() {
+      var score = 0, max = 0, byArea = {};
+      QUESTIONS.forEach(function (item, i) {
+        var pts = item.options[answers[i]][1];
+        var top = Math.max.apply(null, item.options.map(function (o) { return o[1]; }));
+        score += pts; max += top;
+        byArea[item.area] = (byArea[item.area] || 0) + pts;
+      });
+      var ratio = score / max;
+      var level = ratio < 0.25 ? "low" : ratio < 0.55 ? "mid" : "high";
+      var r = RESULTS[level];
+
+      var top = Object.keys(byArea).filter(function (a) { return byArea[a] >= 2; })
+        .sort(function (a, b) { return byArea[b] - byArea[a]; }).slice(0, 3);
+      var areasHtml = top.length
+        ? '<p><strong>Las áreas en las que más señales hemos detectado:</strong></p><ul class="areas">' +
+          top.map(function (a) { return '<li><strong>' + AREAS[a].name + ':</strong> ' + AREAS[a].text + '</li>'; }).join("") + '</ul>'
+        : "";
+
+      quiz.innerHTML = '<div class="result fade-in">' +
+        '<span class="result-tag ' + level + '">' + r.tag + '</span>' +
+        '<h3>' + r.title + '</h3><p>' + r.text + '</p>' +
+        '<div class="meter"><div class="meter-bar"><span class="meter-dot" id="dot"></span></div>' +
+        '<div class="meter-labels"><span>En equilibrio</span><span>Señales leves</span><span>Señales claras</span></div></div>' +
+        areasHtml +
+        '<div class="reco"><h4>Tu siguiente paso: ' + PRODUCT_NAME + '</h4><p>' + r.reco + '</p>' +
+        '<a class="btn btn-accent" id="go-product" href="' + productLink(level) + '">Descubrir el ' + PRODUCT_NAME.toLowerCase() + ' →</a>' +
+        '<small>Resultado orientativo. No sustituye la consulta con un profesional sanitario.</small></div>' +
+        '<div class="restart"><button type="button" class="btn btn-ghost" id="restart">Repetir el test</button></div>' +
+        '</div>';
+
+      setTimeout(function () {
+        var dot = document.getElementById("dot");
+        if (dot) dot.style.left = Math.max(4, Math.min(96, ratio * 100)) + "%";
+      }, 60);
+
+      track("CompleteRegistration", { content_name: "test_hormonal", status: level });
+      document.getElementById("go-product").addEventListener("click", function () {
+        track("Lead", { content_name: "test_hormonal", status: level });
+      });
+      document.getElementById("restart").addEventListener("click", function () {
+        answers = []; current = 0; renderQuestion();
+      });
+      quiz.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    // Botones "Hacer el test" llevan al test
+    document.querySelectorAll("[data-start]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        quiz.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    // Ocultar el botón fijo del móvil cuando el test está a la vista
+    var sticky = document.getElementById("sticky-cta");
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        sticky.classList.toggle("hidden", entries[0].isIntersecting);
+      }, { threshold: 0.15 }).observe(document.getElementById("test"));
+    }
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+    renderQuestion();
+  </script>
+</body>
+</html>
