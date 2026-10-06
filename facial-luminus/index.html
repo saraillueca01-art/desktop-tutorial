@@ -55,22 +55,14 @@
     .nav a.link { font-size: .7rem; letter-spacing: .24em; text-transform: uppercase; text-decoration: none; border-bottom: 1px solid var(--text); padding-bottom: 2px; }
 
     /* Portada */
-    .hero { background: var(--white); border-bottom: 1px solid var(--line); padding: clamp(56px, 8vw, 104px) 0; }
+    .hero { background: var(--white); border-bottom: 1px solid var(--line); padding: clamp(36px, 4.5vw, 60px) 0 clamp(56px, 8vw, 96px); }
     .hero .wrap { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(40px, 7vw, 96px); align-items: start; }
-    .hero h1 { font-size: clamp(3.4rem, 9vw, 6.8rem); margin: 22px 0 28px; }
+    .hero h1 { font-size: clamp(3.2rem, 7.5vw, 5.6rem); margin: 14px 0 18px; }
     .hero .lead { max-width: 470px; color: var(--soft); font-size: 1.08rem; }
-    .details { display: flex; margin-top: 44px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); max-width: 520px; }
-    .details div { flex: 1; padding: 18px 0; }
-    .details div + div { border-left: 1px solid var(--line); padding-left: 24px; }
-    .details small { display: block; font-size: .66rem; letter-spacing: .24em; text-transform: uppercase; color: var(--sand); }
-    .details span { font-family: var(--serif); font-size: 1.5rem; }
 
     /* Avisos de la promoción */
     .topbar { background: var(--sky); color: var(--sky-text); text-align: center; font-size: .74rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; padding: 11px 16px; }
     .topbar span { display: inline-block; margin: 0 10px; }
-    .promo { margin-top: 30px; max-width: 520px; background: #eaf6fc; border-left: 4px solid var(--sky-dark); padding: 22px 24px; }
-    .promo strong { display: block; font-size: 1.35rem; font-weight: 500; color: var(--sky-text); line-height: 1.25; }
-    .promo span { display: block; margin-top: 6px; color: var(--sky-text); font-size: .95rem; }
     .pill { display: inline-flex; align-items: center; gap: 8px; font-size: .68rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--sky-text); background: #eaf6fc; border: 1px solid #cfe6f4; padding: 7px 12px; border-radius: 999px; }
     .pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--sky-dark); animation: blink 1.6s ease-in-out infinite; }
     @keyframes blink { 50% { opacity: .25; } }
@@ -142,24 +134,23 @@
     /* Oferta */
     .offer { background: #eaf6fc; text-align: center; }
     .offer .label { color: var(--sky-text); font-weight: 500; }
-    .offer h2 { margin-bottom: 40px; }
-    /* Pase de inauguración */
-    .ticket { --notch: #eaf6fc; display: grid; grid-template-columns: 1fr 230px; max-width: 760px; margin: 0 auto 40px; text-align: left; background: var(--white); border-radius: 10px; box-shadow: 0 24px 50px -30px rgba(18, 50, 74, .35); transform: rotate(-1.2deg); transition: transform .4s; }
+    .offer .warn { display: inline-block; margin-bottom: 30px; font-size: .78rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--white); background: var(--sky-text); padding: 9px 16px; border-radius: 4px; }
+    /* Tarjeta de la promoción (portada) */
+    .ticket { display: grid; grid-template-columns: 1fr 170px; max-width: 560px; margin-top: 30px; border-radius: 12px; box-shadow: 0 24px 46px -26px rgba(18, 50, 74, .45); transform: rotate(-1.5deg); transition: transform .4s; }
     .ticket:hover { transform: rotate(0); }
-    .ticket-main { padding: 36px 40px; border-right: 2px dashed #cfe6f4; position: relative; }
-    .ticket-main::before, .ticket-main::after { content: ""; position: absolute; right: -15px; width: 28px; height: 28px; border-radius: 50%; background: var(--notch); }
-    .ticket-main::before { top: -14px; }
-    .ticket-main::after { bottom: -14px; }
-    .ticket-kicker { display: block; font-size: .66rem; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: var(--sand); }
-    .ticket-kicker b { font-weight: 500; color: var(--sky-text); }
-    .ticket h3 { font-size: 2.3rem; font-weight: 400; letter-spacing: -.02em; margin: 10px 0 8px; line-height: 1.1; }
-    .ticket p { color: var(--soft); font-size: .95rem; line-height: 1.6; }
-    .ticket ul { list-style: none; margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px; }
-    .ticket li { font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; color: var(--sky-text); border: 1px solid #cfe6f4; padding: 6px 10px; border-radius: 999px; }
-    .ticket-stub { padding: 30px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 6px; background: linear-gradient(180deg, #f4fafe, #e3f2fb); border-radius: 0 10px 10px 0; }
-    .ticket-price { font-size: 4.6rem; font-weight: 300; line-height: 1; color: var(--sky-text); letter-spacing: -.03em; }
-    .ticket-price small { font-size: .45em; vertical-align: top; margin-left: 4px; }
-    .ticket-stamp { margin-top: 10px; font-size: .68rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: #c0563b; border: 2px solid #c0563b; padding: 6px 10px; border-radius: 4px; transform: rotate(-6deg); opacity: .85; }
+    .ticket-main { padding: 28px 30px; background: #eaf6fc; border-radius: 12px 0 0 12px; border-right: 2px dashed #9fd0ec; position: relative; }
+    .ticket-main::before, .ticket-main::after { content: ""; position: absolute; right: -14px; width: 26px; height: 26px; border-radius: 50%; background: var(--white); }
+    .ticket-main::before { top: -13px; }
+    .ticket-main::after { bottom: -13px; }
+    .ticket-kicker { display: block; font-size: .64rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--sky-text); opacity: .75; }
+    .ticket h3 { font-size: 1.45rem; font-weight: 500; letter-spacing: -.01em; margin: 8px 0 6px; line-height: 1.2; color: var(--sky-text); }
+    .ticket p { color: var(--sky-text); opacity: .8; font-size: .92rem; }
+    .ticket ul { list-style: none; margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .ticket li { font-size: .68rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--sky-text); background: var(--white); padding: 6px 10px; border-radius: 999px; }
+    .ticket-stub { padding: 24px 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 4px; background: var(--sky); border-radius: 0 12px 12px 0; }
+    .ticket-price { font-size: 4rem; font-weight: 400; line-height: 1; color: var(--sky-text); letter-spacing: -.03em; }
+    .ticket-price small { font-size: .45em; vertical-align: top; margin-left: 3px; }
+    .ticket-stamp { margin-top: 10px; font-size: .62rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: #b2442a; border: 2px solid #b2442a; padding: 5px 8px; border-radius: 4px; transform: rotate(-6deg); background: rgba(255, 255, 255, .55); }
     .offer .price { font-family: var(--serif); font-size: clamp(4.5rem, 13vw, 7.5rem); line-height: 1; margin: 18px 0 8px; }
     .offer .sub { color: var(--soft); margin-bottom: 36px; }
 
@@ -198,14 +189,13 @@
       .rows .t { grid-column: 2; grid-row: 1; }
       .list li { grid-template-columns: 1fr; gap: 4px; }
       dialog.policy { padding: 30px 22px; }
-      .ticket { grid-template-columns: 1fr; transform: none; }
-      .ticket-main { padding: 28px 24px; border-right: 0; border-bottom: 2px dashed #cfe6f4; }
-      .ticket-main::before, .ticket-main::after { top: auto; bottom: -15px; right: auto; }
-      .ticket-main::before { left: -14px; }
-      .ticket-main::after { right: -14px; }
-      .ticket-stub { border-radius: 0 0 10px 10px; flex-direction: row; flex-wrap: wrap; gap: 4px 18px; }
+      .ticket { grid-template-columns: 1fr; transform: rotate(-1deg); }
+      .ticket-main { padding: 24px 22px; border-right: 0; border-bottom: 2px dashed #9fd0ec; border-radius: 12px 12px 0 0; }
+      .ticket-main::before, .ticket-main::after { top: auto; bottom: -14px; right: auto; }
+      .ticket-main::before { left: -13px; }
+      .ticket-main::after { right: -13px; }
+      .ticket-stub { border-radius: 0 0 12px 12px; flex-direction: row; flex-wrap: wrap; gap: 4px 18px; padding: 18px 16px 22px; }
       .ticket-stub .ticket-kicker { width: 100%; }
-      .ticket h3 { font-size: 1.9rem; }
       .sticky { display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; padding: 12px 16px; background: rgba(255, 255, 255, .96); border-top: 1px solid var(--line); transition: transform .3s; }
       .sticky .btn { width: 100%; letter-spacing: .16em; padding: 17px 12px; }
       .sticky.hide { transform: translateY(110%); }
@@ -214,9 +204,7 @@
       .nav a.link { display: none; }
       .topbar { font-size: .66rem; letter-spacing: .14em; }
       .topbar span { margin: 0 4px; }
-      .details div + div { padding-left: 14px; }
-      .details span { font-size: 1.25rem; }
-    }
+        }
   </style>
 </head>
 <body>
@@ -236,11 +224,21 @@
         <span class="label">Tratamiento post-verano</span>
         <h1>Facial<br>Luminus</h1>
         <p class="lead">Después del verano la piel puede verse opaca y apagada. Un tratamiento para iluminar, exfoliar y despigmentar tu piel tras la exposición solar.</p>
-        <div class="details">
-          <div><small>Precio inauguración</small><span>59 €</span></div>
-          <div><small>Duración</small><span>75 min</span></div>
+        <div class="ticket">
+          <div class="ticket-main">
+            <span class="ticket-kicker">Promoción de inauguración</span>
+            <h3>Precio especial por la inauguración del centro</h3>
+            <p>Sesión completa de 75 minutos</p>
+            <ul>
+              <li>Solo durante la inauguración</li>
+            </ul>
+          </div>
+          <div class="ticket-stub">
+            <span class="ticket-kicker">Precio inauguración</span>
+            <span class="ticket-price">59<small>€</small></span>
+            <span class="ticket-stamp">Plazas limitadas</span>
+          </div>
         </div>
-        <div class="promo"><strong>Precio especial de inauguración</strong><span>Solo durante la promoción de apertura. Plazas limitadas.</span></div>
       </div>
 
       <div class="form-box fade" id="reserva">
@@ -326,25 +324,11 @@
 
     <section class="offer">
       <div class="wrap fade">
-        <span class="label">Estás invitada</span>
-        <h2>Una invitación para la inauguración</h2>
-        <div class="ticket">
-          <div class="ticket-main">
-            <span class="ticket-kicker">Pase de inauguración · Nº <b id="pase">001</b></span>
-            <h3>Facial Luminus</h3>
-            <p>Sesión completa de 75 minutos<br><span data-centro="nombre"></span></p>
-            <ul>
-              <li>Válido solo durante la inauguración</li>
-              <li>Plazas limitadas</li>
-            </ul>
-          </div>
-          <div class="ticket-stub">
-            <span class="ticket-kicker">Precio inauguración</span>
-            <span class="ticket-price">59<small>€</small></span>
-            <span class="ticket-stamp">Plazas limitadas</span>
-          </div>
-        </div>
-        <a class="btn" href="#reserva">Quiero mi pase</a>
+        <span class="label">Promoción de inauguración</span>
+        <div class="price">59 €</div>
+        <p class="sub">Sesión de 75 minutos. Precio especial por la inauguración del centro, solo durante la promoción.</p>
+        <span class="warn">Plazas limitadas</span><br>
+        <a class="btn" href="#reserva">Reservar mi cita</a>
       </div>
     </section>
 
@@ -429,8 +413,6 @@
       const v = CENTRO[el.dataset.centro];
       if (v) el.textContent = v;
     });
-    // Número de pase: cambia un poco cada día para que parezca un pase real
-    document.getElementById('pase').textContent = String(17 + (new Date().getDate() * 3) % 60).padStart(3, '0');
     // Oculta los datos que aún no estén rellenados (titular, NIF)
     document.querySelectorAll('[data-si]').forEach(el => { if (!CENTRO[el.dataset.si]) el.remove(); });
     document.getElementById('year').textContent = new Date().getFullYear();
@@ -451,8 +433,13 @@
     document.querySelectorAll('.fade').forEach(el => io.observe(el));
 
     const sticky = document.querySelector('.sticky');
-    new IntersectionObserver(([en]) => sticky.classList.toggle('hide', en.isIntersecting))
+    // Botón fijo del móvil: aparece al bajar y se oculta cuando el formulario está a la vista
+    let formVisible = false;
+    const updateSticky = () => sticky.classList.toggle('hide', formVisible || scrollY < 600);
+    new IntersectionObserver(([en]) => { formVisible = en.isIntersecting; updateSticky(); })
       .observe(document.getElementById('reserva'));
+    addEventListener('scroll', updateSticky, { passive: true });
+    updateSticky();
 
     const form = document.getElementById('lead-form');
     const msg = form.querySelector('.form-msg');
