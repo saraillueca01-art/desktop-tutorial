@@ -142,7 +142,24 @@
     /* Oferta */
     .offer { background: #eaf6fc; text-align: center; }
     .offer .label { color: var(--sky-text); font-weight: 500; }
-    .offer .warn { display: inline-block; margin-bottom: 30px; font-size: .78rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--white); background: var(--sky-text); padding: 9px 16px; border-radius: 4px; }
+    .offer h2 { margin-bottom: 40px; }
+    /* Pase de inauguración */
+    .ticket { --notch: #eaf6fc; display: grid; grid-template-columns: 1fr 230px; max-width: 760px; margin: 0 auto 40px; text-align: left; background: var(--white); border-radius: 10px; box-shadow: 0 24px 50px -30px rgba(18, 50, 74, .35); transform: rotate(-1.2deg); transition: transform .4s; }
+    .ticket:hover { transform: rotate(0); }
+    .ticket-main { padding: 36px 40px; border-right: 2px dashed #cfe6f4; position: relative; }
+    .ticket-main::before, .ticket-main::after { content: ""; position: absolute; right: -15px; width: 28px; height: 28px; border-radius: 50%; background: var(--notch); }
+    .ticket-main::before { top: -14px; }
+    .ticket-main::after { bottom: -14px; }
+    .ticket-kicker { display: block; font-size: .66rem; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: var(--sand); }
+    .ticket-kicker b { font-weight: 500; color: var(--sky-text); }
+    .ticket h3 { font-size: 2.3rem; font-weight: 400; letter-spacing: -.02em; margin: 10px 0 8px; line-height: 1.1; }
+    .ticket p { color: var(--soft); font-size: .95rem; line-height: 1.6; }
+    .ticket ul { list-style: none; margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .ticket li { font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; color: var(--sky-text); border: 1px solid #cfe6f4; padding: 6px 10px; border-radius: 999px; }
+    .ticket-stub { padding: 30px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 6px; background: linear-gradient(180deg, #f4fafe, #e3f2fb); border-radius: 0 10px 10px 0; }
+    .ticket-price { font-size: 4.6rem; font-weight: 300; line-height: 1; color: var(--sky-text); letter-spacing: -.03em; }
+    .ticket-price small { font-size: .45em; vertical-align: top; margin-left: 4px; }
+    .ticket-stamp { margin-top: 10px; font-size: .68rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: #c0563b; border: 2px solid #c0563b; padding: 6px 10px; border-radius: 4px; transform: rotate(-6deg); opacity: .85; }
     .offer .price { font-family: var(--serif); font-size: clamp(4.5rem, 13vw, 7.5rem); line-height: 1; margin: 18px 0 8px; }
     .offer .sub { color: var(--soft); margin-bottom: 36px; }
 
@@ -157,7 +174,11 @@
     details[open] summary::after { content: "–"; }
     details p { margin-top: 12px; color: var(--soft); }
 
-    footer { border-top: 1px solid var(--line); padding: 40px 0 120px; text-align: center; font-size: .78rem; letter-spacing: .06em; color: var(--soft); }
+    footer { border-top: 1px solid var(--line); padding: 48px 0 120px; text-align: center; font-size: .82rem; letter-spacing: .04em; color: var(--soft); line-height: 1.9; }
+    footer a { text-decoration: none; }
+    .foot-name { font-size: 1rem; color: var(--text); margin-bottom: 6px; }
+    .foot-legal { margin-top: 14px; font-size: .74rem; }
+    .foot-legal a { text-decoration: underline; }
 
     .sticky { display: none; }
 
@@ -177,6 +198,14 @@
       .rows .t { grid-column: 2; grid-row: 1; }
       .list li { grid-template-columns: 1fr; gap: 4px; }
       dialog.policy { padding: 30px 22px; }
+      .ticket { grid-template-columns: 1fr; transform: none; }
+      .ticket-main { padding: 28px 24px; border-right: 0; border-bottom: 2px dashed #cfe6f4; }
+      .ticket-main::before, .ticket-main::after { top: auto; bottom: -15px; right: auto; }
+      .ticket-main::before { left: -14px; }
+      .ticket-main::after { right: -14px; }
+      .ticket-stub { border-radius: 0 0 10px 10px; flex-direction: row; flex-wrap: wrap; gap: 4px 18px; }
+      .ticket-stub .ticket-kicker { width: 100%; }
+      .ticket h3 { font-size: 1.9rem; }
       .sticky { display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; padding: 12px 16px; background: rgba(255, 255, 255, .96); border-top: 1px solid var(--line); transition: transform .3s; }
       .sticky .btn { width: 100%; letter-spacing: .16em; padding: 17px 12px; }
       .sticky.hide { transform: translateY(110%); }
@@ -297,11 +326,25 @@
 
     <section class="offer">
       <div class="wrap fade">
-        <span class="label">Precio especial de inauguración</span>
-        <div class="price">59 €</div>
-        <p class="sub">Sesión de 75 minutos. Este precio solo está disponible durante la inauguración.</p>
-        <span class="warn">Plazas limitadas</span><br>
-        <a class="btn" href="#reserva">Reservar mi cita</a>
+        <span class="label">Estás invitada</span>
+        <h2>Una invitación para la inauguración</h2>
+        <div class="ticket">
+          <div class="ticket-main">
+            <span class="ticket-kicker">Pase de inauguración · Nº <b id="pase">001</b></span>
+            <h3>Facial Luminus</h3>
+            <p>Sesión completa de 75 minutos<br><span data-centro="nombre"></span></p>
+            <ul>
+              <li>Válido solo durante la inauguración</li>
+              <li>Plazas limitadas</li>
+            </ul>
+          </div>
+          <div class="ticket-stub">
+            <span class="ticket-kicker">Precio inauguración</span>
+            <span class="ticket-price">59<small>€</small></span>
+            <span class="ticket-stamp">Plazas limitadas</span>
+          </div>
+        </div>
+        <a class="btn" href="#reserva">Quiero mi pase</a>
       </div>
     </section>
 
@@ -320,7 +363,10 @@
 
   <footer>
     <div class="wrap">
-      © <span id="year"></span> <span data-centro="nombre">Tu centro de estética</span> · <span data-centro="direccion"></span> · <a href="#privacidad" data-legal="privacidad">Política de privacidad</a>
+      <p class="foot-name" data-centro="nombre"></p>
+      <p><span data-centro="direccion"></span></p>
+      <p><a data-tel href="#"><span data-centro="telefono"></span></a> · <a data-mail href="#"><span data-centro="email"></span></a></p>
+      <p class="foot-legal">© <span id="year"></span> · <a href="#privacidad" data-legal="privacidad">Política de privacidad</a></p>
     </div>
   </footer>
 
@@ -331,7 +377,7 @@
     <p>Esta política explica cómo tratamos los datos personales que nos das en esta página, de acuerdo con el Reglamento General de Protección de Datos (RGPD, Reglamento UE 2016/679) y la Ley Orgánica 3/2018 de Protección de Datos Personales y garantía de los derechos digitales (LOPDGDD).</p>
 
     <h3>Responsable del tratamiento</h3>
-    <p><span data-centro="titular"></span> (<span data-centro="nombre"></span>), NIF <span data-centro="nif"></span>, <span data-centro="direccion"></span>. Email de contacto: <span data-centro="email"></span>.</p>
+    <p><span data-si="titular"><span data-centro="titular"></span>, </span><span data-centro="nombre"></span><span data-si="nif">, NIF <span data-centro="nif"></span></span>, <span data-centro="direccion"></span>. Teléfono: <span data-centro="telefono"></span>. Email de contacto: <span data-centro="email"></span>.</p>
 
     <h3>Qué datos recogemos</h3>
     <p>Los que escribes en el formulario: nombre, email y, si quieres, teléfono. También guardamos la fecha de envío, de qué red social llegas a la página y si aceptas recibir promociones.</p>
@@ -372,17 +418,24 @@
   <script>
     // Datos del centro: se actualizan en toda la página
     const CENTRO = {
-      nombre: 'Espai Vital',
-      titular: 'Nombre y apellidos o razón social',
-      nif: '00000000X',
-      email: 'tucorreo@ejemplo.com',
-      direccion: 'Calle, número · Ciudad',
+      nombre: 'Chakra Wellness Center by Espai Vital',
+      titular: '',   // nombre y apellidos o razón social del titular (pendiente)
+      nif: '',       // NIF o CIF del titular (pendiente)
+      email: 'info@chakracenterbenissa.com',
+      telefono: '+34 633 38 81 52',
+      direccion: 'C/ Benidoleig 31, bajo · 03720 Benissa (Alicante)',
     };
     document.querySelectorAll('[data-centro]').forEach(el => {
       const v = CENTRO[el.dataset.centro];
       if (v) el.textContent = v;
     });
+    // Número de pase: cambia un poco cada día para que parezca un pase real
+    document.getElementById('pase').textContent = String(17 + (new Date().getDate() * 3) % 60).padStart(3, '0');
+    // Oculta los datos que aún no estén rellenados (titular, NIF)
+    document.querySelectorAll('[data-si]').forEach(el => { if (!CENTRO[el.dataset.si]) el.remove(); });
     document.getElementById('year').textContent = new Date().getFullYear();
+    document.querySelector('[data-tel]').href = 'tel:' + CENTRO.telefono.replace(/\s/g, '');
+    document.querySelector('[data-mail]').href = 'mailto:' + CENTRO.email;
 
     // Política de privacidad en ventana (también se abre con #privacidad en la URL)
     const policy = document.getElementById('privacidad');
