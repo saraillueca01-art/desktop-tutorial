@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Facial Luminus | Ilumina tu piel después del verano</title>
+  <meta name="description" content="Facial Luminus: diagnóstico con escáner, limpieza coreana, peeling de limón, masaje Kobido, vitamina C y mascarilla despigmentante. 75 min. Precio de promoción 59 €. Solo 15 plazas.">
+  <meta property="og:title" content="Facial Luminus · Solo 15 plazas a 59 €">
+  <meta property="og:description" content="Ilumina, exfolia y despigmenta tu piel tras el verano. Apúntate y reserva tu plaza.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fbf5ef;
+      --bg-alt: #f3e4d6;
+      --peach: #e8b897;
+      --terracotta: #b8673f;
+      --terracotta-dark: #8f4a29;
+      --orange: #f07a1f;
+      --ink: #3b2a20;
+      --muted: #7d6758;
+      --line: #e6d3c3;
+      --white: #fff;
+      --radius: 22px;
+      --serif: "Cormorant Garamond", Georgia, serif;
+      --sans: "Montserrat", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--bg); color: var(--ink); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; }
+    .wrap { width: min(1120px, 100% - 32px); margin-inline: auto; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: .72rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--terracotta); }
+    .eyebrow::before { content: ""; width: 9px; height: 9px; background: var(--orange); transform: rotate(45deg); border-radius: 2px; }
+    h1, h2, h3 { font-weight: 600; line-height: 1.1; }
+    h2 { font-family: var(--serif); font-size: clamp(2rem, 4.5vw, 3rem); margin: .5rem 0 1rem; }
+    h2 em, h1 em { font-style: italic; color: var(--terracotta); }
+    section { padding: clamp(64px, 9vw, 110px) 0; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      font: 600 1rem var(--sans); color: var(--white); background: var(--terracotta);
+      border: 0; border-radius: 999px; padding: 17px 30px; cursor: pointer; text-decoration: none;
+      box-shadow: 0 10px 24px -10px rgba(143, 74, 41, .6); transition: background .2s, transform .2s;
+    }
+    .btn:hover { background: var(--terracotta-dark); transform: translateY(-1px); }
+    .btn[disabled] { opacity: .6; cursor: wait; transform: none; }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      position: relative; overflow: hidden; padding: 28px 0 clamp(56px, 8vw, 96px);
+      background:
+        radial-gradient(60% 70% at 85% 10%, rgba(240, 122, 31, .18), transparent 70%),
+        radial-gradient(70% 80% at 0% 100%, rgba(184, 103, 63, .22), transparent 70%),
+        linear-gradient(170deg, #f8e9dc 0%, #efd2bb 55%, #e2b493 100%);
+    }
+    .hero .leaf { position: absolute; pointer-events: none; opacity: .35; }
+    .hero .leaf-1 { right: -60px; top: 40px; width: 380px; transform: rotate(18deg); }
+    .hero .leaf-2 { left: -90px; bottom: -40px; width: 320px; transform: rotate(-150deg); }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: clamp(40px, 6vw, 72px); position: relative; }
+    .brand { font-family: var(--serif); font-size: 1.35rem; font-weight: 600; letter-spacing: .02em; }
+    .badge { font-size: .75rem; font-weight: 600; background: var(--white); color: var(--terracotta-dark); padding: 8px 14px; border-radius: 999px; white-space: nowrap; }
+    .badge b { color: var(--orange); }
+    .hero-grid { position: relative; display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(32px, 5vw, 64px); align-items: center; }
+    .hero h1 { font-family: var(--sans); font-size: clamp(3rem, 8.5vw, 6.2rem); font-weight: 700; letter-spacing: -.02em; line-height: .95; margin: 18px 0 22px; color: var(--ink); }
+    .hero h1 span { display: block; font-family: var(--serif); font-style: italic; font-weight: 500; font-size: .42em; letter-spacing: 0; color: var(--terracotta-dark); margin-top: 14px; line-height: 1.15; }
+    .hero .lead { font-size: 1.12rem; font-style: italic; max-width: 520px; color: #5a4335; }
+    .facts { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .fact { background: rgba(255, 255, 255, .65); border: 1px solid rgba(255, 255, 255, .9); backdrop-filter: blur(6px); border-radius: 16px; padding: 12px 18px; }
+    .fact small { display: block; font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+    .fact strong { font-size: 1.15rem; }
+    .fact s { color: var(--muted); font-weight: 400; font-size: .9rem; margin-left: 4px; }
+
+    /* ---------- Formulario ---------- */
+    .card { background: var(--white); border-radius: var(--radius); padding: clamp(24px, 3.5vw, 38px); box-shadow: 0 30px 60px -30px rgba(91, 52, 30, .45); }
+    .card h3 { font-family: var(--serif); font-size: 1.9rem; margin-bottom: .3rem; }
+    .card > p { color: var(--muted); font-size: .95rem; margin-bottom: 20px; }
+    form { display: grid; gap: 14px; }
+    label { display: grid; gap: 6px; font-size: .72rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+    label .opt { font-weight: 400; letter-spacing: 0; text-transform: none; }
+    input[type="text"], input[type="email"], input[type="tel"] {
+      font: 400 1rem var(--sans); color: var(--ink); width: 100%;
+      background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    input:focus { outline: none; border-color: var(--terracotta); box-shadow: 0 0 0 3px rgba(184, 103, 63, .15); }
+    .consent { display: flex; gap: 10px; align-items: flex-start; font-size: .82rem; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--ink); cursor: pointer; line-height: 1.45; }
+    .consent input { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--terracotta); flex-shrink: 0; }
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+    form .btn { width: 100%; margin-top: 4px; }
+    .form-note { font-size: .78rem; color: var(--muted); text-align: center; }
+    .legal-basic { font-size: .68rem; color: var(--muted); line-height: 1.5; }
+    .form-ok { border-radius: 14px; background: #f1f7ee; border: 1px solid #b9d6ad; color: #35552a; padding: 16px; font-size: .95rem; text-align: center; }
+    .form-ok.is-error { background: #fbeeee; border-color: #e3b1ae; color: #9a2a22; }
+    .spots { display: flex; align-items: center; gap: 10px; font-size: .82rem; font-weight: 600; color: var(--terracotta-dark); margin-bottom: 18px; }
+    .spots .bar { flex: 1; height: 6px; border-radius: 6px; background: var(--bg-alt); overflow: hidden; }
+    .spots .bar i { display: block; height: 100%; width: 60%; background: linear-gradient(90deg, var(--orange), var(--terracotta)); border-radius: 6px; }
+
+    /* ---------- Para quién ---------- */
+    .intro { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
+    .intro p { font-size: 1.05rem; color: #5a4335; }
+    .intro p + p { margin-top: 1rem; }
+    .signs { display: grid; gap: 14px; }
+    .sign { display: flex; gap: 16px; align-items: center; background: var(--white); border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; }
+    .sign .ico { flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%; background: var(--bg-alt); display: grid; place-items: center; font-size: 1.25rem; }
+    .sign strong { display: block; }
+    .sign span { font-size: .9rem; color: var(--muted); }
+
+    /* ---------- Qué incluye ---------- */
+    .includes { background: var(--white); }
+    .section-head { max-width: 640px; margin-bottom: 44px; }
+    .section-head p { color: var(--muted); }
+    .steps { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; counter-reset: step; }
+    .steps li { position: relative; background: var(--bg); border-radius: 20px; padding: 26px 24px 24px; counter-increment: step; }
+    .steps li::before { content: counter(step, decimal-leading-zero); font-family: var(--serif); font-size: 2.2rem; font-weight: 600; color: var(--peach); line-height: 1; display: block; margin-bottom: 10px; }
+    .steps h3 { font-size: 1.05rem; margin-bottom: 6px; }
+    .steps p { font-size: .92rem; color: var(--muted); }
+    .steps .min { position: absolute; top: 24px; right: 22px; font-size: .7rem; font-weight: 600; letter-spacing: .08em; color: var(--terracotta); background: var(--white); padding: 4px 10px; border-radius: 999px; }
+
+    /* ---------- Resultados ---------- */
+    .results { background: linear-gradient(160deg, #3b2a20 0%, #5a3a28 100%); color: #f8ece2; position: relative; overflow: hidden; }
+    .results .wrap { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
+    .results .eyebrow { color: var(--peach); }
+    .results h2 em { color: var(--peach); }
+    .results p { color: #e6d3c3; font-size: 1.05rem; }
+    .results ul { list-style: none; display: grid; gap: 14px; }
+    .results li { display: flex; gap: 14px; align-items: flex-start; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .12); border-radius: 16px; padding: 16px 18px; }
+    .results li::before { content: ""; flex-shrink: 0; width: 10px; height: 10px; margin-top: 8px; background: var(--orange); transform: rotate(45deg); border-radius: 2px; }
+    .dpl { margin-top: 26px; padding: 18px 20px; border-radius: 16px; background: rgba(232, 184, 151, .14); border: 1px dashed rgba(232, 184, 151, .5); font-size: .95rem; }
+
+    /* ---------- Oferta ---------- */
+    .offer { text-align: center; }
+    .offer-box { max-width: 720px; margin: 0 auto; background: var(--white); border-radius: 28px; padding: clamp(32px, 5vw, 56px); border: 1px solid var(--line); }
+    .price { font-family: var(--serif); font-size: clamp(4rem, 12vw, 6.5rem); font-weight: 600; line-height: 1; color: var(--terracotta); margin: 10px 0 6px; }
+    .price small { font-size: .3em; color: var(--muted); font-family: var(--sans); font-weight: 500; }
+    .offer-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px; margin: 18px 0 30px; color: var(--muted); font-size: .95rem; }
+    .offer-list span::before { content: "✓ "; color: var(--terracotta); font-weight: 700; }
+
+    /* ---------- FAQ ---------- */
+    .faq .wrap { max-width: 780px; }
+    details { border-bottom: 1px solid var(--line); padding: 20px 0; }
+    summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; font-size: 1.4rem; line-height: 1; color: var(--terracotta); transition: transform .2s; }
+    details[open] summary::after { transform: rotate(45deg); }
+    details p { margin-top: 10px; color: var(--muted); }
+
+    footer { padding: 36px 0 110px; text-align: center; font-size: .8rem; color: var(--muted); border-top: 1px solid var(--line); }
+    footer a { color: var(--muted); }
+
+    /* Botón fijo en móvil */
+    .sticky-cta { display: none; }
+
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .8s ease, transform .8s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+    }
+
+    @media (max-width: 880px) {
+      .hero-grid, .intro, .results .wrap { grid-template-columns: 1fr; }
+      .hero .leaf-1 { display: none; }
+      .sticky-cta {
+        display: block; position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 20;
+        transition: transform .3s, opacity .3s;
+      }
+      .sticky-cta .btn { width: 100%; }
+      .sticky-cta.is-hidden { transform: translateY(140%); opacity: 0; pointer-events: none; }
+    }
+    @media (max-width: 480px) {
+      .badge { display: none; }
+      .facts { gap: 8px; }
+      .fact { padding: 10px 14px; flex: 1 1 40%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ HERO + FORMULARIO ============ -->
+  <header class="hero">
+    <svg class="leaf leaf-1" viewBox="0 0 200 400" aria-hidden="true"><g fill="none" stroke="#6b7a4b" stroke-width="3" stroke-linecap="round"><path d="M100 400 C100 260 110 140 150 10"/><path d="M104 330 C70 300 40 290 10 292"/><path d="M106 280 C140 250 170 240 196 244"/><path d="M110 220 C80 190 52 176 24 176"/><path d="M116 170 C146 140 170 128 194 128"/><path d="M124 120 C100 96 80 84 56 80"/><path d="M134 76 C152 56 168 46 186 42"/></g></svg>
+    <svg class="leaf leaf-2" viewBox="0 0 200 400" aria-hidden="true"><g fill="none" stroke="#6b7a4b" stroke-width="3" stroke-linecap="round"><path d="M100 400 C100 260 110 140 150 10"/><path d="M104 330 C70 300 40 290 10 292"/><path d="M106 280 C140 250 170 240 196 244"/><path d="M110 220 C80 190 52 176 24 176"/><path d="M116 170 C146 140 170 128 194 128"/></g></svg>
+
+    <div class="wrap">
+      <div class="topbar">
+        <span class="brand" data-centro="nombre">Tu centro de estética</span>
+        <span class="badge">Promoción post-verano · <b>solo 15 plazas</b></span>
+      </div>
+
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Tratamiento facial post-verano</span>
+          <h1>FACIAL LUMINUS<span>Ilumina, exfolia y despigmenta tu piel</span></h1>
+          <p class="lead">Después del verano la piel puede verse opaca y apagada. Recupera la luz de tu rostro y trata las manchas del sol en una sola sesión.</p>
+          <div class="facts">
+            <div class="fact"><small>Precio promoción</small><strong>59 €</strong></div>
+            <div class="fact"><small>Duración</small><strong>75 min</strong></div>
+            <div class="fact"><small>Plazas</small><strong>Solo 15</strong></div>
+          </div>
+        </div>
+
+        <div class="card" id="reserva">
+          <h3>Reserva tu plaza</h3>
+          <p>Déjanos tus datos y te contactamos para elegir día y hora. Las plazas se asignan por orden de inscripción.</p>
+          <div class="spots"><span>Quedan pocas plazas</span><span class="bar"><i></i></span></div>
+
+          <!-- Pega en data-endpoint la URL de la aplicación web de Google Apps Script (ver facial-luminus/CONECTAR.md) -->
+          <form id="lead-form" data-endpoint="" novalidate>
+            <label>Nombre
+              <input type="text" name="nombre" autocomplete="given-name" required placeholder="Tu nombre">
+            </label>
+            <label>Email
+              <input type="email" name="email" autocomplete="email" required placeholder="tu@email.com">
+            </label>
+            <label>Teléfono <span class="opt">(opcional, para escribirte por WhatsApp)</span>
+              <input type="tel" name="telefono" autocomplete="tel" inputmode="tel" placeholder="600 000 000">
+            </label>
+            <div class="hp" aria-hidden="true"><label>Web <input type="text" name="web" tabindex="-1" autocomplete="off"></label></div>
+            <label class="consent">
+              <input type="checkbox" name="privacidad" value="Sí" required>
+              <span>Acepto la política de privacidad y que me contactéis para reservar mi cita.</span>
+            </label>
+            <label class="consent">
+              <input type="checkbox" name="novedades" value="Sí">
+              <span>Quiero recibir por email promociones y consejos para mi piel.</span>
+            </label>
+            <button class="btn" type="submit">Quiero mi plaza a 59 €</button>
+            <div class="form-ok" role="status" hidden></div>
+            <p class="form-note">Sin compromiso. Te contactamos en menos de 24 h.</p>
+            <p class="legal-basic"><strong>Responsable:</strong> <span data-centro="nombre">el centro</span>. <strong>Finalidad:</strong> gestionar tu reserva y, si lo marcas, enviarte promociones. <strong>Legitimación:</strong> tu consentimiento. <strong>Destinatarios:</strong> Google, que aloja los datos del formulario. <strong>Derechos:</strong> acceso, rectificación y supresión escribiendo a <span data-centro="email">nuestro email</span>.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ PARA QUIÉN ============ -->
+    <section>
+      <div class="wrap intro">
+        <div class="reveal">
+          <span class="eyebrow">¿Para quién está indicado?</span>
+          <h2>Para la piel que ha <em>vivido el verano</em></h2>
+          <p>Es el tratamiento ideal después del verano para tratar <strong>manchas y discromías</strong>, en cualquier tipo de piel.</p>
+          <p>Empezamos con un diagnóstico con escáner facial para ver qué le pasa a tu piel por fuera y por dentro, y te explicamos qué tienes, por qué aparece y cómo lo vamos a mejorar.</p>
+        </div>
+        <div class="signs reveal">
+          <div class="sign"><span class="ico">☀️</span><div><strong>Manchas del sol</strong><span>Han aparecido o se han oscurecido este verano.</span></div></div>
+          <div class="sign"><span class="ico">🌫️</span><div><strong>Piel opaca o apagada</strong><span>Notas el rostro cansado y sin luz.</span></div></div>
+          <div class="sign"><span class="ico">🎨</span><div><strong>Tono desigual</strong><span>Discromías, rojeces o zonas más oscuras.</span></div></div>
+          <div class="sign"><span class="ico">✨</span><div><strong>Textura áspera</strong><span>Células muertas acumuladas tras el sol y el cloro.</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ QUÉ INCLUYE ============ -->
+    <section class="includes">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="eyebrow">¿Qué incluye?</span>
+          <h2>75 minutos <em>solo para tu piel</em></h2>
+          <p>Cosmética coreana, aparatología y un masaje japonés de efecto lifting, paso a paso.</p>
+        </div>
+        <ol class="steps">
+          <li class="reveal"><span class="min">20 min</span><h3>Diagnóstico facial con escáner</h3><p>Analizamos tu piel en superficie y en profundidad y te proponemos un plan de trabajo a tu medida.</p></li>
+          <li class="reveal"><span class="min">4 min</span><h3>Limpieza coreana</h3><p>Mousse de limpieza enzimática aplicada con pinceles en rostro, cuello y escote.</p></li>
+          <li class="reveal"><span class="min">8 min</span><h3>Lemon gommage</h3><p>Peeling suave de limón que retira las células muertas y deja la piel lisa y luminosa.</p></li>
+          <li class="reveal"><span class="min">10 min</span><h3>Masaje lifting Kobido</h3><p>Masaje facial japonés de remonte y tensado, con trapecios, nuca y cráneo.</p></li>
+          <li class="reveal"><span class="min">5 min</span><h3>Vitamina C liposomada + ultrasonidos</h3><p>Antioxidante iluminador que penetra en profundidad gracias a los ultrasonidos.</p></li>
+          <li class="reveal"><span class="min">2 min</span><h3>Oxígeno repair</h3><p>Bruma de oxígeno con tónico de acerola para refrescar y equilibrar el pH de la piel.</p></li>
+          <li class="reveal"><span class="min">15 min</span><h3>Mascarilla despigmentante</h3><p>Mascarilla coreana que unifica el tono y atenúa las manchas.</p></li>
+          <li class="reveal"><span class="min">Extra</span><h3>Masaje de manos</h3><p>Mientras actúa la mascarilla, relajamos tus manos. Terminas con una infusión a tu gusto.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ RESULTADOS ============ -->
+    <section class="results">
+      <div class="wrap">
+        <div class="reveal">
+          <span class="eyebrow">Resultados</span>
+          <h2>Luz desde la <em>primera sesión</em></h2>
+          <p>Los ácidos naturales de la cosmética coreana blanquean, limpian e iluminan el rostro de forma inmediata en una única sesión.</p>
+          <div class="dpl">Si tu piel necesita un extra para manchas rebeldes, profundas o vascularizadas, no te preocupes 😉: también tenemos <strong>DPL</strong> disponible para ti.</div>
+        </div>
+        <ul class="reveal">
+          <li>Piel más luminosa y con tono más uniforme.</li>
+          <li>Manchas atenuadas y textura más fina.</li>
+          <li>Efecto lifting y rostro descansado gracias al Kobido.</li>
+          <li>Un plan de cuidado personalizado para seguir en casa.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ OFERTA ============ -->
+    <section class="offer">
+      <div class="wrap">
+        <div class="offer-box reveal">
+          <span class="eyebrow">Precio de promoción</span>
+          <div class="price">59 €<small> / sesión de 75 min</small></div>
+          <div class="offer-list">
+            <span>Diagnóstico con escáner</span><span>8 pasos</span><span>Cualquier tipo de piel</span><span>Solo 15 plazas</span>
+          </div>
+          <a class="btn" href="#reserva">Reservar mi plaza</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section class="faq" style="padding-top:0">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="eyebrow">Preguntas frecuentes</span>
+          <h2>Resolvemos tus <em>dudas</em></h2>
+        </div>
+        <details class="reveal"><summary>¿Sirve para mi tipo de piel?</summary><p>Sí. Está pensado para cualquier tipo de piel. En el diagnóstico adaptamos la cosmética a lo que necesita la tuya.</p></details>
+        <details class="reveal"><summary>¿Duele o deja la piel roja?</summary><p>No. Es un tratamiento suave y relajante. Puedes seguir con tu día con normalidad al salir.</p></details>
+        <details class="reveal"><summary>¿Cuántas sesiones necesito?</summary><p>Notarás la piel más luminosa desde la primera sesión. Si tienes manchas más profundas, en el diagnóstico te recomendaremos el plan ideal, que puede incluir DPL.</p></details>
+        <details class="reveal"><summary>¿Qué pasa cuando me apunto?</summary><p>Te contactamos por WhatsApp o email para elegir día y hora. Las 15 plazas se asignan por orden de inscripción.</p></details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>© <span id="year"></span> <span data-centro="nombre">Tu centro de estética</span> · <span data-centro="direccion"></span></p>
+    </div>
+  </footer>
+
+  <div class="sticky-cta"><a class="btn" href="#reserva">Quiero mi plaza a 59 €</a></div>
+
+  <script>
+    // ===== DATOS DEL CENTRO: cámbialos aquí y se actualizan en toda la página =====
+    const CENTRO = {
+      nombre: 'Tu centro de estética',
+      email: 'tucorreo@ejemplo.com',
+      direccion: 'Calle, número · Ciudad',
+    };
+    document.querySelectorAll('[data-centro]').forEach(el => {
+      const v = CENTRO[el.dataset.centro];
+      if (v) el.textContent = v;
+    });
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Animación al hacer scroll
+    const io = new IntersectionObserver(entries => entries.forEach(en => {
+      if (en.isIntersecting) { en.target.classList.add('visible'); io.unobserve(en.target); }
+    }), { threshold: .12 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // Oculta el botón fijo de móvil cuando el formulario está a la vista
+    const sticky = document.querySelector('.sticky-cta');
+    new IntersectionObserver(([en]) => sticky.classList.toggle('is-hidden', en.isIntersecting))
+      .observe(document.getElementById('reserva'));
+
+    // Formulario
+    const form = document.getElementById('lead-form');
+    const formOk = form.querySelector('.form-ok');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const btnText = submitBtn.textContent;
+    const show = (msg, error) => {
+      formOk.textContent = msg;
+      formOk.classList.toggle('is-error', !!error);
+      formOk.hidden = false;
+    };
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const data = new FormData(form);
+      if (data.get('web')) return; // antispam
+      if (!form.nombre.value.trim()) return show('Escribe tu nombre.', true);
+      if (!form.email.checkValidity() || !form.email.value) return show('Revisa tu email, parece que no es correcto.', true);
+      if (!form.privacidad.checked) return show('Para reservar tienes que aceptar la política de privacidad.', true);
+
+      data.set('origen', new URLSearchParams(location.search).get('utm_source') || document.referrer || 'directo');
+      const nombre = form.nombre.value.trim().split(' ')[0];
+      const endpoint = form.dataset.endpoint;
+      if (!endpoint) {
+        // Mientras no esté conectado a Google: abre el correo con los datos
+        const body = [...data.entries()].filter(([k]) => k !== 'web').map(([k, v]) => `${k}: ${v}`).join('\n');
+        location.href = 'mailto:' + CENTRO.email
+          + '?subject=' + encodeURIComponent('Reserva Facial Luminus')
+          + '&body=' + encodeURIComponent(body);
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Enviando…';
+      try {
+        await fetch(endpoint, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(data) });
+        form.reset();
+        show(`¡Gracias${nombre ? ', ' + nombre : ''}! Ya estás en la lista. Te contactamos en menos de 24 h para elegir tu cita.`);
+      } catch (err) {
+        show('No se ha podido enviar. Revisa tu conexión o escríbenos a ' + CENTRO.email + '.', true);
+      }
+      submitBtn.disabled = false;
+      submitBtn.textContent = btnText;
+    });
+  </script>
+</body>
+</html>
