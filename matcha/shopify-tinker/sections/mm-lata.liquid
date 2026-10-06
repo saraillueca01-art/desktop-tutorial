@@ -25,11 +25,38 @@
       assign precio_inicial = 100 | minus: pack.settings.descuento | times: completo | divided_by: 100
     endif
   endfor
+
+  # Fotos: las del producto si las tiene; si no, las de esta sección; si no hay ninguna, la lata dibujada
+  assign fotos_producto = 0
+  if section.settings.galeria_producto and p != blank
+    for m in p.media
+      if m.media_type == 'image'
+        assign fotos_producto = fotos_producto | plus: 1
+      endif
+    endfor
+  endif
+  assign fotos_seccion = 0
+  assign ids_fotos = 'foto_lata,foto_2,foto_3,foto_4,foto_5' | split: ','
+  for id in ids_fotos
+    if section.settings[id] != blank
+      assign fotos_seccion = fotos_seccion | plus: 1
+    endif
+  endfor
 -%}
 <section class="mm mm-lata" id="mm-lata">
-  <div class="mm-lata__stage" data-mm-stage>
-    {% render 'mm-lata', image: section.settings.foto_lata, kicker: section.settings.kicker, grams: section.settings.gramos %}
-  </div>
+  {%- if fotos_producto > 0 -%}
+    <div class="mm-lata__stage mm-lata__stage--fotos">
+      {% render 'mm-galeria', p: p, desde_producto: true, s: section.settings %}
+    </div>
+  {%- elsif fotos_seccion > 0 -%}
+    <div class="mm-lata__stage mm-lata__stage--fotos">
+      {% render 'mm-galeria', p: p, desde_producto: false, s: section.settings %}
+    </div>
+  {%- else -%}
+    <div class="mm-lata__stage" data-mm-stage>
+      {% render 'mm-lata', kicker: section.settings.kicker, grams: section.settings.gramos %}
+    </div>
+  {%- endif -%}
 
   <div class="mm-lata__buy">
     <h2>{{ section.settings.titulo | default: p.title }}</h2>
@@ -179,7 +206,12 @@
   "settings": [
     { "type": "product", "id": "producto", "label": "Producto", "info": "En la página de producto puedes dejarlo vacío: usa el producto de esa página." },
     { "type": "header", "content": "La lata" },
-    { "type": "image_picker", "id": "foto_lata", "label": "Foto de la lata", "info": "PNG sin fondo. Si la dejas vacía se dibuja la lata plateada." },
+    { "type": "checkbox", "id": "galeria_producto", "label": "Usar las fotos del producto", "info": "La primera foto del producto sale en grande y las demás en miniatura debajo.", "default": true },
+    { "type": "image_picker", "id": "foto_lata", "label": "Foto principal", "info": "Se usa si el producto no tiene fotos. Sin ninguna foto se dibuja la lata plateada." },
+    { "type": "image_picker", "id": "foto_2", "label": "Foto 2" },
+    { "type": "image_picker", "id": "foto_3", "label": "Foto 3" },
+    { "type": "image_picker", "id": "foto_4", "label": "Foto 4" },
+    { "type": "image_picker", "id": "foto_5", "label": "Foto 5" },
     { "type": "text", "id": "kicker", "label": "Texto de arriba en la etiqueta", "default": "DE PRIMERA COSECHA" },
     { "type": "text", "id": "gramos", "label": "Texto de abajo en la etiqueta", "default": "30 GR" },
     { "type": "header", "content": "Texto" },

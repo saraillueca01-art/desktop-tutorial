@@ -127,6 +127,34 @@ function tins(root) {
   });
 }
 
+/* ---------- Galería de la lata: las miniaturas cambian la foto grande ---------- */
+function galeria(root) {
+  $$('[data-mm-gal]', root).forEach((gal) => {
+    const imgs = $$('.mm-gal__img', gal), thumbs = $$('.mm-gal__thumbs button', gal);
+    if (imgs.length < 2) return;
+    let cur = 0;
+    const go = (i) => {
+      cur = (i + imgs.length) % imgs.length;
+      imgs.forEach((im, k) => { im.classList.toggle('is-on', k === cur); if (k === cur) im.loading = 'eager'; });
+      thumbs.forEach((t, k) => t.setAttribute('aria-current', String(k === cur)));
+      thumbs[cur]?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reduced ? 'auto' : 'smooth' });
+    };
+    gal.classList.add('is-ready');
+    go(0);
+    thumbs.forEach((t, k) => t.addEventListener('click', () => go(k)));
+    // Tocar la foto grande pasa a la siguiente; deslizar con el dedo va hacia un lado u otro
+    const main = gal.querySelector('.mm-gal__main');
+    let x0 = null, swiped = false;
+    main?.addEventListener('click', () => { if (!swiped) go(cur + 1); swiped = false; });
+    main?.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; swiped = false; }, { passive: true });
+    main?.addEventListener('touchend', (e) => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) > 40) { swiped = true; go(cur + (dx < 0 ? 1 : -1)); }
+    });
+  });
+}
+
 /* ---------- Momentos en calma: columnas a distinta velocidad ---------- */
 function momentos(root) {
   $$('[data-mm-wall]', root).forEach((wall) => {
@@ -573,7 +601,7 @@ function forms(root) {
 
 /* ---------- Arranque ---------- */
 function init(root = document) {
-  intro(root); roll(root); videos(root); moods(root); carousel(root); tins(root);
+  intro(root); roll(root); videos(root); moods(root); carousel(root); tins(root); galeria(root);
   momentos(root); counters(root); preparacion(root); ship(root); freeBars(root); forms(root);
   runScroll();
 }
