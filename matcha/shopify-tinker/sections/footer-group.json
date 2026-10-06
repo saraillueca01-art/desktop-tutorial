@@ -1,0 +1,19 @@
+{
+  "type": "footer",
+  "name": "t:names.footer",
+  "sections": {
+    "mm_pie": {
+      "type": "mm-pie",
+      "settings": {
+        "news_titulo": "Un mood nuevo cada mes",
+        "news_texto": "Recetas para cada mood, novedades y avisos cuando volvamos a tener stock.",
+        "news_boton": "Apuntarme",
+        "news_legal": "Al apuntarte aceptas recibir emails de Mood Matcha. Puedes darte de baja cuando quieras.",
+        "logo_grande": true,
+        "texto": "Envío en 24–72 h, gratis a partir de 35 €",
+        "pagos": true
+      }
+    }
+  },
+  "order": ["mm_pie"]
+}

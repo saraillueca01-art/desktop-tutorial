@@ -515,22 +515,47 @@ function forms(root) {
         data.append('sections_url', location.pathname);
       }
       const url = window.Theme?.routes?.cart_add_url || '/cart/add';
+      const itemCount = Number(data.get('quantity')) || 1;
+      const cartUrl = (window.Shopify?.routes?.root || '/') + 'cart.js';
+      // Horizon reciente: evento estándar de Shopify con promesa. Tinker y versiones anteriores: CartAddEvent.
+      const std = await import('@shopify/events').then((m) => (m.CartLinesUpdateEvent?.createPromise ? m : null), () => null);
+      const deferred = std?.CartLinesUpdateEvent.createPromise();
+      if (std) {
+        document.dispatchEvent(new std.CartLinesUpdateEvent({
+          action: 'add',
+          context: 'product',
+          lines: [{ merchandiseId: String(data.get('id')), quantity: itemCount }],
+          promise: deferred.promise,
+        }));
+      }
+      const settle = (cart, extra) => deferred?.resolve({
+        cart: std.CartLinesUpdateEvent.createCartFromAjaxResponse(cart),
+        detail: { items: cart.items, source: 'product-form-component', sourceId: form.getAttribute('id'), itemCount, productId: String(form.dataset.productId), ...extra },
+      });
       try {
         const res = await fetch(url.replace(/\.js$/, ''), { method: 'POST', body: data, headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' } });
         const json = await res.json();
-        if (!res.ok || json.status) throw new Error(json.description || json.message || 'error');
-        const cart = await (await fetch((window.Shopify?.routes?.root || '/') + 'cart.js')).json();
+        if (!res.ok || json.status) {
+          if (deferred) await fetch(cartUrl).then((r) => r.json()).then((c) => settle(c, { didError: true }), (er) => deferred.reject(er));
+          throw new Error(json.description || json.message || 'error');
+        }
+        const cart = await (await fetch(cartUrl)).json();
         let opened = false;
-        try {
-          const { CartAddEvent } = await import('@theme/events');
-          document.dispatchEvent(new CartAddEvent({}, String(json.variant_id ?? data.get('id')), {
-            source: 'product-form-component',
-            itemCount: cart.item_count,
-            productId: String(json.product_id ?? form.dataset.productId),
-            sections: json.sections,
-          }));
+        if (std) {
+          settle(cart, { sections: json.sections, didError: false });
           opened = !!document.querySelector('cart-drawer-component, cart-drawer');
-        } catch {}
+        } else {
+          try {
+            const { CartAddEvent } = await import('@theme/events');
+            document.dispatchEvent(new CartAddEvent({}, String(json.variant_id ?? data.get('id')), {
+              source: 'product-form-component',
+              itemCount: cart.item_count,
+              productId: String(json.product_id ?? form.dataset.productId),
+              sections: json.sections,
+            }));
+            opened = !!document.querySelector('cart-drawer-component, cart-drawer');
+          } catch {}
+        }
         freeBars(document, cart);
         $$('[data-mm-count]').forEach((el) => (el.textContent = cart.item_count));
         const goal = Math.round(parseFloat(form.closest('.mm-lata')?.querySelector('[data-mm-free]')?.dataset.goal || '35') * 100);
@@ -556,5 +581,9 @@ init();
 document.addEventListener('cart:update', (e) => {
   const c = e.detail?.resource;
   if (c && typeof c.total_price === 'number') freeBars(document, c); else freeBars(document);
+});
+// Horizon reciente: cualquier cambio en la cesta (también desde el carrito lateral)
+document.addEventListener('shopify:cart:lines-update', (e) => {
+  e.promise?.then(() => freeBars(document), () => {});
 });
 document.addEventListener('shopify:section:load', (e) => init(e.target));
