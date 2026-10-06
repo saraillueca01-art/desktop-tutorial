@@ -10,14 +10,14 @@ Abre `facial-luminus/index.html`, busca casi al final `const CENTRO = {` y cambi
 const CENTRO = {
   nombre: 'Chakra Wellness Center by Espai Vital',
   titular: 'Clínica Espai Vital SLP',
-  nif: '',       // NIF o CIF del titular (pendiente)
+  nif: 'B55415186',
   email: 'info@chakracenterbenissa.com',
   telefono: '+34 633 38 81 52',
   direccion: 'C/ Benidoleig 31, bajo · 03720 Benissa (Alicante)',
 };
 ```
 
-Estos datos aparecen en la **política de privacidad** (se abre desde la casilla del formulario y desde el pie de página). Falta el **CIF** de Clínica Espai Vital SLP (está en el aviso legal de la web o en cualquier factura): mientras esté vacío no se muestra, pero la política lo necesita para ser completa.
+Estos datos aparecen en la **política de privacidad** (se abre desde la casilla del formulario y desde el pie de página). Revisa que coincidan con el aviso legal del centro antes de publicar.
 
 ## 2. Guardar los emails en una hoja de Google (5 min, una sola vez)
 
