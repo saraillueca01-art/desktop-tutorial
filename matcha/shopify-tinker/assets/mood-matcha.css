@@ -331,6 +331,41 @@
 .mm-faq__answer { padding-block-end: 22px; color: var(--mm-muted); max-inline-size: 58ch; }
 @media (max-width: 900px) { .mm-faq { grid-template-columns: 1fr; } }
 
+/* Confían en nosotros: cinta de cafeterías y tiendas */
+.mm-confian { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(28px, 4vw, 44px); padding: clamp(70px, 9vw, 120px) 0; border-block-start: 1px solid var(--mm-line); overflow: hidden; }
+.mm-confian__head, .mm-confian__cta { padding-inline: var(--mm-gutter); }
+.mm-confian__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 32px; }
+.mm-confian h2 { font-size: clamp(2.2rem, 4.4vw, 4rem); line-height: 1.04; }
+.mm-confian__head p { color: var(--mm-muted); }
+.mm-confian__head > *, .mm-confian__cta p, .mm-prep__head > * { min-inline-size: 0; max-inline-size: 100%; }
+.mm-confian__band { padding-inline: var(--mm-gutter); }
+.mm-confian__band--move { padding-inline: 0; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.mm-confian__track { display: flex; }
+.mm-confian__set { display: flex; flex-wrap: wrap; gap: 14px; }
+.mm-confian__band--move .mm-confian__track { inline-size: max-content; animation: mm-marquee var(--mm-dur, 40s) linear infinite; }
+.mm-confian__band--move .mm-confian__set { flex-wrap: nowrap; padding-inline-end: 14px; }
+.mm-confian__rep { display: contents; }
+.mm-confian__band--move:hover .mm-confian__track { animation-play-state: paused; }
+@keyframes mm-marquee { to { transform: translateX(-50%); } }
+.mm-confian__item {
+  display: grid; justify-items: center; align-content: center; gap: 6px; min-inline-size: 200px; min-block-size: 120px; padding: 22px 28px;
+  border-radius: 18px; background: var(--mm-soft); color: inherit; text-decoration: none; text-align: center;
+  transition: background 0.4s, transform 0.6s var(--mm-out);
+}
+a.mm-confian__item:hover { background: color-mix(in srgb, var(--mm-lime) 22%, #fff); transform: translateY(-3px); }
+.mm-confian__logo { max-block-size: 54px; max-inline-size: 150px; inline-size: auto; block-size: auto; object-fit: contain; filter: grayscale(1); opacity: 0.8; transition: filter 0.4s, opacity 0.4s; }
+.mm-confian__item:hover .mm-confian__logo { filter: none; opacity: 1; }
+.mm-confian__name { font-family: var(--font-heading--family); font-size: 1.35rem; line-height: 1.15; color: var(--mm-green); }
+.mm-confian__city { font-size: 0.82rem; color: var(--mm-muted); }
+.mm-confian__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; }
+.mm-confian__cta p { color: var(--mm-muted); }
+@media (prefers-reduced-motion: reduce) {
+  .mm-confian__band--move .mm-confian__track { animation: none; inline-size: auto; }
+  .mm-confian__band--move .mm-confian__set { flex-wrap: wrap; padding-inline: var(--mm-gutter); }
+  .mm-confian__band--move .mm-confian__set[aria-hidden], .mm-confian__rep { display: none; }
+  .mm-confian__band--move { -webkit-mask-image: none; mask-image: none; }
+}
+
 /* Pie */
 .mm-pie { display: grid; gap: clamp(48px, 7vw, 90px); padding: clamp(70px, 9vw, 120px) var(--mm-gutter) calc(96px + env(safe-area-inset-bottom, 0px)); border-block-start: 1px solid var(--mm-line); background: linear-gradient(180deg, #fff 0%, var(--mm-soft) 100%); }
 .mm-pie__top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: clamp(40px, 6vw, 110px); }

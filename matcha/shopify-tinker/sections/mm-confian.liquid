@@ -1,0 +1,85 @@
+{% render 'mm-recursos' %}
+{%- liquid
+  assign mover = false
+  if section.settings.movimiento and section.blocks.size > 2
+    assign mover = true
+  endif
+-%}
+<section class="mm mm-confian" style="--mm-dur: {{ section.settings.velocidad }}s;">
+  <div class="mm-confian__head">
+    <h2>{{ section.settings.titulo }}</h2>
+    {%- if section.settings.texto != blank -%}<p>{{ section.settings.texto }}</p>{%- endif -%}
+  </div>
+
+  {%- capture sitios -%}
+    {%- for block in section.blocks -%}
+      {%- assign tag = 'div' -%}
+      {%- if block.settings.enlace != blank -%}{%- assign tag = 'a' -%}{%- endif -%}
+      <{{ tag }} class="mm-confian__item"{% if tag == 'a' %} href="{{ block.settings.enlace }}" target="_blank" rel="noopener"{% endif %} {{ block.shopify_attributes }}>
+        {%- if block.settings.logo != blank -%}
+          {{ block.settings.logo | image_url: width: 400 | image_tag: class: 'mm-confian__logo', loading: 'lazy', alt: block.settings.nombre | default: block.settings.logo.alt }}
+        {%- else -%}
+          <span class="mm-confian__name">{{ block.settings.nombre }}</span>
+        {%- endif -%}
+        {%- if block.settings.ciudad != blank -%}<span class="mm-confian__city">{{ block.settings.ciudad }}</span>{%- endif -%}
+      </{{ tag }}>
+    {%- endfor -%}
+  {%- endcapture -%}
+
+  <div class="mm-confian__band{% if mover %} mm-confian__band--move{% endif %}">
+    <div class="mm-confian__track">
+      {%- comment -%} En movimiento, cada mitad lleva la lista dos veces para que la cinta no deje huecos en pantallas anchas {%- endcomment -%}
+      <div class="mm-confian__set">{{ sitios }}{% if mover %}<span class="mm-confian__rep" aria-hidden="true" inert>{{ sitios }}</span>{% endif %}</div>
+      {%- if mover -%}<div class="mm-confian__set" aria-hidden="true" inert>{{ sitios }}{{ sitios }}</div>{%- endif -%}
+    </div>
+  </div>
+
+  {%- if section.settings.cta_boton != blank -%}
+    <div class="mm-confian__cta">
+      {%- if section.settings.cta_texto != blank -%}<p>{{ section.settings.cta_texto }}</p>{%- endif -%}
+      <a class="mm-btn" href="{{ section.settings.cta_enlace | default: '/pages/contact' }}">{{ section.settings.cta_boton }}</a>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "MM · Confían en nosotros",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Nos encontrarás en" },
+    { "type": "text", "id": "texto", "label": "Texto", "default": "Cafeterías y tiendas que ya sirven Mood Matcha." },
+    { "type": "checkbox", "id": "movimiento", "label": "Cinta en movimiento", "info": "Con 3 o más sitios, los logos pasan despacio de un lado a otro.", "default": true },
+    { "type": "range", "id": "velocidad", "label": "Duración de una vuelta", "min": 15, "max": 90, "step": 5, "unit": "s", "default": 40 },
+    { "type": "header", "content": "Para negocios" },
+    { "type": "text", "id": "cta_texto", "label": "Texto", "default": "¿Quieres vender Mood Matcha o ponerlo en tu cafetería?" },
+    { "type": "text", "id": "cta_boton", "label": "Botón", "info": "Déjalo vacío para quitarlo.", "default": "Escríbenos" },
+    { "type": "url", "id": "cta_enlace", "label": "Enlace del botón", "info": "Vacío: la página de contacto." }
+  ],
+  "blocks": [
+    {
+      "type": "sitio",
+      "name": "Cafetería o tienda",
+      "settings": [
+        { "type": "image_picker", "id": "logo", "label": "Logo", "info": "Mejor en PNG sin fondo. Sin logo se escribe el nombre." },
+        { "type": "text", "id": "nombre", "label": "Nombre", "default": "Nombre de la cafetería" },
+        { "type": "text", "id": "ciudad", "label": "Ciudad", "default": "Ciudad" },
+        { "type": "url", "id": "enlace", "label": "Enlace", "info": "Opcional: su web, Instagram o Google Maps." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "MM · Confían en nosotros",
+      "category": "Mood Matcha",
+      "blocks": [
+        { "type": "sitio", "settings": { "nombre": "Cafetería 1", "ciudad": "Ciudad" } },
+        { "type": "sitio", "settings": { "nombre": "Tienda 2", "ciudad": "Ciudad" } },
+        { "type": "sitio", "settings": { "nombre": "Cafetería 3", "ciudad": "Ciudad" } },
+        { "type": "sitio", "settings": { "nombre": "Tienda 4", "ciudad": "Ciudad" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

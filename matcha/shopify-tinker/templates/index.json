@@ -388,6 +388,53 @@
         "flotante": true,
         "logo_fuente": true
       }
+    },
+    "mm_confian": {
+      "type": "mm-confian",
+      "settings": {
+        "titulo": "Nos encontrarás en",
+        "texto": "Cafeterías y tiendas que ya sirven Mood Matcha.",
+        "movimiento": true,
+        "velocidad": 40,
+        "cta_texto": "¿Quieres vender Mood Matcha o ponerlo en tu cafetería?",
+        "cta_boton": "Escríbenos"
+      },
+      "blocks": {
+        "sitio_1": {
+          "type": "sitio",
+          "settings": {
+            "nombre": "Cafetería 1",
+            "ciudad": "Ciudad"
+          }
+        },
+        "sitio_2": {
+          "type": "sitio",
+          "settings": {
+            "nombre": "Tienda 2",
+            "ciudad": "Ciudad"
+          }
+        },
+        "sitio_3": {
+          "type": "sitio",
+          "settings": {
+            "nombre": "Cafetería 3",
+            "ciudad": "Ciudad"
+          }
+        },
+        "sitio_4": {
+          "type": "sitio",
+          "settings": {
+            "nombre": "Tienda 4",
+            "ciudad": "Ciudad"
+          }
+        }
+      },
+      "block_order": [
+        "sitio_1",
+        "sitio_2",
+        "sitio_3",
+        "sitio_4"
+      ]
     }
   },
   "order": [
@@ -396,6 +443,7 @@
     "mm_moods",
     "mm_preparacion",
     "mm_cifras",
+    "mm_confian",
     "mm_preguntas",
     "mm_momentos",
     "mm_marca"
