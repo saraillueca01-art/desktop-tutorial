@@ -38,15 +38,30 @@
       "blocks": {
         "pack_1": {
           "type": "pack",
-          "settings": { "cantidad": 1, "descuento": 0, "etiqueta": "", "destacado": false }
+          "settings": {
+            "cantidad": 1,
+            "descuento": 0,
+            "etiqueta": "",
+            "destacado": false
+          }
         },
         "pack_2": {
           "type": "pack",
-          "settings": { "cantidad": 2, "descuento": 10, "etiqueta": "El más elegido", "destacado": true }
+          "settings": {
+            "cantidad": 2,
+            "descuento": 10,
+            "etiqueta": "El más elegido",
+            "destacado": true
+          }
         },
         "pack_3": {
           "type": "pack",
-          "settings": { "cantidad": 3, "descuento": 15, "etiqueta": "Más ahorro", "destacado": false }
+          "settings": {
+            "cantidad": 3,
+            "descuento": 15,
+            "etiqueta": "Más ahorro",
+            "destacado": false
+          }
         },
         "dato_1": {
           "type": "dato",
@@ -141,9 +156,8 @@
       "type": "mm-preparacion",
       "settings": {
         "titulo": "Cómo se prepara",
-        "visual": "animacion",
-        "texto": "<p>Un minuto y cuatro gestos. Así sale cremoso, sin grumos y sin amargor.</p>",
-        "utensilios": "Necesitas un cuenco, un colador fino y un chasen (o un espumador de leche)."
+        "texto": "<p>Un minuto y cuatro gestos.</p>",
+        "utensilios": "Cuenco, colador fino y chasen (o espumador de leche)."
       },
       "blocks": {
         "paso_1": {
@@ -151,15 +165,15 @@
           "settings": {
             "dato": "2 g",
             "titulo": "Tamiza",
-            "texto": "Tamiza dos cucharaditas de bambú (unos 2 g) en el cuenco para que no queden grumos."
+            "texto": "Dos cucharaditas en el cuenco, sin grumos."
           }
         },
         "paso_2": {
           "type": "paso",
           "settings": {
-            "dato": "70 ml a 80 °C",
+            "dato": "80 °C",
             "titulo": "Añade el agua",
-            "texto": "Agua caliente, nunca hirviendo. Si sale del hervidor, déjala reposar un par de minutos."
+            "texto": "70 ml caliente, nunca hirviendo."
           }
         },
         "paso_3": {
@@ -167,7 +181,7 @@
           "settings": {
             "dato": "15 s",
             "titulo": "Bate en zigzag",
-            "texto": "Con el chasen, mueve la muñeca dibujando una M, sin tocar el fondo, hasta que salga una espuma fina."
+            "texto": "Dibuja una M con el chasen hasta que haga espuma."
           }
         },
         "paso_4": {
@@ -175,7 +189,7 @@
           "settings": {
             "dato": "Tu mood",
             "titulo": "Disfrútalo",
-            "texto": "Bébelo así, o añade leche espumada, hielo o tónica. Cada mood tiene su receta."
+            "texto": "Solo, con leche, con hielo o con tónica."
           }
         }
       },
@@ -246,14 +260,57 @@
         "datos_google": true
       },
       "blocks": {
-        "pregunta_1": { "type": "pregunta", "settings": { "pregunta": "¿Cuántas tazas salen de una lata?", "respuesta": "<p>Unas 15 tazas, usando 2 g (una cucharadita de bambú) por taza.</p>" } },
-        "pregunta_2": { "type": "pregunta", "settings": { "pregunta": "¿Qué significa de primera cosecha?", "respuesta": "<p>Son las primeras hojas del año, las más tiernas. Dan un verde más intenso y un sabor más dulce y menos amargo.</p>" } },
-        "pregunta_3": { "type": "pregunta", "settings": { "pregunta": "¿Necesito un chasen para prepararlo?", "respuesta": "<p>Es lo ideal para que salga espuma fina, pero un espumador de leche eléctrico también funciona.</p>" } },
-        "pregunta_4": { "type": "pregunta", "settings": { "pregunta": "¿Cuánto tarda en llegar?", "respuesta": "<p>Si pides antes de medianoche, sale al día siguiente laborable y te llega en 24–72 h. El envío es gratis a partir de 35 €.</p>" } },
-        "pregunta_5": { "type": "pregunta", "settings": { "pregunta": "¿Cómo lo conservo?", "respuesta": "<p>Bien cerrado, lejos de la luz y del calor. Una vez abierto, guárdalo en la nevera y tómalo en uno o dos meses para que no pierda color ni aroma.</p>" } },
-        "pregunta_6": { "type": "pregunta", "settings": { "pregunta": "¿Tiene cafeína?", "respuesta": "<p>Sí, algo menos que un café. Se nota de forma más suave y sostenida.</p>" } }
+        "pregunta_1": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cuántas tazas salen de una lata?",
+            "respuesta": "<p>Unas 15 tazas, usando 2 g (una cucharadita de bambú) por taza.</p>"
+          }
+        },
+        "pregunta_2": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Qué significa de primera cosecha?",
+            "respuesta": "<p>Son las primeras hojas del año, las más tiernas. Dan un verde más intenso y un sabor más dulce y menos amargo.</p>"
+          }
+        },
+        "pregunta_3": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Necesito un chasen para prepararlo?",
+            "respuesta": "<p>Es lo ideal para que salga espuma fina, pero un espumador de leche eléctrico también funciona.</p>"
+          }
+        },
+        "pregunta_4": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cuánto tarda en llegar?",
+            "respuesta": "<p>Si pides antes de medianoche, sale al día siguiente laborable y te llega en 24–72 h. El envío es gratis a partir de 35 €.</p>"
+          }
+        },
+        "pregunta_5": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cómo lo conservo?",
+            "respuesta": "<p>Bien cerrado, lejos de la luz y del calor. Una vez abierto, guárdalo en la nevera y tómalo en uno o dos meses para que no pierda color ni aroma.</p>"
+          }
+        },
+        "pregunta_6": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Tiene cafeína?",
+            "respuesta": "<p>Sí, algo menos que un café. Se nota de forma más suave y sostenida.</p>"
+          }
+        }
       },
-      "block_order": ["pregunta_1", "pregunta_2", "pregunta_3", "pregunta_4", "pregunta_5", "pregunta_6"]
+      "block_order": [
+        "pregunta_1",
+        "pregunta_2",
+        "pregunta_3",
+        "pregunta_4",
+        "pregunta_5",
+        "pregunta_6"
+      ]
     },
     "mm_momentos": {
       "type": "mm-momentos",

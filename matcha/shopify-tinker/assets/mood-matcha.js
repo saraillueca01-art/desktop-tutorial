@@ -155,57 +155,18 @@ const countIO = new IntersectionObserver((entries) => entries.forEach((e) => {
 }), { threshold: 0.5 });
 function counters(root) { $$('[data-mm-to]', root).forEach((el) => countIO.observe(el)); }
 
-/* ---------- Pasos de preparación: se iluminan al llegar ---------- */
-function pasos(root) {
-  $$('[data-mm-steps]', root).forEach((list) => {
-    const items = $$('.mm-prep__step', list);
-    if (reduced) { items.forEach((s) => s.classList.add('is-on')); return; }
-    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
-      if (e.isIntersecting) { e.target.classList.add('is-on'); io.unobserve(e.target); }
-    }), { rootMargin: '0px 0px -20% 0px' });
-    items.forEach((s) => io.observe(s));
-    const line = list.querySelector('.mm-prep__line span');
-    if (line) {
-      const fn = () => {
-        const r = list.getBoundingClientRect();
-        const p = clamp((innerHeight * 0.7 - r.top) / Math.max(1, r.height), 0, 1);
-        line.style.transform = `scaleY(${p})`;
-      };
-      scrollFns.add(fn); fn();
-    }
-  });
-}
-
-/* ---------- Cómo se prepara: el paso activo mueve el cuenco animado ---------- */
+/* ---------- Cómo se prepara: tarjetas que entran en cadena ---------- */
 function preparacion(root) {
-  $$('.mm-prep', root).forEach((sec) => {
-    const steps = $$('.mm-prep__step', sec), big = sec.querySelector('[data-mm-prep-big]');
-    const cv = sec.querySelector('[data-mm-bowl]');
-    const scene = cv ? bowlScene(cv) : null;
-    let active = -1;
-    const set = (i) => {
-      if (i === active) return;
-      active = i;
-      steps.forEach((s, k) => s.classList.toggle('is-active', k === i));
-      scene?.go(i);
-      if (big) {
-        big.classList.remove('is-in');
-        void big.offsetWidth;
-        big.textContent = steps[i]?.dataset.dato || '';
-        big.classList.add('is-in');
-      }
-    };
-    const fn = () => {
-      const line = innerHeight * (innerWidth > 900 ? 0.5 : 0.72);
-      let best = 0, dist = Infinity;
-      steps.forEach((s, k) => {
-        const r = s.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - line);
-        if (d < dist) { dist = d; best = k; }
-      });
-      set(best);
-    };
-    steps.forEach((s, k) => s.addEventListener('click', () => set(k)));
-    scrollFns.add(fn); fn();
+  $$('.mm-prep__row', root).forEach((row) => {
+    // Las tarjetas entran una detrás de otra al llegar a la sección
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { row.classList.add('is-in'); io.disconnect(); } }, { threshold: 0.2 });
+    if (reduced) row.classList.add('is-in'); else io.observe(row);
+    // Sin foto: un cuenco animado que hace su paso, y lo repite al pasar el ratón
+    $$('[data-mm-bowl]', row).forEach((cv) => {
+      const scene = bowlScene(cv), i = parseInt(cv.dataset.step, 10) || 0;
+      if (reduced) scene.go(i); else scene.replay(i);
+      cv.closest('.mm-prep__card')?.addEventListener('pointerenter', () => scene.replay(i));
+    });
   });
 }
 
@@ -408,6 +369,13 @@ function bowlScene(cv) {
       goal = T[clamp(i, 0, T.length - 1)];
       if (reduced) { Object.assign(s, goal); draw(); }
     },
+    replay(i) {
+      if (reduced) return;
+      // Vuelve al estado del paso anterior y repite la transición
+      Object.assign(s, i > 0 ? T[i - 1] : { sieve: 0, powder: 0, level: 0, stream: 0, whisk: 0, foam: 0, steam: 0 });
+      if (i === 0) s.powder = 0;
+      goal = T[i];
+    },
   };
 }
 function mix(a, b, t) {
@@ -581,7 +549,7 @@ function forms(root) {
 /* ---------- Arranque ---------- */
 function init(root = document) {
   intro(root); roll(root); videos(root); moods(root); carousel(root); tins(root);
-  momentos(root); counters(root); pasos(root); preparacion(root); ship(root); freeBars(root); forms(root);
+  momentos(root); counters(root); preparacion(root); ship(root); freeBars(root); forms(root);
   runScroll();
 }
 init();
