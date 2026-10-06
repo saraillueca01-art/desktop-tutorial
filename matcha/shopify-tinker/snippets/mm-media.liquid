@@ -1,0 +1,26 @@
+{%- comment -%}
+  Foto o vídeo de fondo. Si no eliges nada, usa la acuarela o el vídeo incluidos en el tema.
+  Uso: {% render 'mm-media', video: block.settings.video, image: block.settings.imagen, fallback: 'mm-acuarela-latte.jpg', sizes: '50vw', eager: false %}
+  fallback puede ser una imagen .jpg o 'mm-ceremonia' (vídeo de la ceremonia).
+{%- endcomment -%}
+{%- liquid
+  assign sizes = sizes | default: '100vw'
+  assign loading = 'lazy'
+  if eager
+    assign loading = 'eager'
+  endif
+-%}
+<div class="mm-media {{ class }}">
+  {%- if video != blank -%}
+    {{ video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, preload: 'metadata', image_size: '1600x' }}
+  {%- elsif image != blank -%}
+    {{ image | image_url: width: 2400 | image_tag: loading: loading, sizes: sizes, widths: '480, 800, 1200, 1600, 2400' }}
+  {%- elsif fallback == 'mm-ceremonia' -%}
+    <video autoplay muted loop playsinline preload="metadata" poster="{{ 'mm-ceremonia.jpg' | asset_url }}">
+      <source src="{{ 'mm-ceremonia.webm' | asset_url }}" type="video/webm">
+      <source src="{{ 'mm-ceremonia.mp4' | asset_url }}" type="video/mp4">
+    </video>
+  {%- elsif fallback != blank -%}
+    <img src="{{ fallback | asset_url }}" alt="" loading="{{ loading }}" width="1600" height="2000">
+  {%- endif -%}
+</div>

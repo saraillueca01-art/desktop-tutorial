@@ -1,0 +1,91 @@
+{% render 'mm-recursos' %}
+{%- assign fondos = 'mm-acuarela-arco.jpg,mm-acuarela-latte.jpg,mm-ceremonia.jpg,mm-acuarela-polvo.jpg,mm-acuarela-molino.jpg,mm-acuarela-bodegon.jpg' | split: ',' -%}
+<section class="mm mm-momentos">
+  <header class="mm-momentos__head">
+    <h2>{{ section.settings.titulo }}</h2>
+    {%- if section.settings.enlace_texto != blank -%}
+      <a href="{{ section.settings.enlace | default: '#' }}"{% if section.settings.enlace contains 'http' %} target="_blank" rel="noopener"{% endif %}>{{ section.settings.enlace_texto }}</a>
+    {%- endif -%}
+  </header>
+  <div class="mm-momentos__grid" data-mm-wall>
+    {%- for col in (0..3) -%}
+      <div class="mm-momentos__col">
+        {%- for block in section.blocks -%}
+          {%- assign c = forloop.index0 | modulo: 4 -%}
+          {%- if c == col -%}
+            {%- assign i = forloop.index0 | modulo: fondos.size -%}
+            {%- if block.type == 'lata' -%}
+              <figure class="mm-momentos__tile mm-momentos__tile--lata mm-momentos__tile--{{ block.settings.forma }}" {{ block.shopify_attributes }}>
+                {% render 'mm-lata', image: block.settings.foto_lata %}
+              </figure>
+            {%- else -%}
+              <figure class="mm-momentos__tile mm-momentos__tile--{{ block.settings.forma }}" {{ block.shopify_attributes }}>
+                {%- if block.settings.video != blank or block.settings.imagen != blank -%}
+                  {% render 'mm-media', video: block.settings.video, image: block.settings.imagen, sizes: '(min-width: 860px) 25vw, 50vw' %}
+                {%- else -%}
+                  {% render 'mm-media', fallback: fondos[i], sizes: '(min-width: 860px) 25vw, 50vw' %}
+                {%- endif -%}
+              </figure>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "MM · Momentos en calma",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Momentos en calma" },
+    { "type": "text", "id": "enlace_texto", "label": "Texto del enlace", "default": "Síguenos en Instagram" },
+    { "type": "url", "id": "enlace", "label": "Enlace" }
+  ],
+  "blocks": [
+    {
+      "type": "foto",
+      "name": "Foto o vídeo",
+      "settings": [
+        { "type": "image_picker", "id": "imagen", "label": "Imagen" },
+        { "type": "video", "id": "video", "label": "Vídeo" },
+        { "type": "select", "id": "forma", "label": "Forma", "default": "alta", "options": [
+          { "value": "cuadrada", "label": "Cuadrada" },
+          { "value": "alta", "label": "Vertical" },
+          { "value": "muy-alta", "label": "Muy vertical" }
+        ] }
+      ]
+    },
+    {
+      "type": "lata",
+      "name": "La lata",
+      "limit": 2,
+      "settings": [
+        { "type": "image_picker", "id": "foto_lata", "label": "Foto de la lata", "info": "Vacía: se dibuja la lata plateada." },
+        { "type": "select", "id": "forma", "label": "Forma", "default": "cuadrada", "options": [
+          { "value": "cuadrada", "label": "Cuadrada" },
+          { "value": "alta", "label": "Vertical" }
+        ] }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "MM · Momentos en calma",
+      "category": "Mood Matcha",
+      "blocks": [
+        { "type": "foto", "settings": { "forma": "alta" } },
+        { "type": "foto", "settings": { "forma": "muy-alta" } },
+        { "type": "foto", "settings": { "forma": "cuadrada" } },
+        { "type": "foto", "settings": { "forma": "alta" } },
+        { "type": "foto", "settings": { "forma": "cuadrada" } },
+        { "type": "lata", "settings": { "forma": "cuadrada" } },
+        { "type": "foto", "settings": { "forma": "alta" } },
+        { "type": "foto", "settings": { "forma": "cuadrada" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,54 @@
+{% render 'mm-recursos' %}
+{%- liquid
+  assign palabras = section.settings.palabras | split: ','
+  assign oscuro = section.settings.oscurecer | divided_by: 100.0
+-%}
+<section class="mm mm-portada" style="--mm-shade: {{ oscuro }}; --mm-portada-h: {{ section.settings.altura }}svh;">
+  {%- if section.settings.intro -%}
+    <div class="mm-intro" aria-hidden="true">{% render 'mm-logo', split: true %}</div>
+  {%- endif -%}
+  {% render 'mm-media', video: section.settings.video, image: section.settings.imagen, fallback: 'mm-ceremonia', eager: true, class: 'mm-portada__media' %}
+  <div class="mm-portada__in">
+    <h2 class="mm-portada__title">
+      {{- section.settings.titulo -}}
+      {%- if palabras.size > 0 %} <span class="mm-roll" data-mm-roll>
+        {%- for p in palabras -%}<span{% if forloop.first %} class="is-on"{% endif %}>{{ p | strip }}</span>{%- endfor -%}
+      </span>{%- endif -%}
+    </h2>
+    <div class="mm-portada__side">
+      {%- if section.settings.texto != blank -%}<div class="mm-portada__text">{{ section.settings.texto }}</div>{%- endif -%}
+      {%- if section.settings.boton != blank -%}
+        <a class="mm-btn mm-btn--light" href="{{ section.settings.enlace | default: '#mm-lata' }}">
+          {{- section.settings.boton -}}
+          {%- if section.settings.producto != blank and section.settings.mostrar_precio %}, {{ section.settings.producto.price | money }}{% endif -%}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "MM · Portada",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "header", "content": "Fondo" },
+    { "type": "video", "id": "video", "label": "Vídeo", "info": "Sube aquí tu vídeo. Si lo dejas vacío se usa el de la ceremonia con el chasen." },
+    { "type": "image_picker", "id": "imagen", "label": "Imagen", "info": "Se usa si no hay vídeo." },
+    { "type": "range", "id": "oscurecer", "label": "Oscurecer el fondo", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 35 },
+    { "type": "range", "id": "altura", "label": "Altura", "min": 60, "max": 100, "step": 5, "unit": "%", "default": 100 },
+    { "type": "header", "content": "Texto" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Un matcha para tu" },
+    { "type": "text", "id": "palabras", "label": "Palabras que van cambiando", "info": "Sepáralas con comas.", "default": "focus., calma., energía., antojo., mood." },
+    { "type": "richtext", "id": "texto", "label": "Texto", "default": "<p>Matcha de primera cosecha, molido en piedra. Una lata para todos tus momentos del día.</p>" },
+    { "type": "text", "id": "boton", "label": "Botón", "default": "Comprar" },
+    { "type": "url", "id": "enlace", "label": "Enlace del botón", "info": "Vacío: baja a la sección de la lata." },
+    { "type": "product", "id": "producto", "label": "Producto (para mostrar el precio)" },
+    { "type": "checkbox", "id": "mostrar_precio", "label": "Mostrar el precio en el botón", "default": true },
+    { "type": "header", "content": "Entrada" },
+    { "type": "checkbox", "id": "intro", "label": "Dibujar el logo al entrar", "info": "Solo la primera vez que se abre la web en cada visita. No se ve dentro del editor.", "default": true }
+  ],
+  "presets": [{ "name": "MM · Portada", "category": "Mood Matcha" }]
+}
+{% endschema %}

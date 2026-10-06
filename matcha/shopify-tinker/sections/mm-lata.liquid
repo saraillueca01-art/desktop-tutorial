@@ -1,0 +1,156 @@
+{% render 'mm-recursos' %}
+{%- liquid
+  assign p = section.settings.producto
+  if p == blank
+    assign p = closest.product
+  endif
+  assign v = p.selected_or_first_available_variant
+-%}
+<section class="mm mm-lata" id="mm-lata">
+  <div class="mm-lata__stage" data-mm-stage>
+    {% render 'mm-lata', image: section.settings.foto_lata, kicker: section.settings.kicker, grams: section.settings.gramos %}
+  </div>
+
+  <div class="mm-lata__buy">
+    <h2>{{ section.settings.titulo | default: p.title }}</h2>
+    {%- if section.settings.texto != blank -%}
+      <div class="mm-lata__text">{{ section.settings.texto }}</div>
+    {%- elsif p.description != blank -%}
+      <div class="mm-lata__text">{{ p.description | strip_html | truncatewords: 60 }}</div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="mm-lata__facts">
+        {%- for block in section.blocks -%}
+          <div {{ block.shopify_attributes }}>
+            <b{% if block.settings.contar %} data-mm-to="{{ block.settings.valor | plus: 0 }}"{% endif %}>{{ block.settings.valor }}</b>
+            <span>{{ block.settings.texto }}</span>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if p != blank -%}
+      {%- form 'product', p, class: 'mm-lata__form', data-mm-form: '', data-product-id: p.id, novalidate: 'novalidate' -%}
+        {%- if p.has_only_default_variant -%}
+          <input type="hidden" name="id" value="{{ v.id }}">
+        {%- else -%}
+          <label class="mm-lata__variant">
+            <span class="visually-hidden">Formato</span>
+            <select name="id" data-mm-variant>
+              {%- for variant in p.variants -%}
+                <option value="{{ variant.id }}" data-price="{{ variant.price | money }}" data-available="{{ variant.available }}"{% if variant == v %} selected{% endif %}>
+                  {{- variant.title }}{% unless variant.available %} (agotado){% endunless -%}
+                </option>
+              {%- endfor -%}
+            </select>
+          </label>
+        {%- endif -%}
+
+        <div class="mm-lata__price">
+          <b data-mm-price>{{ v.price | money }}</b>
+          {%- if v.compare_at_price > v.price -%}<s>{{ v.compare_at_price | money }}</s>{%- endif -%}
+        </div>
+
+        <div class="mm-lata__row">
+          {%- if section.settings.cantidad -%}
+            <div class="mm-lata__qty">
+              <button type="button" data-mm-step="-1" aria-label="Quitar una lata">−</button>
+              <input type="number" name="quantity" value="1" min="1" {% if v.inventory_management == 'shopify' and v.inventory_policy == 'deny' %}max="{{ v.inventory_quantity }}"{% endif %} inputmode="numeric" aria-label="Cantidad" data-mm-qty>
+              <button type="button" data-mm-step="1" aria-label="Añadir una lata">+</button>
+            </div>
+          {%- endif -%}
+          <button type="submit" name="add" class="mm-btn" data-add="{{ section.settings.boton | escape }}" data-soldout="Agotado"{% unless v.available %} disabled{% endunless %}>
+            <span>{% if v.available %}{{ section.settings.boton }}{% else %}Agotado{% endif %}</span>
+          </button>
+        </div>
+        {%- if section.settings.pago_rapido -%}
+          <div class="mm-lata__quick">{{ form | payment_button }}</div>
+        {%- endif -%}
+      {%- endform -%}
+
+      {%- if section.settings.stock -%}
+        <p class="mm-lata__stock">
+          {%- if v.available -%}
+            <i aria-hidden="true"></i>
+            {%- if v.inventory_management == 'shopify' and v.inventory_quantity > 0 and v.inventory_quantity <= section.settings.stock_aviso -%}
+              En stock, quedan {{ v.inventory_quantity }} latas
+            {%- else -%}
+              En stock
+            {%- endif -%}
+          {%- else -%}
+            <i class="is-out" aria-hidden="true"></i>Agotado por ahora
+          {%- endif -%}
+        </p>
+      {%- endif -%}
+    {%- elsif request.design_mode -%}
+      <p class="mm-lata__empty">Elige el producto de la lata en los ajustes de esta sección.</p>
+    {%- endif -%}
+
+    {%- if section.settings.envio -%}
+      <p class="mm-lata__ship" data-mm-ship data-cutoff="{{ section.settings.hora_corte }}" data-min="{{ section.settings.dias_min }}" data-max="{{ section.settings.dias_max }}">
+        <span data-mm-ship-countwrap hidden>Pide en las próximas <b data-mm-ship-count></b> y </span>sale <b data-mm-ship-sale>mañana</b>. Te llega entre el <b data-mm-ship-range></b>.
+      </p>
+    {%- endif -%}
+
+    {%- if section.settings.envio_gratis > 0 -%}
+      <div class="mm-free" data-mm-free data-goal="{{ section.settings.envio_gratis }}">
+        <span data-mm-free-text>Envío <b>gratis</b> a partir de {{ section.settings.envio_gratis | times: 100 | money_without_trailing_zeros }}</span>
+        <div class="mm-free__bar"><span></span></div>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "MM · La lata",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "product", "id": "producto", "label": "Producto", "info": "En la página de producto puedes dejarlo vacío: usa el producto de esa página." },
+    { "type": "header", "content": "La lata" },
+    { "type": "image_picker", "id": "foto_lata", "label": "Foto de la lata", "info": "PNG sin fondo. Si la dejas vacía se dibuja la lata plateada." },
+    { "type": "text", "id": "kicker", "label": "Texto de arriba en la etiqueta", "default": "DE PRIMERA COSECHA" },
+    { "type": "text", "id": "gramos", "label": "Texto de abajo en la etiqueta", "default": "30 GR" },
+    { "type": "header", "content": "Texto" },
+    { "type": "text", "id": "titulo", "label": "Titular", "info": "Vacío: el nombre del producto.", "default": "Una sola lata, de primera cosecha" },
+    { "type": "richtext", "id": "texto", "label": "Texto", "info": "Vacío: la descripción del producto.", "default": "<p>Hojas jóvenes cultivadas a la sombra y molidas en piedra. Verde intenso, textura cremosa y final dulce. La misma lata sirve para tomarlo solo, en latte, con hielo o en un postre.</p>" },
+    { "type": "header", "content": "Compra" },
+    { "type": "text", "id": "boton", "label": "Botón", "default": "Añadir a la cesta" },
+    { "type": "checkbox", "id": "cantidad", "label": "Mostrar selector de cantidad", "default": true },
+    { "type": "checkbox", "id": "pago_rapido", "label": "Mostrar botones de pago rápido", "default": false },
+    { "type": "checkbox", "id": "stock", "label": "Mostrar stock", "default": true },
+    { "type": "range", "id": "stock_aviso", "label": "Decir cuántas quedan cuando haya menos de", "min": 0, "max": 100, "step": 1, "default": 30 },
+    { "type": "header", "content": "Envío" },
+    { "type": "checkbox", "id": "envio", "label": "Mostrar fecha de envío y entrega", "default": true },
+    { "type": "range", "id": "hora_corte", "label": "Hora límite para que salga al día siguiente", "min": 12, "max": 24, "step": 1, "unit": "h", "default": 24 },
+    { "type": "range", "id": "dias_min", "label": "Días de entrega (mínimo)", "min": 1, "max": 5, "step": 1, "default": 1 },
+    { "type": "range", "id": "dias_max", "label": "Días de entrega (máximo)", "min": 1, "max": 10, "step": 1, "default": 3 },
+    { "type": "number", "id": "envio_gratis", "label": "Envío gratis a partir de (€)", "info": "0 oculta la barra. Debe coincidir con tu tarifa de envío gratis.", "default": 35 }
+  ],
+  "blocks": [
+    {
+      "type": "dato",
+      "name": "Dato",
+      "limit": 4,
+      "settings": [
+        { "type": "text", "id": "valor", "label": "Cifra", "default": "15" },
+        { "type": "text", "id": "texto", "label": "Texto", "default": "tazas" },
+        { "type": "checkbox", "id": "contar", "label": "Animar la cifra", "info": "Solo si la cifra es un número entero.", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "MM · La lata",
+      "category": "Mood Matcha",
+      "blocks": [
+        { "type": "dato", "settings": { "valor": "30 g", "texto": "en cada lata" } },
+        { "type": "dato", "settings": { "valor": "15", "texto": "tazas", "contar": true } },
+        { "type": "dato", "settings": { "valor": "2 g", "texto": "por taza" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

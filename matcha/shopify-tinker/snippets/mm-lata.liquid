@@ -1,0 +1,26 @@
+{%- comment -%}
+  La lata: la foto que elijas o, si no hay foto, la lata dibujada en CSS.
+  Uso: {% render 'mm-lata', image: section.settings.foto_lata, kicker: 'DE PRIMERA COSECHA', grams: '30 GR', class: '' %}
+{%- endcomment -%}
+{%- liquid
+  assign kicker = kicker | default: 'DE PRIMERA COSECHA'
+  assign grams = grams | default: '30 GR'
+-%}
+{%- if image != blank -%}
+  <div class="mm-tin mm-tin--photo {{ class }}">
+    {{ image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: '(min-width: 900px) 40vw, 80vw', alt: image.alt | default: 'Lata de Mood Matcha' }}
+  </div>
+{%- else -%}
+  <div class="mm-tin {{ class }}" role="img" aria-label="Lata de Mood Matcha, {{ kicker | downcase }}, {{ grams | downcase }}">
+    <div class="mm-tin__shadow"></div>
+    <div class="mm-tin__base mm-tin__metal"></div>
+    <div class="mm-tin__label" aria-hidden="true">
+      <span class="mm-tin__kicker">{{ kicker }}</span>
+      {% render 'mm-logo' %}
+      <span class="mm-tin__grams">{{ grams }}</span>
+    </div>
+    <div class="mm-tin__lid mm-tin__metal"></div>
+    <div class="mm-tin__top"></div>
+    <div class="mm-tin__gloss"></div>
+  </div>
+{%- endif -%}

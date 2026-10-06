@@ -1,0 +1,61 @@
+{% render 'mm-recursos' %}
+{%- assign fondos = 'mm-ceremonia,mm-acuarela-latte.jpg,mm-acuarela-polvo.jpg,mm-acuarela-arco.jpg,mm-acuarela-bodegon.jpg' | split: ',' -%}
+<section class="mm mm-moods" data-mm-moods>
+  <div>
+    <h2>{{ section.settings.titulo }}</h2>
+    <div class="mm-moods__tabs" role="tablist" aria-label="{{ section.settings.titulo | escape }}">
+      {%- for block in section.blocks -%}
+        <button type="button" class="mm-moods__tab" role="tab" id="mm-tab-{{ block.id }}" aria-controls="mm-pic-{{ block.id }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}" {{ block.shopify_attributes }}>
+          <b>{{ block.settings.mood }}</b>
+          <span>{{ block.settings.receta }}</span>
+          <p>{{ block.settings.texto }}</p>
+        </button>
+      {%- endfor -%}
+    </div>
+  </div>
+  <div class="mm-moods__pics">
+    {%- for block in section.blocks -%}
+      {%- assign i = forloop.index0 | modulo: fondos.size -%}
+      <div class="mm-moods__pic{% if forloop.first %} is-on{% endif %}" id="mm-pic-{{ block.id }}" role="tabpanel" aria-labelledby="mm-tab-{{ block.id }}" data-mm-pic>
+        {% render 'mm-media', video: block.settings.video, image: block.settings.imagen, fallback: fondos[i], sizes: '(min-width: 900px) 50vw, 100vw' %}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "MM · Moods",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "¿Cómo te sientes hoy?" }
+  ],
+  "blocks": [
+    {
+      "type": "mood",
+      "name": "Mood",
+      "settings": [
+        { "type": "text", "id": "mood", "label": "Mood", "default": "Focus" },
+        { "type": "text", "id": "receta", "label": "Receta", "default": "Solo con agua" },
+        { "type": "textarea", "id": "texto", "label": "Cómo se hace", "default": "2 g de matcha y 70 ml de agua a 80 °C. Bate en zigzag quince segundos y bébelo tranquilo." },
+        { "type": "image_picker", "id": "imagen", "label": "Imagen" },
+        { "type": "video", "id": "video", "label": "Vídeo", "info": "Si eliges vídeo, se muestra en lugar de la imagen." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "MM · Moods",
+      "category": "Mood Matcha",
+      "blocks": [
+        { "type": "mood", "settings": { "mood": "Focus", "receta": "Solo con agua", "texto": "2 g de matcha y 70 ml de agua a 80 °C. Bate en zigzag quince segundos y bébelo tranquilo." } },
+        { "type": "mood", "settings": { "mood": "Calma", "receta": "Latte templado de avena", "texto": "Bate 2 g con un poco de agua y añade 200 ml de bebida de avena espumada." } },
+        { "type": "mood", "settings": { "mood": "Energía", "receta": "Con hielo y tónica", "texto": "Hielo, 150 ml de tónica y el matcha batido en agua fría por encima." } },
+        { "type": "mood", "settings": { "mood": "Social", "receta": "Matcha lemonade", "texto": "Limón, agua con gas y matcha. Para compartir en la terraza." } },
+        { "type": "mood", "settings": { "mood": "Antojo", "receta": "Matcha affogato", "texto": "Una bola de helado de vainilla y el matcha recién batido por encima." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

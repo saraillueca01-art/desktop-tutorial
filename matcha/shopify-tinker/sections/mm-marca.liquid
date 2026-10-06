@@ -1,0 +1,37 @@
+{% render 'mm-recursos' %}
+{%- comment -%}
+  Ajustes de marca de Mood Matcha. No se ve en la página: pon esta sección arriba del todo en cada plantilla
+  donde quieras los colores de la marca y el menú redondo flotante.
+{%- endcomment -%}
+<div class="mm-marca" data-mm-marca{% if section.settings.flotante %} data-mm-flotante{% endif %} hidden></div>
+<style>
+  :root {
+    --mm-green: {{ section.settings.verde }};
+    --mm-lime: {{ section.settings.lima }};
+    --mm-label: {{ section.settings.gris }};
+  }
+  {%- if section.settings.logo_fuente %}
+  #header-component .header-logo, #header-component .header-logo__text { font-family: var(--mm-logo-font); font-weight: 300; letter-spacing: .05em; text-transform: uppercase; }
+  {%- endif %}
+</style>
+{%- if request.design_mode -%}
+  <p class="mm-marca__hint">Mood Matcha · ajustes de marca (esta franja solo se ve en el editor)</p>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "MM · Ajustes de marca",
+  "tag": "div",
+  "class": "mm-section mm-section--marca",
+  "limit": 1,
+  "settings": [
+    { "type": "paragraph", "content": "Esta sección no se ve en la tienda. Guarda los colores de Mood Matcha que usan todas las secciones MM y activa el menú redondo flotante." },
+    { "type": "color", "id": "verde", "label": "Verde del logotipo", "default": "#1f6b2e" },
+    { "type": "color", "id": "lima", "label": "Lima de la etiqueta", "default": "#c9dc5c" },
+    { "type": "color", "id": "gris", "label": "Gris de la etiqueta", "default": "#dfe0dc" },
+    { "type": "checkbox", "id": "flotante", "label": "Menú redondo flotante", "info": "Separa la cabecera de los bordes, la redondea y le da efecto cristal.", "default": true },
+    { "type": "checkbox", "id": "logo_fuente", "label": "Logo de texto con la letra de la lata (Jost)", "info": "Solo si en la cabecera usas el nombre de la tienda en vez de una imagen de logo.", "default": true }
+  ],
+  "presets": [{ "name": "MM · Ajustes de marca", "category": "Mood Matcha" }]
+}
+{% endschema %}

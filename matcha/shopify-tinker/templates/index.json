@@ -1,0 +1,307 @@
+{
+  "sections": {
+    "mm_portada": {
+      "type": "mm-portada",
+      "settings": {
+        "oscurecer": 35,
+        "altura": 100,
+        "titulo": "Un matcha para tu",
+        "palabras": "focus., calma., energía., antojo., mood.",
+        "texto": "<p>Matcha de primera cosecha, molido en piedra. Una lata para todos tus momentos del día.</p>",
+        "boton": "Comprar",
+        "mostrar_precio": true,
+        "intro": true
+      }
+    },
+    "mm_lata": {
+      "type": "mm-lata",
+      "settings": {
+        "kicker": "DE PRIMERA COSECHA",
+        "gramos": "30 GR",
+        "titulo": "Una sola lata, de primera cosecha",
+        "texto": "<p>Hojas jóvenes cultivadas a la sombra y molidas en piedra. Verde intenso, textura cremosa y final dulce. La misma lata sirve para tomarlo solo, en latte, con hielo o en un postre.</p>",
+        "boton": "Añadir a la cesta",
+        "cantidad": true,
+        "pago_rapido": false,
+        "stock": true,
+        "stock_aviso": 30,
+        "envio": true,
+        "hora_corte": 24,
+        "dias_min": 1,
+        "dias_max": 3,
+        "envio_gratis": 35
+      },
+      "blocks": {
+        "dato_1": {
+          "type": "dato",
+          "settings": {
+            "valor": "30 g",
+            "texto": "en cada lata",
+            "contar": false
+          }
+        },
+        "dato_2": {
+          "type": "dato",
+          "settings": {
+            "valor": "15",
+            "texto": "tazas",
+            "contar": true
+          }
+        },
+        "dato_3": {
+          "type": "dato",
+          "settings": {
+            "valor": "2 g",
+            "texto": "por taza",
+            "contar": false
+          }
+        }
+      },
+      "block_order": [
+        "dato_1",
+        "dato_2",
+        "dato_3"
+      ]
+    },
+    "mm_moods": {
+      "type": "mm-moods",
+      "settings": {
+        "titulo": "¿Cómo te sientes hoy?"
+      },
+      "blocks": {
+        "mood_1": {
+          "type": "mood",
+          "settings": {
+            "mood": "Focus",
+            "receta": "Solo con agua",
+            "texto": "2 g de matcha y 70 ml de agua a 80 °C. Bate en zigzag quince segundos y bébelo tranquilo."
+          }
+        },
+        "mood_2": {
+          "type": "mood",
+          "settings": {
+            "mood": "Calma",
+            "receta": "Latte templado de avena",
+            "texto": "Bate 2 g con un poco de agua y añade 200 ml de bebida de avena espumada."
+          }
+        },
+        "mood_3": {
+          "type": "mood",
+          "settings": {
+            "mood": "Energía",
+            "receta": "Con hielo y tónica",
+            "texto": "Hielo, 150 ml de tónica y el matcha batido en agua fría por encima."
+          }
+        },
+        "mood_4": {
+          "type": "mood",
+          "settings": {
+            "mood": "Social",
+            "receta": "Matcha lemonade",
+            "texto": "Limón, agua con gas y matcha. Para compartir en la terraza."
+          }
+        },
+        "mood_5": {
+          "type": "mood",
+          "settings": {
+            "mood": "Antojo",
+            "receta": "Matcha affogato",
+            "texto": "Una bola de helado de vainilla y el matcha recién batido por encima."
+          }
+        }
+      },
+      "block_order": [
+        "mood_1",
+        "mood_2",
+        "mood_3",
+        "mood_4",
+        "mood_5"
+      ]
+    },
+    "mm_preparacion": {
+      "type": "mm-preparacion",
+      "settings": {
+        "titulo": "Cómo se prepara",
+        "texto": "<p>Un minuto y cuatro gestos. Así sale cremoso, sin grumos y sin amargor.</p>",
+        "utensilios": "Necesitas un cuenco, un colador fino y un chasen (o un espumador de leche)."
+      },
+      "blocks": {
+        "paso_1": {
+          "type": "paso",
+          "settings": {
+            "dato": "2 g",
+            "titulo": "Tamiza",
+            "texto": "Tamiza dos cucharaditas de bambú (unos 2 g) en el cuenco para que no queden grumos."
+          }
+        },
+        "paso_2": {
+          "type": "paso",
+          "settings": {
+            "dato": "70 ml a 80 °C",
+            "titulo": "Añade el agua",
+            "texto": "Agua caliente, nunca hirviendo. Si sale del hervidor, déjala reposar un par de minutos."
+          }
+        },
+        "paso_3": {
+          "type": "paso",
+          "settings": {
+            "dato": "15 s",
+            "titulo": "Bate en zigzag",
+            "texto": "Con el chasen, mueve la muñeca dibujando una M, sin tocar el fondo, hasta que salga una espuma fina."
+          }
+        },
+        "paso_4": {
+          "type": "paso",
+          "settings": {
+            "dato": "Tu mood",
+            "titulo": "Disfrútalo",
+            "texto": "Bébelo así, o añade leche espumada, hielo o tónica. Cada mood tiene su receta."
+          }
+        }
+      },
+      "block_order": [
+        "paso_1",
+        "paso_2",
+        "paso_3",
+        "paso_4"
+      ]
+    },
+    "mm_cifras": {
+      "type": "mm-cifras",
+      "settings": {
+        "titulo": "Cifras clave",
+        "texto": "Lo que hay detrás de cada taza."
+      },
+      "blocks": {
+        "cifra_1": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "21 días",
+            "texto": "a la sombra antes de la cosecha"
+          }
+        },
+        "cifra_2": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "2 g",
+            "texto": "por taza, una cucharadita"
+          }
+        },
+        "cifra_3": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "15 tazas",
+            "texto": "en cada lata de 30 g"
+          }
+        },
+        "cifra_4": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "80 °C",
+            "texto": "nunca hirviendo"
+          }
+        },
+        "cifra_5": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "24–72 h",
+            "texto": "de nuestra casa a la tuya"
+          }
+        }
+      },
+      "block_order": [
+        "cifra_1",
+        "cifra_2",
+        "cifra_3",
+        "cifra_4",
+        "cifra_5"
+      ]
+    },
+    "mm_momentos": {
+      "type": "mm-momentos",
+      "settings": {
+        "titulo": "Momentos en calma",
+        "enlace_texto": "Síguenos en Instagram"
+      },
+      "blocks": {
+        "foto_1": {
+          "type": "foto",
+          "settings": {
+            "forma": "alta"
+          }
+        },
+        "foto_2": {
+          "type": "foto",
+          "settings": {
+            "forma": "muy-alta"
+          }
+        },
+        "foto_3": {
+          "type": "foto",
+          "settings": {
+            "forma": "cuadrada"
+          }
+        },
+        "foto_4": {
+          "type": "foto",
+          "settings": {
+            "forma": "alta"
+          }
+        },
+        "foto_5": {
+          "type": "foto",
+          "settings": {
+            "forma": "cuadrada"
+          }
+        },
+        "lata_6": {
+          "type": "lata",
+          "settings": {
+            "forma": "cuadrada"
+          }
+        },
+        "foto_7": {
+          "type": "foto",
+          "settings": {
+            "forma": "alta"
+          }
+        },
+        "foto_8": {
+          "type": "foto",
+          "settings": {
+            "forma": "cuadrada"
+          }
+        }
+      },
+      "block_order": [
+        "foto_1",
+        "foto_2",
+        "foto_3",
+        "foto_4",
+        "foto_5",
+        "lata_6",
+        "foto_7",
+        "foto_8"
+      ]
+    },
+    "mm_marca": {
+      "type": "mm-marca",
+      "settings": {
+        "verde": "#1f6b2e",
+        "lima": "#c9dc5c",
+        "gris": "#dfe0dc",
+        "flotante": true,
+        "logo_fuente": true
+      }
+    }
+  },
+  "order": [
+    "mm_portada",
+    "mm_lata",
+    "mm_moods",
+    "mm_preparacion",
+    "mm_cifras",
+    "mm_momentos",
+    "mm_marca"
+  ]
+}

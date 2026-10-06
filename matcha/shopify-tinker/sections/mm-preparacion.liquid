@@ -1,0 +1,67 @@
+{% render 'mm-recursos' %}
+<section class="mm mm-prep" id="mm-preparacion">
+  <div class="mm-prep__aside">
+    <h2>{{ section.settings.titulo }}</h2>
+    {%- if section.settings.texto != blank -%}<div class="mm-prep__intro">{{ section.settings.texto }}</div>{%- endif -%}
+    <figure class="mm-prep__pic">
+      {% render 'mm-media', video: section.settings.video, image: section.settings.imagen, fallback: 'mm-ceremonia', sizes: '(min-width: 900px) 40vw, 100vw' %}
+    </figure>
+    {%- if section.settings.utensilios != blank -%}
+      <p class="mm-prep__tools">{{ section.settings.utensilios }}</p>
+    {%- endif -%}
+  </div>
+
+  <div class="mm-prep__list" data-mm-steps>
+    <span class="mm-prep__line" aria-hidden="true"><span></span></span>
+    <ol class="mm-prep__steps">
+    {%- for block in section.blocks -%}
+      <li class="mm-prep__step" {{ block.shopify_attributes }}>
+        <span class="mm-prep__num" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+        <div>
+          {%- if block.settings.dato != blank -%}<span class="mm-prep__dato">{{ block.settings.dato }}</span>{%- endif -%}
+          <h3>{{ block.settings.titulo }}</h3>
+          <p>{{ block.settings.texto }}</p>
+        </div>
+      </li>
+    {%- endfor -%}
+    </ol>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "MM · Cómo se prepara",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Cómo se prepara" },
+    { "type": "richtext", "id": "texto", "label": "Texto", "default": "<p>Un minuto y cuatro gestos. Así sale cremoso, sin grumos y sin amargor.</p>" },
+    { "type": "video", "id": "video", "label": "Vídeo", "info": "Vacío: el vídeo de la ceremonia con el chasen." },
+    { "type": "image_picker", "id": "imagen", "label": "Imagen", "info": "Se usa si no hay vídeo." },
+    { "type": "text", "id": "utensilios", "label": "Lo que necesitas", "default": "Necesitas un cuenco, un colador fino y un chasen (o un espumador de leche)." }
+  ],
+  "blocks": [
+    {
+      "type": "paso",
+      "name": "Paso",
+      "settings": [
+        { "type": "text", "id": "dato", "label": "Dato destacado", "info": "Por ejemplo: 2 g, 80 °C, 15 s.", "default": "2 g" },
+        { "type": "text", "id": "titulo", "label": "Título", "default": "Tamiza" },
+        { "type": "textarea", "id": "texto", "label": "Texto", "default": "Tamiza dos cucharaditas de bambú en el cuenco para que no queden grumos." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "MM · Cómo se prepara",
+      "category": "Mood Matcha",
+      "blocks": [
+        { "type": "paso", "settings": { "dato": "2 g", "titulo": "Tamiza", "texto": "Tamiza dos cucharaditas de bambú (unos 2 g) en el cuenco para que no queden grumos." } },
+        { "type": "paso", "settings": { "dato": "70 ml a 80 °C", "titulo": "Añade el agua", "texto": "Agua caliente, nunca hirviendo. Si sale del hervidor, déjala reposar un par de minutos." } },
+        { "type": "paso", "settings": { "dato": "15 s", "titulo": "Bate en zigzag", "texto": "Con el chasen, mueve la muñeca dibujando una M, sin tocar el fondo, hasta que salga una espuma fina." } },
+        { "type": "paso", "settings": { "dato": "Tu mood", "titulo": "Disfrútalo", "texto": "Bébelo así, o añade leche espumada, hielo o tónica. Cada mood tiene su receta." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

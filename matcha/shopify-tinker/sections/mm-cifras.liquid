@@ -1,0 +1,61 @@
+{% render 'mm-recursos' %}
+{%- assign fondos = 'mm-acuarela-molino.jpg,mm-acuarela-polvo.jpg,mm-acuarela-latte.jpg,mm-ceremonia.jpg,mm-acuarela-arco.jpg,mm-acuarela-bodegon.jpg' | split: ',' -%}
+<section class="mm mm-cifras">
+  <div class="mm-cifras__head">
+    <h2>{{ section.settings.titulo }}</h2>
+    {%- if section.settings.texto != blank -%}<p>{{ section.settings.texto }}</p>{%- endif -%}
+    <div class="mm-cifras__arrows">
+      <button type="button" data-mm-prev aria-label="Cifra anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button type="button" data-mm-next aria-label="Cifra siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+  </div>
+  <div class="mm-cifras__track" data-mm-track>
+    {%- for block in section.blocks -%}
+      {%- assign i = forloop.index0 | modulo: fondos.size -%}
+      <article class="mm-cifras__card" {{ block.shopify_attributes }}>
+        {%- if block.settings.imagen != blank -%}
+          {% render 'mm-media', image: block.settings.imagen, sizes: '330px' %}
+        {%- else -%}
+          {% render 'mm-media', fallback: fondos[i], sizes: '330px' %}
+        {%- endif -%}
+        <h3>{{ block.settings.cifra }}<small>{{ block.settings.texto }}</small></h3>
+      </article>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "MM · Cifras clave",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Cifras clave" },
+    { "type": "text", "id": "texto", "label": "Texto", "default": "Lo que hay detrás de cada taza." }
+  ],
+  "blocks": [
+    {
+      "type": "cifra",
+      "name": "Cifra",
+      "settings": [
+        { "type": "text", "id": "cifra", "label": "Cifra", "default": "21 días" },
+        { "type": "text", "id": "texto", "label": "Texto", "default": "a la sombra antes de la cosecha" },
+        { "type": "image_picker", "id": "imagen", "label": "Imagen" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "MM · Cifras clave",
+      "category": "Mood Matcha",
+      "blocks": [
+        { "type": "cifra", "settings": { "cifra": "21 días", "texto": "a la sombra antes de la cosecha" } },
+        { "type": "cifra", "settings": { "cifra": "2 g", "texto": "por taza, una cucharadita" } },
+        { "type": "cifra", "settings": { "cifra": "15 tazas", "texto": "en cada lata de 30 g" } },
+        { "type": "cifra", "settings": { "cifra": "80 °C", "texto": "nunca hirviendo" } },
+        { "type": "cifra", "settings": { "cifra": "24–72 h", "texto": "de nuestra casa a la tuya" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

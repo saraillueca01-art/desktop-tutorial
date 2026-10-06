@@ -1,0 +1,6 @@
+{%- comment -%}
+  Logotipo MOODMATCHA con las dos O entrelazadas.
+  Uso: {% render 'mm-logo', class: 'mi-clase', split: true %}
+  split: true separa "DMATCHA" para la animación de entrada.
+{%- endcomment -%}
+<span class="mm-logo {{ class }}" role="img" aria-label="Mood Matcha">M<svg class="mm-logo__oo" viewBox="0 0 122 72" aria-hidden="true" focusable="false"><circle cx="36" cy="36" r="32"/><circle cx="86" cy="36" r="32"/></svg>{% if split %}<span class="mm-logo__rest" aria-hidden="true">DMATCHA</span>{% else %}<span aria-hidden="true">DMATCHA</span>{% endif %}</span>
