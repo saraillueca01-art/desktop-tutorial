@@ -29,9 +29,25 @@
         "hora_corte": 24,
         "dias_min": 1,
         "dias_max": 3,
-        "envio_gratis": 35
+        "envio_gratis": 35,
+        "garantias": "Envío en 24–72 h\nPago seguro\n14 días para devolverlo",
+        "barra_fija": true,
+        "packs_titulo": "Elige tu pack",
+        "packs_nota": "El descuento se aplica en la cesta."
       },
       "blocks": {
+        "pack_1": {
+          "type": "pack",
+          "settings": { "cantidad": 1, "descuento": 0, "etiqueta": "", "destacado": false }
+        },
+        "pack_2": {
+          "type": "pack",
+          "settings": { "cantidad": 2, "descuento": 10, "etiqueta": "El más elegido", "destacado": true }
+        },
+        "pack_3": {
+          "type": "pack",
+          "settings": { "cantidad": 3, "descuento": 15, "etiqueta": "Más ahorro", "destacado": false }
+        },
         "dato_1": {
           "type": "dato",
           "settings": {
@@ -58,6 +74,9 @@
         }
       },
       "block_order": [
+        "pack_1",
+        "pack_2",
+        "pack_3",
         "dato_1",
         "dato_2",
         "dato_3"
@@ -217,6 +236,24 @@
         "cifra_5"
       ]
     },
+    "mm_preguntas": {
+      "type": "mm-preguntas",
+      "settings": {
+        "titulo": "Preguntas frecuentes",
+        "texto": "<p>¿Te queda alguna duda? Escríbenos y te contestamos el mismo día.</p>",
+        "abrir_primera": true,
+        "datos_google": true
+      },
+      "blocks": {
+        "pregunta_1": { "type": "pregunta", "settings": { "pregunta": "¿Cuántas tazas salen de una lata?", "respuesta": "<p>Unas 15 tazas, usando 2 g (una cucharadita de bambú) por taza.</p>" } },
+        "pregunta_2": { "type": "pregunta", "settings": { "pregunta": "¿Qué significa de primera cosecha?", "respuesta": "<p>Son las primeras hojas del año, las más tiernas. Dan un verde más intenso y un sabor más dulce y menos amargo.</p>" } },
+        "pregunta_3": { "type": "pregunta", "settings": { "pregunta": "¿Necesito un chasen para prepararlo?", "respuesta": "<p>Es lo ideal para que salga espuma fina, pero un espumador de leche eléctrico también funciona.</p>" } },
+        "pregunta_4": { "type": "pregunta", "settings": { "pregunta": "¿Cuánto tarda en llegar?", "respuesta": "<p>Si pides antes de medianoche, sale al día siguiente laborable y te llega en 24–72 h. El envío es gratis a partir de 35 €.</p>" } },
+        "pregunta_5": { "type": "pregunta", "settings": { "pregunta": "¿Cómo lo conservo?", "respuesta": "<p>Bien cerrado, lejos de la luz y del calor. Una vez abierto, guárdalo en la nevera y tómalo en uno o dos meses para que no pierda color ni aroma.</p>" } },
+        "pregunta_6": { "type": "pregunta", "settings": { "pregunta": "¿Tiene cafeína?", "respuesta": "<p>Sí, algo menos que un café. Se nota de forma más suave y sostenida.</p>" } }
+      },
+      "block_order": ["pregunta_1", "pregunta_2", "pregunta_3", "pregunta_4", "pregunta_5", "pregunta_6"]
+    },
     "mm_momentos": {
       "type": "mm-momentos",
       "settings": {
@@ -301,6 +338,7 @@
     "mm_moods",
     "mm_preparacion",
     "mm_cifras",
+    "mm_preguntas",
     "mm_momentos",
     "mm_marca"
   ]

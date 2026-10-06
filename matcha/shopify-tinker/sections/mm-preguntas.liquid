@@ -1,0 +1,67 @@
+{% render 'mm-recursos' %}
+<section class="mm mm-faq">
+  <div class="mm-faq__head">
+    <h2>{{ section.settings.titulo }}</h2>
+    {%- if section.settings.texto != blank -%}<div class="mm-faq__text">{{ section.settings.texto }}</div>{%- endif -%}
+  </div>
+  <div class="mm-faq__list">
+    {%- for block in section.blocks -%}
+      <details class="mm-faq__item" {{ block.shopify_attributes }}{% if forloop.first and section.settings.abrir_primera %} open{% endif %}>
+        <summary>{{ block.settings.pregunta }}<span class="mm-faq__icon" aria-hidden="true"></span></summary>
+        <div class="mm-faq__answer">{{ block.settings.respuesta }}</div>
+      </details>
+    {%- endfor -%}
+  </div>
+</section>
+
+{%- if section.settings.datos_google and section.blocks.size > 0 -%}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {%- for block in section.blocks -%}
+        { "@type": "Question", "name": {{ block.settings.pregunta | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ block.settings.respuesta | strip_html | json }} } }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "MM · Preguntas",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Preguntas frecuentes" },
+    { "type": "richtext", "id": "texto", "label": "Texto", "default": "<p>¿Te queda alguna duda? Escríbenos y te contestamos el mismo día.</p>" },
+    { "type": "checkbox", "id": "abrir_primera", "label": "Abrir la primera pregunta", "default": true },
+    { "type": "checkbox", "id": "datos_google", "label": "Mostrar las preguntas a Google", "info": "Ayuda a que aparezcan en los resultados de búsqueda.", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "pregunta",
+      "name": "Pregunta",
+      "settings": [
+        { "type": "text", "id": "pregunta", "label": "Pregunta", "default": "¿Cuántas tazas salen de una lata?" },
+        { "type": "richtext", "id": "respuesta", "label": "Respuesta", "default": "<p>Unas 15 tazas, usando 2 g por taza.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "MM · Preguntas",
+      "category": "Mood Matcha",
+      "blocks": [
+        { "type": "pregunta", "settings": { "pregunta": "¿Cuántas tazas salen de una lata?", "respuesta": "<p>Unas 15 tazas, usando 2 g (una cucharadita de bambú) por taza.</p>" } },
+        { "type": "pregunta", "settings": { "pregunta": "¿Qué significa de primera cosecha?", "respuesta": "<p>Son las primeras hojas del año, las más tiernas. Dan un verde más intenso y un sabor más dulce y menos amargo.</p>" } },
+        { "type": "pregunta", "settings": { "pregunta": "¿Necesito un chasen para prepararlo?", "respuesta": "<p>Es lo ideal para que salga espuma fina, pero un espumador de leche eléctrico también funciona.</p>" } },
+        { "type": "pregunta", "settings": { "pregunta": "¿Cuánto tarda en llegar?", "respuesta": "<p>Si pides antes de medianoche, sale al día siguiente laborable y te llega en 24–72 h. El envío es gratis a partir de 35 €.</p>" } },
+        { "type": "pregunta", "settings": { "pregunta": "¿Cómo lo conservo?", "respuesta": "<p>Bien cerrado, lejos de la luz y del calor. Una vez abierto, guárdalo en la nevera y tómalo en uno o dos meses para que no pierda color ni aroma.</p>" } },
+        { "type": "pregunta", "settings": { "pregunta": "¿Tiene cafeína?", "respuesta": "<p>Sí, algo menos que un café. Se nota de forma más suave y sostenida.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

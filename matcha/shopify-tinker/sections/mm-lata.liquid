@@ -5,6 +5,26 @@
     assign p = closest.product
   endif
   assign v = p.selected_or_first_available_variant
+  assign packs = section.blocks | where: 'type', 'pack'
+  assign datos = section.blocks | where: 'type', 'dato'
+  assign meta = section.settings.envio_gratis | times: 100
+  assign form_id = 'mm-form-' | append: section.id
+  assign elegido = 0
+  for pack in packs
+    if pack.settings.destacado and elegido == 0
+      assign elegido = forloop.index
+    endif
+  endfor
+  if elegido == 0 and packs.size > 0
+    assign elegido = 1
+  endif
+  assign precio_inicial = v.price
+  for pack in packs
+    if forloop.index == elegido
+      assign completo = v.price | times: pack.settings.cantidad
+      assign precio_inicial = 100 | minus: pack.settings.descuento | times: completo | divided_by: 100
+    endif
+  endfor
 -%}
 <section class="mm mm-lata" id="mm-lata">
   <div class="mm-lata__stage" data-mm-stage>
@@ -19,9 +39,9 @@
       <div class="mm-lata__text">{{ p.description | strip_html | truncatewords: 60 }}</div>
     {%- endif -%}
 
-    {%- if section.blocks.size > 0 -%}
+    {%- if datos.size > 0 -%}
       <div class="mm-lata__facts">
-        {%- for block in section.blocks -%}
+        {%- for block in datos -%}
           <div {{ block.shopify_attributes }}>
             <b{% if block.settings.contar %} data-mm-to="{{ block.settings.valor | plus: 0 }}"{% endif %}>{{ block.settings.valor }}</b>
             <span>{{ block.settings.texto }}</span>
@@ -31,7 +51,7 @@
     {%- endif -%}
 
     {%- if p != blank -%}
-      {%- form 'product', p, class: 'mm-lata__form', data-mm-form: '', data-product-id: p.id, novalidate: 'novalidate' -%}
+      {%- form 'product', p, id: form_id, class: 'mm-lata__form', data-mm-form: '', data-product-id: p.id, data-price: v.price, novalidate: 'novalidate' -%}
         {%- if p.has_only_default_variant -%}
           <input type="hidden" name="id" value="{{ v.id }}">
         {%- else -%}
@@ -39,7 +59,7 @@
             <span class="visually-hidden">Formato</span>
             <select name="id" data-mm-variant>
               {%- for variant in p.variants -%}
-                <option value="{{ variant.id }}" data-price="{{ variant.price | money }}" data-available="{{ variant.available }}"{% if variant == v %} selected{% endif %}>
+                <option value="{{ variant.id }}" data-price="{{ variant.price | money }}" data-cents="{{ variant.price }}" data-available="{{ variant.available }}"{% if variant == v %} selected{% endif %}>
                   {{- variant.title }}{% unless variant.available %} (agotado){% endunless -%}
                 </option>
               {%- endfor -%}
@@ -47,13 +67,41 @@
           </label>
         {%- endif -%}
 
-        <div class="mm-lata__price">
-          <b data-mm-price>{{ v.price | money }}</b>
-          {%- if v.compare_at_price > v.price -%}<s>{{ v.compare_at_price | money }}</s>{%- endif -%}
-        </div>
+        {%- if packs.size > 0 -%}
+          <fieldset class="mm-packs" data-mm-packs data-goal="{{ meta }}">
+            <legend>{{ section.settings.packs_titulo }}</legend>
+            {%- for pack in packs -%}
+              {%- liquid
+                assign n = pack.settings.cantidad
+                assign d = pack.settings.descuento
+                assign completo = v.price | times: n
+                assign total = 100 | minus: d | times: completo | divided_by: 100
+                assign unidad = total | divided_by: n
+                assign ahorro = completo | minus: total
+              -%}
+              <label class="mm-pack{% if pack.settings.destacado %} mm-pack--pick{% endif %}" {{ pack.shopify_attributes }}>
+                <input type="radio" name="quantity" value="{{ n }}" data-n="{{ n }}" data-pct="{{ d }}"{% if forloop.index == elegido %} checked{% endif %}>
+                {%- if pack.settings.etiqueta != blank -%}<span class="mm-pack__tag">{{ pack.settings.etiqueta }}</span>{%- endif -%}
+                <span class="mm-pack__name">{{ n }} {% if n == 1 %}lata{% else %}latas{% endif %}</span>
+                <span class="mm-pack__price"><b data-mm-pack-total>{{ total | money }}</b>{% if d > 0 %}<s data-mm-pack-full>{{ completo | money }}</s>{% endif %}</span>
+                <span class="mm-pack__sub"><span data-mm-pack-unit>{{ unidad | money }}</span> cada lata</span>
+                <span class="mm-pack__perks">
+                  {%- if d > 0 -%}<span class="mm-pack__save">Ahorras <span data-mm-pack-save>{{ ahorro | money }}</span></span>{%- endif -%}
+                  <span class="mm-pack__free" data-mm-pack-free{% if meta == 0 or total < meta %} hidden{% endif %}>Envío gratis</span>
+                </span>
+              </label>
+            {%- endfor -%}
+          </fieldset>
+          {%- if section.settings.packs_nota != blank -%}<p class="mm-packs__note">{{ section.settings.packs_nota }}</p>{%- endif -%}
+        {%- else -%}
+          <div class="mm-lata__price">
+            <b data-mm-price>{{ v.price | money }}</b>
+            {%- if v.compare_at_price > v.price -%}<s>{{ v.compare_at_price | money }}</s>{%- endif -%}
+          </div>
+        {%- endif -%}
 
         <div class="mm-lata__row">
-          {%- if section.settings.cantidad -%}
+          {%- if section.settings.cantidad and packs.size == 0 -%}
             <div class="mm-lata__qty">
               <button type="button" data-mm-step="-1" aria-label="Quitar una lata">−</button>
               <input type="number" name="quantity" value="1" min="1" {% if v.inventory_management == 'shopify' and v.inventory_policy == 'deny' %}max="{{ v.inventory_quantity }}"{% endif %} inputmode="numeric" aria-label="Cantidad" data-mm-qty>
@@ -62,6 +110,7 @@
           {%- endif -%}
           <button type="submit" name="add" class="mm-btn" data-add="{{ section.settings.boton | escape }}" data-soldout="Agotado"{% unless v.available %} disabled{% endunless %}>
             <span>{% if v.available %}{{ section.settings.boton }}{% else %}Agotado{% endif %}</span>
+            {%- if packs.size > 0 and v.available -%}<span class="mm-btn__total" data-mm-btn-total>{{ precio_inicial | money }}</span>{%- endif -%}
           </button>
         </div>
         {%- if section.settings.pago_rapido -%}
@@ -83,6 +132,15 @@
           {%- endif -%}
         </p>
       {%- endif -%}
+      {%- if section.settings.garantias != blank -%}
+        {%- assign garantias = section.settings.garantias | newline_to_br | split: '<br />' -%}
+        <ul class="mm-trust">
+          {%- for g in garantias -%}
+            {%- assign g = g | strip -%}
+            {%- if g != blank -%}<li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9"/></svg>{{ g }}</li>{%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
     {%- elsif request.design_mode -%}
       <p class="mm-lata__empty">Elige el producto de la lata en los ajustes de esta sección.</p>
     {%- endif -%}
@@ -101,6 +159,17 @@
     {%- endif -%}
   </div>
 </section>
+
+{%- if p != blank and section.settings.barra_fija and v.available -%}
+  <div class="mm mm-sticky" data-mm-sticky>
+    <div class="mm-sticky__in">
+      <span class="mm-sticky__name">{% render 'mm-logo' %}<small>{{ section.settings.gramos | downcase }}</small></span>
+      <button type="submit" form="{{ form_id }}" class="mm-btn" tabindex="-1">
+        <span>{{ section.settings.boton }}</span><span class="mm-btn__total" data-mm-btn-total>{{ precio_inicial | money }}</span>
+      </button>
+    </div>
+  </div>
+{%- endif -%}
 
 {% schema %}
 {
@@ -122,6 +191,12 @@
     { "type": "checkbox", "id": "pago_rapido", "label": "Mostrar botones de pago rápido", "default": false },
     { "type": "checkbox", "id": "stock", "label": "Mostrar stock", "default": true },
     { "type": "range", "id": "stock_aviso", "label": "Decir cuántas quedan cuando haya menos de", "min": 0, "max": 100, "step": 1, "default": 30 },
+    { "type": "textarea", "id": "garantias", "label": "Garantías bajo el botón", "info": "Una por línea.", "default": "Envío en 24–72 h\nPago seguro\n14 días para devolverlo" },
+    { "type": "checkbox", "id": "barra_fija", "label": "Barra de compra fija al bajar", "info": "Aparece abajo cuando el botón de compra ya no se ve.", "default": true },
+    { "type": "header", "content": "Packs" },
+    { "type": "paragraph", "content": "Añade bloques «Pack» para ofrecer 1, 2 o 3 latas. El descuento tiene que existir también en Descuentos de Shopify (descuento automático por cantidad); si no, la cesta cobrará el precio normal." },
+    { "type": "text", "id": "packs_titulo", "label": "Título de los packs", "default": "Elige tu pack" },
+    { "type": "text", "id": "packs_nota", "label": "Nota bajo los packs", "default": "El descuento se aplica en la cesta." },
     { "type": "header", "content": "Envío" },
     { "type": "checkbox", "id": "envio", "label": "Mostrar fecha de envío y entrega", "default": true },
     { "type": "range", "id": "hora_corte", "label": "Hora límite para que salga al día siguiente", "min": 12, "max": 24, "step": 1, "unit": "h", "default": 24 },
@@ -130,6 +205,17 @@
     { "type": "number", "id": "envio_gratis", "label": "Envío gratis a partir de (€)", "info": "0 oculta la barra. Debe coincidir con tu tarifa de envío gratis.", "default": 35 }
   ],
   "blocks": [
+    {
+      "type": "pack",
+      "name": "Pack",
+      "limit": 4,
+      "settings": [
+        { "type": "range", "id": "cantidad", "label": "Latas", "min": 1, "max": 6, "step": 1, "default": 2 },
+        { "type": "range", "id": "descuento", "label": "Descuento", "min": 0, "max": 40, "step": 1, "unit": "%", "default": 10 },
+        { "type": "text", "id": "etiqueta", "label": "Etiqueta", "info": "Por ejemplo: El más elegido." },
+        { "type": "checkbox", "id": "destacado", "label": "Destacado y marcado por defecto", "default": false }
+      ]
+    },
     {
       "type": "dato",
       "name": "Dato",
@@ -146,6 +232,9 @@
       "name": "MM · La lata",
       "category": "Mood Matcha",
       "blocks": [
+        { "type": "pack", "settings": { "cantidad": 1, "descuento": 0 } },
+        { "type": "pack", "settings": { "cantidad": 2, "descuento": 10, "etiqueta": "El más elegido", "destacado": true } },
+        { "type": "pack", "settings": { "cantidad": 3, "descuento": 15, "etiqueta": "Más ahorro" } },
         { "type": "dato", "settings": { "valor": "30 g", "texto": "en cada lata" } },
         { "type": "dato", "settings": { "valor": "15", "texto": "tazas", "contar": true } },
         { "type": "dato", "settings": { "valor": "2 g", "texto": "por taza" } }

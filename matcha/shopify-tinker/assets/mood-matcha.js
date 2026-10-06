@@ -249,17 +249,55 @@ function forms(root) {
       qty.value = clamp((parseInt(qty.value, 10) || 1) + parseInt(b.dataset.mmStep, 10), 1, max);
     }));
     const select = form.querySelector('[data-mm-variant]');
+    const packBox = form.querySelector('[data-mm-packs]');
+    const sticky = document.querySelector(`[data-mm-sticky] [form="${form.getAttribute('id')}"]`)?.closest('[data-mm-sticky]');
+    const unitCents = () => parseInt(select?.selectedOptions[0]?.dataset.cents || form.dataset.price || '0', 10);
+    // Packs: precio total, por lata, ahorro y si llega al envío gratis
+    const updPacks = () => {
+      if (!packBox) return;
+      const unit = unitCents(), goal = parseInt(packBox.dataset.goal || '0', 10);
+      let chosen = 0;
+      packBox.querySelectorAll('input[type="radio"]').forEach((r) => {
+        const n = parseInt(r.dataset.n, 10), pct = parseInt(r.dataset.pct, 10) || 0;
+        const full = unit * n, total = Math.floor((full * (100 - pct)) / 100);
+        const card = r.closest('.mm-pack');
+        const set = (sel, v) => card.querySelectorAll(sel).forEach((el) => (el.textContent = money(v)));
+        set('[data-mm-pack-total]', total); set('[data-mm-pack-full]', full);
+        set('[data-mm-pack-unit]', Math.floor(total / n)); set('[data-mm-pack-save]', full - total);
+        card.querySelector('[data-mm-pack-free]')?.toggleAttribute('hidden', !goal || total < goal);
+        if (r.checked) chosen = total;
+      });
+      document.querySelectorAll(`[data-mm-btn-total]`).forEach((el) => {
+        if (form.contains(el) || sticky?.contains(el)) el.textContent = money(chosen);
+      });
+    };
+    packBox?.addEventListener('change', updPacks);
     select?.addEventListener('change', () => {
       const opt = select.selectedOptions[0];
       const sec = form.closest('.mm-lata');
       sec?.querySelectorAll('[data-mm-price]').forEach((el) => (el.textContent = opt.dataset.price));
       const btn = form.querySelector('[type="submit"]');
       if (btn) { btn.disabled = opt.dataset.available !== 'true'; btn.querySelector('span').textContent = btn.disabled ? btn.dataset.soldout : btn.dataset.add; }
+      updPacks();
     });
+
+    // Barra de compra fija: aparece cuando el botón principal ya no se ve
+    if (sticky) {
+      const mainBtn = form.querySelector('[type="submit"]');
+      let btnVisible = true;
+      const show = () => {
+        const on = !btnVisible && scrollY > innerHeight * 0.6;
+        sticky.classList.toggle('is-on', on);
+        sticky.querySelector('button')?.setAttribute('tabindex', on ? '0' : '-1');
+        sticky.setAttribute('aria-hidden', String(!on));
+      };
+      new IntersectionObserver(([e]) => { btnVisible = e.isIntersecting; show(); }).observe(mainBtn);
+      scrollFns.add(show);
+    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const btn = form.querySelector('[type="submit"]');
+      const btn = e.submitter || form.querySelector('[type="submit"]');
       btn?.setAttribute('aria-busy', 'true');
       if (btn) btn.disabled = true;
       const data = new FormData(form);

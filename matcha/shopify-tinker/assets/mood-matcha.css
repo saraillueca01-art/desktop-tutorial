@@ -239,6 +239,79 @@
 .mm-momentos__tile--lata .mm-tin { inline-size: 52%; }
 @media (max-width: 860px) { .mm-momentos__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
+/* Packs de latas */
+.mm-packs { display: grid; gap: 10px; margin: 0; padding: 0; border: 0; min-inline-size: 0; }
+.mm-packs legend { padding: 0; margin-block-end: 12px; font-size: 0.95rem; }
+.mm-pack {
+  position: relative; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 4px 14px;
+  padding: 16px 18px; border-radius: 16px; cursor: pointer; background: #fff;
+  box-shadow: inset 0 0 0 1px var(--mm-line); transition: box-shadow 0.4s, background 0.4s;
+}
+.mm-pack:hover { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mm-green) 45%, transparent); }
+.mm-pack:has(input:checked) { background: color-mix(in srgb, var(--mm-lime) 14%, #fff); box-shadow: inset 0 0 0 1.5px var(--mm-green); }
+.mm-pack:has(input:focus-visible) { outline: 1.5px solid var(--mm-green); outline-offset: 3px; }
+.mm-pack input { grid-row: 1 / span 2; appearance: none; margin: 0; inline-size: 18px; block-size: 18px; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--mm-muted); transition: box-shadow 0.3s; }
+.mm-pack input:checked { box-shadow: inset 0 0 0 5px var(--mm-green); }
+.mm-pack__tag { position: absolute; inset-block-start: -10px; inset-inline-end: 16px; padding: 3px 10px; border-radius: 999px; background: var(--mm-green); color: #fff; font-size: 0.75rem; letter-spacing: 0.02em; }
+.mm-pack__name { font-size: 1.15rem; }
+.mm-pack__price { grid-column: 3; grid-row: 1; display: flex; align-items: baseline; gap: 8px; justify-self: end; }
+.mm-pack__price b { font-size: 1.2rem; font-weight: 400; }
+.mm-pack__price s { font-size: 0.85rem; color: var(--mm-muted); }
+.mm-pack__sub { grid-column: 2; font-size: 0.85rem; color: var(--mm-muted); }
+.mm-pack__perks { grid-column: 3; grid-row: 2; display: flex; gap: 6px; justify-self: end; flex-wrap: wrap; justify-content: end; }
+.mm-pack__save, .mm-pack__free { padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; white-space: nowrap; }
+.mm-pack__save { background: var(--mm-soft); color: var(--mm-green); }
+.mm-pack__free { background: color-mix(in srgb, var(--mm-lime) 45%, #fff); color: var(--mm-green); }
+.mm-pack__free[hidden] { display: none; }
+@media (max-width: 520px) {
+  .mm-pack { grid-template-columns: auto 1fr auto; padding: 16px; }
+  .mm-pack__sub { white-space: nowrap; }
+  .mm-pack__perks { grid-column: 2 / -1; grid-row: 3; justify-self: start; justify-content: start; margin-block-start: 6px; }
+  .mm-pack input { grid-row: 1 / span 3; }
+}
+.mm-packs__note { font-size: 0.82rem; color: var(--mm-muted); }
+.mm-btn__total { padding-inline-start: 12px; margin-inline-start: 2px; border-inline-start: 1px solid rgb(255 255 255 / 0.35); }
+.mm-btn--light .mm-btn__total { border-color: var(--mm-line); }
+
+/* Garantías */
+.mm-trust { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 18px 0 14px; padding: 0; font-size: 0.88rem; color: var(--mm-muted); }
+.mm-trust li { display: flex; align-items: center; gap: 7px; }
+.mm-trust svg { inline-size: 16px; block-size: 16px; fill: none; stroke: var(--mm-green); stroke-width: 1.6; }
+
+/* Barra de compra fija */
+.mm-sticky {
+  position: fixed; z-index: 60; inset-inline: clamp(10px, 2vw, 28px); inset-block-end: calc(12px + env(safe-area-inset-bottom, 0px));
+  transform: translateY(calc(100% + 24px)); transition: transform 0.7s var(--mm-ease); pointer-events: none;
+}
+.mm-sticky.is-on { transform: none; pointer-events: auto; }
+.mm-sticky__in {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; max-inline-size: 720px; margin-inline: auto;
+  padding: 10px 10px 10px 22px; border-radius: 999px; background: rgb(255 255 255 / 0.88);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3); backdrop-filter: blur(18px) saturate(1.3);
+  box-shadow: 0 0 0 1px var(--mm-line), 0 18px 40px -24px rgb(27 42 31 / 0.45);
+}
+.mm-sticky__name { display: flex; align-items: baseline; gap: 10px; min-inline-size: 0; }
+.mm-sticky__name .mm-logo { font-size: 1rem; }
+.mm-sticky__name small { font-size: 0.8rem; color: var(--mm-muted); }
+.mm-sticky .mm-btn { padding: 13px 22px; white-space: nowrap; }
+@media (max-width: 480px) { .mm-sticky__name small { display: none; } .mm-sticky__name .mm-logo { font-size: 0.85rem; } .mm-sticky__in { padding-inline-start: 16px; } }
+
+/* Preguntas frecuentes */
+.mm-faq { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(32px, 6vw, 110px); padding: clamp(80px, 11vw, 150px) var(--mm-gutter); border-block-start: 1px solid var(--mm-line); }
+.mm-faq h2 { font-size: clamp(2.2rem, 4.4vw, 4rem); line-height: 1.04; margin-block-end: 16px; }
+.mm-faq__text { color: var(--mm-muted); max-inline-size: 34ch; }
+.mm-faq__list { border-block-start: 1px solid var(--mm-line); }
+.mm-faq__item { border-block-end: 1px solid var(--mm-line); }
+.mm-faq__item summary { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 22px 0; cursor: pointer; list-style: none; font-size: 1.2rem; }
+.mm-faq__item summary::-webkit-details-marker { display: none; }
+.mm-faq__icon { position: relative; flex: none; inline-size: 14px; block-size: 14px; }
+.mm-faq__icon::before, .mm-faq__icon::after { content: ""; position: absolute; inset-block-start: 50%; inset-inline: 0; block-size: 1px; background: currentColor; transition: transform 0.5s var(--mm-out); }
+.mm-faq__icon::after { transform: rotate(90deg); }
+.mm-faq__item[open] .mm-faq__icon::after { transform: rotate(0deg); }
+.mm-faq__item[open] summary { color: var(--mm-green); }
+.mm-faq__answer { padding-block-end: 22px; color: var(--mm-muted); max-inline-size: 58ch; }
+@media (max-width: 900px) { .mm-faq { grid-template-columns: 1fr; } }
+
 /* Menú redondo flotante (sobre la cabecera de Tinker) */
 body:has([data-mm-flotante]) #header-component { padding: 12px clamp(10px, 2vw, 28px) 0; }
 body:has([data-mm-flotante]) #header-component .header__underlay-closed { display: none; }
