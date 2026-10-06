@@ -3,11 +3,19 @@
   <div class="mm-prep__aside">
     <h2>{{ section.settings.titulo }}</h2>
     {%- if section.settings.texto != blank -%}<div class="mm-prep__intro">{{ section.settings.texto }}</div>{%- endif -%}
-    <figure class="mm-prep__pic">
-      {% render 'mm-media', video: section.settings.video, image: section.settings.imagen, fallback: 'mm-ceremonia', sizes: '(min-width: 900px) 40vw, 100vw' %}
-    </figure>
     {%- if section.settings.utensilios != blank -%}
       <p class="mm-prep__tools">{{ section.settings.utensilios }}</p>
+    {%- endif -%}
+    {%- if section.settings.visual == 'animacion' -%}
+      {%- assign primero = section.blocks.first.settings.dato -%}
+      <figure class="mm-prep__pic mm-prep__pic--anim" data-mm-bowl-wrap>
+        <canvas data-mm-bowl aria-hidden="true"></canvas>
+        <figcaption class="mm-prep__big" data-mm-prep-big aria-hidden="true">{{ primero }}</figcaption>
+      </figure>
+    {%- else -%}
+      <figure class="mm-prep__pic">
+        {% render 'mm-media', video: section.settings.video, image: section.settings.imagen, fallback: 'mm-ceremonia', sizes: '(min-width: 900px) 40vw, 100vw' %}
+      </figure>
     {%- endif -%}
   </div>
 
@@ -15,7 +23,7 @@
     <span class="mm-prep__line" aria-hidden="true"><span></span></span>
     <ol class="mm-prep__steps">
     {%- for block in section.blocks -%}
-      <li class="mm-prep__step" {{ block.shopify_attributes }}>
+      <li class="mm-prep__step" data-dato="{{ block.settings.dato | escape }}" {{ block.shopify_attributes }}>
         <span class="mm-prep__num" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
         <div>
           {%- if block.settings.dato != blank -%}<span class="mm-prep__dato">{{ block.settings.dato }}</span>{%- endif -%}
@@ -36,8 +44,12 @@
   "settings": [
     { "type": "text", "id": "titulo", "label": "Titular", "default": "Cómo se prepara" },
     { "type": "richtext", "id": "texto", "label": "Texto", "default": "<p>Un minuto y cuatro gestos. Así sale cremoso, sin grumos y sin amargor.</p>" },
-    { "type": "video", "id": "video", "label": "Vídeo", "info": "Vacío: el vídeo de la ceremonia con el chasen." },
-    { "type": "image_picker", "id": "imagen", "label": "Imagen", "info": "Se usa si no hay vídeo." },
+    { "type": "select", "id": "visual", "label": "Imagen al lado de los pasos", "default": "animacion", "options": [
+      { "value": "animacion", "label": "Cuenco animado que sigue los pasos" },
+      { "value": "media", "label": "Vídeo o foto" }
+    ] },
+    { "type": "video", "id": "video", "label": "Vídeo", "info": "Solo con «Vídeo o foto». Vacío: el vídeo de la ceremonia con el chasen.", "visible_if": "{{ section.settings.visual == 'media' }}" },
+    { "type": "image_picker", "id": "imagen", "label": "Imagen", "info": "Se usa si no hay vídeo.", "visible_if": "{{ section.settings.visual == 'media' }}" },
     { "type": "text", "id": "utensilios", "label": "Lo que necesitas", "default": "Necesitas un cuenco, un colador fino y un chasen (o un espumador de leche)." }
   ],
   "blocks": [

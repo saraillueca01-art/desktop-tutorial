@@ -176,6 +176,246 @@ function pasos(root) {
   });
 }
 
+/* ---------- Cómo se prepara: el paso activo mueve el cuenco animado ---------- */
+function preparacion(root) {
+  $$('.mm-prep', root).forEach((sec) => {
+    const steps = $$('.mm-prep__step', sec), big = sec.querySelector('[data-mm-prep-big]');
+    const cv = sec.querySelector('[data-mm-bowl]');
+    const scene = cv ? bowlScene(cv) : null;
+    let active = -1;
+    const set = (i) => {
+      if (i === active) return;
+      active = i;
+      steps.forEach((s, k) => s.classList.toggle('is-active', k === i));
+      scene?.go(i);
+      if (big) {
+        big.classList.remove('is-in');
+        void big.offsetWidth;
+        big.textContent = steps[i]?.dataset.dato || '';
+        big.classList.add('is-in');
+      }
+    };
+    const fn = () => {
+      const line = innerHeight * (innerWidth > 900 ? 0.5 : 0.72);
+      let best = 0, dist = Infinity;
+      steps.forEach((s, k) => {
+        const r = s.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - line);
+        if (d < dist) { dist = d; best = k; }
+      });
+      set(best);
+    };
+    steps.forEach((s, k) => s.addEventListener('click', () => set(k)));
+    scrollFns.add(fn); fn();
+  });
+}
+
+/* Cuenco de matcha dibujado en canvas.
+   Paso 0: el colador suelta el polvo. 1: entra el agua. 2: el chasen bate y sale espuma. 3: listo, con vapor. */
+function bowlScene(cv) {
+  const ctx = cv.getContext('2d');
+  const T = [
+    { sieve: 1, powder: 1, level: 0, stream: 0, whisk: 0, foam: 0, steam: 0 },
+    { sieve: 0, powder: 1, level: 1, stream: 1, whisk: 0, foam: 0, steam: 0.35 },
+    { sieve: 0, powder: 1, level: 1, stream: 0, whisk: 1, foam: 1, steam: 0.35 },
+    { sieve: 0, powder: 1, level: 1, stream: 0, whisk: 0, foam: 1, steam: 1 },
+  ];
+  const s = { sieve: 0, powder: 0, level: 0, stream: 0, whisk: 0, foam: 0, steam: 0 };
+  let goal = T[0], W = 0, H = 0, visible = false, raf = 0, last = 0, time = 0;
+  const parts = [], ripples = [];
+  // Burbujas fijas en un disco unidad, para que la espuma no parpadee
+  const bubbles = Array.from({ length: 420 }, (_, i) => {
+    const a = i * 2.39996, r = Math.sqrt((i + 0.5) / 420);
+    return { a, r, s: 0.5 + ((i * 7919) % 100) / 60 };
+  });
+  const resize = () => {
+    const r = cv.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+    W = r.width; H = r.height;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  };
+  new ResizeObserver(resize).observe(cv);
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible && !raf) loop(performance.now()); }).observe(cv);
+
+  const ell = (x, y, rx, ry) => { ctx.beginPath(); ctx.ellipse(x, y, Math.max(rx, 0.1), Math.max(ry, 0.1), 0, 0, Math.PI * 2); };
+
+  function geo() {
+    const rx = Math.min(W * 0.36, H * 0.4), ry = rx * 0.3, cx = W / 2, rimY = H * 0.56;
+    const t = rx * 0.07, irx = rx - t, iry = ry - t * 0.3;
+    const sy = rimY + iry * 0.62 - s.level * iry * 0.5;
+    const srx = irx * (0.5 + 0.42 * s.level), sry = srx * 0.3;
+    return { rx, ry, cx, rimY, t, irx, iry, sy, srx, sry, depth: rx * 0.8 };
+  }
+
+  function draw() {
+    if (!W) return;
+    const g = geo(), { cx, rimY, rx, ry, irx, iry, depth } = g;
+    ctx.clearRect(0, 0, W, H);
+
+    // Sombra y pie
+    ctx.fillStyle = 'rgba(27,42,31,0.12)'; ell(cx, rimY + depth + ry * 0.15, rx * 0.62, ry * 0.32); ctx.fill();
+    ctx.fillStyle = '#cfd3c9'; ell(cx, rimY + depth - ry * 0.05, rx * 0.36, ry * 0.26); ctx.fill();
+
+    // Cuerpo de cerámica
+    const body = ctx.createLinearGradient(cx - rx, 0, cx + rx, 0);
+    body.addColorStop(0, '#c9cdc3'); body.addColorStop(0.3, '#ffffff'); body.addColorStop(0.55, '#eef0ea'); body.addColorStop(1, '#b9beb3');
+    ctx.fillStyle = body;
+    ctx.beginPath();
+    ctx.moveTo(cx - rx, rimY);
+    ctx.bezierCurveTo(cx - rx, rimY + depth * 0.85, cx - rx * 0.5, rimY + depth, cx, rimY + depth);
+    ctx.bezierCurveTo(cx + rx * 0.5, rimY + depth, cx + rx, rimY + depth * 0.85, cx + rx, rimY);
+    ctx.closePath(); ctx.fill();
+
+    // Borde e interior
+    ctx.fillStyle = '#f6f7f3'; ell(cx, rimY, rx, ry); ctx.fill();
+    const inner = ctx.createRadialGradient(cx, rimY + iry * 0.5, irx * 0.1, cx, rimY, irx);
+    inner.addColorStop(0, '#dfe3d8'); inner.addColorStop(1, '#c4c9bd');
+    ctx.fillStyle = inner; ell(cx, rimY, irx, iry); ctx.fill();
+
+    ctx.save(); ell(cx, rimY, irx, iry); ctx.clip();
+    // Polvo en el fondo
+    if (s.powder > 0.01 && s.level < 0.98) {
+      const pr = irx * 0.3 * s.powder, py = rimY + iry * 0.55;
+      const pg = ctx.createRadialGradient(cx, py - pr * 0.2, 0, cx, py, pr);
+      pg.addColorStop(0, '#9cc24a'); pg.addColorStop(1, '#5f8f2a');
+      ctx.globalAlpha = 1 - s.level; ctx.fillStyle = pg; ell(cx, py, pr, pr * 0.42); ctx.fill(); ctx.globalAlpha = 1;
+    }
+    // Líquido con espuma
+    if (s.level > 0.02) {
+      const { sy, srx, sry } = g;
+      ctx.globalAlpha = Math.min(1, s.level * 1.6);
+      const liq = ctx.createRadialGradient(cx - srx * 0.2, sy - sry * 0.3, srx * 0.05, cx, sy, srx);
+      const f = s.foam;
+      liq.addColorStop(0, mix('#6f9e2e', '#c4dc6c', f)); liq.addColorStop(1, mix('#3f6a1c', '#93b845', f));
+      ctx.fillStyle = liq; ell(cx, sy, srx, sry); ctx.fill();
+      // Espuma: burbujas que giran mientras se bate
+      const n = Math.floor(f * bubbles.length), spin = time * 0.0009 * (0.3 + s.whisk);
+      ctx.fillStyle = 'rgba(250,252,235,0.55)';
+      for (let i = 0; i < n; i++) {
+        const b = bubbles[i], a = b.a + spin * (1.4 - b.r);
+        const x = cx + Math.cos(a) * b.r * srx * 0.94, y = sy + Math.sin(a) * b.r * sry * 0.94;
+        ctx.beginPath(); ctx.arc(x, y, b.s * (0.6 + f * 0.5), 0, Math.PI * 2); ctx.fill();
+      }
+      // Ondas donde cae el agua
+      ripples.forEach((r) => {
+        ctx.strokeStyle = `rgba(255,255,255,${0.5 * (1 - r.k)})`; ctx.lineWidth = 1.2;
+        ell(cx + srx * 0.18, sy, srx * 0.08 + r.k * srx * 0.6, (srx * 0.08 + r.k * srx * 0.6) * 0.3); ctx.stroke();
+      });
+      ctx.globalAlpha = 1;
+    }
+    ctx.restore();
+
+    // Brillo del borde
+    ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.ellipse(cx, rimY, rx - 1, ry - 1, 0, Math.PI * 0.15, Math.PI * 0.85); ctx.stroke();
+    ctx.strokeStyle = 'rgba(27,42,31,0.08)'; ctx.lineWidth = 1;
+    ell(cx, rimY, rx, ry); ctx.stroke();
+
+    // Partículas de polvo
+    ctx.fillStyle = '#7aa834';
+    parts.forEach((p) => { ctx.globalAlpha = p.a; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); });
+    ctx.globalAlpha = 1;
+
+    // Colador
+    if (s.sieve > 0.01) {
+      const y = rimY - rx * 0.85 - (1 - s.sieve) * rx * 0.4, r = rx * 0.42;
+      ctx.globalAlpha = s.sieve;
+      ctx.strokeStyle = '#8f958b'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(cx + r, y); ctx.lineTo(cx + r + rx * 0.55, y - rx * 0.12); ctx.stroke();
+      ctx.save(); ell(cx, y, r, r * 0.3); ctx.clip();
+      ctx.fillStyle = 'rgba(160,190,90,0.35)'; ctx.fillRect(cx - r, y - r, r * 2, r * 2);
+      ctx.strokeStyle = 'rgba(120,126,116,0.45)'; ctx.lineWidth = 0.7;
+      for (let i = -r; i < r; i += 5) { ctx.beginPath(); ctx.moveTo(cx + i, y - r); ctx.lineTo(cx + i + r * 0.3, y + r); ctx.stroke(); }
+      ctx.restore();
+      ctx.strokeStyle = '#8f958b'; ctx.lineWidth = 2; ell(cx, y, r, r * 0.3); ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+
+    // Chorro de agua desde la tetera
+    if (s.stream > 0.01) {
+      const { sy, srx } = g, x0 = cx + rx * 1.05, y0 = rimY - rx * 1.05, x1 = cx + srx * 0.18;
+      ctx.globalAlpha = s.stream;
+      ctx.strokeStyle = '#3d423b'; ctx.lineWidth = rx * 0.07; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(x0 + rx * 0.35, y0 - rx * 0.2); ctx.lineTo(x0, y0); ctx.stroke();
+      const wg = ctx.createLinearGradient(x0, y0, x1, sy);
+      wg.addColorStop(0, 'rgba(205,228,236,0.95)'); wg.addColorStop(1, 'rgba(225,240,245,0.6)');
+      ctx.strokeStyle = wg; ctx.lineWidth = 4 * s.stream;
+      ctx.setLineDash([14, 6]); ctx.lineDashOffset = -time * 0.12;
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.quadraticCurveTo(x1 + rx * 0.05, y0 + rx * 0.1, x1, sy); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha = 1;
+    }
+
+    // Chasen batiendo en zigzag
+    if (s.whisk > 0.01) {
+      const { sy, srx } = g;
+      const x = cx + Math.sin(time * 0.014) * srx * 0.42 * s.whisk, yb = sy - 2 - (1 - s.whisk) * rx * 1.2;
+      const neck = yb - rx * 0.4, top = yb - rx * 1.25, hw = rx * 0.065, spread = rx * 0.17;
+      ctx.globalAlpha = Math.min(1, s.whisk * 1.5);
+      ctx.strokeStyle = '#cdb27a'; ctx.lineWidth = 1;
+      for (let i = -8; i <= 8; i++) {
+        const k = i / 8;
+        ctx.beginPath(); ctx.moveTo(x + k * hw * 0.8, neck);
+        ctx.quadraticCurveTo(x + k * spread * 1.25, yb - rx * 0.18, x + k * spread * 0.55, yb); ctx.stroke();
+      }
+      const hg = ctx.createLinearGradient(x - hw, 0, x + hw, 0);
+      hg.addColorStop(0, '#c9ad6e'); hg.addColorStop(0.5, '#ead8a8'); hg.addColorStop(1, '#b8995a');
+      ctx.fillStyle = hg; ctx.beginPath(); ctx.roundRect(x - hw, top, hw * 2, neck - top + 2, hw * 0.6); ctx.fill();
+      ctx.strokeStyle = 'rgba(120,95,50,0.35)'; ctx.beginPath(); ctx.moveTo(x - hw, top + (neck - top) * 0.35); ctx.lineTo(x + hw, top + (neck - top) * 0.35); ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+
+    // Vapor
+    if (s.steam > 0.01) {
+      const { sy } = g;
+      ctx.strokeStyle = `rgba(140,150,135,${0.35 * s.steam})`; ctx.lineWidth = 1.6; ctx.lineCap = 'round';
+      for (let j = -1; j <= 1; j++) {
+        ctx.beginPath();
+        for (let k = 0; k <= 24; k++) {
+          const yy = sy - ry * 0.4 - k * rx * 0.03, phase = time * 0.0016 + j * 2 + k * 0.28;
+          const xx = cx + j * rx * 0.28 + Math.sin(phase) * rx * 0.05 * (k / 24 + 0.3);
+          k ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy);
+        }
+        ctx.stroke();
+      }
+    }
+  }
+
+  function step(dt) {
+    for (const k in s) s[k] = lerp(s[k], goal[k], Math.min(1, dt * (k === 'foam' ? 0.0016 : k === 'level' ? 0.0022 : 0.004)));
+    const g = geo();
+    if (s.sieve > 0.6 && !reduced && Math.random() < 0.7) {
+      const r = g.rx * 0.36;
+      for (let i = 0; i < 2; i++) parts.push({ x: g.cx + (Math.random() * 2 - 1) * r, y: g.rimY - g.rx * 0.85, vy: 0.02 + Math.random() * 0.04, r: 0.8 + Math.random() * 1.4, a: 0.9 });
+    }
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const p = parts[i]; p.vy += 0.0004 * dt; p.y += p.vy * dt;
+      if (p.y > g.rimY + g.iry * 0.45) { p.a -= 0.08; if (p.a <= 0) parts.splice(i, 1); }
+    }
+    if (s.stream > 0.5 && !reduced && Math.random() < 0.05) ripples.push({ k: 0 });
+    for (let i = ripples.length - 1; i >= 0; i--) { ripples[i].k += dt * 0.0012; if (ripples[i].k >= 1) ripples.splice(i, 1); }
+  }
+
+  function loop(now) {
+    raf = 0;
+    if (!visible || !cv.isConnected) return;
+    const dt = Math.min(50, now - (last || now)); last = now; time += reduced ? 0 : dt;
+    step(dt); draw();
+    raf = requestAnimationFrame(loop);
+  }
+
+  return {
+    go(i) {
+      goal = T[clamp(i, 0, T.length - 1)];
+      if (reduced) { Object.assign(s, goal); draw(); }
+    },
+  };
+}
+function mix(a, b, t) {
+  const p = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const x = p(a), y = p(b);
+  return `rgb(${x.map((v, i) => Math.round(v + (y[i] - v) * t)).join(',')})`;
+}
+
 /* ---------- Envío: pide hoy y sale mañana, y fechas de entrega ---------- */
 function ship(root) {
   $$('[data-mm-ship]', root).forEach((box) => {
@@ -341,7 +581,7 @@ function forms(root) {
 /* ---------- Arranque ---------- */
 function init(root = document) {
   intro(root); roll(root); videos(root); moods(root); carousel(root); tins(root);
-  momentos(root); counters(root); pasos(root); ship(root); freeBars(root); forms(root);
+  momentos(root); counters(root); pasos(root); preparacion(root); ship(root); freeBars(root); forms(root);
   runScroll();
 }
 init();

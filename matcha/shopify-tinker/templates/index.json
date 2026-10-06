@@ -141,6 +141,7 @@
       "type": "mm-preparacion",
       "settings": {
         "titulo": "Cómo se prepara",
+        "visual": "animacion",
         "texto": "<p>Un minuto y cuatro gestos. Así sale cremoso, sin grumos y sin amargor.</p>",
         "utensilios": "Necesitas un cuenco, un colador fino y un chasen (o un espumador de leche)."
       },

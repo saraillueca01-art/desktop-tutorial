@@ -1,0 +1,103 @@
+{% render 'mm-recursos' %}
+<footer class="mm mm-pie">
+  <div class="mm-pie__top">
+    <div class="mm-pie__news">
+      <h2>{{ section.settings.news_titulo }}</h2>
+      {%- if section.settings.news_texto != blank -%}<p>{{ section.settings.news_texto }}</p>{%- endif -%}
+      {%- form 'customer', id: 'mm-news', class: 'mm-pie__form' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        {%- if form.posted_successfully? -%}
+          <p class="mm-pie__ok" role="status">¡Listo! Ya estás en la lista.</p>
+        {%- else -%}
+          <label class="visually-hidden" for="mm-news-email">Tu email</label>
+          <input id="mm-news-email" type="email" name="contact[email]" placeholder="Tu email" autocomplete="email" required>
+          <button type="submit" class="mm-btn">{{ section.settings.news_boton }}</button>
+          {%- if form.errors -%}<p class="mm-pie__err" role="alert">Revisa el email e inténtalo otra vez.</p>{%- endif -%}
+        {%- endif -%}
+      {%- endform -%}
+      {%- if section.settings.news_legal != blank -%}<p class="mm-pie__fine">{{ section.settings.news_legal }}</p>{%- endif -%}
+    </div>
+
+    <nav class="mm-pie__cols" aria-label="Pie de página">
+      <div>
+        <h3>Ayuda</h3>
+        <ul>
+          {%- if section.settings.menu != blank -%}
+            {%- for link in section.settings.menu.links -%}<li><a href="{{ link.url }}">{{ link.title }}</a></li>{%- endfor -%}
+          {%- endif -%}
+          {%- if shop.shipping_policy -%}<li><a href="{{ shop.shipping_policy.url }}">Envíos</a></li>{%- endif -%}
+          {%- if shop.refund_policy -%}<li><a href="{{ shop.refund_policy.url }}">Devoluciones</a></li>{%- endif -%}
+          {%- if section.settings.email != blank -%}<li><a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a></li>{%- endif -%}
+        </ul>
+      </div>
+      <div>
+        <h3>Legal</h3>
+        <ul>
+          {%- if shop.privacy_policy -%}<li><a href="{{ shop.privacy_policy.url }}">Protección de datos</a></li>{%- endif -%}
+          {%- if shop.terms_of_service -%}<li><a href="{{ shop.terms_of_service.url }}">Condiciones de venta</a></li>{%- endif -%}
+          {%- if shop.legal_notice -%}<li><a href="{{ shop.legal_notice.url }}">Aviso legal</a></li>{%- endif -%}
+          {%- if section.settings.cookies_url != blank -%}<li><a href="{{ section.settings.cookies_url }}">Política de cookies</a></li>{%- endif -%}
+          {%- if request.design_mode and shop.privacy_policy == blank -%}
+            <li class="mm-pie__hint">Crea las políticas en Configuración, Políticas y aparecerán aquí solas.</li>
+          {%- endif -%}
+        </ul>
+      </div>
+      <div>
+        <h3>Síguenos</h3>
+        <ul class="mm-pie__social">
+          {%- if section.settings.instagram != blank -%}
+            <li><a href="{{ section.settings.instagram }}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="0.6"/></svg>Instagram</a></li>
+          {%- endif -%}
+          {%- if section.settings.tiktok != blank -%}
+            <li><a href="{{ section.settings.tiktok }}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3.5v11.2a3.8 3.8 0 1 1-3.8-3.8"/><path d="M14 3.5c.4 2.7 2.3 4.4 5 4.6"/></svg>TikTok</a></li>
+          {%- endif -%}
+          {%- if section.settings.pinterest != blank -%}
+            <li><a href="{{ section.settings.pinterest }}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M11 9.5l-2.5 11"/><path d="M10.4 12.3c.6 1.7 4.6 1.7 5-1.8.4-3.3-4.8-4.3-6.4-1.4"/></svg>Pinterest</a></li>
+          {%- endif -%}
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  {%- if section.settings.logo_grande -%}
+    <div class="mm-pie__logo">{% render 'mm-logo' %}</div>
+  {%- endif -%}
+
+  <div class="mm-pie__bottom">
+    <span>© {{ 'now' | date: '%Y' }} {{ shop.name }}{% if section.settings.texto != blank %}. {{ section.settings.texto }}{% endif %}</span>
+    {%- if section.settings.pagos -%}
+      <ul class="mm-pie__pay" aria-label="Formas de pago">
+        {%- for type in shop.enabled_payment_types -%}<li>{{ type | payment_type_svg_tag }}</li>{%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "MM · Pie",
+  "tag": "div",
+  "class": "mm-section",
+  "enabled_on": { "templates": ["*"], "groups": ["footer"] },
+  "settings": [
+    { "type": "header", "content": "Newsletter" },
+    { "type": "text", "id": "news_titulo", "label": "Titular", "default": "Un mood nuevo cada mes" },
+    { "type": "text", "id": "news_texto", "label": "Texto", "default": "Recetas para cada mood, novedades y avisos cuando volvamos a tener stock." },
+    { "type": "text", "id": "news_boton", "label": "Botón", "default": "Apuntarme" },
+    { "type": "text", "id": "news_legal", "label": "Texto legal", "default": "Al apuntarte aceptas recibir emails de Mood Matcha. Puedes darte de baja cuando quieras." },
+    { "type": "header", "content": "Enlaces" },
+    { "type": "link_list", "id": "menu", "label": "Menú de ayuda", "info": "Opcional: por ejemplo Contacto o Preguntas frecuentes. Las políticas de Shopify se añaden solas." },
+    { "type": "text", "id": "email", "label": "Email de contacto" },
+    { "type": "url", "id": "cookies_url", "label": "Página de política de cookies" },
+    { "type": "header", "content": "Redes" },
+    { "type": "url", "id": "instagram", "label": "Instagram" },
+    { "type": "url", "id": "tiktok", "label": "TikTok" },
+    { "type": "url", "id": "pinterest", "label": "Pinterest" },
+    { "type": "header", "content": "Abajo" },
+    { "type": "checkbox", "id": "logo_grande", "label": "Logo grande", "default": true },
+    { "type": "text", "id": "texto", "label": "Texto junto al ©", "default": "Envío en 24–72 h, gratis a partir de 35 €" },
+    { "type": "checkbox", "id": "pagos", "label": "Mostrar formas de pago", "default": true }
+  ],
+  "presets": [{ "name": "MM · Pie", "category": "Mood Matcha" }]
+}
+{% endschema %}
