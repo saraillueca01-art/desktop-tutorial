@@ -9,7 +9,7 @@ Abre `facial-luminus/index.html`, busca casi al final `const CENTRO = {` y cambi
 ```js
 const CENTRO = {
   nombre: 'Chakra Wellness Center by Espai Vital',
-  titular: '',   // nombre y apellidos o razón social del titular (pendiente)
+  titular: 'Clínica Espai Vital SLP',
   nif: '',       // NIF o CIF del titular (pendiente)
   email: 'info@chakracenterbenissa.com',
   telefono: '+34 633 38 81 52',
@@ -17,7 +17,7 @@ const CENTRO = {
 };
 ```
 
-Estos datos aparecen en la **política de privacidad** (se abre desde la casilla del formulario y desde el pie de página). Faltan **titular** y **NIF** (están en el aviso legal de chakracenterbenissa.com): mientras estén vacíos no se muestran, pero la política los necesita para ser completa.
+Estos datos aparecen en la **política de privacidad** (se abre desde la casilla del formulario y desde el pie de página). Falta el **CIF** de Clínica Espai Vital SLP (está en el aviso legal de la web o en cualquier factura): mientras esté vacío no se muestra, pero la política lo necesita para ser completa.
 
 ## 2. Guardar los emails en una hoja de Google (5 min, una sola vez)
 
