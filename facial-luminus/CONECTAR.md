@@ -8,11 +8,15 @@ Abre `facial-luminus/index.html`, busca casi al final `const CENTRO = {` y cambi
 
 ```js
 const CENTRO = {
-  nombre: 'Tu centro de estética',   // nombre del centro
-  email: 'tucorreo@ejemplo.com',     // email de contacto (también para los textos legales)
+  nombre: 'Espai Vital',
+  titular: 'Nombre y apellidos o razón social',  // quien figura como responsable de los datos
+  nif: '00000000X',                              // NIF o CIF del titular
+  email: 'tucorreo@ejemplo.com',                 // email de contacto y para ejercer derechos
   direccion: 'Calle, número · Ciudad',
 };
 ```
+
+Estos datos aparecen en la **política de privacidad** (se abre desde la casilla del formulario y desde el pie de página). Sin ellos la política no es válida: rellénalos antes de publicar.
 
 ## 2. Guardar los emails en una hoja de Google (5 min, una sola vez)
 
@@ -46,5 +50,5 @@ En el Administrador de archivos, dentro de `public_html`, crea la carpeta **`fac
 
 ## Importante
 
-- **Plazas:** la barra de "Quedan pocas plazas" es visual. Cuando se llenen las 15, cambia el botón o el texto.
+- **Precio:** la página indica que los 59 € son un precio de inauguración. Cuando termine la promoción, cambia el precio o retira la página.
 - **Promociones por email:** envía promociones solo a quien tenga "Sí" en **Acepta promociones**.
