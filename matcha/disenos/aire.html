@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mood Matcha Aire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* Aire · versión final del diseño 1, construida desde la lata real.
+     Color: blanco, plata de la lata, verde del logotipo y el degradado lima de la etiqueta.
+     Letra: una sola familia geométrica fina, como el logotipo MOODMATCHA.
+     Composición: mucho blanco, alineado a la izquierda; la lata es lo único que se lleva el protagonismo.
+     Movimiento: un solo momento de entrada (el logo se dibuja y abre el vídeo); el resto responde al scroll o al ratón. */
+  :root {
+    --white: #ffffff;
+    --ink: #1b2a1f;          /* texto */
+    --green: #1f6b2e;        /* verde del logotipo */
+    --lime: #c9dc5c;         /* fondo del degradado de la etiqueta */
+    --label: #dfe0dc;        /* gris de la etiqueta */
+    --silver: #c9ccc6;
+    --muted: #687266;
+    --line: rgba(27, 42, 31, .12);
+    --sans: "Jost", "Futura", "Century Gothic", system-ui, sans-serif;
+    --ease: cubic-bezier(.76, 0, .24, 1);
+    --out: cubic-bezier(.16, 1, .3, 1);
+    --g: clamp(16px, 5vw, 84px);
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--white); color: var(--ink); font: 300 17px/1.65 var(--sans); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  :focus-visible { outline: 1.5px solid var(--green); outline-offset: 4px; }
+  h1, h2, h3 { font-weight: 300; letter-spacing: -.01em; text-wrap: balance; }
+
+  /* Logotipo: MOODMATCHA con las dos O entrelazadas */
+  .logo { display: inline-flex; align-items: baseline; font-weight: 300; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; color: var(--green); line-height: 1; }
+  .oo { height: .7em; width: auto; margin: 0 .04em 0 .02em; overflow: visible; align-self: baseline; transform: translateY(.005em); }
+  .oo circle { fill: none; stroke: currentColor; stroke-width: 5.4; }
+
+  /* Entrada: el logo se dibuja y la cortina sube */
+  .intro { position: fixed; inset: 0; z-index: 300; background: var(--white); display: grid; place-items: center; transition: transform 1.1s var(--ease); }
+  .intro .logo { font-size: clamp(2rem, 7vw, 4.6rem); }
+  .intro .oo circle { stroke-dasharray: 210; stroke-dashoffset: 210; animation: draw 1.2s var(--out) forwards; }
+  .intro .oo circle + circle { animation-delay: .25s; }
+  .intro .letters { opacity: 0; animation: fadeIn .9s .55s forwards; }
+  .intro.out { transform: translateY(-100%); }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  /* Menú redondo flotante */
+  .nav {
+    position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); left: clamp(10px, 2vw, 28px); right: clamp(10px, 2vw, 28px); z-index: 60;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 12px clamp(18px, 2.4vw, 30px); border-radius: 20px;
+    background: rgba(255, 255, 255, .84); backdrop-filter: blur(18px) saturate(1.3); -webkit-backdrop-filter: blur(18px) saturate(1.3);
+    box-shadow: 0 0 0 1px var(--line), 0 18px 40px -30px rgba(27, 42, 31, .4); transition: transform .7s var(--ease), background .5s, color .5s;
+  }
+  .nav.is-hidden { transform: translateY(calc(-100% - 20px)); }
+  .nav.is-dark { background: rgba(18, 28, 18, .2); color: #fff; box-shadow: 0 0 0 1px rgba(255, 255, 255, .2); }
+  .nav.is-dark .logo { color: #fff; }
+  .nav ul { display: flex; gap: 28px; list-style: none; font-size: .9rem; }
+  .nav ul a { position: relative; }
+  .nav ul a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .6s var(--ease); }
+  .nav ul a:hover::after { transform: scaleX(1); transform-origin: left; }
+  .nav .logo { font-size: 1.15rem; transition: color .5s; }
+  .nav-r { justify-self: end; display: flex; align-items: center; gap: 24px; }
+  .bag { position: relative; display: flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 999px; box-shadow: inset 0 0 0 1px currentColor; font-size: .88rem; }
+  .bag b { font-weight: 400; min-width: 1ch; text-align: center; }
+  @media (max-width: 860px) { .nav { grid-template-columns: 1fr auto; } .nav ul { display: none; } }
+
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 16px 28px; border-radius: 999px; font-size: .95rem; font-weight: 400; background: var(--green); color: #fff; transition: background .5s, transform .6s var(--out); }
+  .btn:hover { background: #17561f; transform: translateY(-2px); }
+  .btn.light { background: #fff; color: var(--green); }
+  .btn.light:hover { background: #f0f4e2; }
+
+  /* Portada: vídeo de la ceremonia a pantalla completa */
+  .hero { position: relative; height: 100vh; height: 100svh; min-height: 560px; overflow: hidden; color: #fff; }
+  .hero .mm-slides { position: absolute; inset: 0; }
+  .hero::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(180deg, rgba(12, 20, 10, .35) 0%, rgba(12, 20, 10, 0) 30%, rgba(12, 20, 10, .05) 55%, rgba(12, 20, 10, .55) 100%); }
+  .hero-in { position: absolute; z-index: 3; left: var(--g); right: var(--g); bottom: clamp(36px, 8vh, 96px); display: flex; justify-content: space-between; align-items: flex-end; gap: 28px; flex-wrap: wrap; }
+  .hero h1 { font-size: clamp(2.8rem, 7vw, 7rem); line-height: .98; max-width: 11ch; }
+  .roll { display: inline-grid; overflow: hidden; vertical-align: bottom; height: 1.05em; }
+  .roll span { grid-area: 1 / 1; transform: translateY(105%); transition: transform 1s var(--ease); }
+  .roll span.on { transform: none; } .roll span.off { transform: translateY(-105%); }
+  .hero-side { display: grid; gap: 18px; justify-items: start; max-width: 330px; font-size: 1.02rem; }
+  .hero-side p { color: rgba(255, 255, 255, .88); }
+
+  /* La lata */
+  .one { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: center; padding: clamp(90px, 13vw, 170px) var(--g); }
+  .stage { position: relative; display: grid; place-items: center; padding: 8% 0 4%; }
+  .stage::before { /* el degradado de la etiqueta, a gran escala */
+    content: ""; position: absolute; inset: 0 4% 0; border-radius: 28px; background: linear-gradient(180deg, #ffffff 0%, #f1f2ef 42%, #e2ebb6 82%, #d4e486 100%);
+  }
+
+  /* Lata en CSS, fiel a la real: plata, etiqueta gris con degradado lima, logotipo verde */
+  .tin { position: relative; z-index: 1; width: min(78%, 380px); aspect-ratio: 360 / 400; container-type: inline-size; will-change: transform; }
+  .tin > * { position: absolute; left: 0; right: 0; }
+  .tin .shadow { top: 90%; height: 14%; left: -4%; right: -10%; border-radius: 50%; background: radial-gradient(closest-side, rgba(27, 42, 31, .28), rgba(27, 42, 31, 0)); filter: blur(4px); }
+  .metal { background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E"),
+      linear-gradient(90deg, #8e928c 0%, #c4c7c1 10%, #e9ebe7 24%, #fbfcfa 33%, #dcdfda 50%, #bcc0b9 72%, #9a9e98 90%, #858983 100%); }
+  .tin .base { top: 82%; height: 15%; border-radius: 0 0 50% 50% / 0 0 46% 46%; }
+  .tin .label { top: 34%; height: 54%; left: .8%; right: .8%; border-radius: 0 0 50% 50% / 0 0 13% 13%;
+    background:
+      linear-gradient(90deg, rgba(40, 44, 38, .16) 0%, rgba(255, 255, 255, .16) 26%, rgba(255, 255, 255, 0) 46%, rgba(40, 44, 38, .1) 78%, rgba(40, 44, 38, .2) 100%),
+      linear-gradient(180deg, var(--label) 0%, var(--label) 40%, #d6dcab 70%, var(--lime) 100%);
+    display: grid; grid-template-rows: 1fr auto 1fr; justify-items: center; align-items: center; color: var(--green); text-align: center; }
+  .tin .kicker { align-self: end; font-size: 3.4cqw; letter-spacing: .04em; font-weight: 400; padding-bottom: 7cqw; }
+  .tin .logo { font-size: 9.6cqw; }
+  .tin .grams { align-self: start; padding-top: 12cqw; font-size: 3.6cqw; letter-spacing: .06em; font-weight: 400; }
+  .tin .lid { top: 6%; height: 32%; border-radius: 0 0 50% 50% / 0 0 20% 20%; box-shadow: 0 2px 0 rgba(0, 0, 0, .06); }
+  .tin .top { top: 0; height: 13%; border-radius: 50%; background: radial-gradient(ellipse at 42% 38%, #f6f7f4 0%, #d9dcd6 55%, #b2b6af 100%); box-shadow: inset 0 -3px 5px rgba(0, 0, 0, .12); }
+  .tin .top::after { content: ""; position: absolute; inset: 9% 4%; border-radius: 50%; box-shadow: inset 0 2px 3px rgba(0, 0, 0, .14), 0 1px 0 rgba(255, 255, 255, .7); }
+  .tin .gloss { top: 6%; height: 88%; left: var(--gx, 28%); width: 16%; right: auto; pointer-events: none; mix-blend-mode: soft-light;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, .85), rgba(255, 255, 255, 0)); border-radius: 0 0 40% 40% / 0 0 8% 8%; }
+
+  .buy h2 { font-size: clamp(2.2rem, 4.2vw, 3.8rem); line-height: 1.04; margin-bottom: 18px; }
+  .buy > p { color: var(--muted); max-width: 46ch; }
+  .facts-row { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 8px 36px; margin: 28px 0; padding-block: 18px; border-block: 1px solid var(--line); }
+  .facts-row b { display: block; font-size: 1.5rem; font-weight: 300; }
+  .facts-row span { font-size: .85rem; color: var(--muted); }
+  .price { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .price b { font-size: 1.9rem; font-weight: 300; }
+  .stock { display: flex; align-items: center; gap: 10px; margin: 20px 0 6px; font-size: .95rem; }
+  .stock i { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: ping 2.4s infinite; }
+  @keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(31, 107, 46, .45); } 70%, 100% { box-shadow: 0 0 0 9px rgba(31, 107, 46, 0); } }
+  .ship { font-size: .95rem; color: var(--muted); }
+  .ship b { color: var(--ink); font-weight: 400; }
+  .free { margin-top: 22px; padding: 16px 18px; border-radius: 14px; background: #f3f5ef; font-size: .92rem; }
+  .free b { font-weight: 400; }
+  .free .bar { height: 3px; margin-top: 12px; border-radius: 3px; background: #e2e6dc; overflow: hidden; }
+  .free .bar::after { content: ""; display: block; height: 100%; width: var(--p, 0%); background: linear-gradient(90deg, var(--green), #6f9d2c); border-radius: inherit; transition: width 1s var(--out); }
+  @media (max-width: 900px) { .one { grid-template-columns: 1fr; } }
+
+  /* Moods */
+  .moods { display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(32px, 6vw, 96px); align-items: center; padding: clamp(80px, 11vw, 150px) var(--g); border-top: 1px solid var(--line); }
+  .moods h2 { font-size: clamp(2.2rem, 4.4vw, 4rem); line-height: 1.04; margin-bottom: 28px; }
+  .mtabs { display: grid; border-top: 1px solid var(--line); }
+  .mtab { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 12px; padding: 20px 0; border-bottom: 1px solid var(--line); text-align: left; }
+  .mtab b { font-size: 1.7rem; font-weight: 300; transition: color .4s, transform .6s var(--out); }
+  .mtab span { color: var(--muted); font-size: .9rem; }
+  .mtab p { grid-column: 1 / -1; max-height: 0; overflow: hidden; color: var(--muted); transition: max-height .8s var(--out), margin .6s; }
+  .mtab[aria-selected="true"] b { color: var(--green); transform: translateX(10px); }
+  .mtab[aria-selected="true"] p { max-height: 140px; margin-top: 8px; }
+  .mpic { position: relative; aspect-ratio: 4 / 5; border-radius: 24px; overflow: hidden; background: #f3f5f1; }
+  .mpic .mm-slide { transition-duration: 1.1s; }
+  @media (max-width: 900px) { .moods { grid-template-columns: 1fr; } .mpic { order: -1; } }
+
+  /* Cifras clave */
+  .facts { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: 40px; padding: clamp(70px, 10vw, 130px) 0 clamp(70px, 10vw, 130px) var(--g); background: linear-gradient(180deg, #ffffff 0%, #f4f6ef 100%); }
+  .facts h2 { font-size: clamp(2.2rem, 4vw, 3.6rem); line-height: 1.04; margin-bottom: 14px; }
+  .facts-head p { color: var(--muted); margin-bottom: 26px; max-width: 30ch; }
+  .arrows { display: flex; gap: 8px; }
+  .arrows button { width: 46px; height: 46px; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--line); font-size: 1.1rem; transition: background .3s, color .3s, opacity .3s; }
+  .arrows button:hover { background: var(--green); color: #fff; }
+  .arrows button:disabled { opacity: .3; }
+  .ftrack { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-right: var(--g); cursor: grab; }
+  .ftrack::-webkit-scrollbar { display: none; }
+  .fact { position: relative; flex: none; width: min(74vw, 330px); aspect-ratio: 3 / 4; border-radius: 24px; overflow: hidden; scroll-snap-align: start; background: #fff; }
+  .fact .mm-media { position: absolute; inset: 0; transition: transform 1.6s var(--out); }
+  .fact:hover .mm-media { transform: scale(1.04); }
+  .fact h3 { position: absolute; left: 22px; right: 22px; bottom: 20px; z-index: 2; font-size: 2.3rem; line-height: 1; padding: 16px 18px; border-radius: 16px; background: rgba(255, 255, 255, .86); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: var(--green); }
+  .fact h3 small { display: block; margin-top: 6px; font-size: .9rem; color: var(--ink); }
+  @media (max-width: 860px) { .facts { grid-template-columns: 1fr; } }
+
+  /* Momentos en calma: mosaico con columnas a distinta velocidad */
+  .wall { padding: clamp(80px, 11vw, 150px) var(--g); overflow: hidden; }
+  .wall header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px; margin-bottom: 44px; }
+  .wall h2 { font-size: clamp(2.2rem, 4.4vw, 4rem); line-height: 1.04; }
+  .wall header a { font-size: .95rem; padding-bottom: 4px; border-bottom: 1px solid currentColor; }
+  .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; align-items: start; }
+  .col { display: grid; gap: 10px; will-change: transform; }
+  .tile { position: relative; overflow: hidden; border-radius: 14px; background: #f3f5f1; }
+  .tile .mm-media { position: absolute; inset: 0; transition: transform 1.6s var(--out); }
+  .tile:hover .mm-media { transform: scale(1.04); }
+  .t1 { aspect-ratio: 3 / 4; } .t2 { aspect-ratio: 1; } .t3 { aspect-ratio: 3 / 4.7; }
+  .tile.tintile { display: grid; place-items: center; background: linear-gradient(180deg, #ffffff 0%, #eef1e6 55%, #d4e486 100%); }
+  .tile.tintile .tin { width: 52%; }
+  @media (max-width: 860px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  footer { padding: clamp(70px, 10vw, 120px) var(--g) 110px; border-top: 1px solid var(--line); display: grid; gap: 28px; }
+  footer .logo { font-size: clamp(2.6rem, 11vw, 10rem); letter-spacing: .03em; }
+  .foot-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px 28px; color: var(--muted); font-size: .92rem; }
+  .foot-row nav { display: flex; gap: 22px; flex-wrap: wrap; }
+
+  @media (prefers-reduced-motion: reduce) { .intro { display: none; } .stock i { animation: none; } }
+</style>
+</head>
+<body>
+  <div class="intro" id="intro" aria-hidden="true">
+    <span class="logo">M<svg class="oo" viewBox="0 0 122 72"><circle cx="36" cy="36" r="32"/><circle cx="86" cy="36" r="32"/></svg><span class="letters">DMATCHA</span></span>
+  </div>
+
+  <nav class="nav" aria-label="Principal">
+    <ul><li><a href="#lata">La lata</a></li><li><a href="#moods">Moods</a></li></ul>
+    <a href="#top" aria-label="Mood Matcha, inicio"><span class="logo">M<svg class="oo" viewBox="0 0 122 72" aria-hidden="true"><circle cx="36" cy="36" r="32"/><circle cx="86" cy="36" r="32"/></svg>DMATCHA</span></a>
+    <div class="nav-r"><ul><li><a href="#momentos">Momentos</a></li></ul><a class="bag" href="#lata">Cesta <b data-count>0</b></a></div>
+  </nav>
+
+  <header class="hero" id="top" data-dark>
+    <div class="mm-slides" id="heroSlides">
+      <div class="mm-slide"><div data-media="chasen" data-nolabel></div></div>
+    </div>
+    <div class="hero-in">
+      <h1>Un matcha para tu <span class="roll" id="roll"></span></h1>
+      <div class="hero-side">
+        <p>Matcha de primera cosecha, molido en piedra. Una lata para todos tus momentos del día.</p>
+        <a class="btn light" href="#lata">Comprar · <span data-price></span></a>
+      </div>
+    </div>
+  </header>
+
+  <section class="one" id="lata">
+    <div class="stage" id="stage">
+      <div class="tin" id="tin"></div>
+    </div>
+    <div class="buy">
+      <h2>Una sola lata, de primera cosecha</h2>
+      <p>Hojas jóvenes cultivadas a la sombra y molidas en piedra. Verde intenso, textura cremosa y final dulce. La misma lata sirve para tomarlo solo, en latte, con hielo o en un postre.</p>
+      <div class="facts-row"><div><b>30 g</b><span>en cada lata</span></div><div><b data-to="15">0</b><span>tazas</span></div><div><b data-to="2" data-suf=" g">0</b><span>por taza</span></div></div>
+      <div class="price"><b data-price></b><button class="btn" type="button" data-add>Añadir a la cesta</button></div>
+      <p class="stock"><i></i>En stock, quedan 23 latas</p>
+      <p class="ship">Pide en las próximas <b data-ship="cuenta"></b> y sale <b data-ship="sale"></b>. Te llega entre el <b data-ship="rango"></b>.</p>
+      <div class="free"><span data-freetxt></span><div class="bar" data-freebar></div></div>
+    </div>
+  </section>
+
+  <section class="moods" id="moods">
+    <div>
+      <h2>¿Cómo te sientes hoy?</h2>
+      <div class="mtabs" role="tablist" id="mtabs" aria-label="Moods"></div>
+    </div>
+    <div class="mpic mm-slides" id="mpic"></div>
+  </section>
+
+  <section class="facts" id="cifras">
+    <div class="facts-head">
+      <h2>Cifras clave</h2>
+      <p>Lo que hay detrás de cada taza.</p>
+      <div class="arrows"><button type="button" id="fp" aria-label="Cifra anterior">←</button><button type="button" id="fn" aria-label="Cifra siguiente">→</button></div>
+    </div>
+    <div class="ftrack" id="ftrack"></div>
+  </section>
+
+  <section class="wall" id="momentos">
+    <header><h2>Momentos en calma</h2><a href="https://instagram.com" rel="noopener">Síguenos en Instagram</a></header>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <footer>
+    <span class="logo" aria-label="Mood Matcha">M<svg class="oo" viewBox="0 0 122 72" aria-hidden="true"><circle cx="36" cy="36" r="32"/><circle cx="86" cy="36" r="32"/></svg>DMATCHA</span>
+    <div class="foot-row"><span>Envío en 24–72 h, gratis a partir de 35 €</span><nav aria-label="Legal"><a href="#">Envíos y devoluciones</a><a href="#">Aviso legal</a><a href="#">Privacidad</a></nav></div>
+  </footer>
+
+<script src="comun.js"></script>
+<script>
+(() => {
+  const { $, $$, slides, onScroll, progress, carousel, reduced, clamp, lerp } = MM;
+
+  // Lata en CSS, fiel a la lata real
+  const tinHTML = () => `<div class="shadow"></div><div class="base metal"></div>
+    <div class="label"><span class="kicker">DE PRIMERA COSECHA</span>
+      <span class="logo">M<svg class="oo" viewBox="0 0 122 72" aria-hidden="true"><circle cx="36" cy="36" r="32"/><circle cx="86" cy="36" r="32"/></svg>DMATCHA</span>
+      <span class="grams">30 GR</span></div>
+    <div class="lid metal"></div><div class="top"></div><div class="gloss"></div>`;
+  $('#tin').innerHTML = tinHTML();
+  $('#tin').setAttribute('role', 'img');
+  $('#tin').setAttribute('aria-label', 'Lata de Mood Matcha, de primera cosecha, 30 gramos');
+
+  const MOODS = [
+    ['Focus', 'Solo con agua', '2 g de matcha y 70 ml de agua a 80 °C. Bate en zigzag quince segundos y bébelo tranquilo.', 'chasen'],
+    ['Calma', 'Latte templado de avena', 'Bate 2 g con un poco de agua y añade 200 ml de bebida de avena espumada.', 'latte'],
+    ['Energía', 'Con hielo y tónica', 'Hielo, 150 ml de tónica y el matcha batido en agua fría por encima.', 'polvo'],
+    ['Social', 'Matcha lemonade', 'Limón, agua con gas y matcha. Para compartir en la terraza.', 'casa'],
+    ['Antojo', 'Matcha affogato', 'Una bola de helado de vainilla y el matcha recién batido por encima.', 'bodegon']
+  ];
+  $('#mtabs').innerHTML = MOODS.map((m, i) => `<button class="mtab" role="tab" aria-selected="${i === 0}" data-i="${i}"><b>${m[0]}</b><span>${m[1]}</span><p>${m[2]}</p></button>`).join('');
+  $('#mpic').innerHTML = MOODS.map(m => `<div class="mm-slide"><div data-media="${m[3]}" data-nolabel></div></div>`).join('');
+
+  const FACTS = [['21 días', 'a la sombra antes de la cosecha', 'campo'], ['2 g', 'por taza, una cucharadita', 'polvo'], ['15 tazas', 'en cada lata de 30 g', 'latte'], ['80 °C', 'nunca hirviendo', 'chasen'], ['24–72 h', 'de nuestra casa a la tuya', 'casa']];
+  $('#ftrack').innerHTML = FACTS.map(f => `<article class="fact"><div data-media="${f[2]}" data-nolabel></div><h3>${f[0]}<small>${f[1]}</small></h3></article>`).join('');
+
+  const WALL = [[['casa', 't1'], ['latte', 't2']], [['chasen', 't3'], ['lata', 't2']], [['polvo', 't2'], ['campo', 't1']], [['fabrica', 't1'], ['bodegon', 't2']]];
+  $('#grid').innerHTML = WALL.map(col => `<div class="col">${col.map(([m, c]) => m === 'lata'
+    ? `<figure class="tile tintile ${c}"><div class="tin">${tinHTML()}</div></figure>`
+    : `<figure class="tile ${c}"><div data-media="${m}" data-nolabel></div></figure>`).join('')}</div>`).join('');
+
+  MM.start(0);
+  MM.nav();
+  slides($('#heroSlides'), { every: 1e9 });
+
+  // Entrada: el logo se dibuja y la cortina sube
+  const intro = $('#intro');
+  setTimeout(() => intro.classList.add('out'), reduced ? 0 : 1700);
+  setTimeout(() => intro.remove(), reduced ? 0 : 2900);
+
+  // Titular: la palabra del mood cambia sola
+  const words = ['focus.', 'calma.', 'energía.', 'antojo.', 'mood.'];
+  const roll = $('#roll'); roll.innerHTML = words.map(w => `<span>${w}</span>`).join('');
+  const rs = [...roll.children]; let r = 0; rs[0].classList.add('on');
+  if (!reduced) setInterval(() => { const p = rs[r]; p.classList.replace('on', 'off'); setTimeout(() => p.classList.remove('off'), 1000); r = (r + 1) % rs.length; rs[r].classList.add('on'); }, 2600);
+
+  // Moods
+  const mp = slides($('#mpic'), { every: 999999 });
+  $('#mtabs').addEventListener('click', e => {
+    const t = e.target.closest('.mtab'); if (!t) return;
+    $$('.mtab').forEach(x => x.setAttribute('aria-selected', x === t));
+    mp.go(+t.dataset.i);
+  });
+
+  carousel($('#ftrack'), $('#fp'), $('#fn'));
+
+  // La lata: brillo que sigue al ratón (o se mece solo) y sube despacio al hacer scroll
+  const stage = $('#stage'), tin = $('#tin');
+  let gx = 28, target = 28;
+  stage.addEventListener('pointermove', e => { const b = stage.getBoundingClientRect(); target = clamp((e.clientX - b.left) / b.width * 100 - 8, 6, 74); });
+  stage.addEventListener('pointerleave', () => (target = null));
+  (function gloss(t) {
+    requestAnimationFrame(gloss);
+    const goal = target ?? (reduced ? 28 : 30 + Math.sin(t / 1800) * 18);
+    gx = lerp(gx, goal, .06);
+    tin.style.setProperty('--gx', gx + '%');
+  })(0);
+
+  const cols = $$('.col'), wall = $('.wall'), SP = [0, -70, 40, -110];
+  onScroll(() => {
+    const p = progress(stage) - .5;
+    tin.style.transform = `translateY(${p * -60}px)`;
+    if (innerWidth > 860 && !reduced) { const q = progress(wall) - .5; cols.forEach((c, i) => (c.style.transform = `translate3d(0, ${q * SP[i]}px, 0)`)); }
+  });
+})();
+</script>
+</body>
+</html>

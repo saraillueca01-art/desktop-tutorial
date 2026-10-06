@@ -25,6 +25,11 @@
   .top h1 em { color: var(--leaf); }
   .top p { max-width: 60ch; color: var(--muted); }
   .note { margin-top: 18px; padding: 14px 18px; border-radius: 12px; background: var(--mist); font-size: .9rem; max-width: 70ch; }
+  .star { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; margin-bottom: 30px; padding: 28px; border-radius: 22px; background: linear-gradient(180deg, #ffffff 0%, #eef2e2 60%, #d4e486 100%); box-shadow: 0 0 0 1px var(--line); transition: transform .7s var(--out); }
+  .star:hover { transform: translateY(-4px); }
+  .star-t { display: grid; gap: 6px; max-width: 70ch; }
+  .star-t b { font: 400 1.9rem/1.1 var(--sans); color: #1f6b2e; }
+  .star-t span { color: var(--muted); }
   .list { display: grid; gap: 14px; padding-bottom: 110px; }
   .row { display: grid; grid-template-columns: 90px 150px minmax(0, 1fr) auto; gap: 26px; align-items: center; padding: 24px; border-radius: 22px; box-shadow: 0 0 0 1px var(--line); transition: box-shadow .5s, transform .7s var(--out), background .5s; }
   .row:hover { transform: translateY(-4px); box-shadow: 0 0 0 1px var(--line), 0 30px 60px -40px rgba(34, 48, 31, .5); background: #fcfdfb; }
@@ -53,6 +58,11 @@
     <p>Arriba, las cinco nuevas: mezclan lo que más te gustó de la 2, la 4 y la 5, y la portada se dibuja con matcha (un chasen que pinta, un cuenco que se bate, polvo que escribe, un ensō a pincel y una marea verde). Abajo, la primera ronda. Todas comparten el menú redondo flotante, fotos de fondo a pantalla completa, una sola lata, las tarjetas de cifras clave y fondo blanco con verdes. Cambian la tipografía, el movimiento y la etiqueta de la lata. Abre cada una y baja despacio: todo se mueve.</p>
     <p class="note">Ya están tus dos vídeos: la ceremonia (en portadas, arcos y círculos, y en el diseño 6 aparece a través de la pintura del chasen) y el campo de té (en las tarjetas de cifras). El del campo es una vista previa de iStock con marca de agua: para la web real hay que comprar su licencia. Los huecos que aún no tienen foto muestran una escena animada con su nombre.</p>
   </header>
+
+  <a class="star" href="aire.html">
+    <span class="star-t"><b>Aire, versión final</b><span>El diseño 1 rehecho desde vuestra lata real: plata, etiqueta gris con degradado lima y el logotipo con las dos O entrelazadas. Vídeo de la ceremonia en la portada, acuarelas originales en blanco puro, cifras clave y la galería «Momentos en calma» del diseño 4.</span></span>
+    <span class="go">Ver Aire</span>
+  </a>
 
   <main class="list" id="list"></main>
 

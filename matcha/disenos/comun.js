@@ -7,13 +7,14 @@
    escena animada provisional con su nombre.
    ========================================================================== */
 window.MM_FOTOS = {
-  fabrica: '',   // la fábrica / molinos de piedra
+  fabrica: 'media/acuarela-molino.jpg',   // molino de piedra (acuarela; sustituible por foto)
   chasen: 'media/ceremonia.mp4',   // vídeo: preparando el matcha (Pexels, uso comercial libre)
   campo: 'media/campo-istock.mp4', // vídeo: campo de té (vista previa de iStock con marca de agua: hay que comprar la licencia)
-  polvo: '',     // matcha en polvo, cuchara
-  latte: '',     // matcha latte desde arriba
+  polvo: 'media/acuarela-polvo.jpg',      // matcha en polvo con la cucharilla (acuarela)
+  latte: 'media/acuarela-latte.jpg',      // matcha latte desde arriba (acuarela)
   lata: '',      // la lata de Mood Matcha
-  casa: ''       // ambiente: casa blanca, madera, luz tranquila
+  casa: 'media/acuarela-arco.jpg',        // casa encalada con arco (acuarela)
+  bodegon: 'media/acuarela-bodegon.jpg'   // cuenco, chasen y cucharilla (acuarela)
 };
 /* Imagen que se ve mientras carga cada vídeo */
 window.MM_POSTERS = { chasen: 'media/ceremonia.jpg', campo: 'media/campo-istock.jpg' };
@@ -31,12 +32,12 @@ window.MM = (() => {
 
   const LABELS = {
     fabrica: 'Foto · fábrica de matcha', chasen: 'Foto · batiendo con chasen', campo: 'Foto · campo de té',
-    polvo: 'Foto · matcha en polvo', latte: 'Foto · matcha latte', lata: 'Foto · la lata', casa: 'Foto · ambiente casa'
+    polvo: 'Foto · matcha en polvo', latte: 'Foto · matcha latte', lata: 'Foto · la lata', casa: 'Foto · ambiente casa', bodegon: 'Foto · bodegón'
   };
 
   /* ---------- Estilos compartidos ---------- */
   const css = `
-  .mm-media{position:relative;overflow:hidden;background:#2f4527}
+  .mm-media{position:relative;overflow:hidden;background:#eef1ec}
   .mm-media>canvas,.mm-media>img,.mm-media>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
   .mm-chip{position:absolute;left:14px;bottom:14px;z-index:3;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.82);color:#1f3527;
     font:500 10px/1.2 system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);pointer-events:none}
@@ -52,6 +53,9 @@ window.MM = (() => {
   .mm-switch a:hover{background:rgba(255,255,255,.14)}
   .mm-switch a.on{background:#fff;color:#1f3527}
   .mm-switch span{padding:0 8px 0 10px;opacity:.7;white-space:nowrap}
+  .mm-switch{max-width:calc(100% - 24px);overflow-x:auto;scrollbar-width:none}.mm-switch::-webkit-scrollbar{display:none}
+  .mm-switch a{flex:none}
+  @media (max-width:520px){.mm-switch span{display:none}}
   .mm-toast{position:fixed;left:50%;bottom:calc(70px + env(safe-area-inset-bottom,0px));z-index:201;transform:translate(-50%,20px);opacity:0;visibility:hidden;
     padding:12px 20px;border-radius:12px;background:#1f3527;color:#fff;font:400 14px/1.3 system-ui,sans-serif;transition:transform .6s cubic-bezier(.16,1,.3,1),opacity .4s,visibility 0s .6s;max-width:calc(100% - 32px);text-align:center}
   .mm-toast.show{transform:translate(-50%,0);opacity:1;visibility:visible;transition:transform .6s cubic-bezier(.16,1,.3,1),opacity .4s}
@@ -404,7 +408,7 @@ window.MM = (() => {
   function switcher(n) {
     const bar = document.createElement('nav');
     bar.className = 'mm-switch'; bar.setAttribute('aria-label', 'Propuestas de diseño');
-    bar.innerHTML = `<a href="index.html" aria-label="Ver todas las propuestas">☰</a><span>Diseño</span>` +
+    bar.innerHTML = `<a href="index.html" aria-label="Ver todas las propuestas">☰</a><a href="aire.html" class="${n === 0 ? 'on' : ''}" aria-label="Aire, versión final">Aire ✦</a><span>Diseño</span>` +
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => `<a href="d${i}.html" class="${i === n ? 'on' : ''}" aria-label="Diseño ${i}">${i}</a>`).join('');
     document.body.append(bar);
   }
@@ -440,7 +444,9 @@ window.MM = (() => {
   }
 
   /** Sombras de ramas de olivo que se mecen (como luz entrando por una ventana) */
-  function shadows(el, { opacity = .22, color = '58,70,40', blur = 7, branches = 4, blend = 'multiply' } = {}) {
+  function shadows(el, { opacity = .22, color = '58,70,40', blur = 7, branches = 4, blend = 'multiply', force = false } = {}) {
+    // Desactivado: se prefiere el fondo blanco limpio, sin ramas. Pasa { force: true } para recuperarlo.
+    if (!force) return;
     const cv = document.createElement('canvas');
     cv.setAttribute('aria-hidden', 'true');
     Object.assign(cv.style, { position: 'absolute', inset: '0', width: '100%', height: '100%', pointerEvents: 'none', mixBlendMode: blend, filter: `blur(${blur}px)`, opacity, zIndex: 1 });

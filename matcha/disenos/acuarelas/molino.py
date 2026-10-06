@@ -1,0 +1,27 @@
+import sys, os; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from comun import *
+W, H = 1200, 1500
+def stone(cv, cx, top, rx, ry, h, col):
+    t = np.linspace(0, math.pi, 40)
+    body = np.vstack([[[cx - rx, top]], np.stack([cx - rx * np.cos(t), top + h + ry * np.sin(t)], 1), [[cx + rx, top]]])
+    blob(cv, body, (1, 1, 1), layers=1, alpha=1, gran=0, edge=0, var=.01, mode="over", softness=1)
+    blob(cv, body, col, layers=6, alpha=.15, gran=.75, edge=.45, var=.03)
+    side = np.vstack([[[cx + rx * .35, top + ry * .9]], np.stack([cx + rx * np.cos(t[:14][::-1] * 1), top + h + ry * np.sin(t[:14][::-1])], 1), [[cx + rx, top]]])
+    blob(cv, side, C["stone_d"], layers=3, alpha=.09, gran=.6, edge=.1, var=.03)
+    blob(cv, ell(cv, cx, top, rx, ry), (1, 1, 1), layers=1, alpha=1, gran=0, edge=0, var=.01, mode="over", softness=1)
+    blob(cv, ell(cv, cx, top, rx, ry), col, layers=4, alpha=.11, gran=.6, edge=.5, var=.03)
+def render():
+    cv = Canvas(W, H, seed=31, paper=PAPER)
+    cv.paper_texture(.008)
+    blob(cv, ell(cv, 640, 1210, 470, 90), C["shadow"], layers=3, alpha=.08, softness=30, edge=0, gran=.05)
+    blob(cv, ell(cv, 600, 1170, 430, 95), C["wood"], layers=4, alpha=.14, gran=.4, var=.03)
+    blob(cv, ell(cv, 600, 1145, 360, 72), C["matcha"], layers=6, alpha=.16, gran=.8, var=.05)
+    cv.spray(600, 1125, 380, 70, C["matcha_d"], count=7000, dot=1.4, alpha=.4)
+    stone(cv, 600, 900, 300, 70, 190, C["stone"])
+    stone(cv, 600, 660, 270, 62, 200, hex_rgb("#b4b7b0"))
+    cv.spray(600, 1092, 300, 16, C["matcha"], count=5000, dot=1.5, alpha=.55)
+    blob(cv, ell(cv, 600, 660, 48, 13), C["matcha_d"], alpha=.35, var=.03)
+    cv.stroke(np.array([[855, 770], [930, 700], [965, 540]]), C["wood"], width=26, alpha=.85, taper=(1, 1, .9))
+    cv.stroke(np.array([[862, 780], [938, 708], [974, 548]]), C["wood_d"], width=6, alpha=.4)
+    branch(cv, [[120, 1420], [260, 1360], [380, 1330]], n=5, leaf=(100, 140), up=-.5)
+    return cv.to_uint8()
