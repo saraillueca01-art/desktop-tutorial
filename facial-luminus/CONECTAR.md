@@ -21,7 +21,7 @@ Estos datos aparecen en la **política de privacidad** (se abre desde la casilla
 
 ## 2. Guardar los emails en una hoja de Google (5 min, una sola vez)
 
-1. Crea una hoja de Google nueva, por ejemplo **"Leads Facial Luminus"**.
+1. La hoja ya está creada en el Drive de saraillueca01@gmail.com: **[Leads Facial Luminus](https://docs.google.com/spreadsheets/d/1SJhm3gTCKFFZ23sUUr9IWy_-NJzDdLCzsZDip6OZK2s/edit)**. Ábrela con esa cuenta.
 2. **Extensiones → Apps Script**. Borra lo que aparece y pega todo `google-apps-script/FacialLuminus.gs`. Guarda.
 3. Si los avisos deben llegar a otro correo, cambia `EMAIL_AVISO` al principio del script.
 4. **Implementar → Nueva implementación → Aplicación web**.
