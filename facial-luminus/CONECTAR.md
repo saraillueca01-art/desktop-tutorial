@@ -23,12 +23,11 @@ Estos datos aparecen en la **política de privacidad** (se abre desde la casilla
 
 1. La hoja ya está creada en el Drive de saraillueca01@gmail.com: **[Leads Facial Luminus](https://docs.google.com/spreadsheets/d/1SJhm3gTCKFFZ23sUUr9IWy_-NJzDdLCzsZDip6OZK2s/edit)**. Ábrela con esa cuenta.
 2. **Extensiones → Apps Script**. Borra lo que aparece y pega todo `google-apps-script/FacialLuminus.gs`. Guarda.
-3. Si los avisos deben llegar a otro correo, cambia `EMAIL_AVISO` al principio del script.
-4. **Implementar → Nueva implementación → Aplicación web**.
+3. **Implementar → Nueva implementación → Aplicación web**.
    - Ejecutar como: **Yo**
    - Quién tiene acceso: **Cualquier usuario**
-5. Autoriza los permisos (si sale "Google no ha verificado esta aplicación": **Configuración avanzada → Ir a… → Permitir**).
-6. Copia la URL que termina en `/exec` y pégala en el formulario de `index.html` (o pásasela a Claude):
+4. Autoriza los permisos (si sale "Google no ha verificado esta aplicación": **Configuración avanzada → Ir a… → Permitir**).
+5. Copia la URL que termina en `/exec` y pégala en el formulario de `index.html` (o pásasela a Claude):
 
    ```html
    <form id="lead-form" data-endpoint="PEGA_AQUÍ_LA_URL" novalidate>
