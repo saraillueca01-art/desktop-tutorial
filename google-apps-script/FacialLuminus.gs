@@ -7,6 +7,8 @@
  * Instrucciones de instalación en facial-luminus/CONECTAR.md
  */
 
+// Hoja "Leads Facial Luminus" del Drive de saraillueca01@gmail.com
+const ID_HOJA = '1SJhm3gTCKFFZ23sUUr9IWy_-NJzDdLCzsZDip6OZK2s';
 const NOMBRE_HOJA = 'Leads';
 
 // [nombre del campo en el formulario, título de la columna]
@@ -41,7 +43,7 @@ function doGet() {
 }
 
 function obtenerHoja_() {
-  const libro = SpreadsheetApp.getActiveSpreadsheet();
+  const libro = SpreadsheetApp.openById(ID_HOJA);
   let hoja = libro.getSheetByName(NOMBRE_HOJA);
   if (!hoja) {
     hoja = libro.getSheets()[0];
