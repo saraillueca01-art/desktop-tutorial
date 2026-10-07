@@ -275,8 +275,8 @@
           <label class="field"><span>Email</span>
             <input type="email" name="email" autocomplete="email" required placeholder="tu@email.com">
           </label>
-          <label class="field"><span>Teléfono <em>· opcional</em></span>
-            <input type="tel" name="telefono" autocomplete="tel" inputmode="tel" placeholder="600 000 000">
+          <label class="field"><span>Teléfono</span>
+            <input type="tel" name="telefono" autocomplete="tel" inputmode="tel" required placeholder="600 000 000">
           </label>
           <div class="hp" aria-hidden="true"><input type="text" name="web" tabindex="-1" autocomplete="off"></div>
           <label class="check">
@@ -417,7 +417,7 @@
     <p><span data-si="titular"><span data-centro="titular"></span>, </span><span data-centro="nombre"></span><span data-si="nif">, NIF <span data-centro="nif"></span></span>, <span data-centro="direccion"></span>. Teléfono: <span data-centro="telefono"></span>. Email de contacto: <span data-centro="email"></span>.</p>
 
     <h3>Qué datos recogemos</h3>
-    <p>Los que escribes en el formulario: nombre, email y, si quieres, teléfono. También guardamos la fecha de envío, de qué red social llegas a la página y si aceptas recibir promociones.</p>
+    <p>Los que escribes en el formulario: nombre, email y teléfono. También guardamos la fecha de envío, de qué red social llegas a la página y si aceptas recibir promociones.</p>
 
     <h3>Para qué los usamos</h3>
     <ul>
@@ -509,6 +509,7 @@
       const data = new FormData(form);
       if (data.get('web')) return;
       if (!form.nombre.value.trim()) return show('Escribe tu nombre.', true);
+      if (form.telefono.value.replace(/\D/g, '').length < 9) return show('Escribe tu teléfono para poder contactarte.', true);
       if (!form.email.value || !form.email.checkValidity()) return show('Revisa tu email.', true);
       if (!form.privacidad.checked) return show('Para reservar tienes que aceptar la política de privacidad.', true);
 

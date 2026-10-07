@@ -1,6 +1,6 @@
 # Landing Facial Luminus: ponerla en marcha
 
-La página está en `facial-luminus/index.html`. Recoge **nombre, email, teléfono (opcional)** y si la persona acepta recibir promociones.
+La página está en `facial-luminus/index.html`. Recoge **nombre, email y teléfono** y si la persona acepta recibir promociones.
 
 ## 1. Datos del centro (2 min)
 
