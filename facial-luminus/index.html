@@ -125,9 +125,26 @@
     .rows p { color: var(--soft); font-size: .97rem; }
     .rows .t { text-align: right; font-size: .75rem; letter-spacing: .18em; text-transform: uppercase; color: var(--sand); }
 
+    /* Mascarilla */
+    .mask .wrap { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(36px, 6vw, 88px); align-items: center; }
+    .mask-media { position: relative; max-width: 380px; width: 100%; justify-self: center; }
+    .mask-media video { display: block; width: 100%; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 14px; background: #f3f3f3; }
+    .mask-media .tag { position: absolute; left: 16px; bottom: 16px; font-size: .64rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--sky-text); background: rgba(255, 255, 255, .9); padding: 7px 11px; border-radius: 6px; }
+    .mask .intro-text { color: var(--soft); max-width: 520px; }
+    .mask .product { display: block; margin-top: 4px; font-size: .95rem; color: var(--text); }
+    .processes { list-style: none; margin: 34px 0; border-top: 1px solid var(--line); }
+    .processes li { display: grid; grid-template-columns: 150px 1fr; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+    .processes b { font-weight: 500; font-size: 1.15rem; }
+    .processes span { color: var(--soft); font-size: .95rem; }
+    .benefits { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .benefits div { background: #eaf6fc; border-radius: 10px; padding: 16px 18px; }
+    .benefits strong { display: block; font-size: .72rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--sky-text); margin-bottom: 4px; }
+    .benefits span { font-size: .9rem; color: var(--sky-text); opacity: .85; line-height: 1.5; display: block; }
+
     /* Resultados */
-    .results { text-align: center; }
-    .results .wrap { max-width: 760px; }
+    .results { border-top: 1px solid var(--line); }
+    .results .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 6vw, 80px); align-items: center; }
+    .results-photo img { display: block; width: 100%; height: auto; max-height: 640px; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 14px; }
     .results blockquote { font-family: var(--serif); font-size: clamp(1.6rem, 3.4vw, 2.3rem); line-height: 1.35; margin: 22px 0 36px; }
     .results p { color: var(--soft); }
     .results .extra { margin-top: 36px; padding-top: 32px; border-top: 1px solid var(--line); font-size: .97rem; }
@@ -189,6 +206,9 @@
       .rows p { grid-column: 1 / -1; grid-row: 2; }
       .rows .t { grid-column: 2; grid-row: 1; }
       .list li { grid-template-columns: 1fr; gap: 4px; }
+      .mask .wrap, .results .wrap { grid-template-columns: 1fr; }
+      .mask-media { max-width: 300px; }
+      .processes li { grid-template-columns: 1fr; gap: 2px; }
       dialog.policy { padding: 30px 22px; }
       .ticket { grid-template-columns: 1fr; transform: rotate(-1deg); }
       .ticket-main { padding: 24px 22px; border-right: 0; border-bottom: 2px dashed #9fd0ec; border-radius: 12px 12px 0 0; }
@@ -203,6 +223,7 @@
     }
     @media (max-width: 480px) {
       .nav a.link { display: none; }
+      .benefits { grid-template-columns: 1fr; }
       .topbar { font-size: .66rem; letter-spacing: .14em; }
       .topbar span { margin: 0 4px; }
         }
@@ -309,17 +330,48 @@
           <li class="fade"><h3>Masaje lifting Kobido</h3><p>Masaje facial japonés de remonte y tensado. Incluye trapecios, nuca y cráneo.</p><span class="t">10 min</span></li>
           <li class="fade"><h3>Vitamina C liposomada</h3><p>Con ultrasonidos para que penetre en profundidad.</p><span class="t">5 min</span></li>
           <li class="fade"><h3>Oxígeno repair</h3><p>Bruma de oxígeno con tónico de acerola para equilibrar el pH.</p><span class="t">2 min</span></li>
-          <li class="fade"><h3>Mascarilla despigmentante</h3><p>Mascarilla coreana que unifica el tono. Mientras actúa, masaje de manos.</p><span class="t">15 min</span></li>
+          <li class="fade"><h3>Mascarilla despigmentante</h3><p>Mascarilla hydrojelly Discoloration Corrector que unifica el tono. Mientras actúa, masaje de manos.</p><span class="t">15 min</span></li>
         </ol>
       </div>
     </section>
 
+    <section class="mask">
+      <div class="wrap">
+        <div class="mask-media fade">
+          <video poster="media/mascarilla-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Mascarilla Discoloration Corrector">
+            <source src="media/mascarilla.mp4" type="video/mp4">
+            <source src="media/mascarilla.webm" type="video/webm">
+          </video>
+          <span class="tag">La mascarilla del tratamiento</span>
+        </div>
+        <div class="fade">
+          <span class="label">Mascarilla despigmentante</span>
+          <h2>Ciencia que ilumina la piel</h2>
+          <p class="intro-text">El Facial Luminus termina con una mascarilla profesional que actúa sobre las tres causas de las manchas del verano.<span class="product">Discoloration Corrector Hydrojelly® mask · Esthemax</span></p>
+          <ul class="processes">
+            <li><b>Pigmentación</b><span>Su ácido tranexámico ayuda a regular la producción de melanina y la hiperpigmentación.</span></li>
+            <li><b>Inflamación</b><span>Calma la respuesta inflamatoria y las rojeces de la piel.</span></li>
+            <li><b>Oxidación</b><span>Atenúa el estrés oxidativo que provoca la radiación solar.</span></li>
+          </ul>
+          <div class="benefits">
+            <div><strong>Glow</strong><span>Aporta luminosidad y un tono más uniforme.</span></div>
+            <div><strong>Despigmentante</strong><span>Ayuda a reducir la apariencia de manchas y discromías.</span></div>
+            <div><strong>Antioxidante</strong><span>Protege la piel del daño oxidativo y del estrés ambiental.</span></div>
+            <div><strong>Unifica</strong><span>Tono más homogéneo y una piel visiblemente más sana.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="results">
-      <div class="wrap fade">
+      <div class="wrap">
+        <div class="results-photo fade"><img src="media/mascarilla-gemas.jpg" alt="Mascarilla despigmentante aplicada en cabina" loading="lazy" width="900" height="1125"></div>
+        <div class="fade">
         <span class="label">Resultados</span>
-        <blockquote>Los ácidos naturales de la cosmética coreana blanquean, limpian e iluminan el rostro desde la primera sesión.</blockquote>
+        <blockquote>Los ácidos naturales de la cosmética profesional blanquean, limpian e iluminan el rostro desde la primera sesión.</blockquote>
         <p>Terminamos con tu plan de cuidado y una recomendación de cosmética para casa.</p>
         <p class="extra">Si tu piel necesita algo más para manchas rebeldes, profundas o vascularizadas, también tenemos DPL disponible.</p>
+        </div>
       </div>
     </section>
 
