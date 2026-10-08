@@ -289,6 +289,9 @@
         <label id="lblDeduc">¿Deducible?
           <select name="deducible"><option value="1">Sí</option><option value="0">No</option></select>
         </label>
+        <label class="wide hidden" id="lblFacturar" style="flex-direction:row;align-items:center;gap:8px;color:var(--text);font-size:.92rem">
+          <input type="checkbox" name="facturar" checked> Hacer la factura (PDF) al guardar
+        </label>
         <div class="wide calc" id="calc"></div>
         <div class="wide msg neg" id="formError"></div>
         <div class="wide row">
@@ -346,7 +349,7 @@
     <div class="card hidden" id="cardFactura" style="margin-bottom:14px">
       <h2 id="tituloFactura">Nueva factura</h2>
       <form id="fFactura" autocomplete="off" novalidate class="grid" style="gap:14px">
-        <input type="hidden" name="id">
+        <input type="hidden" name="id"><input type="hidden" name="movId">
         <div class="mov" style="display:grid">
           <label>Nº de factura <input name="numero"></label>
           <label>Fecha <input type="date" name="fecha"></label>
@@ -629,7 +632,7 @@ const NEGOCIOS = {
           <td>${esc(m.categoria)}</td>
           <td class="n ${sg < 0 ? 'neg' : 'pos'}">${eur(sg * c.base)}</td>
           <td class="n">${eur(c.iva)}</td><td class="n">${c.irpf ? eur(-c.irpf) : '—'}</td><td class="n">${eur(c.total)}${conParte && dividido(m) ? `<br><small class="calc">tu parte ${eur(c.total / 2)}</small>` : ''}</td>
-          <td class="n"><button class="btn small ghost" data-edit="${m.id}">Editar</button> <button class="btn small danger" data-del="${m.id}">✕</button></td>
+          <td class="n">${m.tipo === 'ingreso' && !m.facturaId && m.origen !== 'shopify' && c.iva > 0 ? `<button class="btn small" data-facturar="${m.id}">Hacer factura</button> ` : ''}${m.facturaId ? `<button class="btn small" data-pdfmov="${m.id}">PDF</button> ` : ''}<button class="btn small ghost" data-edit="${m.id}">Editar</button> <button class="btn small danger" data-del="${m.id}">✕</button></td>
         </tr>`;
       }).join('');
   };
@@ -872,6 +875,8 @@ const NEGOCIOS = {
     $('#calc').textContent = `Base ${eur(c.base)} + IVA ${eur(c.iva)}${c.irpf ? ` − retención ${eur(c.irpf)}` : ''} = total factura ${eur(c.total)}`
       + (CFG().socias && F.socia.value === 'mitad' ? ` · Tu parte: ${eur(c.total / 2)} (base ${eur(c.base / 2)})` : '')
       + (prev?.origen === 'shopify' ? ' · Importes de Shopify: se actualizan al sincronizar.' : '');
+    // Ingreso con IVA y sin factura todavía: ofrecer hacerla al guardar
+    $('#lblFacturar').classList.toggle('hidden', !(F.tipo.value === 'ingreso' && +F.iva.value > 0 && !prev?.origen && !prev?.facturaId));
   };
   const lockShopify = on => ['tipo', 'fecha', 'base', 'iva', 'irpf'].forEach(n => { F[n].disabled = on; });
   const resetForm = () => {
@@ -895,7 +900,7 @@ const NEGOCIOS = {
     showCalc();
   });
   F.categoria.addEventListener('change', () => { if (SIN_IVA.includes(F.categoria.value)) F.iva.value = '0'; showCalc(); });
-  ['base', 'iva', 'irpf', 'socia'].forEach(n => F[n].addEventListener('input', showCalc));
+  ['base', 'iva', 'irpf', 'socia', 'tipo'].forEach(n => F[n].addEventListener('input', showCalc));
   F.addEventListener('submit', e => {
     e.preventDefault();
     const datos = Object.fromEntries(new FormData(F)), prev = editando();
@@ -905,12 +910,15 @@ const NEGOCIOS = {
     if (!F.base.disabled && !(leerImporte(F.base.value) >= 0)) falta.push('el importe (base imponible), por ejemplo 12,50');
     if (falta.length) { $('#formError').textContent = 'Falta ' + falta.join(', ') + '.'; return; }
     if (datos.base != null) datos.base = r2(leerImporte(datos.base));
+    const hacerFactura = !$('#lblFacturar').classList.contains('hidden') && F.facturar.checked;
+    delete datos.facturar;
     if (!CFG().socias) datos.socia = 'yo';
     if ((datos.tipo || prev?.tipo) === 'ingreso') datos.deducible = '1';
     const m = { ...prev, ...datos };
     if (prev) db().movs[db().movs.indexOf(prev)] = m;
     else { m.id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6); db().movs.push(m); }
-    save(); $('#fAnio').value = m.fecha.slice(0, 4); fillYears(); resetForm(); go('movimientos');
+    save(); $('#fAnio').value = m.fecha.slice(0, 4); fillYears(); resetForm();
+    if (hacerFactura) { go('facturas'); formFactura(null, m); } else go('movimientos');
   });
   $('#btnCancel').onclick = () => { resetForm(); go('movimientos'); };
 
@@ -1338,7 +1346,7 @@ const NEGOCIOS = {
     const c = clientes().get(FF.c_nombre.value.trim()); if (!c) return;
     ['nif', 'direccion', 'cp', 'ciudad', 'provincia', 'pais', 'email'].forEach(k => { if (c[k]) FF['c_' + k].value = c[k]; });
   });
-  const formFactura = (f = null) => {
+  const formFactura = (f = null, mov = null) => {
     FF.reset(); $('#facturaError').textContent = '';
     FF.categoria.innerHTML = CFG().catIng.map(c => `<option>${esc(c)}</option>`).join('');
     $('#listaClientes').innerHTML = [...clientes().keys()].map(n => `<option value="${esc(n)}">`).join('');
@@ -1351,7 +1359,17 @@ const NEGOCIOS = {
       FF.id.value = ''; FF.fecha.value = hoyISO(); FF.numero.value = siguienteNumero(neg); FF.c_pais.value = 'España';
       FF.pago.value = 'Transferencia bancaria';
     }
-    $('#lineas').innerHTML = (f?.lineas?.length ? f.lineas : [{}]).map(lineaHTML).join('');
+    FF.movId.value = '';
+    if (mov) {
+      // Rellenar con los datos del ingreso apuntado
+      FF.movId.value = mov.id; FF.fecha.value = mov.fecha; FF.numero.value = siguienteNumero(neg, mov.fecha);
+      if (CFG().catIng.includes(mov.categoria)) FF.categoria.value = mov.categoria;
+      FF.socia.value = dividido(mov) ? 'mitad' : 'yo'; FF.cobrado.value = mov.cobrado === '0' ? '0' : '1';
+      FF.iva.value = mov.iva || '21'; FF.irpf.value = mov.irpf || '0';
+      if (mov.contraparte) { FF.c_nombre.value = mov.contraparte; FF.c_nombre.dispatchEvent(new Event('change')); }
+      $('#tituloFactura').textContent = `Factura del ingreso «${mov.concepto}»`;
+    }
+    $('#lineas').innerHTML = (f?.lineas?.length ? f.lineas : mov ? [{ desc: mov.concepto, cant: 1, precio: mov.base }] : [{}]).map(lineaHTML).join('');
     pintarTotales();
     $('#cardFactura').classList.remove('hidden'); FF.c_nombre.focus();
   };
@@ -1380,7 +1398,7 @@ const NEGOCIOS = {
     if (!datos.nota && +datos.iva === 0) datos.nota = NOTA_EXENTA;
     let f = lista.find(x => x.id === FF.id.value);
     if (f) Object.assign(f, datos); else { f = { id: nuevoId(), creada: new Date().toISOString(), ...datos }; lista.push(f); }
-    const prev = db().movs.find(m => m.facturaId === f.id);
+    const prev = db().movs.find(m => m.facturaId === f.id) || (FF.movId.value && db().movs.find(m => m.id === FF.movId.value));
     const mov = movDeFactura(f, prev);
     if (prev) db().movs[db().movs.indexOf(prev)] = mov; else db().movs.push(mov);
     save(); fillYears();
@@ -1616,11 +1634,18 @@ const NEGOCIOS = {
   ['#fAnio', '#fTri', '#fTipo'].forEach(s => $(s).addEventListener('change', render));
   $('#fTxt').addEventListener('input', render);
   $('#tMovs').onclick = e => {
-    const { edit, del } = e.target.dataset;
+    const { edit, del, facturar, pdfmov } = e.target.dataset;
+    if (facturar) { const m = db().movs.find(x => x.id === facturar); if (m) { go('facturas'); formFactura(null, m); } return; }
+    if (pdfmov) { const m = db().movs.find(x => x.id === pdfmov), f = m && db().facturas.find(x => x.id === m.facturaId); if (f) descargarFactura(f, neg, !!f.pdf?.enlace); return; }
     const mf = edit && db().movs.find(m => m.id === edit && m.origen === 'factura');
     if (mf) { go('facturas'); formFactura(db().facturas.find(f => f.id === mf.facturaId)); return; }
     if (edit) editMov(edit);
-    if (del && confirm('¿Borrar este movimiento?')) { db().movs = db().movs.filter(m => m.id !== del); save(); render(); }
+    const md = del && db().movs.find(m => m.id === del);
+    if (md && confirm(md.facturaId ? '¿Borrar este movimiento? También se borrará su factura.' : '¿Borrar este movimiento?')) {
+      db().movs = db().movs.filter(m => m !== md);
+      if (md.facturaId) db().facturas = (db().facturas || []).filter(f => f.id !== md.facturaId);
+      save(); render();
+    }
   };
 
   // ---------- Guardado en tu cuenta de Claude ----------
