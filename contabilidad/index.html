@@ -370,6 +370,7 @@
       </label>
       <label style="flex:1;min-width:180px">Buscar <input id="fTxt" placeholder="Concepto, cliente, nº factura…"></label>
       <button class="btn ghost" id="btnCsv">Exportar CSV</button>
+      <button class="btn" data-excel>Descargar Excel</button>
     </div>
     <div class="card table-wrap"><table id="tMovs"></table></div>
   </section>
@@ -461,6 +462,18 @@
   <!-- AJUSTES -->
   <section id="v-ajustes" class="hidden">
     <div class="grid g2">
+      <div class="card">
+        <h2>Tu contabilidad en Excel</h2>
+        <p class="note" style="margin:0 0 12px">Un Excel con una hoja por negocio (todos los movimientos), un resumen por trimestres con ingresos, gastos, beneficio e impuestos, y tus trabajos.</p>
+        <div class="row">
+          <button class="btn" data-excel>Descargar Excel</button>
+          <button class="btn ghost off" id="btnDrive">Guardar copia en Google Drive</button>
+        </div>
+        <label class="off" id="lblAuto" style="flex-direction:row;align-items:center;gap:8px;margin-top:14px;color:var(--text);font-size:.9rem">
+          <input type="checkbox" id="chkAuto"> Copia automática en Google Drive (una al día como mucho, solo si hay cambios)
+        </label>
+        <div class="msg" id="msgExcel"></div>
+      </div>
       <div class="card">
         <h2>Copia de seguridad</h2>
         <p class="note" style="margin-bottom:12px">La copia incluye los tres negocios. Los datos viven solo en este navegador: descarga una copia a menudo y cárgala si cambias de ordenador.</p>
@@ -1401,8 +1414,156 @@ const NEGOCIOS = {
     else { go('instagram'); formPub(); }
   });
 
+  // ---------- Excel (descarga y copias en Google Drive) ----------
+  const XLSX_URL = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  const cargarXLSX = () => window.XLSX ? Promise.resolve(window.XLSX) : new Promise((ok, ko) => {
+    const sc = document.createElement('script'); sc.src = XLSX_URL;
+    sc.onload = () => ok(window.XLSX); sc.onerror = () => ko(new Error('no se pudo cargar el generador de Excel (revisa la conexión)'));
+    document.head.appendChild(sc);
+  });
+  const EUR = '#,##0.00 "€"', FECHA = 'dd/mm/yyyy';
+  const aFecha = f => f ? new Date(+f.slice(0, 4), +f.slice(5, 7) - 1, +f.slice(8, 10)) : '';
+  const hoja = (X, filas, anchos, formatos = {}) => {
+    const ws = X.utils.aoa_to_sheet(filas, { cellDates: true });
+    const r = X.utils.decode_range(ws['!ref']);
+    for (let R = 1; R <= r.e.r; R++) for (const [c, z] of Object.entries(formatos)) {
+      const cel = ws[X.utils.encode_cell({ r: R, c: +c })]; if (cel && (cel.t === 'n' || cel.t === 'd')) cel.z = z;
+    }
+    ws['!cols'] = anchos.map(w => ({ wch: w }));
+    ws['!autofilter'] = { ref: X.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: r.e.r, c: r.e.c } }) };
+    return ws;
+  };
+  const crearExcel = async () => {
+    const X = await cargarXLSX(), wb = X.utils.book_new();
+    const todosMovs = Object.keys(NEGOCIOS).flatMap(k => dbs[k].movs.map(m => ({ ...m, _neg: k })));
+    // Resumen por año y trimestre (importes de tu parte; en Brisa, lo dividido cuenta la mitad)
+    const anios = [...new Set(todosMovs.map(m => +m.fecha.slice(0, 4)))].sort((a, b) => b - a);
+    const filas = [['Año', 'Trimestre', 'Negocio', 'Ingresos (base)', 'Gastos (base)', 'Beneficio', 'IVA cobrado', 'IVA pagado', 'IVA a ingresar (303)', 'Retenciones', 'Pago IRPF (130, estimado)']];
+    anios.forEach(y => {
+      const delAnio = todosMovs.filter(m => m.fecha.startsWith(y));
+      let pagado = 0;
+      [1, 2, 3, 4].forEach(t => {
+        const trim = delAnio.filter(m => tri(m.fecha) === t);
+        if (!trim.length) return;
+        Object.entries(NEGOCIOS).forEach(([k, n]) => {
+          const o = sumar(trim.filter(m => m._neg === k)); if (!o.ing && !o.gas) return;
+          filas.push([y, `${t}T`, n.nombre, r2(o.ing), r2(o.gas), r2(o.ben), r2(o.ivaRep), r2(o.ivaSop), r2(o.ivaRep - o.ivaSop), r2(o.ret), '']);
+        });
+        const o = sumar(trim), acum = sumar(delAnio.filter(m => tri(m.fecha) <= t));
+        const cuota = Math.max(0, r2(acum.ben * 0.2 - acum.ret - pagado)); pagado += cuota;
+        filas.push([y, `${t}T`, 'TOTAL', r2(o.ing), r2(o.gas), r2(o.ben), r2(o.ivaRep), r2(o.ivaSop), r2(o.ivaRep - o.ivaSop), r2(o.ret), cuota]);
+      });
+    });
+    if (filas.length === 1) filas.push(['Todavía no hay movimientos']);
+    X.utils.book_append_sheet(wb, hoja(X, filas, [6, 9, 16, 15, 14, 13, 12, 12, 18, 12, 22], Object.fromEntries([3, 4, 5, 6, 7, 8, 9, 10].map(c => [c, EUR]))), 'Resumen');
+    // Una hoja por negocio con todos sus movimientos
+    Object.entries(NEGOCIOS).forEach(([k, n]) => {
+      const brisa = n.socias;
+      const cab = ['Fecha', 'Tipo', 'Concepto', 'Cliente / proveedor', 'Nº factura', 'Categoría', 'Base', 'IVA %', 'IVA', 'IRPF %', 'IRPF', 'Total factura', 'Cobrado / pagado', 'Deducible', ...(brisa ? ['De quién', 'Mi parte (base)'] : []), 'Origen'];
+      const filasN = [cab, ...[...dbs[k].movs].sort((a, b) => a.fecha.localeCompare(b.fecha)).map(m => {
+        const c = calc(m), p = brisa && dividido(m) ? 0.5 : 1;
+        return [aFecha(m.fecha), m.tipo === 'ingreso' ? 'Ingreso' : 'Gasto', m.concepto || '', m.contraparte || '', m.nfactura || '', m.categoria || '',
+          c.base, m.ivaImp != null ? '' : +m.iva || 0, c.iva, +m.irpf || 0, c.irpf, c.total, m.cobrado === '0' ? 'Pendiente' : 'Sí', m.tipo === 'gasto' ? (m.deducible === '0' ? 'No' : 'Sí') : '',
+          ...(brisa ? [p < 1 ? 'Entre dos' : 'Para mí', r2(c.base * p)] : []), m.origen === 'shopify' ? 'Shopify' : 'Manual'];
+      })];
+      const fmt = { 0: FECHA, 6: EUR, 8: EUR, 10: EUR, 11: EUR, ...(brisa ? { 15: EUR } : {}) };
+      X.utils.book_append_sheet(wb, hoja(X, filasN, [11, 9, 34, 22, 12, 26, 12, 7, 11, 7, 11, 13, 15, 10, ...(brisa ? [11, 15] : []), 9], fmt), n.nombre);
+    });
+    // Trabajos
+    const filasT = [['Negocio', 'Trabajo', 'Cliente', 'Entrega', 'Estado', 'Prioridad', 'Importe', 'Ingreso apuntado'],
+      ...Object.entries(NEGOCIOS).flatMap(([k, n]) => (dbs[k].trabajos || []).map(t => [n.nombre, t.titulo, t.cliente || '', aFecha(t.entrega),
+        { pendiente: 'Pendiente', curso: 'En curso', hecho: 'Hecho' }[t.estado || 'pendiente'], t.prioridad === 'alta' ? 'Alta' : 'Normal', t.importe || 0, t.facturado ? 'Sí' : 'No']))];
+    X.utils.book_append_sheet(wb, hoja(X, filasT, [16, 40, 22, 11, 11, 10, 12, 16], { 3: FECHA, 6: EUR }), 'Trabajos');
+    return X.write(wb, { type: 'array', bookType: 'xlsx' });
+  };
+  const nombreExcel = () => `Contabilidad ${hoyISO()}.xlsx`;
+  const msgExcel = t => { $('#msgExcel').innerHTML = t; };
+  document.querySelectorAll('[data-excel]').forEach(b => b.onclick = async () => {
+    b.disabled = true; msgExcel('Preparando el Excel…');
+    try {
+      const datos = await crearExcel();
+      if (descargas) {
+        try { await descargas.save({ filename: nombreExcel(), data: datos }); msgExcel('✓ Excel descargado.'); }
+        catch (err) { msgExcel(err.code === 'declined' ? '' : 'No se pudo descargar: ' + err.message); }
+      } else {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([datos], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+        a.download = nombreExcel(); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        msgExcel('✓ Excel descargado.');
+      }
+    } catch (err) { msgExcel('No se pudo crear el Excel: ' + err.message); }
+    finally { b.disabled = false; }
+  });
+
+  // Copias en Google Drive: un archivo nuevo con fecha cada vez (Drive no deja sobrescribir desde aquí).
+  // Se recuerda la última copia (fecha, enlace y una «huella» de los datos) en tu cuenta.
+  const DRIVE = 'Google Drive', XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  const ERRORES_DRIVE = {
+    needs_reauth: 'La conexión con Google Drive ha caducado: vuelve a conectarla en claude.ai → Ajustes → Conectores.',
+    server_not_connected: 'No tienes Google Drive conectado en Claude: añádelo en claude.ai → Ajustes → Conectores.',
+    not_in_manifest: 'Esta página no tiene permiso para usar Google Drive: actívalo en el menú de permisos de la página.',
+    approval_required: 'Hace falta que apruebes el acceso a Google Drive. Pulsa «Guardar copia en Google Drive» y acepta.',
+    blocked_by_policy: 'Tu organización no permite usar Google Drive desde esta página.',
+  };
+  let drive = null, copias = leer('contabilidad-copias-v1') || { auto: true };
+  const guardarCopias = async () => {
+    try { localStorage.setItem('contabilidad-copias-v1', JSON.stringify(copias)); } catch { }
+    if (nube) { try { await nube.doc('ajustes/copias').set(copias); } catch { } }
+  };
+  const huella = () => {
+    const t = JSON.stringify(Object.keys(NEGOCIOS).map(k => [dbs[k].movs, dbs[k].trabajos]));
+    let h = 0; for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0;
+    return `${t.length}-${h}`;
+  };
+  const hayDatos = () => Object.keys(NEGOCIOS).some(k => dbs[k].movs.length || (dbs[k].trabajos || []).length);
+  const pintarCopias = () => {
+    $('#chkAuto').checked = copias.auto !== false;
+    if (copias.ultima && !$('#msgExcel').dataset.ocupado) msgExcel(`Última copia en Drive: ${new Date(copias.ultima).toLocaleString('es-ES')}`
+      + (copias.enlace ? ` · <a href="${esc(copias.enlace)}" target="_blank" rel="noopener">abrir</a>` : ''));
+  };
+  const copiaEnDrive = async () => {
+    const b64 = (buf => { let s = ''; const u = new Uint8Array(buf); for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(s); })(await crearExcel());
+    const r = await drive.callTool(DRIVE, 'create_file', {
+      title: `Mi panel · ${nombreExcel()}`, base64Content: b64, contentMimeType: XLSX_MIME, disableConversionToGoogleType: true,
+    });
+    const f = r.payload?.file || r.payload || {};
+    copias = { ...copias, ultima: new Date().toISOString(), huella: huella(), enlace: f.webViewLink || f.alternateLink || (f.id ? `https://drive.google.com/file/d/${f.id}/view` : '') };
+    await guardarCopias();
+  };
+  $('#btnDrive').onclick = async () => {
+    const b = $('#btnDrive'); b.disabled = true; $('#msgExcel').dataset.ocupado = '1'; msgExcel('Guardando copia en Google Drive…');
+    try {
+      await copiaEnDrive(); delete $('#msgExcel').dataset.ocupado;
+      msgExcel('✓ Copia guardada en tu Google Drive' + (copias.enlace ? ` · <a href="${esc(copias.enlace)}" target="_blank" rel="noopener">abrir</a>` : '.'));
+    }
+    catch (err) { delete $('#msgExcel').dataset.ocupado; msgExcel(ERRORES_DRIVE[err.code] || 'No se pudo guardar en Google Drive: ' + (err.message || err)); }
+    finally { b.disabled = false; }
+  };
+  $('#chkAuto').onchange = e => { copias = { ...copias, auto: e.target.checked }; guardarCopias(); };
+  // Al abrir el panel: si toca, una copia automática (una sola aunque esté abierto en varios dispositivos)
+  const copiaAutomatica = async () => {
+    if (!drive || copias.auto === false || !hayDatos() || copias.huella === huella()) return;
+    if (copias.ultima && Date.now() - new Date(copias.ultima) < 20 * 36e5) return;
+    try {
+      if (nube) {
+        const lease = await nube.doc('ajustes/copias').acquire({ holder: nuevoId(), ttlMs: 120000 });
+        if (!lease.acquired) return;
+        const d = await nube.doc('ajustes/copias').get();
+        if (d.exists && d.data().ultima && Date.now() - new Date(d.data().ultima) < 20 * 36e5) { copias = { ...copias, ...d.data() }; return; }
+      }
+      await copiaEnDrive(); pintarCopias();
+    } catch (err) {
+      msgExcel(ERRORES_DRIVE[err.code] ? `Copia automática: ${ERRORES_DRIVE[err.code]}` : '');
+    }
+  };
+  window.claude?.use?.('mcp').then(m => {
+    drive = m; if (!m) return;
+    $('#btnDrive').classList.remove('off'); $('#lblAuto').classList.remove('off');
+    setTimeout(copiaAutomatica, 4000);  // deja que primero se carguen los datos de tu cuenta
+  });
+
   // ---------- Ajustes ----------
-  const loadAjustes = () => { $('#resetNeg').textContent = CFG().nombre; };
+  const loadAjustes = () => { $('#resetNeg').textContent = CFG().nombre; pintarCopias(); };
 
   // Dentro del visor de Claude las descargas pasan por su permiso; en un navegador normal, enlace directo.
   let descargas = null;
@@ -1584,6 +1745,8 @@ const NEGOCIOS = {
         d.seguidores.sort((a, b) => a.fecha.localeCompare(b.fecha));
         d.movs = unir(remotos, d.movs);
       }
+      const cp = await db.doc('ajustes/copias').get();
+      if (cp.exists) { copias = { ...copias, ...cp.data() }; try { localStorage.setItem('contabilidad-copias-v1', JSON.stringify(copias)); } catch { } }
       const mt = await db.doc('ajustes/metasTotal').get();
       if (mt.exists) enviado['ajustes/metasTotal'] = JSON.stringify(mt.data());
       metasTotal = unir(mt.exists ? mt.data().metas : [], metasTotal);
