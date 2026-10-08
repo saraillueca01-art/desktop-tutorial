@@ -1,6 +1,6 @@
 # Conectar la contabilidad de Benissalud con Shopify (MOOD MATCHA)
 
-En el programa de contabilidad (`contabilidad/index.html`), con **Benissalud** elegida, la pestaña **Shopify** apunta los pedidos de la tienda
+En el programa de contabilidad (`contabilidad/index.html`), con **MOOD MATCHA** elegida, la pestaña **Shopify** apunta los pedidos de la tienda
 como ingresos (base + IVA), descuenta los reembolsos y quita los cancelados.
 
 Hay dos formas de hacerlo:
@@ -59,11 +59,12 @@ En el script: **Configuración del proyecto** (engranaje, a la izquierda) → ab
 
 ## 5. Conectar la página
 
-Abre `contabilidad/index.html` → **Benissalud** → pestaña **Shopify** → pega la URL y la clave → **Sincronizar pedidos**.
+Abre `contabilidad/index.html` → **MOOD MATCHA** → pestaña **Shopify** → pega la URL y la clave → **Sincronizar pedidos**.
 Sincroniza el año elegido arriba; cambia el año para traer otros.
 
 ## A tener en cuenta
 
+- Dentro de Claude no hace falta nada de esto: en **MOOD MATCHA → Shopify** los pedidos se traen solos con la conexión de Shopify de Claude.
 - Las ventas de Shopify se asignan por defecto a **Las dos** (con el reparto de Ajustes). Se puede cambiar en Ajustes.
 - La **cuota mensual de Shopify** y las **comisiones de cobro** no vienen en los pedidos: apúntalas como gasto con la
   categoría «Shopify: cuota y comisiones».

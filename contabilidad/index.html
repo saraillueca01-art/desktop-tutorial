@@ -9,19 +9,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* Colores de cada empresa: Benissalud (verde matcha), Brisa Creative (azul marino), Total (arena) */
+    /* Colores de cada empresa: Benissalud (verde azulado), MOOD MATCHA (verde matcha), Brisa Creative (azul marino), Total (arena) */
     :root {
       --text: #2a3140; --muted: #6f6b67; --card: #ffffff;
       --green: #2f7d5b; --red: #b0413e; --radius: 16px;
-      --c-bene: #2f5d46; --c-brisa: #1f3458; --c-total: #7a6852;
-      --ink: var(--c-bene); --accent: #6f9a52; --bg: #ffffff; --line: #e5e8de;
+      --c-bene: #2b6a6e; --c-matcha: #2f5d46; --c-brisa: #1f3458; --c-total: #7a6852;
+      --ink: var(--c-bene); --accent: #8fbfbd; --bg: #ffffff; --line: #e5e8de;
     }
+    [data-negocio="moodmatcha"] { --ink: var(--c-matcha); --accent: #6f9a52; }
     [data-negocio="brisa"] { --ink: var(--c-brisa); --accent: #cdbca8; --bg: #ffffff; --line: #ebe6df; }
     [data-negocio="total"] { --ink: var(--c-total); --accent: #cdbca8; --bg: #ffffff; --line: #ebe6df; }
     @media (prefers-color-scheme: dark) {
       :root:not([data-theme="light"]) {
         --text: #e4e2de; --muted: #a6a29c; --card: #1d232d; --green: #6cc49d; --red: #e3807c;
-        --c-bene: #b9dcc4; --c-brisa: #9db4dd; --c-total: #dccbb4;
+        --c-bene: #a8d8da; --c-matcha: #b9dcc4; --c-brisa: #9db4dd; --c-total: #dccbb4;
         --accent: #a7cf8a; --bg: #141a17; --line: #2d3832;
       }
       :root:not([data-theme="light"])[data-negocio="brisa"],
@@ -29,7 +30,7 @@
     }
     :root[data-theme="dark"] {
       --text: #e4e2de; --muted: #a6a29c; --card: #1d232d; --green: #6cc49d; --red: #e3807c;
-      --c-bene: #b9dcc4; --c-brisa: #9db4dd; --c-total: #dccbb4;
+      --c-bene: #a8d8da; --c-matcha: #b9dcc4; --c-brisa: #9db4dd; --c-total: #dccbb4;
       --accent: #a7cf8a; --bg: #141a17; --line: #2d3832;
     }
     :root[data-theme="dark"][data-negocio="brisa"],
@@ -47,6 +48,7 @@
     .switch { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 14px; }
     .switch button { font: inherit; font-weight: 500; padding: 10px 18px; border-radius: 999px; cursor: pointer; background: var(--card); border: 1px solid var(--line); color: var(--muted); }
     .switch button[data-neg="benissalud"].on { background: var(--c-bene); border-color: var(--c-bene); color: var(--card); }
+    .switch button[data-neg="moodmatcha"].on { background: var(--c-matcha); border-color: var(--c-matcha); color: var(--card); }
     .switch button[data-neg="brisa"].on { background: var(--c-brisa); border-color: var(--c-brisa); color: var(--card); }
     .switch button[data-neg="total"].on { background: var(--c-total); border-color: var(--c-total); color: var(--card); }
     nav.tabs { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
@@ -71,6 +73,7 @@
     .tag { display: inline-block; font-size: .72rem; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); white-space: nowrap; }
     .tag.shop { color: var(--accent); border-color: var(--accent); }
     .tag.benissalud { color: var(--c-bene); border-color: var(--c-bene); }
+    .tag.moodmatcha { color: var(--c-matcha); border-color: var(--c-matcha); }
     .tag.brisa { color: var(--c-brisa); border-color: var(--c-brisa); }
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: .88rem; }
@@ -94,7 +97,7 @@
   <header class="top">
     <div>
       <h1 id="titulo">Contabilidad</h1>
-      <p>Dos empresas, dos socias autónomas. Los datos se guardan en este navegador: haz copia de seguridad en Ajustes.</p>
+      <p>Tres negocios, dos socias autónomas. Los datos se guardan en este navegador: haz copia de seguridad en Ajustes.</p>
     </div>
     <div class="row solo-negocio">
       <button class="btn" data-go="nuevo">+ Nuevo movimiento</button>
@@ -103,8 +106,9 @@
 
   <div class="switch" id="switch">
     <button data-neg="benissalud">Benissalud</button>
+    <button data-neg="moodmatcha">MOOD MATCHA</button>
     <button data-neg="brisa">Brisa Creative</button>
-    <button data-neg="total">Total de las dos</button>
+    <button data-neg="total">Total</button>
   </div>
 
   <nav class="tabs" id="tabs">
@@ -203,7 +207,7 @@
     </div>
   </section>
 
-  <!-- SHOPIFY (solo Benissalud) -->
+  <!-- SHOPIFY (solo MOOD MATCHA) -->
   <section id="v-shopify" class="hidden">
     <div class="grid g4" id="kpisShop"></div>
     <div class="card" style="margin-top:14px">
@@ -263,7 +267,7 @@
       </div>
       <div class="card">
         <h2>Copia de seguridad</h2>
-        <p class="note" style="margin-bottom:12px">La copia incluye las dos empresas. Los datos viven solo en este navegador: descarga una copia a menudo y cárgala en el otro ordenador para compartirla con tu socia.</p>
+        <p class="note" style="margin-bottom:12px">La copia incluye los tres negocios. Los datos viven solo en este navegador: descarga una copia a menudo y cárgala en el otro ordenador para compartirla con tu socia.</p>
         <div class="row">
           <button class="btn" id="btnExport">Descargar copia (.json)</button>
           <label class="btn ghost" style="flex-direction:row">Cargar copia<input type="file" id="fileImport" accept=".json,application/json" hidden></label>
@@ -281,13 +285,21 @@
 const NEGOCIOS = {
   benissalud: {
     nombre: 'Benissalud',
-    tienda: 'MOOD MATCHA',
     clave: 'contabilidad-benissalud-v1',
+    shopify: false,
+    catIng: ['Servicios / sesiones', 'Bonos y paquetes', 'Talleres y formaciones', 'Venta de producto', 'Subvención', 'Otros ingresos'],
+    catGas: ['Cuota autónomos', 'Alquiler', 'Suministros (luz, agua, internet)', 'Material sanitario', 'Software y suscripciones',
+      'Publicidad', 'Colegio profesional y seguros', 'Gestoría', 'Formación', 'Transporte y dietas', 'Equipos',
+      'Comisiones bancarias', 'Otros gastos'],
+  },
+  moodmatcha: {
+    nombre: 'MOOD MATCHA',
+    tienda: 'MOOD MATCHA',
+    clave: 'contabilidad-moodmatcha-v1',
     shopify: true,
-    catIng: ['Ventas tienda online (Shopify)', 'Servicios', 'Venta de producto (fuera de Shopify)', 'Subvención', 'Otros ingresos'],
-    catGas: ['Cuota autónomos', 'Mercancía / producto', 'Envíos y embalaje', 'Shopify: cuota y comisiones', 'Alquiler',
-      'Suministros (luz, agua, internet)', 'Material', 'Software y suscripciones', 'Publicidad', 'Gestoría', 'Formación',
-      'Transporte y dietas', 'Equipos', 'Seguros', 'Comisiones bancarias', 'Otros gastos'],
+    catIng: ['Ventas tienda online (Shopify)', 'Venta de producto (fuera de Shopify)', 'Otros ingresos'],
+    catGas: ['Cuota autónomos', 'Mercancía / producto', 'Envíos y embalaje', 'Shopify: cuota y comisiones', 'Publicidad',
+      'Diseño y packaging', 'Software y suscripciones', 'Gestoría', 'Transporte y dietas', 'Comisiones bancarias', 'Otros gastos'],
   },
   brisa: {
     nombre: 'Brisa Creative',
@@ -302,7 +314,7 @@ const NEGOCIOS = {
 
 (() => {
   const CLAVE_SOCIAS = 'contabilidad-socias-v1', CLAVE_VISTA = 'contabilidad-negocio';
-  const SIN_IVA = ['Cuota autónomos', 'Seguros', 'Comisiones bancarias'];
+  const SIN_IVA = ['Cuota autónomos', 'Seguros', 'Colegio profesional y seguros', 'Comisiones bancarias'];
   const ESTADOS_COBRADOS = ['PAID', 'PARTIALLY_PAID', 'PARTIALLY_REFUNDED', 'REFUNDED'];
 
   const $ = s => document.querySelector(s);
@@ -314,24 +326,32 @@ const NEGOCIOS = {
   const escribir = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { alert('No se pudo guardar en este navegador. Descarga una copia de seguridad.'); } };
 
   // ---------- Datos ----------
-  // Cada empresa guarda sus movimientos aparte; las socias son las mismas en las dos.
+  // Cada negocio guarda sus movimientos aparte; las socias son las mismas en todos.
   const blank = () => ({ reparto: 50, shopify: { url: '', clave: '', socia: 'ambas', ultima: '' }, movs: [] });
   const dbs = {};
   let socias;
   const cargar = () => {
     Object.entries(NEGOCIOS).forEach(([k, n]) => { dbs[k] = { ...blank(), ...leer(n.clave) }; });
     socias = leer(CLAVE_SOCIAS) || dbs.benissalud.socias || dbs.brisa.socias || { s1: 'Socia 1', s2: 'Socia 2' };
+    const viejos = dbs.benissalud.movs.filter(m => m.origen === 'shopify');
+    if (viejos.length) {
+      const mm = dbs.moodmatcha;
+      mm.movs.push(...viejos.filter(m => !mm.movs.some(x => x.id === m.id)));
+      if (!mm.shopify.url) mm.shopify = { ...dbs.moodmatcha.shopify };
+      dbs.benissalud.movs = dbs.benissalud.movs.filter(m => m.origen !== 'shopify');
+      escribir(NEGOCIOS.moodmatcha.clave, mm); escribir(NEGOCIOS.moodmatcha.clave, dbs.moodmatcha);
+    }
   };
   cargar();
 
   let neg = leer(CLAVE_VISTA);
   if (!NEGOCIOS[neg] && neg !== 'total') neg = 'benissalud';
   const total = () => neg === 'total';
-  const CFG = () => NEGOCIOS[neg] || { nombre: 'Total de las dos', shopify: false, catIng: [], catGas: [] };
+  const CFG = () => NEGOCIOS[neg] || { nombre: 'Total', shopify: false, catIng: [], catGas: [] };
   const db = () => dbs[neg];
   const save = () => { if (!total()) escribir(NEGOCIOS[neg].clave, dbs[neg]); };
 
-  // Movimientos visibles: los de la empresa elegida, o los de las dos marcados con su empresa.
+  // Movimientos visibles: los del negocio elegido, o los de todos marcados con su negocio.
   const todos = () => total()
     ? Object.keys(NEGOCIOS).flatMap(k => dbs[k].movs.map(m => ({ ...m, _neg: k })))
     : db().movs;
@@ -444,8 +464,8 @@ const NEGOCIOS = {
     const y = $('#fAnio').value, t = +$('#fTri').value || tri(new Date().toISOString());
     const anio = todos().filter(m => m.fecha.startsWith(y));
     $('#notaImp').textContent = total()
-      ? 'Esto es lo que presenta cada socia: sus modelos 303 y 130 suman lo que le toca de las dos empresas. Cálculo orientativo para revisar con la gestoría.'
-      : `Solo la parte de ${CFG().nombre}. Lo que presenta cada socia (sumando las dos empresas) está en «Total de las dos».`;
+      ? 'Esto es lo que presenta cada socia: sus modelos 303 y 130 suman lo que le toca de los tres negocios. Cálculo orientativo para revisar con la gestoría.'
+      : `Solo la parte de ${CFG().nombre}. Lo que presenta cada socia (sumando los tres negocios) está en «Total».`;
     $('#impuestos').innerHTML = ['s1', 's2'].map(s => {
       const w = m => share(m, s);
       const trim = sumar(anio.filter(m => tri(m.fecha) === t), w);
@@ -479,11 +499,11 @@ const NEGOCIOS = {
     }).join('') + `<p class="note" style="grid-column:1/-1">Si eliges «Todo el año» se muestra el trimestre actual. Si más del 70 % de tus ingresos ya llevan retención, puedes no estar obligada al 130: consúltalo con la gestoría.</p>`;
   };
 
-  // ---------- Shopify (Benissalud) ----------
+  // ---------- Shopify (MOOD MATCHA) ----------
   // Apunta (o actualiza) los pedidos como ingresos. pedidos: [{id, nombre, fecha, estado, total, iva}]
   // Si se pasa `anio`, la lista es el año completo y se quitan los pedidos de ese año que ya no aparecen.
   const aplicarPedidos = (pedidos, anio) => {
-    const d = dbs.benissalud;
+    const d = dbs.moodmatcha;
     const previos = new Map(d.movs.filter(m => m.origen === 'shopify').map(m => [m.shopifyId, m]));
     const vistos = new Set(), r = { nuevos: 0, actualizados: 0, quitados: 0 };
     const quitar = m => { d.movs = d.movs.filter(x => x !== m); r.quitados++; };
@@ -497,19 +517,19 @@ const NEGOCIOS = {
       } else {
         d.movs.push({
           id: 'shp' + id, origen: 'shopify', shopifyId: id, tipo: 'ingreso', socia: d.shopify.socia,
-          categoria: NEGOCIOS.benissalud.catIng[0], nfactura: p.nombre, contraparte: `Tienda ${NEGOCIOS.benissalud.tienda}`,
+          categoria: NEGOCIOS.moodmatcha.catIng[0], nfactura: p.nombre, contraparte: `Tienda ${NEGOCIOS.moodmatcha.tienda}`,
           cobrado: '1', deducible: '1', ...datos
         });
         r.nuevos++;
       }
     });
     if (anio) previos.forEach((m, id) => { if (!vistos.has(id) && m.fecha.startsWith(anio)) quitar(m); });
-    escribir(NEGOCIOS.benissalud.clave, d); fillYears();
+    escribir(NEGOCIOS.moodmatcha.clave, d); fillYears();
     return `${r.nuevos} pedidos nuevos, ${r.actualizados} actualizados, ${r.quitados} quitados (cancelados o reembolsados).`;
   };
 
   const renderShopify = () => {
-    const d = dbs.benissalud, movs = filtered().filter(m => m.origen === 'shopify'), t = sumar(movs);
+    const d = dbs.moodmatcha, movs = filtered().filter(m => m.origen === 'shopify'), t = sumar(movs);
     $('#kpisShop').innerHTML = [
       ['Pedidos', movs.length, true], ['Ventas (base)', t.ing], ['IVA de las ventas', t.ivaRep],
       ['Ticket medio (con IVA)', movs.length ? (t.ing + t.ivaRep) / movs.length : 0]
@@ -520,8 +540,8 @@ const NEGOCIOS = {
 
   $('#fShop').addEventListener('submit', async e => {
     e.preventDefault();
-    const F = e.target, d = dbs.benissalud, y = +$('#fAnio').value, msg = $('#msgShop');
-    d.shopify.url = F.url.value.trim(); d.shopify.clave = F.clave.value; escribir(NEGOCIOS.benissalud.clave, d);
+    const F = e.target, d = dbs.moodmatcha, y = +$('#fAnio').value, msg = $('#msgShop');
+    d.shopify.url = F.url.value.trim(); d.shopify.clave = F.clave.value; escribir(NEGOCIOS.moodmatcha.clave, d);
     if (!d.shopify.url) { msg.textContent = 'Primero pega la URL del conector.'; return; }
     $('#btnSync').disabled = true; msg.textContent = `Descargando pedidos de ${y}…`;
     try {
@@ -604,7 +624,7 @@ const NEGOCIOS = {
         });
         after = orders.pageInfo.hasNextPage ? orders.pageInfo.endCursor : null;
       } while (after);
-      dbs.benissalud.shopify.ultima = new Date().toISOString(); escribir(NEGOCIOS.benissalud.clave, dbs.benissalud);
+      dbs.moodmatcha.shopify.ultima = new Date().toISOString(); escribir(NEGOCIOS.moodmatcha.clave, dbs.moodmatcha);
       const res = aplicarPedidos(pedidos, String(y));
       msg.textContent = pedidos.length ? `✓ Conectada con Shopify. ${y}: ${res}`
         : `✓ Conectada con Shopify. La tienda todavía no tiene pedidos en ${y}: en cuanto entren ventas aparecerán aquí y en Movimientos.`;
@@ -707,7 +727,7 @@ const NEGOCIOS = {
   const loadAjustes = () => {
     A.s1.value = socias.s1; A.s2.value = socias.s2;
     if (!total()) { A.reparto.value = db().reparto; $('#ajNeg').textContent = CFG().nombre; $('#resetNeg').textContent = CFG().nombre; }
-    A.shopSocia.value = dbs.benissalud.shopify.socia;
+    A.shopSocia.value = dbs.moodmatcha.shopify.socia;
   };
   A.addEventListener('submit', e => {
     e.preventDefault();
@@ -740,12 +760,12 @@ const NEGOCIOS = {
       const d = JSON.parse(await f.text());
       if (d.version === 2 && d.negocios) {
         const n = Object.values(d.negocios).reduce((s, x) => s + (x.movs?.length || 0), 0);
-        if (!confirm(`¿Cargar la copia completa (${n} movimientos de las dos empresas)? Se sustituirán los datos actuales.`)) return;
+        if (!confirm(`¿Cargar la copia completa (${n} movimientos de todos los negocios)? Se sustituirán los datos actuales.`)) return;
         Object.keys(NEGOCIOS).forEach(k => { if (d.negocios[k]) escribir(NEGOCIOS[k].clave, { ...blank(), ...d.negocios[k] }); });
         if (d.socias) escribir(CLAVE_SOCIAS, d.socias);
       } else if (Array.isArray(d.movs)) {
         // Copia antigua de una sola empresa: se carga en la empresa elegida
-        if (total()) { alert('Esta copia es de una sola empresa: elige primero Benissalud o Brisa Creative.'); return; }
+        if (total()) { alert('Esta copia es de una sola empresa: elige primero un negocio (Benissalud, MOOD MATCHA o Brisa Creative).'); return; }
         if (!confirm(`¿Cargar ${d.movs.length} movimientos en ${CFG().nombre}? Se sustituirán sus datos actuales.`)) return;
         escribir(NEGOCIOS[neg].clave, { ...blank(), ...d, reparto: typeof d.reparto === 'number' ? d.reparto : 50 });
         if (d.socias) escribir(CLAVE_SOCIAS, d.socias);
