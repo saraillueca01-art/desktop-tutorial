@@ -435,10 +435,10 @@
         <p class="note" style="margin:0 0 12px">Un Excel con una hoja por negocio (todos los movimientos), un resumen por trimestres con ingresos, gastos, beneficio e impuestos, el libro de facturas emitidas y el de albaranes (con enlace a cada PDF en tu Google Drive) y el libro de gastos.</p>
         <div class="row">
           <button class="btn" data-excel>Descargar Excel</button>
-          <button class="btn ghost off" id="btnDrive">Guardar copia en Google Drive</button>
+          <button class="btn ghost off" id="btnDrive">Actualizar ahora en Google Drive</button>
         </div>
         <label class="off" id="lblAuto" style="flex-direction:row;align-items:center;gap:8px;margin-top:14px;color:var(--text);font-size:.9rem">
-          <input type="checkbox" id="chkAuto"> Copia automática en Google Drive (una al día como mucho, solo si hay cambios)
+          <input type="checkbox" id="chkAuto"> Mantener «Contabilidad.xlsx» al día en mi Google Drive (se actualiza solo con cada cambio)
         </label>
         <div class="msg" id="msgExcel"></div>
       </div>
@@ -521,10 +521,12 @@ const NEGOCIOS = {
   const errorForm = (sel, txt) => { const el = $(sel); el.textContent = txt; el.scrollIntoView({ block: 'center', behavior: 'smooth' }); aviso(txt, true); };
   const leer = k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
   const hayLocal = (() => { try { localStorage.setItem('__prueba', '1'); localStorage.removeItem('__prueba'); return true; } catch { return false; } })();
-  let alGuardar = () => {};  // la sincronización con tu cuenta lo sustituye cuando está disponible
+  let alGuardar = () => {};
+  let alCambiarNegocio = () => {};  // el Excel de Google Drive lo sustituye cuando está disponible  // la sincronización con tu cuenta lo sustituye cuando está disponible
   const escribir = (k, v) => {
     try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* sin almacenamiento local: queda la nube */ }
     alGuardar(k);
+    if (Object.values(NEGOCIOS).some(x => x.clave === k)) alCambiarNegocio();
   };
 
   // ---------- Datos ----------
@@ -1259,6 +1261,7 @@ const NEGOCIOS = {
     try {
       await asegurarPDFs(avisoProgreso);
       const datos = await crearExcel();
+      if (drive && copias.auto !== false) copiaEnDrive().then(pintarCopias).catch(() => {});
       if (descargas) {
         try { await descargas.save({ filename: nombreExcel(), data: datos }); msgExcel('✓ Excel descargado.'); }
         catch (err) { msgExcel(err.code === 'declined' ? '' : 'No se pudo descargar: ' + err.message); }
@@ -1287,57 +1290,74 @@ const NEGOCIOS = {
     try { localStorage.setItem('contabilidad-copias-v1', JSON.stringify(copias)); } catch { }
     if (nube) { try { await nube.doc('ajustes/copias').set(copias); } catch { } }
   };
+  // Huella de los datos que van al Excel: si no cambia, no hace falta volver a subirlo
   const huella = () => {
-    const t = JSON.stringify(Object.keys(NEGOCIOS).map(k => dbs[k].movs));
+    const t = JSON.stringify(Object.keys(NEGOCIOS).map(k => [dbs[k].movs, dbs[k].facturas || []]));
     let h = 0; for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0;
     return `${t.length}-${h}`;
   };
   const hayDatos = () => Object.keys(NEGOCIOS).some(k => dbs[k].movs.length);
+  const idDeEnlace = e => (String(e || '').match(/\/d\/([\w-]+)/) || [])[1];
   const pintarCopias = () => {
     $('#chkAuto').checked = copias.auto !== false;
-    if (copias.ultima && !$('#msgExcel').dataset.ocupado) msgExcel(`Última copia en Drive: ${new Date(copias.ultima).toLocaleString('es-ES')}`
+    if (copias.ultima && !$('#msgExcel').dataset.ocupado) msgExcel(`Tu Excel en Google Drive: actualizado el ${new Date(copias.ultima).toLocaleString('es-ES')}`
       + (copias.enlace ? ` · <a href="${esc(copias.enlace)}" target="_blank" rel="noopener">abrir</a>` : ''));
   };
+  // Sube el Excel actualizado a tu Google Drive como «Contabilidad.xlsx» y manda el anterior a la papelera
+  // (Drive no deja sobrescribir un archivo desde aquí; así siempre tienes uno solo y al día).
+  let subiendoExcel = false;
   const copiaEnDrive = async () => {
-    await asegurarPDFs();
-    const b64 = (buf => { let s = ''; const u = new Uint8Array(buf); for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(s); })(await crearExcel());
-    const r = await drive.callTool(DRIVE, 'create_file', {
-      title: nombreExcel(), base64Content: b64, contentMimeType: XLSX_MIME, disableConversionToGoogleType: true,
-    });
-    const f = r.payload?.file || r.payload || {};
-    copias = { ...copias, ultima: new Date().toISOString(), huella: huella(), enlace: f.webViewLink || f.alternateLink || (f.id ? `https://drive.google.com/file/d/${f.id}/view` : '') };
-    await guardarCopias();
+    if (subiendoExcel) return; subiendoExcel = true;
+    try {
+      await asegurarPDFs();
+      const r = await drive.callTool(DRIVE, 'create_file', {
+        title: 'Contabilidad.xlsx', base64Content: aBase64(await crearExcel()), contentMimeType: XLSX_MIME, disableConversionToGoogleType: true,
+      });
+      const f = r.payload?.file || r.payload || {};
+      const enlace = f.webViewLink || f.alternateLink || (f.id ? `https://drive.google.com/file/d/${f.id}/view` : '');
+      const nuevoIdDrive = f.id || idDeEnlace(enlace), anterior = copias.excelId || idDeEnlace(copias.enlace);
+      copias = { ...copias, ultima: new Date().toISOString(), huella: huella(), enlace, excelId: nuevoIdDrive };
+      await guardarCopias();
+      if (anterior && nuevoIdDrive && anterior !== nuevoIdDrive) {
+        try { await drive.callTool(DRIVE, 'trash_file', { fileId: anterior }); } catch { /* si no se puede, se queda la copia antigua */ }
+      }
+    } finally { subiendoExcel = false; }
   };
   $('#btnDrive').onclick = async () => {
-    const b = $('#btnDrive'); b.disabled = true; $('#msgExcel').dataset.ocupado = '1'; msgExcel('Guardando copia en Google Drive…');
+    const b = $('#btnDrive'); b.disabled = true; $('#msgExcel').dataset.ocupado = '1'; msgExcel('Actualizando tu Excel en Google Drive…');
     try {
       await copiaEnDrive(); delete $('#msgExcel').dataset.ocupado;
-      msgExcel('✓ Copia guardada en tu Google Drive' + (copias.enlace ? ` · <a href="${esc(copias.enlace)}" target="_blank" rel="noopener">abrir</a>` : '.'));
+      msgExcel('✓ Excel actualizado en tu Google Drive' + (copias.enlace ? ` · <a href="${esc(copias.enlace)}" target="_blank" rel="noopener">abrir</a>` : '.'));
+      aviso('✓ Excel guardado en tu Google Drive');
     }
     catch (err) { delete $('#msgExcel').dataset.ocupado; msgExcel(ERRORES_DRIVE[err.code] || 'No se pudo guardar en Google Drive: ' + (err.message || err)); }
     finally { b.disabled = false; }
   };
-  $('#chkAuto').onchange = e => { copias = { ...copias, auto: e.target.checked }; guardarCopias(); };
-  // Al abrir el panel: si toca, una copia automática (una sola aunque esté abierto en varios dispositivos)
-  const copiaAutomatica = async () => {
+  $('#chkAuto').onchange = e => { copias = { ...copias, auto: e.target.checked }; guardarCopias(); if (e.target.checked) excelAlDia(); };
+  // Mantener el Excel de Drive al día: tras cada cambio (con una pausa) y al abrir el panel.
+  // Solo un dispositivo lo sube a la vez, aunque el panel esté abierto en varios.
+  let temporizadorExcel = null;
+  const excelAlDia = async () => {
     if (!drive || copias.auto === false || !hayDatos() || copias.huella === huella()) return;
-    if (copias.ultima && Date.now() - new Date(copias.ultima) < 20 * 36e5) return;
     try {
       if (nube) {
         const lease = await nube.doc('ajustes/copias').acquire({ holder: nuevoId(), ttlMs: 120000 });
         if (!lease.acquired) return;
         const d = await nube.doc('ajustes/copias').get();
-        if (d.exists && d.data().ultima && Date.now() - new Date(d.data().ultima) < 20 * 36e5) { copias = { ...copias, ...d.data() }; return; }
+        if (d.exists) copias = { ...copias, ...sinSello(d.data()) };
+        if (copias.huella === huella()) return;
       }
       await copiaEnDrive(); pintarCopias();
     } catch (err) {
-      msgExcel(ERRORES_DRIVE[err.code] ? `Copia automática: ${ERRORES_DRIVE[err.code]}` : '');
+      msgExcel(ERRORES_DRIVE[err.code] ? `Excel en Drive: ${ERRORES_DRIVE[err.code]}` : '');
     }
   };
+  const programarExcel = (espera = 20000) => { if (!drive) return; clearTimeout(temporizadorExcel); temporizadorExcel = setTimeout(excelAlDia, espera); };
   window.claude?.use?.('mcp').then(m => {
     drive = m; if (!m) return;
     $('#btnDrive').classList.remove('off'); $('#lblAuto').classList.remove('off');
-    setTimeout(copiaAutomatica, 4000);  // deja que primero se carguen los datos de tu cuenta
+    alCambiarNegocio = () => programarExcel();
+    programarExcel(5000);  // deja que primero se carguen los datos de tu cuenta
   });
 
   // ---------- Facturas en PDF ----------
