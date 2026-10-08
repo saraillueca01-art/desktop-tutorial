@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contabilidad socias</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1f3458;
+      --ink-soft: #4a5f82;
+      --text: #2a3140;
+      --muted: #6f6b67;
+      --bg: #f8f6f3;
+      --card: #ffffff;
+      --line: #ebe6df;
+      --sand: #cdbca8;
+      --green: #2f7d5b;
+      --red: #b0413e;
+      --bene: #3b8b8a;
+      --brisa: #1f3458;
+      --radius: 16px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --ink: #dfe6f3; --ink-soft: #a9b6cf; --text: #e4e2de; --muted: #a6a29c;
+        --bg: #14181f; --card: #1d232d; --line: #2e3542; --sand: #8b7c6a;
+        --green: #6cc49d; --red: #e3807c; --bene: #6cc0be; --brisa: #9db4dd;
+      }
+    }
+    :root[data-theme="dark"] {
+      --ink: #dfe6f3; --ink-soft: #a9b6cf; --text: #e4e2de; --muted: #a6a29c;
+      --bg: #14181f; --card: #1d232d; --line: #2e3542; --sand: #8b7c6a;
+      --green: #6cc49d; --red: #e3807c; --bene: #6cc0be; --brisa: #9db4dd;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Inter", system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; font-size: 15px; }
+    h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 400; color: var(--ink); }
+    h1 { font-size: 1.6rem; }
+    h2 { font-size: 1.25rem; margin-bottom: .75rem; }
+    h3 { font-size: 1rem; font-family: "Inter", sans-serif; font-weight: 600; margin-bottom: .5rem; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px 48px; }
+    header.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 0 12px; }
+    header.top p { color: var(--muted); font-size: .85rem; }
+    nav.tabs { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
+    nav.tabs button { background: none; border: 0; padding: 10px 14px; font: inherit; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; }
+    nav.tabs button.on { color: var(--ink); border-bottom-color: var(--ink); font-weight: 600; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; }
+    select, input, textarea { font: inherit; color: var(--text); background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-width: 0; }
+    label { display: flex; flex-direction: column; gap: 4px; font-size: .8rem; color: var(--muted); }
+    .btn { font: inherit; border: 1px solid var(--ink); background: var(--ink); color: var(--card); padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+    .btn.ghost { background: transparent; color: var(--ink); }
+    .btn.small { padding: 4px 10px; font-size: .8rem; }
+    .btn.danger { border-color: var(--red); color: var(--red); background: transparent; }
+    .grid { display: grid; gap: 14px; }
+    .g2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    .g4 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
+    .kpi .lbl { font-size: .8rem; color: var(--muted); }
+    .kpi .val { font-size: 1.5rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .pos { color: var(--green); } .neg { color: var(--red); }
+    .tag { display: inline-block; font-size: .72rem; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); white-space: nowrap; }
+    .tag.bene { color: var(--bene); border-color: var(--bene); }
+    .tag.brisa { color: var(--brisa); border-color: var(--brisa); }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    th, td { padding: 8px 6px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 500; font-size: .78rem; }
+    td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    tr.total td { font-weight: 600; border-top: 2px solid var(--line); }
+    form.mov { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+    form.mov .wide { grid-column: 1 / -1; }
+    .calc { font-size: .85rem; color: var(--muted); }
+    .note { font-size: .82rem; color: var(--muted); margin-top: 8px; }
+    .bar { height: 10px; border-radius: 999px; background: var(--line); overflow: hidden; display: flex; }
+    .bar span { display: block; height: 100%; }
+    .hidden { display: none !important; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .empty { color: var(--muted); padding: 24px; text-align: center; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Contabilidad · Benissalud &amp; Brisa Creative</h1>
+      <p>Dos ramas, dos socias autónomas. Los datos se guardan en este navegador: haz copia de seguridad en Ajustes.</p>
+    </div>
+    <div class="row">
+      <button class="btn" data-go="nuevo">+ Nuevo movimiento</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button data-tab="resumen" class="on">Resumen</button>
+    <button data-tab="movimientos">Movimientos</button>
+    <button data-tab="nuevo">Añadir</button>
+    <button data-tab="impuestos">Impuestos</button>
+    <button data-tab="ajustes">Ajustes</button>
+  </nav>
+
+  <div class="filters" id="filters">
+    <label>Año <select id="fAnio"></select></label>
+    <label>Trimestre
+      <select id="fTri">
+        <option value="0">Todo el año</option>
+        <option value="1">1T (ene–mar)</option>
+        <option value="2">2T (abr–jun)</option>
+        <option value="3">3T (jul–sep)</option>
+        <option value="4">4T (oct–dic)</option>
+      </select>
+    </label>
+    <label>Rama
+      <select id="fRama">
+        <option value="">Las dos</option>
+        <option value="benissalud">Benissalud</option>
+        <option value="brisa">Brisa Creative</option>
+      </select>
+    </label>
+  </div>
+
+  <!-- RESUMEN -->
+  <section id="v-resumen">
+    <div class="grid g4" id="kpis"></div>
+    <div class="grid g2" style="margin-top:14px">
+      <div class="card">
+        <h2>Por rama</h2>
+        <div class="table-wrap"><table id="tRamas"></table></div>
+      </div>
+      <div class="card">
+        <h2>Por socia</h2>
+        <div class="table-wrap"><table id="tSocias"></table></div>
+        <p class="note">Los movimientos marcados como «Las dos» se reparten según el porcentaje de cada rama (Ajustes).</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h2>Gastos por categoría</h2>
+      <div class="table-wrap"><table id="tCats"></table></div>
+    </div>
+  </section>
+
+  <!-- MOVIMIENTOS -->
+  <section id="v-movimientos" class="hidden">
+    <div class="filters">
+      <label>Tipo
+        <select id="fTipo"><option value="">Todos</option><option value="ingreso">Ingresos</option><option value="gasto">Gastos</option></select>
+      </label>
+      <label>Socia <select id="fSocia"></select></label>
+      <label style="flex:1;min-width:180px">Buscar <input id="fTxt" placeholder="Concepto, cliente, nº factura…"></label>
+      <button class="btn ghost" id="btnCsv">Exportar CSV</button>
+    </div>
+    <div class="card table-wrap"><table id="tMovs"></table></div>
+  </section>
+
+  <!-- NUEVO / EDITAR -->
+  <section id="v-nuevo" class="hidden">
+    <div class="card">
+      <h2 id="formTitle">Nuevo movimiento</h2>
+      <form class="mov" id="fMov" autocomplete="off">
+        <input type="hidden" name="id">
+        <label>Tipo
+          <select name="tipo" required><option value="ingreso">Ingreso (factura emitida)</option><option value="gasto">Gasto (factura recibida)</option></select>
+        </label>
+        <label>Fecha <input type="date" name="fecha" required></label>
+        <label>Rama
+          <select name="rama" required><option value="benissalud">Benissalud</option><option value="brisa">Brisa Creative</option></select>
+        </label>
+        <label>Socia <select name="socia" required></select></label>
+        <label>Categoría <select name="categoria"></select></label>
+        <label>Nº factura <input name="nfactura"></label>
+        <label class="wide">Concepto <input name="concepto" required placeholder="Ej.: Pack contenido octubre / Sesión fisioterapia"></label>
+        <label>Cliente / proveedor <input name="contraparte"></label>
+        <label>Base imponible (€) <input type="number" name="base" step="0.01" min="0" required></label>
+        <label>IVA
+          <select name="iva"><option value="21">21 %</option><option value="10">10 %</option><option value="4">4 %</option><option value="0">0 % / exento</option></select>
+        </label>
+        <label>Retención IRPF
+          <select name="irpf"><option value="0">Sin retención</option><option value="15">15 %</option><option value="7">7 % (nueva autónoma)</option></select>
+        </label>
+        <label>Estado
+          <select name="cobrado"><option value="1">Cobrado / pagado</option><option value="0">Pendiente</option></select>
+        </label>
+        <label id="lblDeduc">¿Deducible?
+          <select name="deducible"><option value="1">Sí</option><option value="0">No</option></select>
+        </label>
+        <div class="wide calc" id="calc"></div>
+        <div class="wide row">
+          <button class="btn" type="submit">Guardar</button>
+          <button class="btn ghost" type="button" id="btnCancel">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- IMPUESTOS -->
+  <section id="v-impuestos" class="hidden">
+    <p class="note" style="margin:0 0 12px">Cada socia presenta sus propios modelos como autónoma. Cálculo orientativo para revisar con la gestoría.</p>
+    <div class="grid g2" id="impuestos"></div>
+  </section>
+
+  <!-- AJUSTES -->
+  <section id="v-ajustes" class="hidden">
+    <div class="grid g2">
+      <div class="card">
+        <h2>Socias</h2>
+        <form id="fAjustes" class="grid" style="gap:10px">
+          <label>Nombre socia 1 <input name="s1" required></label>
+          <label>Nombre socia 2 <input name="s2" required></label>
+          <h3 style="margin-top:8px">Reparto de lo compartido («Las dos»)</h3>
+          <label>Benissalud: % para socia 1 <input type="number" name="rBene" min="0" max="100" step="1" required></label>
+          <label>Brisa Creative: % para socia 1 <input type="number" name="rBrisa" min="0" max="100" step="1" required></label>
+          <div><button class="btn" type="submit">Guardar ajustes</button></div>
+        </form>
+      </div>
+      <div class="card">
+        <h2>Copia de seguridad</h2>
+        <p class="note" style="margin-bottom:12px">Los datos viven solo en este navegador. Descarga una copia a menudo y cárgala en el otro ordenador para compartirla con tu socia.</p>
+        <div class="row">
+          <button class="btn" id="btnExport">Descargar copia (.json)</button>
+          <label class="btn ghost" style="flex-direction:row">Cargar copia<input type="file" id="fileImport" accept=".json,application/json" hidden></label>
+        </div>
+        <h3 style="margin-top:20px">Zona peligrosa</h3>
+        <button class="btn danger" id="btnReset">Borrar todos los datos</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const KEY = 'contabilidad-socias-v1';
+  const RAMAS = { benissalud: 'Benissalud', brisa: 'Brisa Creative' };
+  const CAT_ING = ['Servicios', 'Venta de producto', 'Subvención', 'Otros ingresos'];
+  const CAT_GAS = ['Cuota autónomos', 'Alquiler', 'Suministros (luz, agua, internet)', 'Material', 'Software y suscripciones',
+    'Publicidad', 'Gestoría', 'Formación', 'Transporte y dietas', 'Equipos', 'Seguros', 'Comisiones bancarias', 'Otros gastos'];
+
+  const blank = () => ({ socias: { s1: 'Socia 1', s2: 'Socia 2' }, reparto: { benissalud: 50, brisa: 50 }, movs: [] });
+  let db;
+  try { db = JSON.parse(localStorage.getItem(KEY)) || blank(); } catch { db = blank(); }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch { alert('No se pudo guardar en este navegador. Descarga una copia de seguridad.'); } };
+
+  const $ = s => document.querySelector(s);
+  const eur = n => (n || 0).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+  const r2 = n => Math.round(n * 100) / 100;
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  const nombre = s => s === 'ambas' ? 'Las dos' : db.socias[s];
+  const tri = f => Math.floor((+f.slice(5, 7) - 1) / 3) + 1;
+
+  // Importes de un movimiento
+  const calc = m => {
+    const base = +m.base || 0, iva = r2(base * (+m.iva || 0) / 100), irpf = r2(base * (+m.irpf || 0) / 100);
+    return { base, iva, irpf, total: r2(base + iva - irpf) };
+  };
+  // Parte que corresponde a cada socia (0..1)
+  const share = (m, s) => {
+    if (m.socia === 'ambas') { const p = db.reparto[m.rama] / 100; return s === 's1' ? p : 1 - p; }
+    return m.socia === s ? 1 : 0;
+  };
+
+  // ---------- Filtros ----------
+  const fillYears = () => {
+    const now = new Date().getFullYear();
+    const ys = new Set([now, ...db.movs.map(m => +m.fecha.slice(0, 4))]);
+    const cur = $('#fAnio').value || now;
+    $('#fAnio').innerHTML = [...ys].sort((a, b) => b - a).map(y => `<option ${y == cur ? 'selected' : ''}>${y}</option>`).join('');
+  };
+  const fillSocias = () => {
+    const opts = `<option value="s1">${esc(db.socias.s1)}</option><option value="s2">${esc(db.socias.s2)}</option>`;
+    $('#fSocia').innerHTML = `<option value="">Todas</option>` + opts;
+    $('#fMov [name=socia]').innerHTML = opts + `<option value="ambas">Las dos (reparto)</option>`;
+  };
+  const filtered = () => {
+    const y = $('#fAnio').value, t = +$('#fTri').value, r = $('#fRama').value;
+    return db.movs.filter(m => m.fecha.startsWith(y) && (!t || tri(m.fecha) === t) && (!r || m.rama === r));
+  };
+
+  // ---------- Resumen ----------
+  const sumar = (movs, w = () => 1) => {
+    const o = { ing: 0, gas: 0, ivaRep: 0, ivaSop: 0, ret: 0, pend: 0 };
+    movs.forEach(m => {
+      const c = calc(m), k = w(m); if (!k) return;
+      if (m.tipo === 'ingreso') {
+        o.ing += c.base * k; o.ivaRep += c.iva * k; o.ret += c.irpf * k;
+        if (m.cobrado === '0') o.pend += c.total * k;
+      } else if (m.deducible !== '0') {
+        o.gas += c.base * k; o.ivaSop += c.iva * k;
+      }
+    });
+    o.ben = o.ing - o.gas;
+    return o;
+  };
+
+  const renderResumen = () => {
+    const movs = filtered(), t = sumar(movs);
+    $('#kpis').innerHTML = [
+      ['Ingresos (base)', t.ing], ['Gastos deducibles', t.gas],
+      ['Beneficio', t.ben, true], ['Pendiente de cobro', t.pend]
+    ].map(([l, v, c]) => `<div class="card kpi"><div class="lbl">${l}</div><div class="val ${c ? (v >= 0 ? 'pos' : 'neg') : ''}">${eur(v)}</div></div>`).join('');
+
+    const head = `<tr><th></th><th class="n">Ingresos</th><th class="n">Gastos</th><th class="n">Beneficio</th></tr>`;
+    const row = (lbl, o, cls = '') => `<tr class="${cls}"><td>${lbl}</td><td class="n">${eur(o.ing)}</td><td class="n">${eur(o.gas)}</td><td class="n ${o.ben >= 0 ? 'pos' : 'neg'}">${eur(o.ben)}</td></tr>`;
+
+    $('#tRamas').innerHTML = head + Object.entries(RAMAS)
+      .filter(([k]) => !$('#fRama').value || $('#fRama').value === k)
+      .map(([k, n]) => row(`<span class="tag ${k === 'benissalud' ? 'bene' : 'brisa'}">${n}</span>`, sumar(movs.filter(m => m.rama === k)))).join('')
+      + row('Total', t, 'total');
+
+    $('#tSocias').innerHTML = head + ['s1', 's2'].map(s => row(esc(db.socias[s]), sumar(movs, m => share(m, s)))).join('') + row('Total', t, 'total');
+
+    const cats = {};
+    movs.filter(m => m.tipo === 'gasto').forEach(m => {
+      const c = cats[m.categoria] ||= { benissalud: 0, brisa: 0 };
+      c[m.rama] += calc(m).base;
+    });
+    const rows = Object.entries(cats).sort((a, b) => (b[1].benissalud + b[1].brisa) - (a[1].benissalud + a[1].brisa));
+    const max = Math.max(1, ...rows.map(([, c]) => c.benissalud + c.brisa));
+    $('#tCats').innerHTML = rows.length
+      ? `<tr><th>Categoría</th><th style="width:40%"></th><th class="n">Benissalud</th><th class="n">Brisa</th><th class="n">Total</th></tr>` +
+        rows.map(([k, c]) => {
+          const tot = c.benissalud + c.brisa;
+          return `<tr><td>${esc(k)}</td><td><div class="bar" style="width:${tot / max * 100}%"><span style="width:${c.benissalud / tot * 100}%;background:var(--bene)"></span><span style="flex:1;background:var(--brisa)"></span></div></td>
+            <td class="n">${eur(c.benissalud)}</td><td class="n">${eur(c.brisa)}</td><td class="n">${eur(tot)}</td></tr>`;
+        }).join('')
+      : `<tr><td class="empty">Sin gastos en este periodo.</td></tr>`;
+  };
+
+  // ---------- Movimientos ----------
+  const renderMovs = () => {
+    const tipo = $('#fTipo').value, soc = $('#fSocia').value, q = $('#fTxt').value.trim().toLowerCase();
+    const movs = filtered()
+      .filter(m => (!tipo || m.tipo === tipo) && (!soc || share(m, soc) > 0))
+      .filter(m => !q || [m.concepto, m.contraparte, m.nfactura, m.categoria].join(' ').toLowerCase().includes(q))
+      .sort((a, b) => b.fecha.localeCompare(a.fecha));
+    if (!movs.length) { $('#tMovs').innerHTML = `<tr><td class="empty">No hay movimientos. Pulsa «+ Nuevo movimiento».</td></tr>`; return; }
+    $('#tMovs').innerHTML = `<tr><th>Fecha</th><th>Rama</th><th>Socia</th><th>Concepto</th><th>Categoría</th><th class="n">Base</th><th class="n">IVA</th><th class="n">IRPF</th><th class="n">Total</th><th></th></tr>` +
+      movs.map(m => {
+        const c = calc(m), sg = m.tipo === 'gasto' ? -1 : 1;
+        return `<tr>
+          <td>${m.fecha.split('-').reverse().join('/')}</td>
+          <td><span class="tag ${m.rama === 'benissalud' ? 'bene' : 'brisa'}">${RAMAS[m.rama]}</span></td>
+          <td>${esc(nombre(m.socia))}</td>
+          <td>${esc(m.concepto)}${m.contraparte ? `<br><small class="calc">${esc(m.contraparte)}${m.nfactura ? ' · ' + esc(m.nfactura) : ''}</small>` : ''}
+            ${m.cobrado === '0' ? ' <span class="tag neg">pendiente</span>' : ''}${m.deducible === '0' && m.tipo === 'gasto' ? ' <span class="tag">no deducible</span>' : ''}</td>
+          <td>${esc(m.categoria)}</td>
+          <td class="n ${sg < 0 ? 'neg' : 'pos'}">${eur(sg * c.base)}</td>
+          <td class="n">${eur(c.iva)}</td><td class="n">${c.irpf ? eur(-c.irpf) : '—'}</td><td class="n">${eur(c.total)}</td>
+          <td class="n"><button class="btn small ghost" data-edit="${m.id}">Editar</button> <button class="btn small danger" data-del="${m.id}">✕</button></td>
+        </tr>`;
+      }).join('');
+  };
+
+  // ---------- Impuestos (por socia y trimestre) ----------
+  const renderImpuestos = () => {
+    const y = $('#fAnio').value, t = +$('#fTri').value || Math.min(4, tri(new Date().toISOString()));
+    const anio = db.movs.filter(m => m.fecha.startsWith(y));
+    $('#impuestos').innerHTML = ['s1', 's2'].map(s => {
+      const w = m => share(m, s);
+      const trim = sumar(anio.filter(m => tri(m.fecha) === t), w);
+      // Modelo 130: acumulado desde enero, menos pagos de trimestres anteriores
+      let pagado = 0, cuota = 0, acum;
+      for (let q = 1; q <= t; q++) {
+        acum = sumar(anio.filter(m => tri(m.fecha) <= q), w);
+        cuota = Math.max(0, r2(acum.ben * 0.2 - acum.ret - pagado));
+        if (q < t) pagado += cuota;
+      }
+      const iva = r2(trim.ivaRep - trim.ivaSop);
+      return `<div class="card">
+        <h2>${esc(db.socias[s])} · ${t}T ${y}</h2>
+        <h3>Modelo 303 · IVA del trimestre</h3>
+        <table>
+          <tr><td>IVA repercutido (cobrado a clientes)</td><td class="n">${eur(trim.ivaRep)}</td></tr>
+          <tr><td>IVA soportado deducible</td><td class="n">−${eur(trim.ivaSop)}</td></tr>
+          <tr class="total"><td>${iva >= 0 ? 'A ingresar' : 'A compensar'}</td><td class="n ${iva > 0 ? 'neg' : 'pos'}">${eur(Math.abs(iva))}</td></tr>
+        </table>
+        <h3 style="margin-top:16px">Modelo 130 · IRPF (acumulado del año)</h3>
+        <table>
+          <tr><td>Ingresos acumulados</td><td class="n">${eur(acum.ing)}</td></tr>
+          <tr><td>Gastos acumulados</td><td class="n">−${eur(acum.gas)}</td></tr>
+          <tr><td>Rendimiento neto</td><td class="n">${eur(acum.ben)}</td></tr>
+          <tr><td>20 % del rendimiento</td><td class="n">${eur(Math.max(0, acum.ben * 0.2))}</td></tr>
+          <tr><td>Retenciones que te han practicado</td><td class="n">−${eur(acum.ret)}</td></tr>
+          <tr><td>Pagos 130 de trimestres anteriores</td><td class="n">−${eur(pagado)}</td></tr>
+          <tr class="total"><td>A ingresar</td><td class="n">${eur(cuota)}</td></tr>
+        </table>
+      </div>`;
+    }).join('') + `<p class="note" style="grid-column:1/-1">Si eliges «Todo el año» se muestra el trimestre actual. Si facturas a empresas con retención y más del 70 % de tus ingresos ya llevan retención, puedes no estar obligada al 130: consúltalo con la gestoría. Los servicios sanitarios pueden estar exentos de IVA (marca 0 %).</p>`;
+  };
+
+  // ---------- Formulario ----------
+  const F = $('#fMov');
+  const fillCats = () => {
+    const cats = F.tipo.value === 'ingreso' ? CAT_ING : CAT_GAS, cur = F.categoria.value;
+    F.categoria.innerHTML = cats.map(c => `<option ${c === cur ? 'selected' : ''}>${c}</option>`).join('');
+    $('#lblDeduc').classList.toggle('hidden', F.tipo.value === 'ingreso');
+  };
+  const showCalc = () => {
+    const c = calc({ base: F.base.value, iva: F.iva.value, irpf: F.irpf.value });
+    $('#calc').textContent = `Base ${eur(c.base)} + IVA ${eur(c.iva)}${c.irpf ? ` − retención ${eur(c.irpf)}` : ''} = total factura ${eur(c.total)}`;
+  };
+  const resetForm = () => {
+    F.reset(); F.id.value = ''; F.fecha.value = new Date().toISOString().slice(0, 10);
+    $('#formTitle').textContent = 'Nuevo movimiento'; fillCats(); showCalc();
+  };
+  const editMov = id => {
+    const m = db.movs.find(x => x.id === id); if (!m) return;
+    F.tipo.value = m.tipo; fillCats();
+    Object.entries(m).forEach(([k, v]) => { if (F[k]) F[k].value = v; });
+    $('#formTitle').textContent = 'Editar movimiento'; showCalc(); go('nuevo', true);
+  };
+  F.tipo.addEventListener('change', () => {
+    fillCats();
+    if (F.tipo.value === 'gasto') F.irpf.value = '0';
+    if (F.categoria.value === 'Cuota autónomos') F.iva.value = '0';
+    showCalc();
+  });
+  F.categoria.addEventListener('change', () => { if (['Cuota autónomos', 'Seguros', 'Comisiones bancarias'].includes(F.categoria.value)) F.iva.value = '0'; showCalc(); });
+  ['base', 'iva', 'irpf'].forEach(n => F[n].addEventListener('input', showCalc));
+  F.addEventListener('submit', e => {
+    e.preventDefault();
+    const m = Object.fromEntries(new FormData(F));
+    m.base = r2(+m.base);
+    if (m.tipo === 'ingreso') m.deducible = '1';
+    if (m.id) db.movs[db.movs.findIndex(x => x.id === m.id)] = m;
+    else { m.id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6); db.movs.push(m); }
+    save(); $('#fAnio').value = m.fecha.slice(0, 4); fillYears(); resetForm(); go('movimientos');
+  });
+  $('#btnCancel').onclick = () => { resetForm(); go('movimientos'); };
+
+  // ---------- Ajustes ----------
+  const A = $('#fAjustes');
+  const loadAjustes = () => { A.s1.value = db.socias.s1; A.s2.value = db.socias.s2; A.rBene.value = db.reparto.benissalud; A.rBrisa.value = db.reparto.brisa; };
+  A.addEventListener('submit', e => {
+    e.preventDefault();
+    db.socias = { s1: A.s1.value.trim(), s2: A.s2.value.trim() };
+    db.reparto = { benissalud: +A.rBene.value, brisa: +A.rBrisa.value };
+    save(); fillSocias(); alert('Ajustes guardados');
+  });
+  const download = (name, text, type) => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+  $('#btnExport').onclick = () => download(`contabilidad-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(db, null, 2), 'application/json');
+  $('#fileImport').onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try {
+      const d = JSON.parse(await f.text());
+      if (!Array.isArray(d.movs)) throw 0;
+      if (!confirm(`Cargar ${d.movs.length} movimientos? Se sustituirán los datos actuales.`)) return;
+      db = { ...blank(), ...d }; save(); init();
+    } catch { alert('El archivo no es una copia válida.'); }
+    e.target.value = '';
+  };
+  $('#btnReset').onclick = () => { if (confirm('¿Borrar TODOS los datos? Descarga antes una copia.')) { db = blank(); save(); init(); } };
+  $('#btnCsv').onclick = () => {
+    const rows = [['Fecha', 'Tipo', 'Rama', 'Socia', 'Nº factura', 'Concepto', 'Cliente/proveedor', 'Categoría', 'Base', 'IVA %', 'IVA', 'IRPF %', 'IRPF', 'Total', 'Cobrado', 'Deducible']];
+    filtered().sort((a, b) => a.fecha.localeCompare(b.fecha)).forEach(m => {
+      const c = calc(m);
+      rows.push([m.fecha, m.tipo, RAMAS[m.rama], nombre(m.socia), m.nfactura, m.concepto, m.contraparte, m.categoria,
+        c.base, m.iva, c.iva, m.irpf, c.irpf, c.total, m.cobrado === '1' ? 'sí' : 'no', m.deducible === '1' ? 'sí' : 'no']);
+    });
+    const csv = rows.map(r => r.map(v => typeof v === 'number' ? String(v).replace('.', ',') : `"${String(v ?? '').replace(/"/g, '""')}"`).join(';')).join('\n');
+    download(`movimientos-${$('#fAnio').value}.csv`, '﻿' + csv, 'text/csv');
+  };
+
+  // ---------- Navegación ----------
+  let view = 'resumen';
+  const render = () => {
+    $('#filters').classList.toggle('hidden', view === 'nuevo' || view === 'ajustes');
+    if (view === 'resumen') renderResumen();
+    if (view === 'movimientos') renderMovs();
+    if (view === 'impuestos') renderImpuestos();
+    if (view === 'ajustes') loadAjustes();
+  };
+  const go = (v, keep) => {
+    if (v === 'nuevo' && !keep) resetForm();
+    view = v;
+    document.querySelectorAll('section[id^="v-"]').forEach(s => s.classList.toggle('hidden', s.id !== 'v-' + v));
+    document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === v));
+    render();
+  };
+  $('#tabs').onclick = e => { if (e.target.dataset.tab) go(e.target.dataset.tab); };
+  document.querySelector('[data-go]').onclick = () => go('nuevo');
+  ['#fAnio', '#fTri', '#fRama', '#fTipo', '#fSocia'].forEach(s => $(s).addEventListener('change', render));
+  $('#fTxt').addEventListener('input', render);
+  $('#tMovs').onclick = e => {
+    const { edit, del } = e.target.dataset;
+    if (edit) editMov(edit);
+    if (del && confirm('¿Borrar este movimiento?')) { db.movs = db.movs.filter(m => m.id !== del); save(); render(); }
+  };
+
+  const init = () => { fillYears(); fillSocias(); resetForm(); go(view); };
+  init();
+})();
+</script>
+</body>
+</html>
