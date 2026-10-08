@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mi contabilidad</title>
+  <title>Mi panel de negocios</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,8 +63,8 @@
     .switch button[data-neg="moodmatcha"].on { background: var(--c-matcha); border-color: var(--c-matcha); color: var(--card); }
     .switch button[data-neg="brisa"].on { background: var(--c-brisa); border-color: var(--c-brisa); color: var(--card); }
     .switch button[data-neg="total"].on { background: var(--c-total); border-color: var(--c-total); color: var(--card); }
-    nav.tabs { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
-    nav.tabs button { background: none; border: 0; padding: 10px 14px; font: inherit; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; }
+    nav.tabs { display: flex; gap: 4px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
+    nav.tabs button { flex: none; background: none; border: 0; padding: 10px 14px; font: inherit; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; }
     nav.tabs button.on { color: var(--ink); border-bottom-color: var(--ink); font-weight: 600; }
     .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; }
     select, input, textarea { font: inherit; color: var(--text); background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-width: 0; }
@@ -124,6 +124,41 @@
     .graf svg { display: block; width: 100%; height: auto; overflow: visible; }
     .graf .tip { position: absolute; pointer-events: none; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: .8rem; box-shadow: 0 4px 14px rgba(0,0,0,.1); white-space: nowrap; transform: translate(-50%, -110%); }
     .kpi .sub { font-size: .8rem; margin-top: 2px; }
+    /* Inicio, trabajos e Instagram */
+    .lista-hoy { list-style: none; display: grid; gap: 6px; }
+    .lista-hoy li { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: .9rem; }
+    .lista-hoy li:last-child { border-bottom: 0; }
+    .lista-hoy .que { flex: 1; min-width: 0; }
+    .lista-hoy .cuando { font-size: .78rem; color: var(--muted); white-space: nowrap; }
+    .lista-hoy .cuando.tarde { color: var(--red); font-weight: 600; }
+    .kanban { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-items: start; }
+    @media (max-width: 820px) { .kanban { grid-template-columns: 1fr; } }
+    .columna { background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; min-height: 120px; }
+    .columna > h3 { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .tarea { background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; }
+    .tarea.alta { border-left-color: var(--amber); }
+    .tarea.tarde { border-left-color: var(--red); }
+    .tarea.hecho { opacity: .75; }
+    .tarea b { display: block; font-weight: 600; font-size: .92rem; }
+    .tarea .meta-t { font-size: .78rem; color: var(--muted); margin: 2px 0 8px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .tarea .acc { display: flex; flex-wrap: wrap; gap: 4px; }
+    .cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); margin-top: 12px; }
+    .cal .dow { font-size: .72rem; color: var(--muted); text-align: center; padding: 6px 0; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .cal .dia { min-height: 92px; padding: 4px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); cursor: pointer; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .cal .dia:hover { background: var(--bg); }
+    .cal .dia.fuera { opacity: .4; }
+    .cal .dia .n { font-size: .75rem; color: var(--muted); }
+    .cal .dia.hoy .n { color: var(--card); background: var(--ink); border-radius: 999px; width: 22px; height: 22px; display: grid; place-items: center; font-weight: 600; }
+    .chip { font-size: .72rem; line-height: 1.3; padding: 2px 6px; border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border: 1px dashed var(--muted); color: var(--text); }
+    .chip.preparada { border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 18%, transparent); }
+    .chip.publicada { border: 1px solid var(--ink); background: var(--ink); color: var(--card); }
+    @media (max-width: 600px) {
+      .cal .dia { min-height: 58px; padding: 2px; }
+      .chip { padding: 1px 2px; text-align: center; }
+      .chip .txt { display: none; }
+    }
+    .leyenda { display: flex; flex-wrap: wrap; gap: 12px; font-size: .78rem; color: var(--muted); margin-top: 8px; }
+    .leyenda .chip { display: inline-block; font-size: .72rem; width: auto; height: auto; padding: 1px 6px; }
   </style>
 </head>
 <body>
@@ -131,12 +166,14 @@
   <header class="top">
     <div>
       <img id="logoNeg" class="logo-neg" alt="">
-      <h1 id="titulo">Contabilidad</h1>
-      <p>Tus tres negocios. En Brisa Creative eliges en cada movimiento si es solo tuyo o se divide entre dos. Los datos se guardan en este navegador: haz copia de seguridad en Ajustes.</p>
+      <h1 id="titulo">Mi panel</h1>
+      <p>Trabajos, Instagram, metas y dinero de tus tres negocios. Los datos se guardan en este navegador: haz copia de seguridad en Ajustes.</p>
     </div>
-    <div class="row solo-negocio">
-      <button class="btn" data-nuevo="ingreso">+ Ingreso</button>
-      <button class="btn" data-nuevo="gasto">+ Gasto</button>
+    <div class="row">
+      <button class="btn ghost" data-rapido="trabajo">+ Trabajo</button>
+      <button class="btn ghost" data-rapido="pub">+ Publicación</button>
+      <button class="btn solo-negocio" data-nuevo="ingreso">+ Ingreso</button>
+      <button class="btn solo-negocio" data-nuevo="gasto">+ Gasto</button>
     </div>
   </header>
 
@@ -148,10 +185,12 @@
   </div>
 
   <nav class="tabs" id="tabs">
-    <button data-tab="resumen" class="on">Resumen</button>
+    <button data-tab="inicio" class="on">Inicio</button>
+    <button data-tab="trabajos">Trabajos</button>
+    <button data-tab="instagram">Instagram</button>
     <button data-tab="metas">Metas</button>
+    <button data-tab="resumen">Dinero</button>
     <button data-tab="movimientos" class="solo-negocio">Movimientos</button>
-    <button data-tab="nuevo" class="solo-negocio">Añadir</button>
     <button data-tab="shopify" class="solo-shopify">Shopify</button>
     <button data-tab="impuestos">Impuestos</button>
     <button data-tab="ajustes">Ajustes</button>
@@ -171,7 +210,7 @@
   </div>
 
   <!-- RESUMEN -->
-  <section id="v-resumen">
+  <section id="v-resumen" class="hidden">
     <div class="grid g4" id="kpis"></div>
     <p class="note solo-socias">Importes de tu parte: lo que está dividido entre dos cuenta la mitad.</p>
     <div class="grid g2" style="margin-top:14px">
@@ -187,6 +226,96 @@
     <div class="card" style="margin-top:14px">
       <h2>Gastos por categoría</h2>
       <div class="table-wrap"><table id="tCats"></table></div>
+    </div>
+  </section>
+
+  <!-- INICIO -->
+  <section id="v-inicio">
+    <div class="grid g4" id="kpisInicio"></div>
+    <div class="grid g2" style="margin-top:14px">
+      <div class="card"><h2>Trabajos por hacer</h2><ul class="lista-hoy" id="inicioTrabajos"></ul></div>
+      <div class="card"><h2>Instagram: próximos 7 días</h2><ul class="lista-hoy" id="inicioIg"></ul></div>
+      <div class="card"><h2>Metas</h2><div id="inicioMetas"></div></div>
+    </div>
+  </section>
+
+  <!-- TRABAJOS -->
+  <section id="v-trabajos" class="hidden">
+    <div class="row" style="justify-content:space-between;margin-bottom:12px">
+      <h2 style="margin:0">Trabajos</h2>
+      <button class="btn" id="btnNuevoTrabajo">+ Trabajo</button>
+    </div>
+    <div class="card hidden" id="cardTrabajo" style="margin-bottom:14px">
+      <h2 id="tituloTrabajo">Nuevo trabajo</h2>
+      <form class="mov" id="fTrabajo" autocomplete="off" novalidate>
+        <input type="hidden" name="id"><input type="hidden" name="neg0">
+        <label class="wide">¿Qué hay que hacer? <input name="titulo" placeholder="Ej.: Grabar contenido de octubre para Can Tallarina"></label>
+        <label class="solo-total">Negocio <select name="negocio"><option value="benissalud">Benissalud</option><option value="moodmatcha">MOOD MATCHA</option><option value="brisa">Brisa Creative</option></select></label>
+        <label>Cliente <input name="cliente"></label>
+        <label>Fecha de entrega <input type="date" name="entrega"></label>
+        <label>Prioridad <select name="prioridad"><option value="normal">Normal</option><option value="alta">Alta</option></select></label>
+        <label>Estado <select name="estado"><option value="pendiente">Pendiente</option><option value="curso">En curso</option><option value="hecho">Hecho</option></select></label>
+        <label>Importe a cobrar (opcional) <input name="importe" inputmode="decimal" placeholder="0,00"></label>
+        <label class="wide">Notas <textarea name="notas" rows="2"></textarea></label>
+        <div class="wide msg neg" id="trabajoError"></div>
+        <div class="wide row">
+          <button class="btn" type="submit">Guardar</button>
+          <button class="btn ghost" type="button" data-cerrar="cardTrabajo">Cancelar</button>
+        </div>
+      </form>
+    </div>
+    <div class="kanban" id="kanban"></div>
+  </section>
+
+  <!-- INSTAGRAM -->
+  <section id="v-instagram" class="hidden">
+    <div class="grid g2">
+      <div class="card">
+        <h2>Seguidores</h2>
+        <div id="igSeg"></div>
+        <form class="mini solo-negocio" id="fSeg"><input name="v" inputmode="numeric" placeholder="¿Cuántos seguidores tienes hoy?"><button class="btn small">Guardar</button></form>
+        <div class="graf solo-negocio" id="grafSeg" style="margin-top:12px"></div>
+        <p class="note">Apunta tus seguidores de vez en cuando (por ejemplo, cada lunes) y verás cómo creces.</p>
+      </div>
+      <div class="card">
+        <h2 id="igMesTitulo">Este mes</h2>
+        <div class="grid" id="igMes" style="gap:12px;grid-template-columns:repeat(auto-fit,minmax(110px,1fr))"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="row" style="justify-content:space-between">
+        <h2 style="margin:0">Calendario de contenido</h2>
+        <div class="row">
+          <button class="btn small ghost" id="calPrev" aria-label="Mes anterior">◀</button>
+          <b id="calMes" style="min-width:130px;text-align:center"></b>
+          <button class="btn small ghost" id="calNext" aria-label="Mes siguiente">▶</button>
+          <button class="btn small" id="btnNuevaPub">+ Publicación</button>
+        </div>
+      </div>
+      <div class="card hidden" id="cardPub" style="margin-top:12px">
+        <h2 id="tituloPub">Nueva publicación</h2>
+        <form class="mov" id="fPub" autocomplete="off" novalidate>
+          <input type="hidden" name="id"><input type="hidden" name="neg0">
+          <label class="wide">Idea / tema <input name="titulo" placeholder="Ej.: Reel 3 errores al grabar con el móvil"></label>
+          <label class="solo-total">Negocio <select name="negocio"><option value="benissalud">Benissalud</option><option value="moodmatcha">MOOD MATCHA</option><option value="brisa">Brisa Creative</option></select></label>
+          <label>Formato <select name="formato"><option value="reel">🎬 Reel</option><option value="carrusel">🖼️ Carrusel</option><option value="post">📷 Post</option><option value="story">⭕ Story</option><option value="directo">🔴 Directo</option></select></label>
+          <label>Fecha (vacía = banco de ideas) <input type="date" name="fecha"></label>
+          <label>Estado <select name="estado"><option value="idea">Idea</option><option value="preparada">Preparada (grabada / diseñada)</option><option value="publicada">Publicada</option></select></label>
+          <label class="wide">Texto / guion / notas <textarea name="notas" rows="3"></textarea></label>
+          <div class="wide msg neg" id="pubError"></div>
+          <div class="wide row">
+            <button class="btn" type="submit">Guardar</button>
+            <button class="btn ghost" type="button" data-cerrar="cardPub">Cancelar</button>
+            <button class="btn danger hidden" type="button" id="btnBorrarPub">Borrar</button>
+          </div>
+        </form>
+      </div>
+      <div class="cal" id="cal"></div>
+      <div class="leyenda"><span><span class="chip">Idea</span></span><span><span class="chip preparada">Preparada</span></span><span><span class="chip publicada">Publicada</span></span><span>Pulsa un día para añadir; pulsa una publicación para editarla.</span></div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h2>Banco de ideas</h2>
+      <ul class="lista-hoy" id="ideas"></ul>
     </div>
   </section>
 
@@ -403,7 +532,7 @@ const NEGOCIOS = {
 
   // ---------- Datos ----------
   // Cada negocio guarda sus movimientos aparte. En Brisa cada movimiento es tuyo o se divide entre dos.
-  const blank = () => ({ shopify: { url: '', clave: '', ultima: '' }, movs: [], metas: [] });
+  const blank = () => ({ shopify: { url: '', clave: '', ultima: '' }, movs: [], metas: [], trabajos: [], contenido: [], seguidores: [] });
   const dbs = {};
   const cargar = () => {
     Object.entries(NEGOCIOS).forEach(([k, n]) => { dbs[k] = { ...blank(), ...leer(n.clave) }; });
@@ -797,9 +926,15 @@ const NEGOCIOS = {
     const m = { ...prev, ...datos };
     if (prev) db().movs[db().movs.indexOf(prev)] = m;
     else { m.id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6); db().movs.push(m); }
-    save(); $('#fAnio').value = m.fecha.slice(0, 4); fillYears(); resetForm(); go('movimientos');
+    save();
+    if (trabajoAFacturar && !prev) {
+      const t = dbs[trabajoAFacturar.n].trabajos?.find(x => x.id === trabajoAFacturar.id);
+      if (t) { t.facturado = true; guardarNeg(trabajoAFacturar.n); }
+    }
+    trabajoAFacturar = null;
+    $('#fAnio').value = m.fecha.slice(0, 4); fillYears(); resetForm(); go('movimientos');
   });
-  $('#btnCancel').onclick = () => { resetForm(); go('movimientos'); };
+  $('#btnCancel').onclick = () => { trabajoAFacturar = null; resetForm(); go('movimientos'); };
 
   // ---------- Metas para crecer ----------
   // Cada negocio guarda sus metas; las de «Total» (los tres negocios juntos) van aparte.
@@ -1011,6 +1146,256 @@ const NEGOCIOS = {
     }
   });
 
+  // ---------- Trabajos, Instagram e Inicio ----------
+  // Listas de cada negocio; en «Total» se juntan las de los tres, marcadas con su negocio (_neg).
+  const items = clave => total()
+    ? Object.keys(NEGOCIOS).flatMap(k => (dbs[k][clave] ||= []).map(x => ({ ...x, _neg: k })))
+    : (db()[clave] ||= []).map(x => ({ ...x, _neg: neg }));
+  const guardarNeg = n => escribir(NEGOCIOS[n].clave, dbs[n]);
+  const nuevoId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  const etiquetaNeg = n => total() ? `<span class="tag ${n}">${NEGOCIOS[n].nombre}</span>` : '';
+  const hoyISO = () => iso(new Date());
+  const enDias = n => { const d = new Date(); d.setDate(d.getDate() + n); return iso(d); };
+  const fechaCorta = f => { const [, m, d] = f.split('-'); return `${+d} ${MESES[+m - 1].slice(0, 3)}`; };
+  const cuando = f => {
+    if (!f) return '<span class="cuando">sin fecha</span>';
+    const h = hoyISO();
+    if (f < h) return `<span class="cuando tarde">Atrasado · ${fechaCorta(f)}</span>`;
+    if (f === h) return '<span class="cuando tarde">Hoy</span>';
+    if (f === enDias(1)) return '<span class="cuando">Mañana</span>';
+    return `<span class="cuando">${fechaCorta(f)}</span>`;
+  };
+  const abrir = (card, form) => { $(card).classList.remove('hidden'); form.querySelector('input:not([type=hidden])').focus(); };
+  document.addEventListener('click', e => { const c = e.target.dataset?.cerrar; if (c) $('#' + c).classList.add('hidden'); });
+  const negDelForm = form => total() ? form.negocio.value : neg;
+
+  // ----- Trabajos -----
+  const ESTADOS_T = [['pendiente', 'Pendiente'], ['curso', 'En curso'], ['hecho', 'Hecho']];
+  const FT = $('#fTrabajo');
+  const formTrabajo = (t = null) => {
+    FT.reset(); $('#trabajoError').textContent = '';
+    $('#tituloTrabajo').textContent = t ? 'Editar trabajo' : 'Nuevo trabajo';
+    if (t) {
+      ['id', 'titulo', 'cliente', 'entrega', 'prioridad', 'estado', 'notas'].forEach(k => { FT[k].value = t[k] || ''; });
+      FT.importe.value = t.importe ? String(t.importe).replace('.', ',') : '';
+      FT.neg0.value = t._neg; FT.negocio.value = t._neg;
+    } else { FT.id.value = ''; FT.neg0.value = ''; FT.negocio.value = total() ? 'brisa' : neg; }
+    FT.negocio.disabled = !!t;
+    abrir('#cardTrabajo', FT);
+  };
+  $('#btnNuevoTrabajo').onclick = () => formTrabajo();
+  FT.addEventListener('submit', e => {
+    e.preventDefault();
+    if (!FT.titulo.value.trim()) { $('#trabajoError').textContent = 'Escribe qué hay que hacer.'; return; }
+    const imp = FT.importe.value.trim() ? leerImporte(FT.importe.value) : 0;
+    if (!(imp >= 0)) { $('#trabajoError').textContent = 'El importe no es válido (ej.: 350 o 350,50).'; return; }
+    const n = FT.neg0.value || negDelForm(FT), lista = dbs[n].trabajos ||= [];
+    const datos = { titulo: FT.titulo.value.trim(), cliente: FT.cliente.value.trim(), entrega: FT.entrega.value, prioridad: FT.prioridad.value,
+      estado: FT.estado.value, importe: r2(imp), notas: FT.notas.value.trim() };
+    const prev = lista.find(x => x.id === FT.id.value);
+    if (prev) Object.assign(prev, datos); else lista.push({ id: nuevoId(), creado: hoyISO(), ...datos });
+    guardarNeg(n); $('#cardTrabajo').classList.add('hidden'); render();
+  });
+  const renderTrabajos = () => {
+    const todosT = items('trabajos'), h = hoyISO();
+    const orden = (a, b) => (a.entrega || '9999').localeCompare(b.entrega || '9999') || (a.prioridad === 'alta' ? -1 : 1);
+    $('#kanban').innerHTML = ESTADOS_T.map(([est, nom], i) => {
+      const ts = todosT.filter(t => (t.estado || 'pendiente') === est).sort(orden);
+      return `<div class="columna"><h3>${nom}<span class="calc">${ts.length}</span></h3>${ts.map(t => {
+        const tarde = est !== 'hecho' && t.entrega && t.entrega < h;
+        return `<div class="tarea ${t.prioridad === 'alta' ? 'alta' : ''} ${tarde ? 'tarde' : ''} ${est === 'hecho' ? 'hecho' : ''}" data-t="${t.id}" data-n="${t._neg}">
+          <b>${esc(t.titulo)}</b>
+          <div class="meta-t">${etiquetaNeg(t._neg)}${t.cliente ? `<span>👤 ${esc(t.cliente)}</span>` : ''}${est !== 'hecho' ? cuando(t.entrega) : ''}${t.prioridad === 'alta' ? '<span class="estado warn">Prioridad alta</span>' : ''}${t.importe ? `<span>💶 ${eur(t.importe)}</span>` : ''}</div>
+          ${t.notas ? `<div class="calc" style="margin-bottom:8px">${esc(t.notas)}</div>` : ''}
+          <div class="acc">
+            ${i > 0 ? `<button class="btn small ghost" data-mover="-1">◀ ${ESTADOS_T[i - 1][1]}</button>` : ''}
+            ${i < 2 ? `<button class="btn small" data-mover="1">${ESTADOS_T[i + 1][1]} ▶</button>` : ''}
+            ${est === 'hecho' && t.importe && !t.facturado ? `<button class="btn small" data-facturar>Apuntar ingreso</button>` : ''}
+            ${t.facturado ? '<span class="estado ok">✓ Ingreso apuntado</span>' : ''}
+            <button class="btn small ghost" data-editar>Editar</button>
+            <button class="btn small danger" data-borrar aria-label="Borrar">✕</button>
+          </div></div>`;
+      }).join('') || '<p class="calc">Nada por aquí.</p>'}</div>`;
+    }).join('');
+  };
+  const trabajoDe = el => { const c = el.closest('[data-t]'); return c && { t: dbs[c.dataset.n].trabajos.find(x => x.id === c.dataset.t), n: c.dataset.n }; };
+  let trabajoAFacturar = null;
+  const accionTrabajo = e => {
+    const r = trabajoDe(e.target); if (!r?.t) return;
+    const { t, n } = r, d = e.target.dataset;
+    if (d.mover) { const i = ESTADOS_T.findIndex(([k]) => k === (t.estado || 'pendiente')); t.estado = ESTADOS_T[i + +d.mover][0]; guardarNeg(n); render(); }
+    if (d.hecho !== undefined) { t.estado = 'hecho'; guardarNeg(n); render(); }
+    if (d.editar !== undefined) formTrabajo({ ...t, _neg: n });
+    if (d.borrar !== undefined && confirm('¿Borrar este trabajo?')) { dbs[n].trabajos = dbs[n].trabajos.filter(x => x !== t); guardarNeg(n); render(); }
+    if (d.facturar !== undefined) {
+      // Abre el formulario de ingreso con los datos del trabajo; al guardarlo queda marcado
+      trabajoAFacturar = { n, id: t.id };
+      elegir(n); go('nuevo');
+      F.tipo.value = 'ingreso'; F.tipo.dispatchEvent(new Event('change'));
+      F.concepto.value = t.titulo; F.contraparte.value = t.cliente || ''; F.base.value = String(t.importe).replace('.', ','); showCalc();
+      $('#formTitle').textContent = `Nuevo ingreso · ${CFG().nombre}`;
+    }
+  };
+  $('#kanban').addEventListener('click', accionTrabajo);
+  $('#inicioTrabajos').addEventListener('click', accionTrabajo);
+
+  // ----- Instagram -----
+  const FORMATOS = { reel: '🎬', carrusel: '🖼️', post: '📷', story: '⭕', directo: '🔴' };
+  const NOMBRE_F = { reel: 'Reels', carrusel: 'Carruseles', post: 'Posts', story: 'Stories', directo: 'Directos' };
+  let mesCal = (() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); })();
+  const FP = $('#fPub');
+  const formPub = (p = null, fecha = '') => {
+    FP.reset(); $('#pubError').textContent = '';
+    $('#tituloPub').textContent = p ? 'Editar publicación' : 'Nueva publicación';
+    $('#btnBorrarPub').classList.toggle('hidden', !p);
+    if (p) { ['id', 'titulo', 'formato', 'fecha', 'estado', 'notas'].forEach(k => { FP[k].value = p[k] || ''; }); FP.neg0.value = p._neg; FP.negocio.value = p._neg; }
+    else { FP.id.value = ''; FP.neg0.value = ''; FP.fecha.value = fecha; FP.negocio.value = total() ? 'brisa' : neg; }
+    FP.negocio.disabled = !!p;
+    abrir('#cardPub', FP);
+    $('#cardPub').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  };
+  $('#btnNuevaPub').onclick = () => formPub();
+  FP.addEventListener('submit', e => {
+    e.preventDefault();
+    if (!FP.titulo.value.trim()) { $('#pubError').textContent = 'Escribe la idea o el tema.'; return; }
+    const n = FP.neg0.value || negDelForm(FP), lista = dbs[n].contenido ||= [];
+    const datos = { titulo: FP.titulo.value.trim(), formato: FP.formato.value, fecha: FP.fecha.value, estado: FP.estado.value, notas: FP.notas.value.trim() };
+    const prev = lista.find(x => x.id === FP.id.value);
+    if (prev) Object.assign(prev, datos); else lista.push({ id: nuevoId(), ...datos });
+    if (datos.fecha) mesCal = new Date(+datos.fecha.slice(0, 4), +datos.fecha.slice(5, 7) - 1, 1);
+    guardarNeg(n); $('#cardPub').classList.add('hidden'); render();
+  });
+  $('#btnBorrarPub').onclick = () => {
+    const n = FP.neg0.value; if (!n || !confirm('¿Borrar esta publicación?')) return;
+    dbs[n].contenido = dbs[n].contenido.filter(x => x.id !== FP.id.value); guardarNeg(n);
+    $('#cardPub').classList.add('hidden'); render();
+  };
+  $('#calPrev').onclick = () => { mesCal = new Date(mesCal.getFullYear(), mesCal.getMonth() - 1, 1); renderInstagram(); };
+  $('#calNext').onclick = () => { mesCal = new Date(mesCal.getFullYear(), mesCal.getMonth() + 1, 1); renderInstagram(); };
+  const pubDe = el => { const c = el.closest('[data-p]'); if (!c) return null; const p = dbs[c.dataset.n].contenido.find(x => x.id === c.dataset.p); return p && { ...p, _neg: c.dataset.n }; };
+  $('#cal').addEventListener('click', e => {
+    const p = pubDe(e.target); if (p) { formPub(p); return; }
+    const dia = e.target.closest('[data-dia]'); if (dia) formPub(null, dia.dataset.dia);
+  });
+  $('#ideas').addEventListener('click', e => { const p = pubDe(e.target); if (p) formPub(p); });
+  $('#inicioIg').addEventListener('click', e => {
+    const c = e.target.closest('[data-p]'); if (!c) return;
+    if (e.target.dataset.publicada !== undefined) {
+      const p = dbs[c.dataset.n].contenido.find(x => x.id === c.dataset.p); p.estado = 'publicada'; guardarNeg(c.dataset.n); render();
+    }
+  });
+
+  // Seguidores: un registro por día (el último del día manda)
+  $('#fSeg').addEventListener('submit', e => {
+    e.preventDefault();
+    const v = Math.round(leerImporte(e.target.v.value)); if (!(v >= 0)) return;
+    const lista = (db().seguidores ||= []).filter(x => x.fecha !== hoyISO());
+    lista.push({ fecha: hoyISO(), valor: v }); lista.sort((a, b) => a.fecha.localeCompare(b.fecha));
+    db().seguidores = lista; save(); e.target.reset(); render();
+  });
+  const ultimoSeg = n => (dbs[n].seguidores || []).at(-1);
+  const segHace = (n, dias) => { const lim = enDias(-dias); return [...(dbs[n].seguidores || [])].reverse().find(x => x.fecha <= lim); };
+  const cambioSeg = n => { const u = ultimoSeg(n), a = segHace(n, 30) || (dbs[n].seguidores || [])[0]; return u && a && a !== u ? u.valor - a.valor : null; };
+  const numero = v => (v || 0).toLocaleString('es-ES');
+  const signo = v => v == null ? '' : `<div class="sub ${v >= 0 ? 'pos' : 'neg'}">${v >= 0 ? '▲ +' : '▼ '}${numero(v)} en 30 días</div>`;
+
+  const renderSeguidores = () => {
+    if (total()) {
+      const filas = Object.entries(NEGOCIOS).map(([k, n]) => { const u = ultimoSeg(k); return `<li><span class="que"><span class="tag ${k}">${n.nombre}</span></span><b>${u ? numero(u.valor) : '—'}</b>${(c => c == null ? '' : `<span class="cuando ${c >= 0 ? 'pos' : 'neg'}">${c >= 0 ? '+' : ''}${numero(c)}</span>`)(cambioSeg(k))}</li>`; }).join('');
+      $('#igSeg').innerHTML = `<ul class="lista-hoy">${filas}</ul>`; return;
+    }
+    const u = ultimoSeg(neg);
+    $('#igSeg').innerHTML = u
+      ? `<div class="kpi"><div class="val">${numero(u.valor)}</div><div class="calc">último dato: ${fechaCorta(u.fecha)}</div>${signo(cambioSeg(neg))}</div>`
+      : '<p class="calc">Aún no has apuntado seguidores.</p>';
+    const datos = (db().seguidores || []).slice(-24);
+    if (datos.length < 2) { $('#grafSeg').innerHTML = ''; return; }
+    const W = 520, H = 150, L = 50, B = 22, T = 10;
+    const vs = datos.map(x => x.valor), min = Math.min(...vs), max = Math.max(...vs), rango = Math.max(1, max - min);
+    const lo = Math.max(0, min - rango * .15), hi = max + rango * .15;
+    const xx = i => L + (W - L - 8) * (i / (datos.length - 1)), yy = v => T + (H - T - B) * (1 - (v - lo) / (hi - lo));
+    $('#grafSeg').innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolución de seguidores">
+      ${[lo, (lo + hi) / 2, hi].map(t => `<line x1="${L}" x2="${W}" y1="${yy(t)}" y2="${yy(t)}" stroke="var(--line)"/><text x="${L - 8}" y="${yy(t) + 4}" text-anchor="end" font-size="11" fill="var(--muted)">${numero(Math.round(t))}</text>`).join('')}
+      <polyline points="${datos.map((d, i) => `${xx(i)},${yy(d.valor)}`).join(' ')}" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/>
+      ${datos.map((d, i) => `<circle cx="${xx(i)}" cy="${yy(d.valor)}" r="4.5" fill="var(--ink)" stroke="var(--card)" stroke-width="2"><title>${fechaCorta(d.fecha)}: ${numero(d.valor)} seguidores</title></circle>`).join('')}
+      <text x="${L}" y="${H - 4}" font-size="11" fill="var(--muted)">${fechaCorta(datos[0].fecha)}</text>
+      <text x="${W}" y="${H - 4}" font-size="11" fill="var(--muted)" text-anchor="end">${fechaCorta(datos.at(-1).fecha)}</text>
+    </svg>`;
+  };
+
+  const renderInstagram = () => {
+    renderSeguidores();
+    const pubs = items('contenido'), y = mesCal.getFullYear(), m = mesCal.getMonth();
+    const delMes = pubs.filter(p => p.fecha && p.fecha.startsWith(`${y}-${String(m + 1).padStart(2, '0')}`));
+    $('#igMesTitulo').textContent = `${MESES[m][0].toUpperCase() + MESES[m].slice(1)} ${y}`;
+    const pub = delMes.filter(p => p.estado === 'publicada');
+    $('#igMes').innerHTML = [
+      ['Publicadas', pub.length], ['Por publicar', delMes.length - pub.length],
+      ...Object.entries(NOMBRE_F).map(([k, nom]) => [`${FORMATOS[k]} ${nom}`, delMes.filter(p => p.formato === k).length]).filter(([, v]) => v),
+      ['Ideas en el banco', pubs.filter(p => !p.fecha).length],
+    ].map(([l, v]) => `<div class="kpi"><div class="lbl">${l}</div><div class="val" style="font-size:1.2rem">${v}</div></div>`).join('');
+
+    // Calendario del mes (empieza en lunes)
+    $('#calMes').textContent = $('#igMesTitulo').textContent;
+    const ini = new Date(y, m, 1), desde = new Date(y, m, 1 - ((ini.getDay() + 6) % 7)), h = hoyISO();
+    const dias = Array.from({ length: 42 }, (_, i) => new Date(desde.getFullYear(), desde.getMonth(), desde.getDate() + i));
+    const semanas = dias[35].getMonth() !== m ? dias.slice(0, 35) : dias;
+    $('#cal').innerHTML = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'].map(d => `<div class="dow">${d}</div>`).join('') +
+      semanas.map(d => {
+        const f = iso(d), del = pubs.filter(p => p.fecha === f);
+        return `<div class="dia ${d.getMonth() !== m ? 'fuera' : ''} ${f === h ? 'hoy' : ''}" data-dia="${f}"><span class="n">${d.getDate()}</span>
+          ${del.map(p => `<span class="chip ${p.estado}" data-p="${p.id}" data-n="${p._neg}" title="${esc(p.titulo)}">${FORMATOS[p.formato] || '•'}<span class="txt"> ${esc(p.titulo)}</span></span>`).join('')}</div>`;
+      }).join('');
+    const ideas = pubs.filter(p => !p.fecha);
+    $('#ideas').innerHTML = ideas.length ? ideas.map(p => `<li data-p="${p.id}" data-n="${p._neg}" style="cursor:pointer"><span>${FORMATOS[p.formato] || '•'}</span><span class="que">${esc(p.titulo)} ${etiquetaNeg(p._neg)}</span><button class="btn small ghost">Programar</button></li>`).join('')
+      : '<li class="calc">Guarda aquí ideas sin fecha (deja la fecha vacía al crear una publicación).</li>';
+  };
+
+  // ----- Inicio -----
+  const renderInicio = () => {
+    const h = hoyISO(), ts = items('trabajos').filter(t => t.estado !== 'hecho');
+    const atrasados = ts.filter(t => t.entrega && t.entrega < h).length;
+    const pubs = items('contenido');
+    const lunes = (() => { const d = new Date(); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return iso(d); })();
+    const domingo = (() => { const d = new Date(lunes); d.setDate(d.getDate() + 6); return iso(d); })();
+    const semana = pubs.filter(p => p.fecha >= lunes && p.fecha <= domingo);
+    const hoy = new Date(), mes = sumar(entre(new Date(hoy.getFullYear(), hoy.getMonth(), 1), new Date(hoy.getFullYear(), hoy.getMonth() + 1, 1)));
+    const negs = total() ? Object.keys(NEGOCIOS) : [neg];
+    const segs = negs.map(ultimoSeg).filter(Boolean), cambios = negs.map(cambioSeg).filter(v => v != null);
+    $('#kpisInicio').innerHTML = [
+      ['Trabajos por hacer', ts.length, atrasados ? `<div class="sub neg">⚠ ${atrasados} atrasado${atrasados > 1 ? 's' : ''}</div>` : '<div class="sub calc">nada atrasado</div>'],
+      ['Publicaciones esta semana', `${semana.filter(p => p.estado === 'publicada').length} / ${semana.length}`, '<div class="sub calc">publicadas / previstas</div>'],
+      [`Ingresos de ${MESES[hoy.getMonth()]}`, eur(mes.ing), `<div class="sub calc">beneficio ${eur(mes.ben)}</div>`],
+      ['Seguidores', segs.length ? numero(segs.reduce((a, x) => a + x.valor, 0)) : '—', cambios.length ? signo(cambios.reduce((a, b) => a + b, 0)) : '<div class="sub calc">apúntalos en Instagram</div>'],
+    ].map(([l, v, sub]) => `<div class="card kpi"><div class="lbl">${l}</div><div class="val">${v}</div>${sub}</div>`).join('');
+
+    const prox = [...ts].sort((a, b) => (a.entrega || '9999').localeCompare(b.entrega || '9999')).slice(0, 7);
+    $('#inicioTrabajos').innerHTML = prox.length ? prox.map(t => `<li data-t="${t.id}" data-n="${t._neg}">
+        <span class="que"><b style="font-weight:500">${esc(t.titulo)}</b> ${etiquetaNeg(t._neg)}${t.cliente ? `<br><span class="calc">${esc(t.cliente)}</span>` : ''}</span>
+        ${cuando(t.entrega)}<button class="btn small ghost" data-hecho title="Marcar como hecho">✓</button></li>`).join('')
+      : '<li class="calc">No tienes trabajos pendientes. Pulsa «+ Trabajo» para añadir uno.</li>';
+
+    const limite = enDias(7), ig = pubs.filter(p => p.fecha && p.estado !== 'publicada' && p.fecha <= limite).sort((a, b) => a.fecha.localeCompare(b.fecha)).slice(0, 7);
+    $('#inicioIg').innerHTML = ig.length ? ig.map(p => `<li data-p="${p.id}" data-n="${p._neg}">
+        <span>${FORMATOS[p.formato] || '•'}</span><span class="que">${esc(p.titulo)} ${etiquetaNeg(p._neg)}<br><span class="calc">${p.estado === 'preparada' ? 'Preparada' : 'Idea'}</span></span>
+        ${cuando(p.fecha)}<button class="btn small ghost" data-publicada title="Marcar como publicada">✓</button></li>`).join('')
+      : '<li class="calc">Nada programado para esta semana. Planifica en la pestaña Instagram.</li>';
+
+    const ms = metas();
+    $('#inicioMetas').innerHTML = ms.length ? ms.map(meta => {
+      const e = evaluar(meta), nombre = meta.nombre || `${TIPOS[meta.tipo].nombre} ${fmt(meta, e.obj)}`;
+      return `<div style="margin-bottom:12px"><div class="row" style="justify-content:space-between"><span style="font-size:.9rem">${esc(nombre)}</span><span class="estado ${e.cls}">${e.estado}</span></div>
+        <div class="progreso" style="margin-top:6px"><span style="width:${Math.max(0, Math.min(100, e.prog * 100))}%;${e.cls === 'mal' ? 'background:var(--red)' : e.cls === 'warn' ? 'background:var(--amber)' : ''}"></span></div>
+        <div class="calc" style="margin-top:4px">${fmt(meta, e.valor)} de ${fmt(meta, e.obj)}</div></div>`;
+    }).join('') : '<p class="calc">Sin metas todavía. Créalas en la pestaña Metas.</p>';
+  };
+
+  // Botones rápidos de la cabecera
+  document.querySelectorAll('[data-rapido]').forEach(b => b.onclick = () => {
+    if (b.dataset.rapido === 'trabajo') { go('trabajos'); formTrabajo(); }
+    else { go('instagram'); formPub(); }
+  });
+
   // ---------- Ajustes ----------
   const loadAjustes = () => { $('#resetNeg').textContent = CFG().nombre; };
 
@@ -1064,9 +1449,12 @@ const NEGOCIOS = {
   };
 
   // ---------- Navegación ----------
-  let view = 'resumen';
+  let view = 'inicio';
   const render = () => {
-    $('#filters').classList.toggle('hidden', ['nuevo', 'ajustes', 'metas'].includes(view));
+    $('#filters').classList.toggle('hidden', !['resumen', 'movimientos', 'impuestos', 'shopify'].includes(view));
+    if (view === 'inicio') renderInicio();
+    if (view === 'trabajos') renderTrabajos();
+    if (view === 'instagram') renderInstagram();
     if (view === 'resumen') renderResumen();
     if (view === 'metas') { $('#cardNuevaMeta').classList.add('hidden'); renderMetas(); }
     if (view === 'movimientos') renderMovs();
@@ -1085,8 +1473,8 @@ const NEGOCIOS = {
   const elegir = n => {
     neg = n; escribir(CLAVE_VISTA, n);
     document.documentElement.dataset.negocio = n;
-    document.title = `Contabilidad · ${CFG().nombre}`;
-    $('#titulo').textContent = total() ? 'Contabilidad · Total' : 'Contabilidad';
+    document.title = `Mi panel · ${CFG().nombre}`;
+    $('#titulo').textContent = total() ? 'Mi panel · los tres negocios' : 'Mi panel';
     $('#logoNeg').classList.toggle('off', total());
     if (!total()) { $('#logoNeg').src = LOGOS[n]; $('#logoNeg').alt = CFG().nombre; }
     document.querySelectorAll('#switch button').forEach(b => b.classList.toggle('on', b.dataset.neg === n));
@@ -1097,7 +1485,8 @@ const NEGOCIOS = {
     $('#msgShop').textContent = ''; $('#msgCsv').textContent = '';
     resetForm();
     const ok = { movimientos: !total(), nuevo: !total(), shopify: CFG().shopify };
-    go(ok[view] === false ? 'resumen' : view);
+    ['#cardTrabajo', '#cardPub'].forEach(c => $(c).classList.add('hidden'));
+    go(ok[view] === false ? 'inicio' : view);
   };
   $('#switch').onclick = e => { if (e.target.dataset.neg) elegir(e.target.dataset.neg); };
   $('#tabs').onclick = e => { if (e.target.dataset.tab) go(e.target.dataset.tab); };
