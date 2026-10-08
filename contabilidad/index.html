@@ -206,9 +206,18 @@
   <!-- SHOPIFY (solo Benissalud) -->
   <section id="v-shopify" class="hidden">
     <div class="grid g4" id="kpisShop"></div>
+    <div class="card" style="margin-top:14px">
+      <h2>Conexión directa con la tienda</h2>
+      <div id="claudeShopOn" class="off">
+        <p class="note" style="margin:0 0 12px">Usa la conexión de Shopify que tienes en Claude: no hace falta configurar nada. Trae los pedidos pagados del año elegido arriba como ingresos (base + IVA), descuenta los reembolsos y quita los cancelados. Puedes repetirlo cuando quieras: no duplica.</p>
+        <button class="btn" id="btnClaudeShop">Traer pedidos de Shopify</button>
+      </div>
+      <p class="note" id="claudeShopOff" style="margin:0">La conexión directa solo funciona al abrir el programa dentro de Claude. Fuera de Claude, usa el conector o el CSV de abajo.</p>
+      <div class="msg" id="msgClaudeShop"></div>
+    </div>
     <div class="grid g2" style="margin-top:14px">
       <div class="card">
-        <h2>Sincronizar con Shopify</h2>
+        <h2>Sincronizar con el conector de Google</h2>
         <p class="note" style="margin:0 0 12px">Trae los pedidos pagados de la tienda del año elegido arriba y los apunta como ingresos (base + IVA). Los reembolsos se descuentan y los pedidos cancelados se quitan. Puedes repetirlo las veces que quieras: no duplica.</p>
         <form id="fShop" class="grid" style="gap:10px">
           <label>URL del conector (Google Apps Script, termina en /exec) <input name="url" type="url" placeholder="https://script.google.com/macros/s/…/exec"></label>
@@ -527,6 +536,58 @@ const NEGOCIOS = {
       msg.textContent = 'No se pudo sincronizar: ' + err.message + '. Revisa la URL y la clave.';
     } finally { $('#btnSync').disabled = false; }
   });
+
+  // Conexión directa: dentro de Claude, la página usa el conector de Shopify de quien la abre.
+  const PEDIDOS_GQL = `query Pedidos($first: Int!, $after: String, $q: String) {
+    orders(first: $first, after: $after, query: $q, sortKey: PROCESSED_AT) {
+      pageInfo { hasNextPage endCursor }
+      nodes { id name processedAt cancelledAt test displayFinancialStatus
+        currentTotalPriceSet { shopMoney { amount } } currentTotalTaxSet { shopMoney { amount } } } } }`;
+  const fechaMadrid = iso => new Date(iso).toLocaleDateString('sv-SE', { timeZone: 'Europe/Madrid' });
+  let mcp = null;
+  window.claude?.use?.('mcp').then(m => {
+    mcp = m;
+    $('#claudeShopOn').classList.toggle('off', !m);
+    $('#claudeShopOff').classList.toggle('off', !!m);
+  });
+  const ERRORES_SHOPIFY = {
+    needs_reauth: 'La conexión con Shopify ha caducado: vuelve a conectarla en claude.ai → Ajustes → Conectores.',
+    server_not_connected: 'No tienes Shopify conectado en Claude: añádelo en claude.ai → Ajustes → Conectores.',
+    selection_required: 'Tienes más de una conexión de Shopify: elige cuál usar en el aviso de Claude y vuelve a pulsar.',
+    not_in_manifest: 'Esta página no tiene permiso para usar Shopify: actívalo en el menú de permisos de la página.',
+    blocked_by_policy: 'Tu organización no permite usar Shopify desde esta página.',
+    approval_required: 'Hace falta que apruebes el acceso a Shopify. Vuelve a pulsar el botón y acepta.',
+  };
+  $('#btnClaudeShop').onclick = async () => {
+    if (!mcp) return;
+    const y = +$('#fAnio').value, msg = $('#msgClaudeShop'), btn = $('#btnClaudeShop');
+    btn.disabled = true; msg.textContent = `Leyendo los pedidos de ${y} en Shopify…`;
+    try {
+      const pedidos = [];
+      let after = null;
+      do {
+        const input = { query: PEDIDOS_GQL, first: 50, variables: { q: `processed_at:>=${y}-01-01 processed_at:<${y + 1}-01-01` } };
+        if (after) input.after = after;
+        const r = await mcp.callTool('Shopify', 'graphql_query', input);
+        const orders = r.payload?.data?.orders;
+        if (!orders) throw { code: 'tool_error', message: 'Shopify no devolvió pedidos' };
+        orders.nodes.forEach(o => {
+          if (o.test || o.cancelledAt) return;
+          pedidos.push({
+            id: o.id.split('/').pop(), nombre: o.name, fecha: fechaMadrid(o.processedAt), estado: o.displayFinancialStatus,
+            total: +o.currentTotalPriceSet.shopMoney.amount, iva: +o.currentTotalTaxSet.shopMoney.amount,
+          });
+        });
+        after = orders.pageInfo.hasNextPage ? orders.pageInfo.endCursor : null;
+      } while (after);
+      dbs.benissalud.shopify.ultima = new Date().toISOString(); escribir(NEGOCIOS.benissalud.clave, dbs.benissalud);
+      const res = aplicarPedidos(pedidos, String(y));
+      msg.textContent = pedidos.length ? `✓ Conectada con Shopify. ${y}: ${res}` : `✓ Conectada con Shopify. La tienda no tiene pedidos en ${y}.`;
+      render();
+    } catch (err) {
+      msg.textContent = ERRORES_SHOPIFY[err.code] || ('No se pudo leer Shopify: ' + (err.message || err));
+    } finally { btn.disabled = false; }
+  };
 
   // CSV de pedidos exportado desde el admin de Shopify (una fila por artículo; los totales van en la primera)
   const parseCSV = txt => {
