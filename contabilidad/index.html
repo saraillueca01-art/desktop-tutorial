@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es" data-negocio="benissalud">
+<html lang="es" data-negocio="benissalud" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,10 +14,10 @@
       --text: #2a3140; --muted: #6f6b67; --card: #ffffff;
       --green: #2f7d5b; --red: #b0413e; --radius: 16px;
       --c-bene: #2f5d46; --c-brisa: #1f3458; --c-total: #7a6852;
-      --ink: var(--c-bene); --accent: #6f9a52; --bg: #f6f7f2; --line: #e5e8de;
+      --ink: var(--c-bene); --accent: #6f9a52; --bg: #ffffff; --line: #e5e8de;
     }
-    [data-negocio="brisa"] { --ink: var(--c-brisa); --accent: #cdbca8; --bg: #f8f6f3; --line: #ebe6df; }
-    [data-negocio="total"] { --ink: var(--c-total); --accent: #cdbca8; --bg: #f8f6f3; --line: #ebe6df; }
+    [data-negocio="brisa"] { --ink: var(--c-brisa); --accent: #cdbca8; --bg: #ffffff; --line: #ebe6df; }
+    [data-negocio="total"] { --ink: var(--c-total); --accent: #cdbca8; --bg: #ffffff; --line: #ebe6df; }
     @media (prefers-color-scheme: dark) {
       :root:not([data-theme="light"]) {
         --text: #e4e2de; --muted: #a6a29c; --card: #1d232d; --green: #6cc49d; --red: #e3807c;
@@ -208,6 +208,7 @@
     <div class="grid g4" id="kpisShop"></div>
     <div class="card" style="margin-top:14px">
       <h2>Conexión directa con la tienda</h2>
+      <div class="grid g4 off" id="tiendaInfo" style="margin-bottom:14px"></div>
       <div id="claudeShopOn" class="off">
         <p class="note" style="margin:0 0 12px">Usa la conexión de Shopify que tienes en Claude: no hace falta configurar nada. Trae los pedidos pagados del año elegido arriba como ingresos (base + IVA), descuenta los reembolsos y quita los cancelados. Puedes repetirlo cuando quieras: no duplica.</p>
         <button class="btn" id="btnClaudeShop">Traer pedidos de Shopify</button>
@@ -549,6 +550,7 @@ const NEGOCIOS = {
     mcp = m;
     $('#claudeShopOn').classList.toggle('off', !m);
     $('#claudeShopOff').classList.toggle('off', !!m);
+    if (m && view === 'shopify') alAbrirShopify();
   });
   const ERRORES_SHOPIFY = {
     needs_reauth: 'La conexión con Shopify ha caducado: vuelve a conectarla en claude.ai → Ajustes → Conectores.',
@@ -557,6 +559,28 @@ const NEGOCIOS = {
     not_in_manifest: 'Esta página no tiene permiso para usar Shopify: actívalo en el menú de permisos de la página.',
     blocked_by_policy: 'Tu organización no permite usar Shopify desde esta página.',
     approval_required: 'Hace falta que apruebes el acceso a Shopify. Vuelve a pulsar el botón y acepta.',
+  };
+  // Datos de la tienda (nombre, productos, pedidos) para ver que la conexión funciona
+  const TIENDA_GQL = 'query Tienda { shop { name myshopifyDomain } productsCount { count } ordersCount { count } }';
+  const cargarTienda = async () => {
+    try {
+      const d = (await mcp.callTool('Shopify', 'graphql_query', { query: TIENDA_GQL })).payload?.data;
+      if (!d?.shop) return;
+      $('#tiendaInfo').innerHTML = [
+        ['Tienda conectada', esc(d.shop.name)], ['Productos', d.productsCount?.count ?? '—'], ['Pedidos en total', d.ordersCount?.count ?? '—'],
+      ].map(([l, v]) => `<div class="card kpi"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
+      $('#tiendaInfo').classList.remove('off');
+    } catch (err) {
+      $('#msgClaudeShop').textContent = ERRORES_SHOPIFY[err.code] || ('No se pudo leer Shopify: ' + (err.message || err));
+    }
+  };
+  let tiendaLeida = false;
+  // Al abrir la pestaña Shopify dentro de Claude: datos de la tienda y pedidos al momento (una vez por visita a la página)
+  const alAbrirShopify = async () => {
+    if (!mcp || tiendaLeida) return;
+    tiendaLeida = true;
+    await cargarTienda();
+    $('#btnClaudeShop').click();
   };
   $('#btnClaudeShop').onclick = async () => {
     if (!mcp) return;
@@ -582,7 +606,8 @@ const NEGOCIOS = {
       } while (after);
       dbs.benissalud.shopify.ultima = new Date().toISOString(); escribir(NEGOCIOS.benissalud.clave, dbs.benissalud);
       const res = aplicarPedidos(pedidos, String(y));
-      msg.textContent = pedidos.length ? `✓ Conectada con Shopify. ${y}: ${res}` : `✓ Conectada con Shopify. La tienda no tiene pedidos en ${y}.`;
+      msg.textContent = pedidos.length ? `✓ Conectada con Shopify. ${y}: ${res}`
+        : `✓ Conectada con Shopify. La tienda todavía no tiene pedidos en ${y}: en cuanto entren ventas aparecerán aquí y en Movimientos.`;
       render();
     } catch (err) {
       msg.textContent = ERRORES_SHOPIFY[err.code] || ('No se pudo leer Shopify: ' + (err.message || err));
@@ -749,7 +774,7 @@ const NEGOCIOS = {
     $('#filters').classList.toggle('hidden', view === 'nuevo' || view === 'ajustes');
     if (view === 'resumen') renderResumen();
     if (view === 'movimientos') renderMovs();
-    if (view === 'shopify') renderShopify();
+    if (view === 'shopify') { renderShopify(); alAbrirShopify(); }
     if (view === 'impuestos') renderImpuestos();
     if (view === 'ajustes') loadAjustes();
   };
