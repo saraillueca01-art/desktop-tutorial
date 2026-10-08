@@ -166,7 +166,7 @@
     <button data-tab="resumen" class="on">Resumen</button>
     <button data-tab="movimientos" class="solo-negocio">Movimientos</button>
     <button data-tab="shopify" class="solo-shopify">Shopify</button>
-    <button data-tab="facturas" class="solo-negocio">Facturas</button>
+    <button data-tab="facturas" class="solo-negocio">Facturas y albaranes</button>
     <button data-tab="impuestos">Impuestos</button>
     <button data-tab="metas">Metas</button>
     <button data-tab="ajustes">Ajustes</button>
@@ -290,7 +290,7 @@
           <select name="deducible"><option value="1">Sí</option><option value="0">No</option></select>
         </label>
         <label class="wide hidden" id="lblFacturar" style="flex-direction:row;align-items:center;gap:8px;color:var(--text);font-size:.92rem">
-          <input type="checkbox" name="facturar" checked> Hacer la factura (PDF) al guardar
+          <input type="checkbox" name="facturar" checked> <span id="txtFacturar">Hacer la factura (PDF) al guardar</span>
         </label>
         <div class="wide calc" id="calc"></div>
         <div class="wide msg neg" id="formError"></div>
@@ -343,13 +343,13 @@
   <!-- FACTURAS -->
   <section id="v-facturas" class="hidden">
     <div class="row" style="justify-content:space-between;margin-bottom:12px">
-      <h2 style="margin:0">Facturas</h2>
-      <button class="btn" id="btnNuevaFactura">+ Nueva factura</button>
+      <h2 style="margin:0">Facturas y albaranes</h2>
+      <div class="row"><button class="btn" id="btnNuevaFactura">+ Nueva factura</button><button class="btn ghost" id="btnNuevoAlbaran">+ Nuevo albarán</button></div>
     </div>
     <div class="card hidden" id="cardFactura" style="margin-bottom:14px">
       <h2 id="tituloFactura">Nueva factura</h2>
       <form id="fFactura" autocomplete="off" novalidate class="grid" style="gap:14px">
-        <input type="hidden" name="id"><input type="hidden" name="movId">
+        <input type="hidden" name="id"><input type="hidden" name="movId"><input type="hidden" name="tipodoc" value="factura">
         <div class="mov" style="display:grid">
           <label>Nº de factura <input name="numero"></label>
           <label>Fecha <input type="date" name="fecha"></label>
@@ -378,14 +378,14 @@
           <div><button type="button" class="btn small ghost" id="btnLinea">+ Añadir línea</button></div>
         </fieldset>
         <div class="mov" style="display:grid">
-          <label>IVA
+          <label class="solo-fac">IVA
             <select name="iva"><option value="21">21 %</option><option value="10">10 %</option><option value="4">4 %</option><option value="0">0 % / exento</option></select>
           </label>
-          <label>Retención IRPF
+          <label class="solo-fac">Retención IRPF
             <select name="irpf"><option value="0">Sin retención</option><option value="15">15 %</option><option value="7">7 % (nueva autónoma)</option></select>
           </label>
           <label>Forma de pago <input name="pago" value="Transferencia bancaria"></label>
-          <label class="wide">Nota en la factura (opcional) <textarea name="nota" rows="2" placeholder="Si no lleva IVA, se pone sola la nota de exención"></textarea></label>
+          <label class="wide">Nota (opcional) <textarea name="nota" rows="2" placeholder="En facturas sin IVA se pone sola la nota de exención"></textarea></label>
         </div>
         <div class="totales-f" id="totalesFactura"></div>
         <div class="msg neg" id="facturaError"></div>
@@ -393,7 +393,7 @@
           <button class="btn" type="submit">Guardar y descargar PDF</button>
           <button class="btn ghost" type="button" id="btnCancelFactura">Cancelar</button>
         </div>
-        <p class="note" style="margin:0">Al guardar, la factura se apunta sola como ingreso en Movimientos.</p>
+        <p class="note" style="margin:0">Al guardar, se apunta solo como ingreso en Movimientos.</p>
       </form>
     </div>
     <div class="card table-wrap"><table id="tFacturas"></table></div>
@@ -427,7 +427,7 @@
       </div>
       <div class="card">
         <h2>Tu contabilidad en Excel</h2>
-        <p class="note" style="margin:0 0 12px">Un Excel con una hoja por negocio (todos los movimientos), un resumen por trimestres con ingresos, gastos, beneficio e impuestos, el libro de facturas emitidas (con enlace a cada PDF en tu Google Drive) y el libro de gastos.</p>
+        <p class="note" style="margin:0 0 12px">Un Excel con una hoja por negocio (todos los movimientos), un resumen por trimestres con ingresos, gastos, beneficio e impuestos, el libro de facturas emitidas y el de albaranes (con enlace a cada PDF en tu Google Drive) y el libro de gastos.</p>
         <div class="row">
           <button class="btn" data-excel>Descargar Excel</button>
           <button class="btn ghost off" id="btnDrive">Guardar copia en Google Drive</button>
@@ -626,13 +626,13 @@ const NEGOCIOS = {
         return `<tr>
           <td>${m.fecha.split('-').reverse().join('/')}</td>
           ${conParte ? `<td>${dividido(m) ? '<span class="tag">Entre dos</span>' : 'Para mí'}</td>` : ''}
-          <td>${esc(m.concepto)}${m.origen === 'shopify' ? ' <span class="tag shop">Shopify</span>' : m.origen === 'factura' ? ' <span class="tag">Factura</span>' : ''}
+          <td>${esc(m.concepto)}${m.origen === 'shopify' ? ' <span class="tag shop">Shopify</span>' : m.origen === 'factura' ? ' <span class="tag">Factura</span>' : m.origen === 'albaran' ? ' <span class="tag">Albarán</span>' : ''}
             ${m.contraparte ? `<br><small class="calc">${esc(m.contraparte)}${m.nfactura ? ' · ' + esc(m.nfactura) : ''}</small>` : ''}
             ${m.cobrado === '0' ? ' <span class="tag neg">pendiente</span>' : ''}${m.deducible === '0' && m.tipo === 'gasto' ? ' <span class="tag">no deducible</span>' : ''}</td>
           <td>${esc(m.categoria)}</td>
           <td class="n ${sg < 0 ? 'neg' : 'pos'}">${eur(sg * c.base)}</td>
           <td class="n">${eur(c.iva)}</td><td class="n">${c.irpf ? eur(-c.irpf) : '—'}</td><td class="n">${eur(c.total)}${conParte && dividido(m) ? `<br><small class="calc">tu parte ${eur(c.total / 2)}</small>` : ''}</td>
-          <td class="n">${m.tipo === 'ingreso' && !m.facturaId && m.origen !== 'shopify' && c.iva > 0 ? `<button class="btn small" data-facturar="${m.id}">Hacer factura</button> ` : ''}${m.facturaId ? `<button class="btn small" data-pdfmov="${m.id}">PDF</button> ` : ''}<button class="btn small ghost" data-edit="${m.id}">Editar</button> <button class="btn small danger" data-del="${m.id}">✕</button></td>
+          <td class="n">${m.tipo === 'ingreso' && !m.facturaId && m.origen !== 'shopify' ? `<button class="btn small${c.iva > 0 ? '' : ' ghost'}" data-facturar="${m.id}">${c.iva > 0 || c.irpf > 0 ? 'Hacer factura' : 'Hacer albarán'}</button> ` : ''}${m.facturaId ? `<button class="btn small" data-pdfmov="${m.id}">PDF</button> ` : ''}<button class="btn small ghost" data-edit="${m.id}">Editar</button> <button class="btn small danger" data-del="${m.id}">✕</button></td>
         </tr>`;
       }).join('');
   };
@@ -869,6 +869,7 @@ const NEGOCIOS = {
     else if (/^\d{1,3}(\.\d{3})+$/.test(t)) t = t.replace(/\./g, '');
     return t === '' || isNaN(+t) ? NaN : +t;
   };
+  let lastDoc = null;
   const showCalc = () => {
     const prev = editando();
     const c = prev?.origen === 'shopify' ? calc(prev) : calc({ base: leerImporte(F.base.value) || 0, iva: F.iva.value, irpf: F.irpf.value });
@@ -876,11 +877,14 @@ const NEGOCIOS = {
       + (CFG().socias && F.socia.value === 'mitad' ? ` · Tu parte: ${eur(c.total / 2)} (base ${eur(c.base / 2)})` : '')
       + (prev?.origen === 'shopify' ? ' · Importes de Shopify: se actualizan al sincronizar.' : '');
     // Ingreso con IVA y sin factura todavía: ofrecer hacerla al guardar
-    $('#lblFacturar').classList.toggle('hidden', !(F.tipo.value === 'ingreso' && +F.iva.value > 0 && !prev?.origen && !prev?.facturaId));
+    const conIva = +F.iva.value > 0 || +F.irpf.value > 0;
+    $('#lblFacturar').classList.toggle('hidden', !(F.tipo.value === 'ingreso' && !prev?.origen && !prev?.facturaId));
+    if (lastDoc !== conIva) { lastDoc = conIva; F.facturar.checked = conIva; }  // factura marcada por defecto; albarán, a elegir
+    $('#txtFacturar').textContent = conIva ? 'Hacer la factura (PDF) al guardar' : 'Hacer el albarán (PDF) al guardar';
   };
   const lockShopify = on => ['tipo', 'fecha', 'base', 'iva', 'irpf'].forEach(n => { F[n].disabled = on; });
   const resetForm = () => {
-    F.reset(); F.id.value = ''; $('#formError').textContent = ''; F.fecha.value = new Date().toISOString().slice(0, 10); lockShopify(false);
+    F.reset(); F.id.value = ''; $('#formError').textContent = ''; lastDoc = null; F.fecha.value = new Date().toISOString().slice(0, 10); lockShopify(false);
     $('#formTitle').textContent = `Nuevo movimiento · ${CFG().nombre}`; fillCats(); showCalc();
   };
   const editMov = id => {
@@ -1191,8 +1195,9 @@ const NEGOCIOS = {
       X.utils.book_append_sheet(wb, hoja(X, filasN, [11, 9, 34, 22, 12, 26, 12, 7, 11, 7, 11, 13, 15, 10, ...(brisa ? [11, 15] : []), 9], fmt), n.nombre);
     });
     // Libro de facturas emitidas, con el enlace al PDF guardado en Google Drive
-    const facs = Object.entries(NEGOCIOS).flatMap(([k, n]) => (dbs[k].facturas || []).map(f => ({ ...f, _n: n.nombre })))
+    const docs = Object.entries(NEGOCIOS).flatMap(([k, n]) => (dbs[k].facturas || []).map(f => ({ ...f, _n: n.nombre })))
       .sort((a, b) => a.fecha.localeCompare(b.fecha) || a.numero.localeCompare(b.numero));
+    const facs = docs.filter(f => !esAlbaran(f)), albs = docs.filter(esAlbaran);
     const filasF = [['Nº factura', 'Fecha', 'Negocio', 'Cliente', 'DNI / NIF', 'Dirección', 'Base', 'IVA %', 'IVA', 'IRPF %', 'IRPF', 'Total', 'Cobrada', 'PDF'],
       ...facs.map(f => { const t = totalesFactura(f); const c = f.cliente || {};
         return [f.numero, aFecha(f.fecha), f._n, c.nombre || '', c.nif || '', [c.direccion, c.cp, c.ciudad, c.provincia].filter(Boolean).join(', '),
@@ -1200,6 +1205,14 @@ const NEGOCIOS = {
     const wsF = hoja(X, filasF, [16, 11, 15, 28, 13, 34, 12, 7, 11, 7, 11, 12, 9, 22], { 1: FECHA, 6: EUR, 8: EUR, 10: EUR, 11: EUR });
     facs.forEach((f, i) => { if (f.pdf?.enlace) { const cel = wsF[X.utils.encode_cell({ r: i + 1, c: 13 })]; cel.l = { Target: f.pdf.enlace, Tooltip: 'Abrir el PDF en Google Drive' }; } });
     X.utils.book_append_sheet(wb, wsF, 'Facturas emitidas');
+    // Albaranes (sin impuestos)
+    const filasA = [['Nº albarán', 'Fecha', 'Negocio', 'Cliente', 'DNI / NIF', 'Dirección', 'Total', 'Cobrado', 'PDF'],
+      ...albs.map(f => { const c = f.cliente || {};
+        return [f.numero, aFecha(f.fecha), f._n, c.nombre || '', c.nif || '', [c.direccion, c.cp, c.ciudad, c.provincia].filter(Boolean).join(', '),
+          totalesFactura(f).total, f.cobrado === '1' ? 'Sí' : 'No', f.pdf?.enlace ? 'Abrir PDF' : 'Descárgalo desde el panel']; })];
+    const wsA = hoja(X, filasA, [20, 11, 15, 28, 13, 34, 12, 9, 22], { 1: FECHA, 6: EUR });
+    albs.forEach((f, i) => { if (f.pdf?.enlace) { const cel = wsA[X.utils.encode_cell({ r: i + 1, c: 8 })]; cel.l = { Target: f.pdf.enlace, Tooltip: 'Abrir el PDF en Google Drive' }; } });
+    X.utils.book_append_sheet(wb, wsA, 'Albaranes');
     // Libro de gastos (facturas recibidas)
     const gastos = Object.entries(NEGOCIOS).flatMap(([k, n]) => dbs[k].movs.filter(m => m.tipo === 'gasto').map(m => ({ ...m, _n: n.nombre }))).sort((a, b) => a.fecha.localeCompare(b.fecha));
     const filasG = [['Fecha', 'Negocio', 'Proveedor', 'Nº factura', 'Concepto', 'Categoría', 'Base', 'IVA', 'IRPF', 'Total', 'Deducible'],
@@ -1315,8 +1328,10 @@ const NEGOCIOS = {
     const iva = r2(base * (+f.iva || 0) / 100), irpf = r2(base * (+f.irpf || 0) / 100);
     return { base, iva, irpf, total: r2(base + iva - irpf) };
   };
-  const siguienteNumero = (n, fecha) => {
-    const y = (fecha || hoyISO()).slice(0, 4), pre = `${NEGOCIOS[n].serie}-${y}-`;
+  const esAlbaran = f => f?.tipo === 'albaran';
+  const nombreDoc = f => esAlbaran(f) ? 'Albarán' : 'Factura';
+  const siguienteNumero = (n, fecha, tipo = 'factura') => {
+    const y = (fecha || hoyISO()).slice(0, 4), pre = tipo === 'albaran' ? `${NEGOCIOS[n].serie}-ALB-${y}-` : `${NEGOCIOS[n].serie}-${y}-`;
     const max = (dbs[n].facturas || []).filter(f => f.numero?.startsWith(pre)).reduce((a, f) => Math.max(a, parseInt(f.numero.slice(pre.length), 10) || 0), 0);
     return pre + String(max + 1).padStart(3, '0');
   };
@@ -1328,13 +1343,13 @@ const NEGOCIOS = {
     desc: el.querySelector('[data-l=desc]').value.trim(), cant: leerImporte(el.querySelector('[data-l=cant]').value), precio: leerImporte(el.querySelector('[data-l=precio]').value),
   })).filter(l => l.desc || l.precio);
   const facturaDelForm = () => ({
-    numero: FF.numero.value.trim(), fecha: FF.fecha.value, categoria: FF.categoria.value, socia: CFG().socias ? FF.socia.value : 'yo', cobrado: FF.cobrado.value,
+    tipo: FF.tipodoc.value, numero: FF.numero.value.trim(), fecha: FF.fecha.value, categoria: FF.categoria.value, socia: CFG().socias ? FF.socia.value : 'yo', cobrado: FF.cobrado.value,
     cliente: Object.fromEntries(['nombre', 'nif', 'direccion', 'cp', 'ciudad', 'provincia', 'pais', 'email'].map(k => [k, FF['c_' + k].value.trim()])),
-    lineas: leerLineas(), iva: FF.iva.value, irpf: FF.irpf.value, pago: FF.pago.value.trim(), nota: FF.nota.value.trim(),
+    lineas: leerLineas(), iva: FF.tipodoc.value === 'albaran' ? '0' : FF.iva.value, irpf: FF.tipodoc.value === 'albaran' ? '0' : FF.irpf.value, pago: FF.pago.value.trim(), nota: FF.nota.value.trim(),
   });
   const pintarTotales = () => {
     const t = totalesFactura(facturaDelForm());
-    $('#totalesFactura').innerHTML = `<span>Base imponible</span><span>${eur(t.base)}</span><span>IVA (${FF.iva.value} %)</span><span>${eur(t.iva)}</span>`
+    $('#totalesFactura').innerHTML = (FF.tipodoc.value === 'albaran' ? '' : `<span>Base imponible</span><span>${eur(t.base)}</span><span>IVA (${FF.iva.value} %)</span><span>${eur(t.iva)}</span>`)
       + (t.irpf ? `<span>Retención IRPF (${FF.irpf.value} %)</span><span>−${eur(t.irpf)}</span>` : '') + `<span class="tot">Total</span><span class="tot">${eur(t.total)}</span>`;
   };
   FF.addEventListener('input', pintarTotales);
@@ -1346,41 +1361,47 @@ const NEGOCIOS = {
     const c = clientes().get(FF.c_nombre.value.trim()); if (!c) return;
     ['nif', 'direccion', 'cp', 'ciudad', 'provincia', 'pais', 'email'].forEach(k => { if (c[k]) FF['c_' + k].value = c[k]; });
   });
-  const formFactura = (f = null, mov = null) => {
+  const formFactura = (f = null, mov = null, tipo = null) => {
     FF.reset(); $('#facturaError').textContent = '';
+    // Factura si lleva IVA; si no, albarán
+    tipo = f ? (f.tipo || 'factura') : tipo || (mov && !(+mov.iva > 0) && !(+mov.irpf > 0) ? 'albaran' : 'factura');
+    FF.tipodoc.value = tipo;
+    document.querySelectorAll('#fFactura .solo-fac').forEach(el => el.classList.toggle('hidden', tipo === 'albaran'));
     FF.categoria.innerHTML = CFG().catIng.map(c => `<option>${esc(c)}</option>`).join('');
     $('#listaClientes').innerHTML = [...clientes().keys()].map(n => `<option value="${esc(n)}">`).join('');
-    $('#tituloFactura').textContent = f ? `Editar factura ${f.numero}` : `Nueva factura · ${CFG().nombre}`;
+    $('#tituloFactura').textContent = f ? `Editar ${nombreDoc(f).toLowerCase()} ${f.numero}` : `${tipo === 'albaran' ? 'Nuevo albarán' : 'Nueva factura'} · ${CFG().nombre}`;
     if (f) {
       ['id', 'numero', 'fecha', 'categoria', 'cobrado', 'iva', 'irpf', 'pago', 'nota'].forEach(k => { if (f[k] != null) FF[k].value = f[k]; });
       FF.socia.value = f.socia === 'mitad' ? 'mitad' : 'yo';
       Object.entries(f.cliente || {}).forEach(([k, v]) => { if (FF['c_' + k]) FF['c_' + k].value = v; });
     } else {
-      FF.id.value = ''; FF.fecha.value = hoyISO(); FF.numero.value = siguienteNumero(neg); FF.c_pais.value = 'España';
+      FF.id.value = ''; FF.fecha.value = hoyISO(); FF.numero.value = siguienteNumero(neg, null, tipo); FF.c_pais.value = 'España';
       FF.pago.value = 'Transferencia bancaria';
     }
     FF.movId.value = '';
     if (mov) {
       // Rellenar con los datos del ingreso apuntado
-      FF.movId.value = mov.id; FF.fecha.value = mov.fecha; FF.numero.value = siguienteNumero(neg, mov.fecha);
+      FF.movId.value = mov.id; FF.fecha.value = mov.fecha; FF.numero.value = siguienteNumero(neg, mov.fecha, tipo);
       if (CFG().catIng.includes(mov.categoria)) FF.categoria.value = mov.categoria;
       FF.socia.value = dividido(mov) ? 'mitad' : 'yo'; FF.cobrado.value = mov.cobrado === '0' ? '0' : '1';
       FF.iva.value = mov.iva || '21'; FF.irpf.value = mov.irpf || '0';
       if (mov.contraparte) { FF.c_nombre.value = mov.contraparte; FF.c_nombre.dispatchEvent(new Event('change')); }
-      $('#tituloFactura').textContent = `Factura del ingreso «${mov.concepto}»`;
+      $('#tituloFactura').textContent = `${tipo === 'albaran' ? 'Albarán' : 'Factura'} del ingreso «${mov.concepto}»`;
     }
+    if (tipo === 'albaran') { FF.iva.value = '0'; FF.irpf.value = '0'; }
     $('#lineas').innerHTML = (f?.lineas?.length ? f.lineas : mov ? [{ desc: mov.concepto, cant: 1, precio: mov.base }] : [{}]).map(lineaHTML).join('');
     pintarTotales();
     $('#cardFactura').classList.remove('hidden'); FF.c_nombre.focus();
   };
-  $('#btnNuevaFactura').onclick = () => formFactura();
+  $('#btnNuevaFactura').onclick = () => formFactura(null, null, 'factura');
+  $('#btnNuevoAlbaran').onclick = () => formFactura(null, null, 'albaran');
   $('#btnCancelFactura').onclick = () => $('#cardFactura').classList.add('hidden');
-  FF.fecha.addEventListener('change', () => { if (!FF.id.value) FF.numero.value = siguienteNumero(neg, FF.fecha.value); });
+  FF.fecha.addEventListener('change', () => { if (!FF.id.value) FF.numero.value = siguienteNumero(neg, FF.fecha.value, FF.tipodoc.value); });
 
   // El ingreso que corresponde a una factura
   const movDeFactura = (f, prev = {}) => {
     const t = totalesFactura(f);
-    return { ...prev, id: prev.id || 'fac' + f.id, origen: 'factura', facturaId: f.id, tipo: 'ingreso', fecha: f.fecha,
+    return { ...prev, id: prev.id || 'fac' + f.id, origen: esAlbaran(f) ? 'albaran' : 'factura', facturaId: f.id, tipo: 'ingreso', fecha: f.fecha,
       concepto: f.lineas[0]?.desc + (f.lineas.length > 1 ? ` y ${f.lineas.length - 1} concepto${f.lineas.length > 2 ? 's' : ''} más` : ''),
       contraparte: f.cliente.nombre, nfactura: f.numero, categoria: f.categoria, base: t.base, iva: f.iva, irpf: f.irpf,
       socia: f.socia, cobrado: f.cobrado, deducible: '1' };
@@ -1395,7 +1416,7 @@ const NEGOCIOS = {
     const lista = db().facturas ||= [];
     if (lista.some(f => f.numero === datos.numero && f.id !== FF.id.value)) falta.push('un número que no esté repetido');
     if (falta.length) { $('#facturaError').textContent = 'Falta ' + falta.join(', ') + '.'; return; }
-    if (!datos.nota && +datos.iva === 0) datos.nota = NOTA_EXENTA;
+    if (!datos.nota && +datos.iva === 0 && !esAlbaran(datos)) datos.nota = NOTA_EXENTA;
     let f = lista.find(x => x.id === FF.id.value);
     if (f) Object.assign(f, datos); else { f = { id: nuevoId(), creada: new Date().toISOString(), ...datos }; lista.push(f); }
     const prev = db().movs.find(m => m.facturaId === f.id) || (FF.movId.value && db().movs.find(m => m.id === FF.movId.value));
@@ -1422,11 +1443,11 @@ const NEGOCIOS = {
   const crearPDF = async (f, n) => {
     const { jsPDF } = await cargarScript(JSPDF_URL, () => window.jspdf);
     const doc = new jsPDF({ unit: 'mm', format: 'a4' }), W = 210, M = 18, color = NEGOCIOS[n].color, t = totalesFactura(f), c = f.cliente || {};
-    doc.setProperties({ title: `Factura ${f.numero}`, author: emisor.nombre, subject: `${NEGOCIOS[n].nombre} · ${c.nombre || ''}` });
+    doc.setProperties({ title: `${nombreDoc(f)} ${f.numero}`, author: emisor.nombre, subject: `${NEGOCIOS[n].nombre} · ${c.nombre || ''}` });
     // Cabecera: logo del negocio y datos de la factura
     const ratio = await medirLogo(n), alto = n === 'brisa' ? 26 : 14, ancho = Math.min(80, alto * ratio);
     doc.addImage(LOGOS[n], 'PNG', M, 16, ancho, ancho / ratio);
-    doc.setTextColor(color); doc.setFont('helvetica', 'bold'); doc.setFontSize(24); doc.text('FACTURA', W - M, 24, { align: 'right' });
+    doc.setTextColor(color); doc.setFont('helvetica', 'bold'); doc.setFontSize(24); doc.text(nombreDoc(f).toUpperCase(), W - M, 24, { align: 'right' });
     doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(60);
     doc.text(`Nº ${f.numero}`, W - M, 31, { align: 'right' }); doc.text(`Fecha: ${fechaES(f.fecha)}`, W - M, 36, { align: 'right' });
     // Emisor y cliente
@@ -1460,8 +1481,11 @@ const NEGOCIOS = {
     // Totales
     y += 4;
     const fila = (txt, v, negrita) => { doc.setFont('helvetica', negrita ? 'bold' : 'normal'); doc.text(txt, 150, y, { align: 'right' }); doc.text(v, W - M - 3, y, { align: 'right' }); y += 6; };
-    doc.setFontSize(10); fila('Base imponible', euroPDF(t.base)); fila(`IVA (${f.iva} %)`, euroPDF(t.iva));
-    if (t.irpf) fila(`Retención IRPF (${f.irpf} %)`, '-' + euroPDF(t.irpf));
+    doc.setFontSize(10);
+    if (!esAlbaran(f)) {
+      fila('Base imponible', euroPDF(t.base)); fila(`IVA (${f.iva} %)`, euroPDF(t.iva));
+      if (t.irpf) fila(`Retención IRPF (${f.irpf} %)`, '-' + euroPDF(t.irpf));
+    }
     doc.setDrawColor(color); doc.line(110, y - 3, W - M, y - 3); y += 2;
     doc.setFontSize(13); doc.setTextColor(color); fila('TOTAL', euroPDF(t.total), true); doc.setTextColor(30);
     // Forma de pago y nota
@@ -1478,12 +1502,12 @@ const NEGOCIOS = {
     doc.text(`${emisor.nombre} · NIF ${emisor.nif} · ${[emisor.direccion, emisor.cp, emisor.ciudad].filter(Boolean).join(', ')}`, W / 2, 285, { align: 'center' });
     return doc.output('arraybuffer');
   };
-  const nombrePDF = f => `Factura ${f.numero} - ${(f.cliente?.nombre || '').replace(/[\\/:*?"<>|]/g, '').slice(0, 40)}.pdf`.replace(/ - \.pdf$/, '.pdf');
+  const nombrePDF = f => `${esAlbaran(f) ? 'Albaran' : 'Factura'} ${f.numero} - ${(f.cliente?.nombre || '').replace(/[\\/:*?"<>|]/g, '').slice(0, 40)}.pdf`.replace(/ - \.pdf$/, '.pdf');
   const aBase64 = buf => { let s = ''; const u = new Uint8Array(buf); for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(s); };
   const msgFac = t => { $('#msgFacturas').innerHTML = t; };
   // Descarga el PDF y, dentro de Claude, guarda una copia en tu Google Drive (su enlace va al Excel)
   const descargarFactura = async (f, n, soloDescargar = false) => {
-    msgFac(`Preparando el PDF de la factura ${esc(f.numero)}…`);
+    msgFac(`Preparando el PDF de ${esc(nombreDoc(f).toLowerCase())} ${esc(f.numero)}…`);
     let pdf;
     try { pdf = await crearPDF(f, n); } catch (err) { msgFac('No se pudo crear el PDF: ' + esc(err.message)); return; }
     let txt = '';
@@ -1493,7 +1517,7 @@ const NEGOCIOS = {
         const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([pdf], { type: 'application/pdf' }));
         a.download = nombrePDF(f); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
       }
-      txt = `✓ Factura ${esc(f.numero)} descargada.`;
+      txt = `✓ PDF de ${esc(nombreDoc(f).toLowerCase())} ${esc(f.numero)} descargado.`;
     } catch (err) { txt = err.code === 'declined' ? '' : 'No se pudo descargar: ' + esc(err.message); }
     if (drive && !soloDescargar) {
       try {
@@ -1510,13 +1534,13 @@ const NEGOCIOS = {
   const renderFacturas = () => {
     if (total()) return;
     const fs = [...(db().facturas || [])].sort((a, b) => b.fecha.localeCompare(a.fecha) || b.numero.localeCompare(a.numero));
-    $('#tFacturas').innerHTML = fs.length ? `<tr><th>Nº</th><th>Fecha</th><th>Cliente</th><th class="n">Base</th><th class="n">Total</th><th>Estado</th><th></th></tr>` + fs.map(f => {
+    $('#tFacturas').innerHTML = fs.length ? `<tr><th>Nº</th><th>Tipo</th><th>Fecha</th><th>Cliente</th><th class="n">Base</th><th class="n">Total</th><th>Estado</th><th></th></tr>` + fs.map(f => {
       const t = totalesFactura(f);
-      return `<tr data-f="${f.id}"><td><b>${esc(f.numero)}</b></td><td>${fechaES(f.fecha)}</td><td>${esc(f.cliente?.nombre)}${f.cliente?.nif ? `<br><small class="calc">${esc(f.cliente.nif)}</small>` : ''}</td>
+      return `<tr data-f="${f.id}"><td><b>${esc(f.numero)}</b></td><td><span class="tag">${nombreDoc(f)}</span></td><td>${fechaES(f.fecha)}</td><td>${esc(f.cliente?.nombre)}${f.cliente?.nif ? `<br><small class="calc">${esc(f.cliente.nif)}</small>` : ''}</td>
         <td class="n">${eur(t.base)}</td><td class="n">${eur(t.total)}</td>
-        <td>${f.cobrado === '1' ? '<span class="estado ok">✓ Cobrada</span>' : '<span class="estado warn">Pendiente</span>'}</td>
-        <td class="n"><button class="btn small" data-pdf>PDF</button> ${f.pdf?.enlace ? `<a class="btn small ghost" href="${esc(f.pdf.enlace)}" target="_blank" rel="noopener">Drive</a> ` : ''}${f.cobrado !== '1' ? '<button class="btn small ghost" data-cobrada>Marcar cobrada</button> ' : ''}<button class="btn small ghost" data-editarf>Editar</button> <button class="btn small danger" data-borrarf aria-label="Borrar">✕</button></td></tr>`;
-    }).join('') : `<tr><td class="empty">Todavía no hay facturas de ${esc(CFG().nombre)}. Pulsa «+ Nueva factura».</td></tr>`;
+        <td>${f.cobrado === '1' ? `<span class="estado ok">✓ ${esAlbaran(f) ? 'Cobrado' : 'Cobrada'}</span>` : '<span class="estado warn">Pendiente</span>'}</td>
+        <td class="n"><button class="btn small" data-pdf>PDF</button> ${f.pdf?.enlace ? `<a class="btn small ghost" href="${esc(f.pdf.enlace)}" target="_blank" rel="noopener">Drive</a> ` : ''}${f.cobrado !== '1' ? '<button class="btn small ghost" data-cobrada>Marcar cobrado</button> ' : ''}<button class="btn small ghost" data-editarf>Editar</button> <button class="btn small danger" data-borrarf aria-label="Borrar">✕</button></td></tr>`;
+    }).join('') : `<tr><td class="empty">Todavía no hay facturas ni albaranes de ${esc(CFG().nombre)}. Pulsa «+ Nueva factura» o «+ Nuevo albarán».</td></tr>`;
   };
   $('#tFacturas').addEventListener('click', e => {
     const fila = e.target.closest('[data-f]'); if (!fila) return;
@@ -1526,7 +1550,7 @@ const NEGOCIOS = {
     if (d.cobrada !== undefined) {
       f.cobrado = '1'; const m = db().movs.find(x => x.facturaId === f.id); if (m) m.cobrado = '1'; save(); renderFacturas();
     }
-    if (d.borrarf !== undefined && confirm(`¿Borrar la factura ${f.numero}? También se borrará su ingreso de Movimientos.`)) {
+    if (d.borrarf !== undefined && confirm(`¿Borrar ${esAlbaran(f) ? 'el albarán' : 'la factura'} ${f.numero}? También se borrará su ingreso de Movimientos.`)) {
       db().facturas = db().facturas.filter(x => x !== f); db().movs = db().movs.filter(m => m.facturaId !== f.id); save(); renderFacturas();
     }
   });
@@ -1637,11 +1661,11 @@ const NEGOCIOS = {
     const { edit, del, facturar, pdfmov } = e.target.dataset;
     if (facturar) { const m = db().movs.find(x => x.id === facturar); if (m) { go('facturas'); formFactura(null, m); } return; }
     if (pdfmov) { const m = db().movs.find(x => x.id === pdfmov), f = m && db().facturas.find(x => x.id === m.facturaId); if (f) descargarFactura(f, neg, !!f.pdf?.enlace); return; }
-    const mf = edit && db().movs.find(m => m.id === edit && m.origen === 'factura');
+    const mf = edit && db().movs.find(m => m.id === edit && m.facturaId);
     if (mf) { go('facturas'); formFactura(db().facturas.find(f => f.id === mf.facturaId)); return; }
     if (edit) editMov(edit);
     const md = del && db().movs.find(m => m.id === del);
-    if (md && confirm(md.facturaId ? '¿Borrar este movimiento? También se borrará su factura.' : '¿Borrar este movimiento?')) {
+    if (md && confirm(md.facturaId ? `¿Borrar este movimiento? También se borrará su ${md.origen === 'albaran' ? 'albarán' : 'factura'}.` : '¿Borrar este movimiento?')) {
       db().movs = db().movs.filter(m => m !== md);
       if (md.facturaId) db().facturas = (db().facturas || []).filter(f => f.id !== md.facturaId);
       save(); render();
