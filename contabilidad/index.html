@@ -103,6 +103,27 @@
     .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
     .empty { color: var(--muted); padding: 24px; text-align: center; }
     .msg { margin-top: 12px; font-size: .88rem; }
+    /* Metas */
+    :root { --amber: #a86a0b; }
+    .meta h3 { margin: 0; font-size: 1.05rem; }
+    .meta .cifra { font-size: 1.35rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; margin: 6px 0 8px; }
+    .meta .cifra small { font-size: .85rem; font-weight: 400; color: var(--muted); }
+    .progreso { position: relative; height: 12px; border-radius: 999px; background: var(--line); }
+    .progreso > span { display: block; height: 100%; border-radius: 999px; background: var(--ink); max-width: 100%; }
+    .progreso > i { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--text); opacity: .55; border-radius: 2px; }
+    .estado { font-size: .75rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; white-space: nowrap; border: 1px solid currentColor; }
+    .estado.ok { color: var(--green); } .estado.warn { color: var(--amber); } .estado.mal { color: var(--red); }
+    .pasos { list-style: none; margin: 10px 0 6px; display: grid; gap: 4px; }
+    .pasos li { display: flex; align-items: center; gap: 8px; font-size: .9rem; }
+    .pasos li label { flex-direction: row; align-items: center; gap: 8px; font-size: .9rem; color: var(--text); flex: 1; cursor: pointer; }
+    .pasos li.hecho label { text-decoration: line-through; color: var(--muted); }
+    .pasos button { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: .85rem; }
+    .mini { display: flex; gap: 6px; margin-top: 6px; }
+    .mini input { flex: 1; padding: 6px 10px; }
+    .graf { position: relative; }
+    .graf svg { display: block; width: 100%; height: auto; overflow: visible; }
+    .graf .tip { position: absolute; pointer-events: none; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: .8rem; box-shadow: 0 4px 14px rgba(0,0,0,.1); white-space: nowrap; transform: translate(-50%, -110%); }
+    .kpi .sub { font-size: .8rem; margin-top: 2px; }
   </style>
 </head>
 <body>
@@ -128,6 +149,7 @@
 
   <nav class="tabs" id="tabs">
     <button data-tab="resumen" class="on">Resumen</button>
+    <button data-tab="metas">Metas</button>
     <button data-tab="movimientos" class="solo-negocio">Movimientos</button>
     <button data-tab="nuevo" class="solo-negocio">Añadir</button>
     <button data-tab="shopify" class="solo-shopify">Shopify</button>
@@ -166,6 +188,48 @@
       <h2>Gastos por categoría</h2>
       <div class="table-wrap"><table id="tCats"></table></div>
     </div>
+  </section>
+
+  <!-- METAS -->
+  <section id="v-metas" class="hidden">
+    <div class="grid g4" id="kpisCrec"></div>
+    <div class="card" style="margin-top:14px">
+      <h2 id="tituloGraf">Ingresos mes a mes</h2>
+      <div class="graf" id="grafMeses"></div>
+      <p class="note" id="notaGraf"></p>
+    </div>
+    <div class="row" style="margin:22px 0 12px;justify-content:space-between">
+      <h2 style="margin:0">Mis metas</h2>
+      <button class="btn" id="btnNuevaMeta">+ Nueva meta</button>
+    </div>
+    <div class="card hidden" id="cardNuevaMeta" style="margin-bottom:14px">
+      <h2>Nueva meta</h2>
+      <form class="mov" id="fMeta" autocomplete="off" novalidate>
+        <label>¿Qué quieres conseguir?
+          <select name="tipo">
+            <option value="ingresos">Facturar (ingresos)</option>
+            <option value="beneficio">Ganar (beneficio)</option>
+            <option value="ventas">Número de ventas</option>
+            <option value="gastos">No gastar más de</option>
+            <option value="manual">Otra meta (la actualizo yo)</option>
+          </select>
+        </label>
+        <label class="m-auto">¿En cuánto tiempo?
+          <select name="periodo"><option value="mes">Cada mes</option><option value="trimestre">Cada trimestre</option><option value="anio">En el año</option></select>
+        </label>
+        <label>Objetivo <input name="objetivo" inputmode="decimal" placeholder="Ej.: 3.000"></label>
+        <label class="m-manual">Unidad <input name="unidad" placeholder="seguidores, clientes, colaboraciones…"></label>
+        <label class="m-manual">Valor actual <input name="inicial" inputmode="decimal" placeholder="0"></label>
+        <label class="m-manual">Fecha límite (opcional) <input type="date" name="limite"></label>
+        <label class="wide">Nombre (opcional) <input name="nombre" placeholder="Se rellena solo si lo dejas vacío"></label>
+        <div class="wide msg neg" id="metaError"></div>
+        <div class="wide row">
+          <button class="btn" type="submit">Guardar meta</button>
+          <button class="btn ghost" type="button" id="btnCancelMeta">Cancelar</button>
+        </div>
+      </form>
+    </div>
+    <div class="grid g2" id="listaMetas"></div>
   </section>
 
   <!-- MOVIMIENTOS -->
@@ -339,7 +403,7 @@ const NEGOCIOS = {
 
   // ---------- Datos ----------
   // Cada negocio guarda sus movimientos aparte. En Brisa cada movimiento es tuyo o se divide entre dos.
-  const blank = () => ({ shopify: { url: '', clave: '', ultima: '' }, movs: [] });
+  const blank = () => ({ shopify: { url: '', clave: '', ultima: '' }, movs: [], metas: [] });
   const dbs = {};
   const cargar = () => {
     Object.entries(NEGOCIOS).forEach(([k, n]) => { dbs[k] = { ...blank(), ...leer(n.clave) }; });
@@ -737,6 +801,216 @@ const NEGOCIOS = {
   });
   $('#btnCancel').onclick = () => { resetForm(); go('movimientos'); };
 
+  // ---------- Metas para crecer ----------
+  // Cada negocio guarda sus metas; las de «Total» (los tres negocios juntos) van aparte.
+  const CLAVE_METAS_TOTAL = 'contabilidad-metas-total-v1';
+  let metasTotal = leer(CLAVE_METAS_TOTAL) || [];
+  const metas = () => total() ? metasTotal : db().metas;
+  const guardarMetas = () => { if (total()) escribir(CLAVE_METAS_TOTAL, metasTotal); else save(); };
+
+  const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const DIA = 864e5;
+  // Periodo actual (mes, trimestre o año) que contiene `hoy`
+  const periodoDe = (p, hoy = new Date()) => {
+    const y = hoy.getFullYear(), m = hoy.getMonth(), q = Math.floor(m / 3);
+    if (p === 'mes') return { ini: new Date(y, m, 1), fin: new Date(y, m + 1, 1), txt: `${MESES[m]} ${y}` };
+    if (p === 'trimestre') return { ini: new Date(y, q * 3, 1), fin: new Date(y, q * 3 + 3, 1), txt: `${q + 1}.º trimestre ${y}` };
+    return { ini: new Date(y, 0, 1), fin: new Date(y + 1, 0, 1), txt: `año ${y}` };
+  };
+  const entre = (ini, fin) => todos().filter(m => m.fecha >= iso(ini) && m.fecha < iso(fin));
+  const medir = (tipo, movs) => {
+    if (tipo === 'ventas') return movs.filter(m => m.tipo === 'ingreso').length;
+    const t = sumar(movs);
+    return { ingresos: t.ing, beneficio: t.ben, gastos: t.gas }[tipo];
+  };
+  const TIPOS = {
+    ingresos: { nombre: 'Facturar', dinero: true }, beneficio: { nombre: 'Ganar', dinero: true },
+    ventas: { nombre: 'Conseguir', dinero: false, unidad: 'ventas' }, gastos: { nombre: 'No gastar más de', dinero: true, limite: true },
+    manual: { nombre: '', dinero: false },
+  };
+  // Dinero en euros; lo demás en números enteros con su unidad (1 venta, 3 ventas)
+  const fmt = (meta, v) => {
+    if (TIPOS[meta.tipo].dinero) return eur(v);
+    const n = Math.round(+v || 0), u = meta.unidad || TIPOS[meta.tipo].unidad || '';
+    return `${n.toLocaleString('es-ES')} ${esc(n === 1 && u === 'ventas' ? 'venta' : u)}`.trim();
+  };
+  const pct = n => `${n >= 0 ? '+' : ''}${Math.round(n)} %`;
+
+  // Estado de una meta: valor, cuánto debería llevar ya, previsión y mensaje
+  const evaluar = meta => {
+    const hoy = new Date(), obj = +meta.objetivo || 0;
+    let valor, ini, fin, txt;
+    if (meta.tipo === 'manual') {
+      valor = +(meta.valores?.at(-1)?.valor ?? 0);
+      ini = new Date(meta.creada); fin = meta.limite ? new Date(meta.limite + 'T23:59:59') : null;
+      txt = fin ? `hasta el ${meta.limite.split('-').reverse().join('/')}` : 'sin fecha límite';
+    } else {
+      ({ ini, fin, txt } = periodoDe(meta.periodo, hoy));
+      valor = medir(meta.tipo, entre(ini, fin));
+    }
+    const f = fin ? Math.min(1, Math.max(0.02, (hoy - ini) / (fin - ini))) : null;
+    const quedanDias = fin ? Math.max(0, Math.ceil((fin - hoy) / DIA)) : null;
+    const prog = obj ? valor / obj : 0;
+    let estado, cls, texto;
+    if (TIPOS[meta.tipo].limite) {
+      const prevision = f ? valor / f : valor;
+      if (valor > obj) { estado = '✕ Te has pasado'; cls = 'mal'; texto = `Llevas ${eur(valor - obj)} por encima del límite.`; }
+      else if (prevision > obj) { estado = '⚠ Cuidado'; cls = 'warn'; texto = `A este ritmo acabarás en ${eur(prevision)}. Te quedan ${eur(obj - valor)} para ${quedanDias} días.`; }
+      else { estado = '✓ Dentro del límite'; cls = 'ok'; texto = `Te quedan ${eur(obj - valor)} hasta el límite.`; }
+    } else if (obj && valor >= obj) {
+      estado = '✓ ¡Conseguida!'; cls = 'ok'; texto = `Has superado tu objetivo en ${fmt(meta, valor - obj)}.`;
+    } else if (f) {
+      const prevision = valor / f, falta = obj - valor, semanas = Math.max(1, quedanDias / 7);
+      const alRitmo = prevision >= obj;
+      estado = alRitmo ? '✓ Vas bien' : '⚠ Por detrás'; cls = alRitmo ? 'ok' : 'warn';
+      const porSemana = TIPOS[meta.tipo].dinero ? falta / semanas : Math.ceil(falta / semanas);
+      texto = `Te falta ${fmt(meta, falta)}` + (quedanDias ? ` en ${quedanDias} días: unos ${fmt(meta, porSemana)} por semana.` : '.')
+        + (meta.tipo !== 'manual' ? ` A este ritmo llegarás a ${fmt(meta, prevision)}.` : '');
+    } else {
+      estado = 'En marcha'; cls = 'warn'; texto = `Te falta ${fmt(meta, obj - valor)}.`;
+    }
+    return { valor, obj, prog, esperado: f, txt, estado, cls, texto };
+  };
+
+  const renderMetas = () => {
+    const hoy = new Date(), y = hoy.getFullYear(), m = hoy.getMonth();
+    // Crecimiento: este mes frente al anterior y el año frente al pasado (hasta hoy)
+    const mesAct = sumar(entre(new Date(y, m, 1), new Date(y, m + 1, 1)));
+    const mesAnt = sumar(entre(new Date(y, m - 1, 1), new Date(y, m, 1)));
+    const anio = sumar(entre(new Date(y, 0, 1), new Date(y, m, hoy.getDate() + 1)));
+    const anioAnt = sumar(entre(new Date(y - 1, 0, 1), new Date(y - 1, m, hoy.getDate() + 1)));
+    const comp = (a, b) => b > 0 ? `<div class="sub ${a >= b ? 'pos' : 'neg'}">${a >= b ? '▲' : '▼'} ${pct((a - b) / b * 100)} <span class="calc">vs ${eur(b)}</span></div>` : `<div class="sub calc">sin datos para comparar</div>`;
+    $('#kpisCrec').innerHTML = [
+      [`Ingresos de ${MESES[m]}`, mesAct.ing, comp(mesAct.ing, mesAnt.ing).replace('vs', `vs ${MESES[(m + 11) % 12]}`)],
+      [`Beneficio de ${MESES[m]}`, mesAct.ben, comp(mesAct.ben, mesAnt.ben).replace('vs', `vs ${MESES[(m + 11) % 12]}`)],
+      [`Ingresos ${y} hasta hoy`, anio.ing, comp(anio.ing, anioAnt.ing).replace('vs', `vs ${y - 1}`)],
+      [`Beneficio ${y} hasta hoy`, anio.ben, comp(anio.ben, anioAnt.ben).replace('vs', `vs ${y - 1}`)],
+    ].map(([l, v, sub]) => `<div class="card kpi"><div class="lbl">${l}</div><div class="val">${eur(v)}</div>${sub}</div>`).join('');
+    renderGrafico(y);
+
+    const lista = metas();
+    $('#listaMetas').innerHTML = lista.length ? lista.map(meta => {
+      const e = evaluar(meta);
+      const ancho = Math.max(0, Math.min(100, e.prog * 100));
+      const nombre = meta.nombre || (meta.tipo === 'manual' ? 'Meta' : `${TIPOS[meta.tipo].nombre} ${fmt(meta, e.obj)}`);
+      const pasos = meta.pasos || [];
+      return `<div class="card meta" data-meta="${meta.id}">
+        <div class="row" style="justify-content:space-between;align-items:flex-start"><h3>${esc(nombre)}</h3><span class="estado ${e.cls}">${e.estado}</span></div>
+        <div class="calc">${meta.tipo === 'manual' ? '' : (meta.periodo === 'anio' ? 'En el ' : meta.periodo === 'mes' ? 'Este mes · ' : 'Este trimestre · ')}${e.txt}</div>
+        <div class="cifra">${fmt(meta, e.valor)} <small>de ${fmt(meta, e.obj)} · ${Math.round(e.prog * 100)} %</small></div>
+        <div class="progreso" title="La rayita marca dónde deberías ir hoy"><span style="width:${ancho}%;${e.cls === 'mal' ? 'background:var(--red)' : e.cls === 'warn' ? 'background:var(--amber)' : ''}"></span>${e.esperado != null && e.esperado < 1 ? `<i style="left:${e.esperado * 100}%"></i>` : ''}</div>
+        <p class="note">${e.texto}${e.esperado != null && e.esperado < 1 ? ' La rayita marca dónde deberías ir hoy.' : ''}</p>
+        ${meta.tipo === 'manual' ? `<form class="mini" data-act="valor"><input name="v" inputmode="decimal" placeholder="Nuevo valor (ahora ${fmt(meta, e.valor)})"><button class="btn small">Actualizar</button></form>` : ''}
+        <h3 style="margin-top:14px;font-size:.9rem">Pasos para conseguirlo ${pasos.length ? `<span class="calc">(${pasos.filter(p => p.hecho).length}/${pasos.length})</span>` : ''}</h3>
+        <ul class="pasos">${pasos.map(p => `<li class="${p.hecho ? 'hecho' : ''}"><label><input type="checkbox" data-paso="${p.id}" ${p.hecho ? 'checked' : ''}>${esc(p.texto)}</label><button data-delpaso="${p.id}" title="Quitar paso">✕</button></li>`).join('')}</ul>
+        <form class="mini" data-act="paso"><input name="t" placeholder="Añadir un paso (ej.: publicar 3 reels por semana)"><button class="btn small ghost">+</button></form>
+        <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn small danger" data-delmeta="${meta.id}">Borrar meta</button></div>
+      </div>`;
+    }).join('') : `<div class="card empty" style="grid-column:1/-1">Todavía no tienes metas aquí. Pulsa «+ Nueva meta»: por ejemplo, facturar 3.000 € al mes o llegar a 10.000 seguidores.</div>`;
+  };
+
+  // Gráfico de barras: ingresos de cada mes del año, con la meta mensual como línea
+  const renderGrafico = y => {
+    const vals = MESES.map((_, i) => sumar(entre(new Date(y, i, 1), new Date(y, i + 1, 1))).ing);
+    const metaMes = metas().find(x => x.tipo === 'ingresos' && x.periodo === 'mes');
+    const objetivo = metaMes ? +metaMes.objetivo : 0;
+    const max = Math.max(1, objetivo, ...vals) * 1.1;
+    const W = 640, H = 220, L = 46, B = 24, T = 8, cw = (W - L) / 12, bw = Math.min(28, cw * .6);
+    const yy = v => T + (H - T - B) * (1 - v / max);
+    const bruto = max / 4, paso = Math.pow(10, Math.floor(Math.log10(bruto)));
+    const tick = [1, 2, 2.5, 5, 10].map(k => k * paso).find(t => t >= bruto);
+    const ticks = [0, 1, 2, 3, 4].map(k => k * tick).filter(t => t <= max);
+    const corto = v => v >= 1000 ? `${(v / 1000).toLocaleString('es-ES', { maximumFractionDigits: 1 })} k` : Math.round(v);
+    const mesHoy = new Date().getFullYear() === y ? new Date().getMonth() : 11;
+    $('#tituloGraf').textContent = `Ingresos mes a mes · ${y}`;
+    $('#grafMeses').innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Ingresos de cada mes de ${y}">
+      ${ticks.map(t => `<line x1="${L}" x2="${W}" y1="${yy(t)}" y2="${yy(t)}" stroke="var(--line)" stroke-width="1"/>
+        <text x="${L - 8}" y="${yy(t) + 4}" text-anchor="end" font-size="11" fill="var(--muted)">${corto(t)}</text>`).join('')}
+      ${vals.map((v, i) => {
+        const x = L + i * cw + (cw - bw) / 2, h = Math.max(0, yy(0) - yy(v)), r = Math.min(4, h / 2);
+        const futuro = i > mesHoy;
+        return `<g data-i="${i}">
+          <rect x="${L + i * cw}" y="${T}" width="${cw}" height="${H - T - B}" fill="transparent"/>
+          ${h > 0 ? `<path d="M${x},${yy(0)} V${yy(v) + r} Q${x},${yy(v)} ${x + r},${yy(v)} H${x + bw - r} Q${x + bw},${yy(v)} ${x + bw},${yy(v) + r} V${yy(0)} Z" fill="var(--ink)" opacity="${objetivo && v < objetivo ? .55 : 1}"/>` : ''}
+          <text x="${L + i * cw + cw / 2}" y="${H - 6}" text-anchor="middle" font-size="11" fill="${i === mesHoy ? 'var(--text)' : 'var(--muted)'}" ${i === mesHoy ? 'font-weight="600"' : ''} opacity="${futuro ? .5 : 1}">${MESES[i].slice(0, 3)}</text>
+        </g>`;
+      }).join('')}
+      ${objetivo ? `<line x1="${L}" x2="${W}" y1="${yy(objetivo)}" y2="${yy(objetivo)}" stroke="var(--text)" stroke-width="2" stroke-dasharray="6 4" opacity=".7"/>
+        <text x="${W}" y="${yy(objetivo) - 6}" text-anchor="end" font-size="11" fill="var(--text)">Meta ${eur(objetivo)}</text>` : ''}
+    </svg><div class="tip hidden"></div>`;
+    $('#notaGraf').textContent = objetivo
+      ? `La línea discontinua es tu meta mensual. Meses que la alcanzan: ${vals.slice(0, mesHoy + 1).filter(v => v >= objetivo).length} de ${mesHoy + 1}. Las barras más claras no llegan a la meta.`
+      : 'Crea una meta de «Facturar» cada mes y verás aquí la línea de tu objetivo.';
+    const svg = $('#grafMeses svg'), tip = $('#grafMeses .tip');
+    svg.onmousemove = e => {
+      const g = e.target.closest('g[data-i]'); if (!g) { tip.classList.add('hidden'); return; }
+      const i = +g.dataset.i, box = svg.getBoundingClientRect(), k = box.width / W;
+      tip.innerHTML = `<b>${MESES[i]} ${y}</b><br>${eur(vals[i])}${objetivo ? `<br><span class="calc">${vals[i] >= objetivo ? '✓ meta alcanzada' : `faltaron ${eur(objetivo - vals[i])}`}</span>` : ''}`;
+      tip.style.left = `${(L + i * cw + cw / 2) * k}px`; tip.style.top = `${yy(vals[i]) * k}px`;
+      tip.classList.remove('hidden');
+    };
+    svg.onmouseleave = () => tip.classList.add('hidden');
+  };
+
+  // Formulario de nueva meta
+  const FM = $('#fMeta');
+  const tipoMeta = () => {
+    const manual = FM.tipo.value === 'manual';
+    document.querySelectorAll('#fMeta .m-manual').forEach(e => e.classList.toggle('hidden', !manual));
+    document.querySelectorAll('#fMeta .m-auto').forEach(e => e.classList.toggle('hidden', manual));
+  };
+  FM.tipo.addEventListener('change', tipoMeta);
+  $('#btnNuevaMeta').onclick = () => { FM.reset(); $('#metaError').textContent = ''; tipoMeta(); $('#cardNuevaMeta').classList.remove('hidden'); FM.objetivo.focus(); };
+  $('#btnCancelMeta').onclick = () => $('#cardNuevaMeta').classList.add('hidden');
+  FM.addEventListener('submit', e => {
+    e.preventDefault();
+    const obj = leerImporte(FM.objetivo.value), manual = FM.tipo.value === 'manual';
+    if (!(obj > 0)) { $('#metaError').textContent = 'Pon un objetivo mayor que 0 (por ejemplo 3.000).'; return; }
+    if (manual && !FM.unidad.value.trim() && !FM.nombre.value.trim()) { $('#metaError').textContent = 'Di qué vas a medir: escribe la unidad (seguidores, clientes…) o un nombre.'; return; }
+    const meta = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5), tipo: FM.tipo.value,
+      periodo: manual ? null : FM.periodo.value, objetivo: r2(obj), nombre: FM.nombre.value.trim(),
+      creada: new Date().toISOString(), pasos: [],
+    };
+    if (manual) {
+      meta.unidad = FM.unidad.value.trim(); meta.limite = FM.limite.value || null;
+      const ini = leerImporte(FM.inicial.value);
+      meta.valores = [{ fecha: iso(new Date()), valor: ini >= 0 ? ini : 0 }];
+      if (!meta.nombre) meta.nombre = `Llegar a ${meta.objetivo.toLocaleString('es-ES')} ${meta.unidad}`;
+    }
+    metas().push(meta); guardarMetas();
+    $('#cardNuevaMeta').classList.add('hidden'); renderMetas();
+  });
+
+  // Acciones dentro de cada meta: pasos, actualizar valor, borrar
+  const metaDe = el => metas().find(x => x.id === el.closest('[data-meta]')?.dataset.meta);
+  $('#listaMetas').addEventListener('submit', e => {
+    e.preventDefault();
+    const meta = metaDe(e.target), act = e.target.dataset.act; if (!meta) return;
+    if (act === 'paso') {
+      const t = e.target.t.value.trim(); if (!t) return;
+      (meta.pasos ||= []).push({ id: Date.now().toString(36), texto: t, hecho: false });
+    }
+    if (act === 'valor') {
+      const v = leerImporte(e.target.v.value); if (!(v >= 0)) return;
+      (meta.valores ||= []).push({ fecha: iso(new Date()), valor: v });
+    }
+    guardarMetas(); renderMetas();
+  });
+  $('#listaMetas').addEventListener('change', e => {
+    const id = e.target.dataset.paso, meta = id && metaDe(e.target); if (!meta) return;
+    const p = meta.pasos.find(x => x.id === id); p.hecho = e.target.checked; guardarMetas(); renderMetas();
+  });
+  $('#listaMetas').addEventListener('click', e => {
+    const { delpaso, delmeta } = e.target.dataset;
+    if (delpaso) { const meta = metaDe(e.target); meta.pasos = meta.pasos.filter(p => p.id !== delpaso); guardarMetas(); renderMetas(); }
+    if (delmeta && confirm('¿Borrar esta meta?')) {
+      if (total()) metasTotal = metasTotal.filter(x => x.id !== delmeta); else db().metas = db().metas.filter(x => x.id !== delmeta);
+      guardarMetas(); renderMetas();
+    }
+  });
+
   // ---------- Ajustes ----------
   const loadAjustes = () => { $('#resetNeg').textContent = CFG().nombre; };
 
@@ -755,7 +1029,7 @@ const NEGOCIOS = {
   };
   const hoy = () => new Date().toISOString().slice(0, 10);
   $('#btnExport').onclick = () => download(`contabilidad-${hoy()}.json`,
-    JSON.stringify({ version: 3, negocios: dbs }, null, 2), 'application/json');
+    JSON.stringify({ version: 3, negocios: dbs, metasTotal }, null, 2), 'application/json');
   $('#fileImport').onchange = async e => {
     const f = e.target.files[0]; if (!f) return;
     try {
@@ -764,6 +1038,7 @@ const NEGOCIOS = {
         const n = Object.values(d.negocios).reduce((s, x) => s + (x.movs?.length || 0), 0);
         if (!confirm(`¿Cargar la copia completa (${n} movimientos de todos los negocios)? Se sustituirán los datos actuales.`)) return;
         Object.keys(NEGOCIOS).forEach(k => { if (d.negocios[k]) escribir(NEGOCIOS[k].clave, { ...blank(), ...d.negocios[k] }); });
+        if (Array.isArray(d.metasTotal)) { metasTotal = d.metasTotal; escribir(CLAVE_METAS_TOTAL, metasTotal); }
       } else if (Array.isArray(d.movs)) {
         // Copia antigua de una sola empresa: se carga en la empresa elegida
         if (total()) { alert('Esta copia es de una sola empresa: elige primero un negocio (Benissalud, MOOD MATCHA o Brisa Creative).'); return; }
@@ -791,8 +1066,9 @@ const NEGOCIOS = {
   // ---------- Navegación ----------
   let view = 'resumen';
   const render = () => {
-    $('#filters').classList.toggle('hidden', view === 'nuevo' || view === 'ajustes');
+    $('#filters').classList.toggle('hidden', ['nuevo', 'ajustes', 'metas'].includes(view));
     if (view === 'resumen') renderResumen();
+    if (view === 'metas') { $('#cardNuevaMeta').classList.add('hidden'); renderMetas(); }
     if (view === 'movimientos') renderMovs();
     if (view === 'shopify') { renderShopify(); alAbrirShopify(); }
     if (view === 'impuestos') renderImpuestos();
