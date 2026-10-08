@@ -167,6 +167,7 @@
     <div>
       <img id="logoNeg" class="logo-neg" alt="">
       <h1 id="titulo">Mi panel</h1>
+      <div id="nube" class="calc" style="margin:2px 0 4px">📱 Guardado en este dispositivo</div>
       <p>Trabajos, Instagram, metas y dinero de tus tres negocios. Los datos se guardan en este navegador: haz copia de seguridad en Ajustes.</p>
     </div>
     <div class="row">
@@ -528,7 +529,11 @@ const NEGOCIOS = {
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   const tri = f => Math.floor((+f.slice(5, 7) - 1) / 3) + 1;
   const leer = k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
-  const escribir = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { alert('No se pudo guardar en este navegador. Descarga una copia de seguridad.'); } };
+  let alGuardar = () => {};  // la sincronización con tu cuenta lo sustituye cuando está disponible
+  const escribir = (k, v) => {
+    try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* sin almacenamiento local: queda la nube */ }
+    alGuardar(k);
+  };
 
   // ---------- Datos ----------
   // Cada negocio guarda sus movimientos aparte. En Brisa cada movimiento es tuyo o se divide entre dos.
@@ -1456,13 +1461,14 @@ const NEGOCIOS = {
     if (view === 'trabajos') renderTrabajos();
     if (view === 'instagram') renderInstagram();
     if (view === 'resumen') renderResumen();
-    if (view === 'metas') { $('#cardNuevaMeta').classList.add('hidden'); renderMetas(); }
+    if (view === 'metas') renderMetas();
     if (view === 'movimientos') renderMovs();
     if (view === 'shopify') { renderShopify(); alAbrirShopify(); }
     if (view === 'impuestos') renderImpuestos();
     if (view === 'ajustes') loadAjustes();
   };
   const go = (v, keep) => {
+    if (v === 'metas') $('#cardNuevaMeta').classList.add('hidden');
     if (v === 'nuevo' && !keep) resetForm();
     view = v;
     document.querySelectorAll('section[id^="v-"]').forEach(s => s.classList.toggle('hidden', s.id !== 'v-' + v));
@@ -1504,6 +1510,122 @@ const NEGOCIOS = {
     if (edit) editMov(edit);
     if (del && confirm('¿Borrar este movimiento?')) { db().movs = db().movs.filter(m => m.id !== del); save(); render(); }
   };
+
+  // ---------- Guardado en tu cuenta de Claude ----------
+  // Dentro de Claude los datos se guardan en la base de datos de este panel (tu cuenta), así se ven
+  // igual en el móvil y en el ordenador. El navegador guarda una copia por si no hay conexión.
+  //   negocios/<negocio>                → trabajos, contenido, seguidores, metas
+  //   negocios/<negocio>/movs/<AAAA-MM>  → movimientos de ese mes (documentos pequeños)
+  //   ajustes/metasTotal                 → metas de «Total»
+  // La conexión del conector de Shopify (URL y clave) nunca sale de este navegador.
+  const LISTAS = ['trabajos', 'contenido', 'seguidores', 'metas'];
+  const nubeEstado = (txt, cls = '') => { const el = $('#nube'); el.textContent = txt; el.className = 'calc ' + cls; };
+  let nube = null;
+  const enviado = {};       // ruta → último contenido escrito o recibido (JSON), para no reescribir lo mismo
+  const sucios = new Set(); // claves de localStorage con cambios por subir
+  let temporizador = null, subiendo = false;
+
+  const partesDe = n => {
+    const d = dbs[n], partes = { [`negocios/${n}`]: Object.fromEntries(LISTAS.map(k => [k, d[k] || []])) };
+    const meses = {};
+    d.movs.forEach(m => { (meses[m.fecha.slice(0, 7)] ||= []).push(m); });
+    // También los meses que antes tenían algo, para vaciarlos si se borró todo
+    Object.keys(enviado).filter(r => r.startsWith(`negocios/${n}/movs/`)).forEach(r => { meses[r.split('/').pop()] ||= []; });
+    Object.entries(meses).forEach(([mes, items]) => { partes[`negocios/${n}/movs/${mes}`] = { items }; });
+    return partes;
+  };
+  const subir = async () => {
+    if (!nube || subiendo) return;
+    subiendo = true; nubeEstado('☁️ Guardando…');
+    try {
+      while (sucios.size) {
+        const k = [...sucios][0]; sucios.delete(k);
+        const n = Object.keys(NEGOCIOS).find(x => NEGOCIOS[x].clave === k);
+        const partes = n ? partesDe(n) : k === CLAVE_METAS_TOTAL ? { 'ajustes/metasTotal': { metas: metasTotal } } : {};
+        for (const [ruta, cuerpo] of Object.entries(partes)) {
+          const json = JSON.stringify(cuerpo);
+          if (enviado[ruta] === json) continue;
+          try { await nube.doc(ruta).set(cuerpo); }
+          catch (err) {
+            if (err.code !== 'unavailable') throw err;
+            await new Promise(r => setTimeout(r, 800 + Math.random() * 800));
+            await nube.doc(ruta).set(cuerpo);
+          }
+          enviado[ruta] = json;
+        }
+      }
+      nubeEstado('☁️ Guardado en tu cuenta', 'pos');
+    } catch (err) {
+      nubeEstado(err.code === 'quota_exceeded' ? '⚠️ Tu espacio de datos está lleno: descarga una copia y borra datos antiguos.'
+        : '⚠️ No se pudo guardar en tu cuenta (queda guardado en este dispositivo).', 'neg');
+    } finally { subiendo = false; if (sucios.size) programar(); }
+  };
+  const programar = () => { clearTimeout(temporizador); temporizador = setTimeout(subir, 500); };
+
+  // Unir sin perder nada: lo de la cuenta manda, y se añade lo que solo estaba en este dispositivo
+  const unir = (remoto = [], local = [], clave = 'id') => {
+    const ids = new Set(remoto.map(x => x[clave]));
+    return [...remoto, ...local.filter(x => !ids.has(x[clave]))];
+  };
+  const refrescar = () => { fillYears(); if (view !== 'nuevo') render(); };
+
+  window.claude?.use?.('db').then(async db => {
+    if (!db) return;
+    try {
+      nubeEstado('☁️ Conectando con tu cuenta…');
+      // 1) Primera lectura: unir lo de la cuenta con lo que hubiera en este dispositivo
+      for (const n of Object.keys(NEGOCIOS)) {
+        const doc = await db.doc(`negocios/${n}`).get(), movs = await db.collection(`negocios/${n}/movs`).get();
+        const r = doc.exists ? doc.data() : {};
+        if (doc.exists) enviado[`negocios/${n}`] = JSON.stringify(r);
+        const remotos = movs.docs.flatMap(x => { enviado[`negocios/${n}/movs/${x.id}`] = JSON.stringify(x.data()); return x.data().items || []; });
+        const d = dbs[n];
+        LISTAS.forEach(k => { d[k] = unir(r[k], d[k], k === 'seguidores' ? 'fecha' : 'id'); });
+        d.seguidores.sort((a, b) => a.fecha.localeCompare(b.fecha));
+        d.movs = unir(remotos, d.movs);
+      }
+      const mt = await db.doc('ajustes/metasTotal').get();
+      if (mt.exists) enviado['ajustes/metasTotal'] = JSON.stringify(mt.data());
+      metasTotal = unir(mt.exists ? mt.data().metas : [], metasTotal);
+      nube = db;
+      alGuardar = k => { sucios.add(k); programar(); };
+      // Guardar la unión (sube lo que solo estaba aquí y deja la copia local al día)
+      Object.keys(NEGOCIOS).forEach(n => escribir(NEGOCIOS[n].clave, dbs[n]));
+      escribir(CLAVE_METAS_TOTAL, metasTotal);
+      refrescar();
+      if (!sucios.size) nubeEstado('☁️ Guardado en tu cuenta', 'pos');
+
+      // 2) En directo: lo que cambies en otro dispositivo aparece aquí
+      const local = (n, cuerpo) => { try { localStorage.setItem(NEGOCIOS[n].clave, JSON.stringify(cuerpo)); } catch { } };
+      Object.keys(NEGOCIOS).forEach(n => {
+        db.doc(`negocios/${n}`).onSnapshot(snap => {
+          if (snap.metadata.hasPendingWrites || !snap.exists || sucios.has(NEGOCIOS[n].clave)) return;
+          const json = JSON.stringify(snap.data()); if (enviado[`negocios/${n}`] === json) return;
+          enviado[`negocios/${n}`] = json;
+          LISTAS.forEach(k => { dbs[n][k] = snap.data()[k] || []; });
+          local(n, dbs[n]); refrescar();
+        }, () => nubeEstado('⚠️ Se perdió la conexión con tu cuenta: recarga la página.', 'neg'));
+        db.collection(`negocios/${n}/movs`).onSnapshot(snap => {
+          if (snap.metadata.hasPendingWrites || sucios.has(NEGOCIOS[n].clave)) return;
+          let cambio = false;
+          snap.docs.forEach(x => { const r = `negocios/${n}/movs/${x.id}`, j = JSON.stringify(x.data()); if (enviado[r] !== j) { enviado[r] = j; cambio = true; } });
+          if (!cambio) return;
+          dbs[n].movs = snap.docs.flatMap(x => x.data().items || []);
+          local(n, dbs[n]); refrescar();
+        }, () => nubeEstado('⚠️ Se perdió la conexión con tu cuenta: recarga la página.', 'neg'));
+      });
+      db.doc('ajustes/metasTotal').onSnapshot(snap => {
+        if (snap.metadata.hasPendingWrites || !snap.exists || sucios.has(CLAVE_METAS_TOTAL)) return;
+        const j = JSON.stringify(snap.data()); if (enviado['ajustes/metasTotal'] === j) return;
+        enviado['ajustes/metasTotal'] = j; metasTotal = snap.data().metas || [];
+        try { localStorage.setItem(CLAVE_METAS_TOTAL, JSON.stringify(metasTotal)); } catch { }
+        refrescar();
+      });
+    } catch (err) {
+      nube = null; alGuardar = () => {};
+      nubeEstado('⚠️ No se pudo conectar con tu cuenta: de momento se guarda solo en este dispositivo.', 'neg');
+    }
+  });
 
   document.querySelectorAll('[data-logo]').forEach(img => { img.src = LOGOS[img.dataset.logo]; });
   const init = () => { fillYears(); elegir(neg); };
