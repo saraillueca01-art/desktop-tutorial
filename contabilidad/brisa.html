@@ -572,7 +572,15 @@ const CFG = {
     if (CFG.shopify) db.shopify.socia = A.shopSocia.value;
     save(); fillSocias(); loadAjustes(); alert('Ajustes guardados');
   });
-  const download = (name, text, type) => {
+  // Dentro del visor de Claude las descargas pasan por su permiso; en un navegador normal, enlace directo.
+  let descargas = null;
+  window.claude?.use?.('downloads').then(d => { descargas = d; });
+  const download = async (name, text, type) => {
+    if (descargas) {
+      try { await descargas.save({ filename: name, data: text }); }
+      catch (err) { if (err.code !== 'declined') alert('No se pudo descargar: ' + err.message); }
+      return;
+    }
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
