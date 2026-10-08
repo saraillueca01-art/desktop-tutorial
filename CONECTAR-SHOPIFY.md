@@ -65,7 +65,7 @@ Sincroniza el año elegido arriba; cambia el año para traer otros.
 ## A tener en cuenta
 
 - Dentro de Claude no hace falta nada de esto: en **MOOD MATCHA → Shopify** los pedidos se traen solos con la conexión de Shopify de Claude.
-- Las ventas de Shopify se asignan por defecto a **Las dos** (con el reparto de Ajustes). Se puede cambiar en Ajustes.
+- Las ventas de Shopify cuentan para la **titular de MOOD MATCHA** (se elige en Ajustes).
 - La **cuota mensual de Shopify** y las **comisiones de cobro** no vienen en los pedidos: apúntalas como gasto con la
   categoría «Shopify: cuota y comisiones».
 - Si cambias el script, publícalo de nuevo en **Implementar → Gestionar implementaciones → editar (lápiz) →

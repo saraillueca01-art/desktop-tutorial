@@ -97,7 +97,7 @@
   <header class="top">
     <div>
       <h1 id="titulo">Contabilidad</h1>
-      <p>Tres negocios, dos socias autónomas. Los datos se guardan en este navegador: haz copia de seguridad en Ajustes.</p>
+      <p>Brisa Creative es de las dos socias; Benissalud y MOOD MATCHA, de una sola titular. Los datos se guardan en este navegador: haz copia de seguridad en Ajustes.</p>
     </div>
     <div class="row solo-negocio">
       <button class="btn" data-go="nuevo">+ Nuevo movimiento</button>
@@ -137,10 +137,10 @@
   <section id="v-resumen">
     <div class="grid g4" id="kpis"></div>
     <div class="grid g2" style="margin-top:14px">
-      <div class="card">
+      <div class="card solo-socias">
         <h2>Por socia</h2>
         <div class="table-wrap"><table id="tSocias"></table></div>
-        <p class="note">Lo apuntado a «Las dos» se reparte con el porcentaje de cada empresa (Ajustes).</p>
+        <p class="note">Lo apuntado a «Las dos» en Brisa Creative se reparte con su porcentaje (Ajustes). Benissalud y MOOD MATCHA cuentan entero para su titular.</p>
       </div>
       <div class="card solo-total">
         <h2>Por empresa</h2>
@@ -163,7 +163,7 @@
       <label>Tipo
         <select id="fTipo"><option value="">Todos</option><option value="ingreso">Ingresos</option><option value="gasto">Gastos</option></select>
       </label>
-      <label>Socia <select id="fSocia"></select></label>
+      <label class="solo-socias">Socia <select id="fSocia"></select></label>
       <label style="flex:1;min-width:180px">Buscar <input id="fTxt" placeholder="Concepto, cliente, nº factura…"></label>
       <button class="btn ghost" id="btnCsv">Exportar CSV</button>
     </div>
@@ -180,7 +180,7 @@
           <select name="tipo" required><option value="ingreso">Ingreso (factura emitida)</option><option value="gasto">Gasto (factura recibida)</option></select>
         </label>
         <label>Fecha <input type="date" name="fecha" required></label>
-        <label>Socia <select name="socia" required></select></label>
+        <label class="solo-socias">Socia <select name="socia"></select></label>
         <label>Categoría <select name="categoria"></select></label>
         <label>Nº factura <input name="nfactura"></label>
         <label>Cliente / proveedor <input name="contraparte"></label>
@@ -259,9 +259,9 @@
         <form id="fAjustes" class="grid" style="gap:10px">
           <label>Nombre socia 1 <input name="s1" required></label>
           <label>Nombre socia 2 <input name="s2" required></label>
-          <label class="solo-negocio"><span>Reparto de lo apuntado a «Las dos» en <b id="ajNeg"></b>: % para socia 1</span>
+          <label class="solo-negocio solo-socias"><span>Reparto de lo apuntado a «Las dos» en <b id="ajNeg"></b>: % para socia 1</span>
             <input type="number" name="reparto" min="0" max="100" step="1"></label>
-          <label class="solo-shopify">Las ventas de Shopify son de <select name="shopSocia"></select></label>
+          <label class="solo-titular"><span>Titular de <b id="ajTit"></b> (todo cuenta para ella)</span> <select name="titular"></select></label>
           <div><button class="btn" type="submit">Guardar ajustes</button></div>
         </form>
       </div>
@@ -287,6 +287,7 @@ const NEGOCIOS = {
     nombre: 'Benissalud',
     clave: 'contabilidad-benissalud-v1',
     shopify: false,
+    socias: false,
     catIng: ['Servicios / sesiones', 'Bonos y paquetes', 'Talleres y formaciones', 'Venta de producto', 'Subvención', 'Otros ingresos'],
     catGas: ['Cuota autónomos', 'Alquiler', 'Suministros (luz, agua, internet)', 'Material sanitario', 'Software y suscripciones',
       'Publicidad', 'Colegio profesional y seguros', 'Gestoría', 'Formación', 'Transporte y dietas', 'Equipos',
@@ -297,6 +298,7 @@ const NEGOCIOS = {
     tienda: 'MOOD MATCHA',
     clave: 'contabilidad-moodmatcha-v1',
     shopify: true,
+    socias: false,
     catIng: ['Ventas tienda online (Shopify)', 'Venta de producto (fuera de Shopify)', 'Otros ingresos'],
     catGas: ['Cuota autónomos', 'Mercancía / producto', 'Envíos y embalaje', 'Shopify: cuota y comisiones', 'Publicidad',
       'Diseño y packaging', 'Software y suscripciones', 'Gestoría', 'Transporte y dietas', 'Comisiones bancarias', 'Otros gastos'],
@@ -305,6 +307,7 @@ const NEGOCIOS = {
     nombre: 'Brisa Creative',
     clave: 'contabilidad-brisa-v1',
     shopify: false,
+    socias: true,
     catIng: ['Servicios de contenido', 'Gestión de redes', 'Asesorías y formaciones', 'Otros ingresos'],
     catGas: ['Cuota autónomos', 'Alquiler', 'Suministros (luz, agua, internet)', 'Material y atrezo', 'Equipos (cámara, móvil, luces)',
       'Software y suscripciones', 'Publicidad', 'Colaboradores externos', 'Gestoría', 'Formación', 'Transporte y dietas',
@@ -326,8 +329,8 @@ const NEGOCIOS = {
   const escribir = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { alert('No se pudo guardar en este navegador. Descarga una copia de seguridad.'); } };
 
   // ---------- Datos ----------
-  // Cada negocio guarda sus movimientos aparte; las socias son las mismas en todos.
-  const blank = () => ({ reparto: 50, shopify: { url: '', clave: '', socia: 'ambas', ultima: '' }, movs: [] });
+  // Cada negocio guarda sus movimientos aparte. Brisa se reparte entre las dos socias; los demás son de su titular.
+  const blank = () => ({ reparto: 50, titular: 's1', shopify: { url: '', clave: '', socia: 'ambas', ultima: '' }, movs: [] });
   const dbs = {};
   let socias;
   const cargar = () => {
@@ -347,7 +350,7 @@ const NEGOCIOS = {
   let neg = leer(CLAVE_VISTA);
   if (!NEGOCIOS[neg] && neg !== 'total') neg = 'benissalud';
   const total = () => neg === 'total';
-  const CFG = () => NEGOCIOS[neg] || { nombre: 'Total', shopify: false, catIng: [], catGas: [] };
+  const CFG = () => NEGOCIOS[neg] || { nombre: 'Total', socias: true, shopify: false, catIng: [], catGas: [] };
   const db = () => dbs[neg];
   const save = () => { if (!total()) escribir(NEGOCIOS[neg].clave, dbs[neg]); };
 
@@ -364,9 +367,11 @@ const NEGOCIOS = {
     const irpf = r2(base * (+m.irpf || 0) / 100);
     return { base, iva, irpf, total: r2(base + iva - irpf) };
   };
-  // Parte que corresponde a cada socia (0..1), con el reparto de la empresa del movimiento
+  // Parte que corresponde a cada socia (0..1): en Brisa según lo apuntado y su reparto; en los demás, todo para la titular
   const share = (m, s) => {
-    if (m.socia === 'ambas') { const p = dbs[m._neg || neg].reparto / 100; return s === 's1' ? p : 1 - p; }
+    const n = m._neg || neg;
+    if (!NEGOCIOS[n].socias) return dbs[n].titular === s ? 1 : 0;
+    if (m.socia === 'ambas') { const p = dbs[n].reparto / 100; return s === 's1' ? p : 1 - p; }
     return m.socia === s ? 1 : 0;
   };
 
@@ -382,7 +387,7 @@ const NEGOCIOS = {
     const todas = opts + `<option value="ambas">Las dos (reparto)</option>`;
     $('#fSocia').innerHTML = `<option value="">Todas</option>` + opts;
     $('#fMov [name=socia]').innerHTML = todas;
-    $('#fAjustes [name=shopSocia]').innerHTML = todas;
+    $('#fAjustes [name=titular]').innerHTML = opts;
   };
   const filtered = () => {
     const y = $('#fAnio').value, t = +$('#fTri').value;
@@ -436,18 +441,18 @@ const NEGOCIOS = {
 
   // ---------- Movimientos ----------
   const renderMovs = () => {
-    const tipo = $('#fTipo').value, soc = $('#fSocia').value, q = $('#fTxt').value.trim().toLowerCase();
+    const conSocia = CFG().socias, tipo = $('#fTipo').value, soc = conSocia ? $('#fSocia').value : '', q = $('#fTxt').value.trim().toLowerCase();
     const movs = filtered()
       .filter(m => (!tipo || m.tipo === tipo) && (!soc || share(m, soc) > 0))
       .filter(m => !q || [m.concepto, m.contraparte, m.nfactura, m.categoria].join(' ').toLowerCase().includes(q))
       .sort((a, b) => b.fecha.localeCompare(a.fecha));
     if (!movs.length) { $('#tMovs').innerHTML = `<tr><td class="empty">No hay movimientos. Pulsa «+ Nuevo movimiento».</td></tr>`; return; }
-    $('#tMovs').innerHTML = `<tr><th>Fecha</th><th>Socia</th><th>Concepto</th><th>Categoría</th><th class="n">Base</th><th class="n">IVA</th><th class="n">IRPF</th><th class="n">Total</th><th></th></tr>` +
+    $('#tMovs').innerHTML = `<tr><th>Fecha</th>${conSocia ? '<th>Socia</th>' : ''}<th>Concepto</th><th>Categoría</th><th class="n">Base</th><th class="n">IVA</th><th class="n">IRPF</th><th class="n">Total</th><th></th></tr>` +
       movs.map(m => {
         const c = calc(m), sg = m.tipo === 'gasto' ? -1 : 1;
         return `<tr>
           <td>${m.fecha.split('-').reverse().join('/')}</td>
-          <td>${esc(nombre(m.socia))}</td>
+          ${conSocia ? `<td>${esc(nombre(m.socia))}</td>` : ''}
           <td>${esc(m.concepto)}${m.origen === 'shopify' ? ' <span class="tag shop">Shopify</span>' : ''}
             ${m.contraparte ? `<br><small class="calc">${esc(m.contraparte)}${m.nfactura ? ' · ' + esc(m.nfactura) : ''}</small>` : ''}
             ${m.cobrado === '0' ? ' <span class="tag neg">pendiente</span>' : ''}${m.deducible === '0' && m.tipo === 'gasto' ? ' <span class="tag">no deducible</span>' : ''}</td>
@@ -466,7 +471,7 @@ const NEGOCIOS = {
     $('#notaImp').textContent = total()
       ? 'Esto es lo que presenta cada socia: sus modelos 303 y 130 suman lo que le toca de los tres negocios. Cálculo orientativo para revisar con la gestoría.'
       : `Solo la parte de ${CFG().nombre}. Lo que presenta cada socia (sumando los tres negocios) está en «Total».`;
-    $('#impuestos').innerHTML = ['s1', 's2'].map(s => {
+    $('#impuestos').innerHTML = (CFG().socias ? ['s1', 's2'] : [db().titular]).map(s => {
       const w = m => share(m, s);
       const trim = sumar(anio.filter(m => tri(m.fecha) === t), w);
       // Modelo 130: acumulado desde enero, menos pagos de trimestres anteriores
@@ -516,7 +521,7 @@ const NEGOCIOS = {
         if (m.fecha !== datos.fecha || m.base !== datos.base || m.ivaImp !== datos.ivaImp) { Object.assign(m, datos); r.actualizados++; }
       } else {
         d.movs.push({
-          id: 'shp' + id, origen: 'shopify', shopifyId: id, tipo: 'ingreso', socia: d.shopify.socia,
+          id: 'shp' + id, origen: 'shopify', shopifyId: id, tipo: 'ingreso', socia: d.titular,
           categoria: NEGOCIOS.moodmatcha.catIng[0], nfactura: p.nombre, contraparte: `Tienda ${NEGOCIOS.moodmatcha.tienda}`,
           cobrado: '1', deducible: '1', ...datos
         });
@@ -714,6 +719,7 @@ const NEGOCIOS = {
     e.preventDefault();
     const datos = Object.fromEntries(new FormData(F)), prev = editando();
     if (datos.base != null) datos.base = r2(+datos.base);
+    if (!CFG().socias) datos.socia = db().titular;
     if ((datos.tipo || prev?.tipo) === 'ingreso') datos.deducible = '1';
     const m = { ...prev, ...datos };
     if (prev) db().movs[db().movs.indexOf(prev)] = m;
@@ -726,15 +732,17 @@ const NEGOCIOS = {
   const A = $('#fAjustes');
   const loadAjustes = () => {
     A.s1.value = socias.s1; A.s2.value = socias.s2;
-    if (!total()) { A.reparto.value = db().reparto; $('#ajNeg').textContent = CFG().nombre; $('#resetNeg').textContent = CFG().nombre; }
-    A.shopSocia.value = dbs.moodmatcha.shopify.socia;
+    if (!total()) {
+      A.reparto.value = db().reparto; A.titular.value = db().titular;
+      $('#ajNeg').textContent = $('#ajTit').textContent = $('#resetNeg').textContent = CFG().nombre;
+    }
   };
   A.addEventListener('submit', e => {
     e.preventDefault();
     socias = { s1: A.s1.value.trim(), s2: A.s2.value.trim() };
     escribir(CLAVE_SOCIAS, socias);
-    if (!total()) db().reparto = Math.min(100, Math.max(0, +A.reparto.value || 0));
-    if (CFG().shopify) db().shopify.socia = A.shopSocia.value;
+    if (!total() && CFG().socias) db().reparto = Math.min(100, Math.max(0, +A.reparto.value || 0));
+    if (!total() && !CFG().socias) db().titular = A.titular.value;
     save(); fillSocias(); loadAjustes(); alert('Ajustes guardados');
   });
 
@@ -781,7 +789,7 @@ const NEGOCIOS = {
     const rows = [['Fecha', 'Tipo', 'Socia', 'Nº factura', 'Concepto', 'Cliente/proveedor', 'Categoría', 'Base', 'IVA %', 'IVA', 'IRPF %', 'IRPF', 'Total', 'Cobrado', 'Deducible']];
     filtered().sort((a, b) => a.fecha.localeCompare(b.fecha)).forEach(m => {
       const c = calc(m);
-      rows.push([m.fecha, m.tipo, nombre(m.socia), m.nfactura, m.concepto, m.contraparte, m.categoria,
+      rows.push([m.fecha, m.tipo, CFG().socias ? nombre(m.socia) : socias[db().titular], m.nfactura, m.concepto, m.contraparte, m.categoria,
         c.base, m.ivaImp != null ? '' : m.iva, c.iva, m.irpf, c.irpf, c.total, m.cobrado === '1' ? 'sí' : 'no', m.deducible === '1' ? 'sí' : 'no']);
     });
     const csv = rows.map(r => r.map(v => typeof v === 'number' ? String(v).replace('.', ',') : `"${String(v ?? '').replace(/"/g, '""')}"`).join(';')).join('\n');
@@ -815,6 +823,8 @@ const NEGOCIOS = {
     document.querySelectorAll('.solo-negocio').forEach(e => e.classList.toggle('off', total()));
     document.querySelectorAll('.solo-total').forEach(e => e.classList.toggle('off', !total()));
     document.querySelectorAll('.solo-shopify').forEach(e => e.classList.toggle('off', !CFG().shopify));
+    document.querySelectorAll('.solo-socias').forEach(e => e.classList.toggle('off', !CFG().socias));
+    document.querySelectorAll('.solo-titular').forEach(e => e.classList.toggle('off', total() || CFG().socias));
     $('#msgShop').textContent = ''; $('#msgCsv').textContent = '';
     resetForm();
     const ok = { movimientos: !total(), nuevo: !total(), shopify: CFG().shopify };
