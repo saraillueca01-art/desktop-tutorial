@@ -645,7 +645,7 @@ const NEGOCIOS = {
           <td>${esc(m.categoria)}</td>
           <td class="n ${sg < 0 ? 'neg' : 'pos'}">${eur(sg * c.base)}</td>
           <td class="n">${eur(c.iva)}</td><td class="n">${c.irpf ? eur(-c.irpf) : '—'}</td><td class="n">${eur(c.total)}${conParte && dividido(m) ? `<br><small class="calc">tu parte ${eur(c.total / 2)}</small>` : ''}</td>
-          <td class="n">${m.tipo === 'ingreso' && !m.facturaId && m.origen !== 'shopify' ? `<button class="btn small${c.iva > 0 ? '' : ' ghost'}" data-facturar="${m.id}">${c.iva > 0 || c.irpf > 0 ? 'Hacer factura' : 'Hacer albarán'}</button> ` : ''}${m.facturaId ? `<button class="btn small" data-pdfmov="${m.id}">PDF</button> ` : ''}<button class="btn small ghost" data-edit="${m.id}">Editar</button> <button class="btn small danger" data-del="${m.id}">✕</button></td>
+          <td class="n">${m.tipo === 'ingreso' && !m.facturaId && m.origen !== 'shopify' ? `<button class="btn small${c.iva > 0 ? '' : ' ghost'}" data-facturar="${m.id}">${c.iva > 0 || c.irpf > 0 ? 'Hacer factura' : 'Hacer albarán'}</button> ` : ''}${m.facturaId ? `<button class="btn small" data-pdfmov="${m.id}">PDF</button> ` : ''}${(e => e ? `<a class="btn small ghost" href="${esc(e)}" target="_blank" rel="noopener">Drive</a> ` : '')(m.facturaId && (db().facturas || []).find(f => f.id === m.facturaId)?.pdf?.enlace)}<button class="btn small ghost" data-edit="${m.id}">Editar</button> <button class="btn small danger" data-del="${m.id}">✕</button></td>
         </tr>`;
       }).join('');
   };
@@ -1198,15 +1198,24 @@ const NEGOCIOS = {
     // Una hoja por negocio con todos sus movimientos
     Object.entries(NEGOCIOS).forEach(([k, n]) => {
       const brisa = n.socias;
-      const cab = ['Fecha', 'Tipo', 'Concepto', 'Cliente / proveedor', 'Nº factura', 'Categoría', 'Base', 'IVA %', 'IVA', 'IRPF %', 'IRPF', 'Total factura', 'Cobrado / pagado', 'Deducible', ...(brisa ? ['De quién', 'Mi parte (base)'] : []), 'Origen'];
-      const filasN = [cab, ...[...dbs[k].movs].sort((a, b) => a.fecha.localeCompare(b.fecha)).map(m => {
-        const c = calc(m), p = brisa && dividido(m) ? 0.5 : 1;
+      const cab = ['Fecha', 'Tipo', 'Concepto', 'Cliente / proveedor', 'Nº factura', 'Categoría', 'Base', 'IVA %', 'IVA', 'IRPF %', 'IRPF', 'Total factura', 'Cobrado / pagado', 'Deducible', ...(brisa ? ['De quién', 'Mi parte (base)'] : []), 'Origen', 'Factura / albarán'];
+      const ordenados = [...dbs[k].movs].sort((a, b) => a.fecha.localeCompare(b.fecha));
+      const docDe = m => m.facturaId && (dbs[k].facturas || []).find(f => f.id === m.facturaId);
+      const filasN = [cab, ...ordenados.map(m => {
+        const c = calc(m), p = brisa && dividido(m) ? 0.5 : 1, d = docDe(m);
         return [aFecha(m.fecha), m.tipo === 'ingreso' ? 'Ingreso' : 'Gasto', m.concepto || '', m.contraparte || '', m.nfactura || '', m.categoria || '',
           c.base, m.ivaImp != null ? '' : +m.iva || 0, c.iva, +m.irpf || 0, c.irpf, c.total, m.cobrado === '0' ? 'Pendiente' : 'Sí', m.tipo === 'gasto' ? (m.deducible === '0' ? 'No' : 'Sí') : '',
-          ...(brisa ? [p < 1 ? 'Entre dos' : 'Para mí', r2(c.base * p)] : []), m.origen === 'shopify' ? 'Shopify' : 'Manual'];
+          ...(brisa ? [p < 1 ? 'Entre dos' : 'Para mí', r2(c.base * p)] : []), m.origen === 'shopify' ? 'Shopify' : d ? nombreDoc(d) : 'Manual',
+          d ? `${d.numero}${d.pdf?.enlace ? ' · abrir PDF' : ''}` : ''];
       })];
       const fmt = { 0: FECHA, 6: EUR, 8: EUR, 10: EUR, 11: EUR, ...(brisa ? { 15: EUR } : {}) };
-      X.utils.book_append_sheet(wb, hoja(X, filasN, [11, 9, 34, 22, 12, 26, 12, 7, 11, 7, 11, 13, 15, 10, ...(brisa ? [11, 15] : []), 9], fmt), n.nombre);
+      const wsN = hoja(X, filasN, [11, 9, 34, 22, 12, 26, 12, 7, 11, 7, 11, 13, 15, 10, ...(brisa ? [11, 15] : []), 9, 30], fmt);
+      ordenados.forEach((m, i) => {
+        const d = docDe(m); if (!d?.pdf?.enlace) return;
+        const cel = wsN[X.utils.encode_cell({ r: i + 1, c: cab.length - 1 })];
+        cel.l = { Target: d.pdf.enlace, Tooltip: `Abrir ${nombreDoc(d).toLowerCase()} ${d.numero}` };
+      });
+      X.utils.book_append_sheet(wb, wsN, n.nombre);
     });
     // Libro de facturas emitidas, con el enlace al PDF guardado en Google Drive
     const docs = Object.entries(NEGOCIOS).flatMap(([k, n]) => (dbs[k].facturas || []).map(f => ({ ...f, _n: n.nombre })))
@@ -1234,11 +1243,21 @@ const NEGOCIOS = {
     X.utils.book_append_sheet(wb, hoja(X, filasG, [11, 15, 24, 14, 32, 26, 12, 11, 11, 12, 10], { 0: FECHA, 6: EUR, 7: EUR, 8: EUR, 9: EUR }), 'Gastos');
     return X.write(wb, { type: 'array', bookType: 'xlsx' });
   };
+  const asegurarPDFs = async avance => {
+    if (!drive) return;
+    const faltan = Object.keys(NEGOCIOS).flatMap(n => (dbs[n].facturas || []).filter(f => !f.pdf?.enlace).map(f => [f, n]));
+    for (const [i, [f, n]] of faltan.entries()) {
+      avance?.(`Guardando en Google Drive el PDF de ${nombreDoc(f).toLowerCase()} ${f.numero} (${i + 1} de ${faltan.length})…`);
+      try { await subirPDF(f, n, await crearPDF(f, n)); } catch { /* sin enlace: el Excel lo indica */ }
+    }
+  };
   const nombreExcel = () => `Contabilidad ${hoyISO()}.xlsx`;
   const msgExcel = t => { $('#msgExcel').innerHTML = t; };
   document.querySelectorAll('[data-excel]').forEach(b => b.onclick = async () => {
     b.disabled = true; msgExcel('Preparando el Excel…');
+    const avisoProgreso = t => { msgExcel(t); aviso(t); };
     try {
+      await asegurarPDFs(avisoProgreso);
       const datos = await crearExcel();
       if (descargas) {
         try { await descargas.save({ filename: nombreExcel(), data: datos }); msgExcel('✓ Excel descargado.'); }
@@ -1280,6 +1299,7 @@ const NEGOCIOS = {
       + (copias.enlace ? ` · <a href="${esc(copias.enlace)}" target="_blank" rel="noopener">abrir</a>` : ''));
   };
   const copiaEnDrive = async () => {
+    await asegurarPDFs();
     const b64 = (buf => { let s = ''; const u = new Uint8Array(buf); for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(s); })(await crearExcel());
     const r = await drive.callTool(DRIVE, 'create_file', {
       title: nombreExcel(), base64Content: b64, contentMimeType: XLSX_MIME, disableConversionToGoogleType: true,
@@ -1520,6 +1540,15 @@ const NEGOCIOS = {
   const nombrePDF = f => `${esAlbaran(f) ? 'Albaran' : 'Factura'} ${f.numero} - ${(f.cliente?.nombre || '').replace(/[\\/:*?"<>|]/g, '').slice(0, 40)}.pdf`.replace(/ - \.pdf$/, '.pdf').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\x20-\x7e]/g, '');
   const aBase64 = buf => { let s = ''; const u = new Uint8Array(buf); for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(s); };
   const msgFac = t => { $('#msgFacturas').innerHTML = t; };
+  // Guarda el PDF en tu Google Drive y apunta su enlace en la factura o albarán (lo usa el Excel)
+  const subirPDF = async (f, n, pdf) => {
+    const r = await drive.callTool(DRIVE, 'create_file', { title: nombrePDF(f), base64Content: aBase64(pdf), contentMimeType: 'application/pdf', disableConversionToGoogleType: true });
+    const p = r.payload?.file || r.payload || {};
+    const enlace = p.webViewLink || p.alternateLink || (p.id ? `https://drive.google.com/file/d/${p.id}/view` : '');
+    const real = (dbs[n].facturas || []).find(x => x.id === f.id);
+    if (real && enlace) { real.pdf = { enlace, fecha: new Date().toISOString() }; escribir(NEGOCIOS[n].clave, dbs[n]); }
+    return enlace;
+  };
   // Descarga el PDF y, dentro de Claude, guarda una copia en tu Google Drive (su enlace va al Excel)
   const descargarFactura = async (f, n, soloDescargar = false) => {
     msgFac(`Preparando el PDF de ${esc(nombreDoc(f).toLowerCase())} ${esc(f.numero)}…`);
@@ -1536,11 +1565,7 @@ const NEGOCIOS = {
     } catch (err) { txt = err.code === 'declined' ? '' : 'No se pudo descargar: ' + esc(err.message); }
     if (drive && !soloDescargar) {
       try {
-        const r = await drive.callTool(DRIVE, 'create_file', { title: nombrePDF(f), base64Content: aBase64(pdf), contentMimeType: 'application/pdf', disableConversionToGoogleType: true });
-        const p = r.payload?.file || r.payload || {};
-        const enlace = p.webViewLink || p.alternateLink || (p.id ? `https://drive.google.com/file/d/${p.id}/view` : '');
-        const real = (dbs[n].facturas || []).find(x => x.id === f.id);
-        if (real) { real.pdf = { enlace, fecha: new Date().toISOString() }; escribir(NEGOCIOS[n].clave, dbs[n]); }
+        const enlace = await subirPDF(f, n, pdf);
         txt += ` Copia guardada en tu Google Drive${enlace ? ` · <a href="${esc(enlace)}" target="_blank" rel="noopener">abrir</a>` : ''}.`;
       } catch (err) { txt += ' ' + (ERRORES_DRIVE[err.code] || 'No se pudo guardar en Google Drive: ' + esc(err.message || err)); }
     }
