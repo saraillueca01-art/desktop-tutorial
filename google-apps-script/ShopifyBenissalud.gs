@@ -1,7 +1,7 @@
 /**
  * Benissalud · Conector de Shopify (MOOD MATCHA) para la contabilidad
  *
- * La página contabilidad/benissalud.html llama a esta URL para descargar los pedidos
+ * El programa contabilidad/index.html (Benissalud) llama a esta URL para descargar los pedidos
  * de la tienda. Así el acceso a Shopify se queda guardado aquí, en Google, y no en la web.
  *
  * Solo devuelve número de pedido, fecha, estado, total e IVA (ningún dato de clientes),
