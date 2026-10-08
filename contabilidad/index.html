@@ -124,6 +124,20 @@
     .graf svg { display: block; width: 100%; height: auto; overflow: visible; }
     .graf .tip { position: absolute; pointer-events: none; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: .8rem; box-shadow: 0 4px 14px rgba(0,0,0,.1); white-space: nowrap; transform: translate(-50%, -110%); }
     .kpi .sub { font-size: .8rem; margin-top: 2px; }
+    /* Facturas */
+    .lineas { display: grid; gap: 6px; }
+    .linea { display: grid; grid-template-columns: 1fr 80px 110px 32px; gap: 6px; align-items: center; }
+    @media (max-width: 600px) { .linea { grid-template-columns: 1fr 64px 90px 28px; } }
+    .linea button { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 1rem; }
+    .totales-f { display: grid; grid-template-columns: auto auto; gap: 4px 18px; justify-content: end; font-variant-numeric: tabular-nums; font-size: .92rem; }
+    .totales-f .tot { font-weight: 700; font-size: 1.05rem; color: var(--ink); }
+    fieldset { border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+    fieldset { min-width: 0; }
+    #fFactura .mov { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+    #fFactura .mov .wide { grid-column: 1 / -1; }
+    #fFactura input, #fFactura select, #fFactura textarea, #fEmisor input { width: 100%; }
+    #fFactura label[style*="span 2"] { grid-column: 1 / -1 !important; }
+    fieldset legend { font-size: .8rem; font-weight: 600; color: var(--ink); padding: 0 6px; }
   </style>
 </head>
 <body>
@@ -152,6 +166,7 @@
     <button data-tab="resumen" class="on">Resumen</button>
     <button data-tab="movimientos" class="solo-negocio">Movimientos</button>
     <button data-tab="shopify" class="solo-shopify">Shopify</button>
+    <button data-tab="facturas" class="solo-negocio">Facturas</button>
     <button data-tab="impuestos">Impuestos</button>
     <button data-tab="metas">Metas</button>
     <button data-tab="ajustes">Ajustes</button>
@@ -322,6 +337,66 @@
     </div>
   </section>
 
+  <!-- FACTURAS -->
+  <section id="v-facturas" class="hidden">
+    <div class="row" style="justify-content:space-between;margin-bottom:12px">
+      <h2 style="margin:0">Facturas</h2>
+      <button class="btn" id="btnNuevaFactura">+ Nueva factura</button>
+    </div>
+    <div class="card hidden" id="cardFactura" style="margin-bottom:14px">
+      <h2 id="tituloFactura">Nueva factura</h2>
+      <form id="fFactura" autocomplete="off" novalidate class="grid" style="gap:14px">
+        <input type="hidden" name="id">
+        <div class="mov" style="display:grid">
+          <label>Nº de factura <input name="numero"></label>
+          <label>Fecha <input type="date" name="fecha"></label>
+          <label>Categoría <select name="categoria"></select></label>
+          <label class="solo-socias">¿De quién es?
+            <select name="socia"><option value="yo">Para mí (100 %)</option><option value="mitad">Dividir entre dos (50 %)</option></select>
+          </label>
+          <label>Estado <select name="cobrado"><option value="0">Pendiente de cobro</option><option value="1">Cobrada</option></select></label>
+        </div>
+        <fieldset>
+          <legend>Cliente</legend>
+          <label style="grid-column:1/-1">Nombre o razón social <input name="c_nombre" list="listaClientes" placeholder="Empieza a escribir para elegir un cliente anterior"></label>
+          <label>DNI / NIF / CIF <input name="c_nif"></label>
+          <label style="grid-column:span 2">Dirección <input name="c_direccion"></label>
+          <label>Código postal <input name="c_cp" inputmode="numeric"></label>
+          <label>Población <input name="c_ciudad"></label>
+          <label>Provincia <input name="c_provincia"></label>
+          <label>País <input name="c_pais" value="España"></label>
+          <label>Email (opcional) <input name="c_email" type="email"></label>
+        </fieldset>
+        <datalist id="listaClientes"></datalist>
+        <fieldset style="grid-template-columns:1fr">
+          <legend>Conceptos</legend>
+          <div class="linea calc"><span>Descripción</span><span>Cantidad</span><span>Precio (sin IVA)</span><span></span></div>
+          <div class="lineas" id="lineas"></div>
+          <div><button type="button" class="btn small ghost" id="btnLinea">+ Añadir línea</button></div>
+        </fieldset>
+        <div class="mov" style="display:grid">
+          <label>IVA
+            <select name="iva"><option value="21">21 %</option><option value="10">10 %</option><option value="4">4 %</option><option value="0">0 % / exento</option></select>
+          </label>
+          <label>Retención IRPF
+            <select name="irpf"><option value="0">Sin retención</option><option value="15">15 %</option><option value="7">7 % (nueva autónoma)</option></select>
+          </label>
+          <label>Forma de pago <input name="pago" value="Transferencia bancaria"></label>
+          <label class="wide">Nota en la factura (opcional) <textarea name="nota" rows="2" placeholder="Si no lleva IVA, se pone sola la nota de exención"></textarea></label>
+        </div>
+        <div class="totales-f" id="totalesFactura"></div>
+        <div class="msg neg" id="facturaError"></div>
+        <div class="row">
+          <button class="btn" type="submit">Guardar y descargar PDF</button>
+          <button class="btn ghost" type="button" id="btnCancelFactura">Cancelar</button>
+        </div>
+        <p class="note" style="margin:0">Al guardar, la factura se apunta sola como ingreso en Movimientos.</p>
+      </form>
+    </div>
+    <div class="card table-wrap"><table id="tFacturas"></table></div>
+    <div class="msg" id="msgFacturas"></div>
+  </section>
+
   <!-- IMPUESTOS -->
   <section id="v-impuestos" class="hidden">
     <p class="note" style="margin:0 0 12px" id="notaImp"></p>
@@ -332,8 +407,24 @@
   <section id="v-ajustes" class="hidden">
     <div class="grid g2">
       <div class="card">
+        <h2>Tus datos para las facturas</h2>
+        <form id="fEmisor" class="mov" autocomplete="off" style="display:grid">
+          <label class="wide">Nombre <input name="nombre"></label>
+          <label>NIF <input name="nif"></label>
+          <label class="wide">Dirección <input name="direccion"></label>
+          <label>Código postal <input name="cp"></label>
+          <label>Población <input name="ciudad"></label>
+          <label>Provincia <input name="provincia"></label>
+          <label>País <input name="pais"></label>
+          <label>Email (opcional) <input name="email" type="email"></label>
+          <label>Teléfono (opcional) <input name="telefono"></label>
+          <label class="wide">IBAN para cobrar (opcional) <input name="iban" placeholder="ES00 0000 0000 0000 0000 0000"></label>
+          <div class="wide row"><button class="btn" type="submit">Guardar mis datos</button><span class="calc" id="msgEmisor"></span></div>
+        </form>
+      </div>
+      <div class="card">
         <h2>Tu contabilidad en Excel</h2>
-        <p class="note" style="margin:0 0 12px">Un Excel con una hoja por negocio (todos los movimientos), un resumen por trimestres con ingresos, gastos, beneficio e impuestos.</p>
+        <p class="note" style="margin:0 0 12px">Un Excel con una hoja por negocio (todos los movimientos), un resumen por trimestres con ingresos, gastos, beneficio e impuestos, el libro de facturas emitidas (con enlace a cada PDF en tu Google Drive) y el libro de gastos.</p>
         <div class="row">
           <button class="btn" data-excel>Descargar Excel</button>
           <button class="btn ghost off" id="btnDrive">Guardar copia en Google Drive</button>
@@ -371,6 +462,7 @@ const NEGOCIOS = {
   benissalud: {
     nombre: 'Benissalud',
     clave: 'contabilidad-benissalud-v1',
+    serie: 'BEN', color: '#1f2a8f',
     shopify: false,
     socias: false,
     catIng: ['Servicios / sesiones', 'Bonos y paquetes', 'Talleres y formaciones', 'Venta de producto', 'Subvención', 'Otros ingresos'],
@@ -382,6 +474,7 @@ const NEGOCIOS = {
     nombre: 'MOOD MATCHA',
     tienda: 'MOOD MATCHA',
     clave: 'contabilidad-moodmatcha-v1',
+    serie: 'MM', color: '#2f5d46',
     shopify: true,
     socias: false,
     catIng: ['Ventas tienda online (Shopify)', 'Venta de producto (fuera de Shopify)', 'Otros ingresos'],
@@ -391,6 +484,7 @@ const NEGOCIOS = {
   brisa: {
     nombre: 'Brisa Creative',
     clave: 'contabilidad-brisa-v1',
+    serie: 'BRI', color: '#1f3458',
     shopify: false,
     socias: true,
     catIng: ['Servicios de contenido', 'Gestión de redes', 'Asesorías y formaciones', 'Otros ingresos'],
@@ -419,7 +513,7 @@ const NEGOCIOS = {
 
   // ---------- Datos ----------
   // Cada negocio guarda sus movimientos aparte. En Brisa cada movimiento es tuyo o se divide entre dos.
-  const blank = () => ({ shopify: { url: '', clave: '', ultima: '' }, movs: [], metas: [], trabajos: [], contenido: [], seguidores: [] });
+  const blank = () => ({ shopify: { url: '', clave: '', ultima: '' }, movs: [], metas: [], facturas: [], trabajos: [], contenido: [], seguidores: [] });
   const dbs = {};
   const cargar = () => {
     Object.entries(NEGOCIOS).forEach(([k, n]) => { dbs[k] = { ...blank(), ...leer(n.clave) }; });
@@ -454,6 +548,8 @@ const NEGOCIOS = {
     const irpf = r2(base * (+m.irpf || 0) / 100);
     return { base, iva, irpf, total: r2(base + iva - irpf) };
   };
+  // Movimientos sin IVA ni retención: no entran en los modelos 303 y 130 (a petición tuya)
+  const sinImpuestos = m => { const c = calc(m); return !c.iva && !c.irpf; };
   // Tu parte de un movimiento (0..1): en Brisa, la mitad si se divide entre dos; en los demás, todo
   const parte = m => NEGOCIOS[m._neg || neg].socias && dividido(m) ? 0.5 : 1;
 
@@ -527,7 +623,7 @@ const NEGOCIOS = {
         return `<tr>
           <td>${m.fecha.split('-').reverse().join('/')}</td>
           ${conParte ? `<td>${dividido(m) ? '<span class="tag">Entre dos</span>' : 'Para mí'}</td>` : ''}
-          <td>${esc(m.concepto)}${m.origen === 'shopify' ? ' <span class="tag shop">Shopify</span>' : ''}
+          <td>${esc(m.concepto)}${m.origen === 'shopify' ? ' <span class="tag shop">Shopify</span>' : m.origen === 'factura' ? ' <span class="tag">Factura</span>' : ''}
             ${m.contraparte ? `<br><small class="calc">${esc(m.contraparte)}${m.nfactura ? ' · ' + esc(m.nfactura) : ''}</small>` : ''}
             ${m.cobrado === '0' ? ' <span class="tag neg">pendiente</span>' : ''}${m.deducible === '0' && m.tipo === 'gasto' ? ' <span class="tag">no deducible</span>' : ''}</td>
           <td>${esc(m.categoria)}</td>
@@ -541,10 +637,11 @@ const NEGOCIOS = {
   // ---------- Impuestos (tuyos, por trimestre) ----------
   const renderImpuestos = () => {
     const y = $('#fAnio').value, t = +$('#fTri').value || tri(new Date().toISOString());
-    const anio = todos().filter(m => m.fecha.startsWith(y));
-    $('#notaImp').textContent = total()
+    const delAnio = todos().filter(m => m.fecha.startsWith(y)), anio = delAnio.filter(m => !sinImpuestos(m));
+    const fuera = sumar(delAnio.filter(m => sinImpuestos(m) && tri(m.fecha) <= t));
+    $('#notaImp').textContent = (fuera.ing || fuera.gas ? `No se cuentan los movimientos sin IVA ni IRPF (este año hasta el ${t}T: ${eur(fuera.ing)} de ingresos y ${eur(fuera.gas)} de gastos). ` : 'No se cuentan los movimientos sin IVA ni IRPF. ') + (total()
       ? 'Esto es lo que presentas: tus modelos 303 y 130 suman tus tres negocios (de Brisa, tu parte). Cálculo orientativo para revisar con la gestoría.'
-      : `Solo la parte de ${CFG().nombre}. Lo que presentas (sumando los tres negocios) está en «Total».`;
+      : `Solo la parte de ${CFG().nombre}. Lo que presentas (sumando los tres negocios) está en «Total».`);
     $('#impuestos').innerHTML = [0].map(() => {
       const w = parte;
       const trim = sumar(anio.filter(m => tri(m.fecha) === t), w);
@@ -1054,7 +1151,7 @@ const NEGOCIOS = {
     const todosMovs = Object.keys(NEGOCIOS).flatMap(k => dbs[k].movs.map(m => ({ ...m, _neg: k })));
     // Resumen por año y trimestre (importes de tu parte; en Brisa, lo dividido cuenta la mitad)
     const anios = [...new Set(todosMovs.map(m => +m.fecha.slice(0, 4)))].sort((a, b) => b - a);
-    const filas = [['Año', 'Trimestre', 'Negocio', 'Ingresos (base)', 'Gastos (base)', 'Beneficio', 'IVA cobrado', 'IVA pagado', 'IVA a ingresar (303)', 'Retenciones', 'Pago IRPF (130, estimado)']];
+    const filas = [['Año', 'Trimestre', 'Negocio', 'Ingresos (base)', 'Gastos (base)', 'Beneficio', 'IVA cobrado', 'IVA pagado', 'IVA a ingresar (303)', 'Retenciones', 'Pago IRPF (130, estimado, sin movimientos sin IVA ni IRPF)']];
     anios.forEach(y => {
       const delAnio = todosMovs.filter(m => m.fecha.startsWith(y));
       let pagado = 0;
@@ -1065,7 +1162,7 @@ const NEGOCIOS = {
           const o = sumar(trim.filter(m => m._neg === k)); if (!o.ing && !o.gas) return;
           filas.push([y, `${t}T`, n.nombre, r2(o.ing), r2(o.gas), r2(o.ben), r2(o.ivaRep), r2(o.ivaSop), r2(o.ivaRep - o.ivaSop), r2(o.ret), '']);
         });
-        const o = sumar(trim), acum = sumar(delAnio.filter(m => tri(m.fecha) <= t));
+        const o = sumar(trim), acum = sumar(delAnio.filter(m => tri(m.fecha) <= t && !sinImpuestos(m)));
         const cuota = Math.max(0, r2(acum.ben * 0.2 - acum.ret - pagado)); pagado += cuota;
         filas.push([y, `${t}T`, 'TOTAL', r2(o.ing), r2(o.gas), r2(o.ben), r2(o.ivaRep), r2(o.ivaSop), r2(o.ivaRep - o.ivaSop), r2(o.ret), cuota]);
       });
@@ -1085,6 +1182,21 @@ const NEGOCIOS = {
       const fmt = { 0: FECHA, 6: EUR, 8: EUR, 10: EUR, 11: EUR, ...(brisa ? { 15: EUR } : {}) };
       X.utils.book_append_sheet(wb, hoja(X, filasN, [11, 9, 34, 22, 12, 26, 12, 7, 11, 7, 11, 13, 15, 10, ...(brisa ? [11, 15] : []), 9], fmt), n.nombre);
     });
+    // Libro de facturas emitidas, con el enlace al PDF guardado en Google Drive
+    const facs = Object.entries(NEGOCIOS).flatMap(([k, n]) => (dbs[k].facturas || []).map(f => ({ ...f, _n: n.nombre })))
+      .sort((a, b) => a.fecha.localeCompare(b.fecha) || a.numero.localeCompare(b.numero));
+    const filasF = [['Nº factura', 'Fecha', 'Negocio', 'Cliente', 'DNI / NIF', 'Dirección', 'Base', 'IVA %', 'IVA', 'IRPF %', 'IRPF', 'Total', 'Cobrada', 'PDF'],
+      ...facs.map(f => { const t = totalesFactura(f); const c = f.cliente || {};
+        return [f.numero, aFecha(f.fecha), f._n, c.nombre || '', c.nif || '', [c.direccion, c.cp, c.ciudad, c.provincia].filter(Boolean).join(', '),
+          t.base, +f.iva || 0, t.iva, +f.irpf || 0, t.irpf, t.total, f.cobrado === '1' ? 'Sí' : 'No', f.pdf?.enlace ? 'Abrir PDF' : 'Descárgalo desde el panel']; })];
+    const wsF = hoja(X, filasF, [16, 11, 15, 28, 13, 34, 12, 7, 11, 7, 11, 12, 9, 22], { 1: FECHA, 6: EUR, 8: EUR, 10: EUR, 11: EUR });
+    facs.forEach((f, i) => { if (f.pdf?.enlace) { const cel = wsF[X.utils.encode_cell({ r: i + 1, c: 13 })]; cel.l = { Target: f.pdf.enlace, Tooltip: 'Abrir el PDF en Google Drive' }; } });
+    X.utils.book_append_sheet(wb, wsF, 'Facturas emitidas');
+    // Libro de gastos (facturas recibidas)
+    const gastos = Object.entries(NEGOCIOS).flatMap(([k, n]) => dbs[k].movs.filter(m => m.tipo === 'gasto').map(m => ({ ...m, _n: n.nombre }))).sort((a, b) => a.fecha.localeCompare(b.fecha));
+    const filasG = [['Fecha', 'Negocio', 'Proveedor', 'Nº factura', 'Concepto', 'Categoría', 'Base', 'IVA', 'IRPF', 'Total', 'Deducible'],
+      ...gastos.map(m => { const c = calc(m); return [aFecha(m.fecha), m._n, m.contraparte || '', m.nfactura || '', m.concepto || '', m.categoria || '', c.base, c.iva, c.irpf, c.total, m.deducible === '0' ? 'No' : 'Sí']; })];
+    X.utils.book_append_sheet(wb, hoja(X, filasG, [11, 15, 24, 14, 32, 26, 12, 11, 11, 12, 10], { 0: FECHA, 6: EUR, 7: EUR, 8: EUR, 9: EUR }), 'Gastos');
     return X.write(wb, { type: 'array', bookType: 'xlsx' });
   };
   const nombreExcel = () => `Contabilidad ${hoyISO()}.xlsx`;
@@ -1173,8 +1285,236 @@ const NEGOCIOS = {
     setTimeout(copiaAutomatica, 4000);  // deja que primero se carguen los datos de tu cuenta
   });
 
+  // ---------- Facturas en PDF ----------
+  // Tus datos de emisora (los mismos para los tres negocios); se cambian en Ajustes
+  const CLAVE_EMISOR = 'contabilidad-emisor-v1';
+  const EMISOR_INICIAL = { nombre: 'Sara Illueca Sala', nif: '53632009B', direccion: 'Calle Alicante 5', cp: '03720', ciudad: 'Benissa', provincia: 'Alicante', pais: 'España', email: '', telefono: '', iban: '' };
+  let emisor = { ...EMISOR_INICIAL, ...leer(CLAVE_EMISOR) };
+  const FE = $('#fEmisor');
+  const pintarEmisor = () => Object.keys(EMISOR_INICIAL).forEach(k => { FE[k].value = emisor[k] || ''; });
+  FE.addEventListener('submit', async e => {
+    e.preventDefault();
+    emisor = Object.fromEntries(Object.keys(EMISOR_INICIAL).map(k => [k, FE[k].value.trim()]));
+    try { localStorage.setItem(CLAVE_EMISOR, JSON.stringify(emisor)); } catch { }
+    if (nube) { try { await nube.doc('ajustes/emisor').set(emisor); } catch { } }
+    $('#msgEmisor').textContent = '✓ Guardado';
+    setTimeout(() => { $('#msgEmisor').textContent = ''; }, 2500);
+  });
+
+  const NOTA_EXENTA = 'Operación exenta de IVA según el artículo 20 de la Ley 37/1992 del IVA.';
+  const totalesFactura = f => {
+    const base = r2((f.lineas || []).reduce((a, l) => a + (+l.cant || 0) * (+l.precio || 0), 0));
+    const iva = r2(base * (+f.iva || 0) / 100), irpf = r2(base * (+f.irpf || 0) / 100);
+    return { base, iva, irpf, total: r2(base + iva - irpf) };
+  };
+  const siguienteNumero = (n, fecha) => {
+    const y = (fecha || hoyISO()).slice(0, 4), pre = `${NEGOCIOS[n].serie}-${y}-`;
+    const max = (dbs[n].facturas || []).filter(f => f.numero?.startsWith(pre)).reduce((a, f) => Math.max(a, parseInt(f.numero.slice(pre.length), 10) || 0), 0);
+    return pre + String(max + 1).padStart(3, '0');
+  };
+  const FF = $('#fFactura');
+  const lineaHTML = (l = {}) => `<div class="linea"><input data-l="desc" placeholder="Ej.: Pack de contenido octubre" value="${esc(l.desc || '')}">
+    <input data-l="cant" inputmode="decimal" value="${esc(l.cant ?? 1)}"><input data-l="precio" inputmode="decimal" placeholder="0,00" value="${l.precio != null ? String(l.precio).replace('.', ',') : ''}">
+    <button type="button" data-quitar aria-label="Quitar línea">✕</button></div>`;
+  const leerLineas = () => [...document.querySelectorAll('#lineas .linea')].map(el => ({
+    desc: el.querySelector('[data-l=desc]').value.trim(), cant: leerImporte(el.querySelector('[data-l=cant]').value), precio: leerImporte(el.querySelector('[data-l=precio]').value),
+  })).filter(l => l.desc || l.precio);
+  const facturaDelForm = () => ({
+    numero: FF.numero.value.trim(), fecha: FF.fecha.value, categoria: FF.categoria.value, socia: CFG().socias ? FF.socia.value : 'yo', cobrado: FF.cobrado.value,
+    cliente: Object.fromEntries(['nombre', 'nif', 'direccion', 'cp', 'ciudad', 'provincia', 'pais', 'email'].map(k => [k, FF['c_' + k].value.trim()])),
+    lineas: leerLineas(), iva: FF.iva.value, irpf: FF.irpf.value, pago: FF.pago.value.trim(), nota: FF.nota.value.trim(),
+  });
+  const pintarTotales = () => {
+    const t = totalesFactura(facturaDelForm());
+    $('#totalesFactura').innerHTML = `<span>Base imponible</span><span>${eur(t.base)}</span><span>IVA (${FF.iva.value} %)</span><span>${eur(t.iva)}</span>`
+      + (t.irpf ? `<span>Retención IRPF (${FF.irpf.value} %)</span><span>−${eur(t.irpf)}</span>` : '') + `<span class="tot">Total</span><span class="tot">${eur(t.total)}</span>`;
+  };
+  FF.addEventListener('input', pintarTotales);
+  $('#btnLinea').onclick = () => { $('#lineas').insertAdjacentHTML('beforeend', lineaHTML()); $('#lineas .linea:last-child input').focus(); };
+  $('#lineas').addEventListener('click', e => { if (e.target.dataset.quitar !== undefined && $('#lineas').children.length > 1) { e.target.closest('.linea').remove(); pintarTotales(); } });
+  // Clientes anteriores: al elegir uno se rellenan sus datos
+  const clientes = () => { const m = new Map(); (db().facturas || []).forEach(f => { if (f.cliente?.nombre) m.set(f.cliente.nombre, f.cliente); }); return m; };
+  FF.c_nombre.addEventListener('change', () => {
+    const c = clientes().get(FF.c_nombre.value.trim()); if (!c) return;
+    ['nif', 'direccion', 'cp', 'ciudad', 'provincia', 'pais', 'email'].forEach(k => { if (c[k]) FF['c_' + k].value = c[k]; });
+  });
+  const formFactura = (f = null) => {
+    FF.reset(); $('#facturaError').textContent = '';
+    FF.categoria.innerHTML = CFG().catIng.map(c => `<option>${esc(c)}</option>`).join('');
+    $('#listaClientes').innerHTML = [...clientes().keys()].map(n => `<option value="${esc(n)}">`).join('');
+    $('#tituloFactura').textContent = f ? `Editar factura ${f.numero}` : `Nueva factura · ${CFG().nombre}`;
+    if (f) {
+      ['id', 'numero', 'fecha', 'categoria', 'cobrado', 'iva', 'irpf', 'pago', 'nota'].forEach(k => { if (f[k] != null) FF[k].value = f[k]; });
+      FF.socia.value = f.socia === 'mitad' ? 'mitad' : 'yo';
+      Object.entries(f.cliente || {}).forEach(([k, v]) => { if (FF['c_' + k]) FF['c_' + k].value = v; });
+    } else {
+      FF.id.value = ''; FF.fecha.value = hoyISO(); FF.numero.value = siguienteNumero(neg); FF.c_pais.value = 'España';
+      FF.pago.value = 'Transferencia bancaria';
+    }
+    $('#lineas').innerHTML = (f?.lineas?.length ? f.lineas : [{}]).map(lineaHTML).join('');
+    pintarTotales();
+    $('#cardFactura').classList.remove('hidden'); FF.c_nombre.focus();
+  };
+  $('#btnNuevaFactura').onclick = () => formFactura();
+  $('#btnCancelFactura').onclick = () => $('#cardFactura').classList.add('hidden');
+  FF.fecha.addEventListener('change', () => { if (!FF.id.value) FF.numero.value = siguienteNumero(neg, FF.fecha.value); });
+
+  // El ingreso que corresponde a una factura
+  const movDeFactura = (f, prev = {}) => {
+    const t = totalesFactura(f);
+    return { ...prev, id: prev.id || 'fac' + f.id, origen: 'factura', facturaId: f.id, tipo: 'ingreso', fecha: f.fecha,
+      concepto: f.lineas[0]?.desc + (f.lineas.length > 1 ? ` y ${f.lineas.length - 1} concepto${f.lineas.length > 2 ? 's' : ''} más` : ''),
+      contraparte: f.cliente.nombre, nfactura: f.numero, categoria: f.categoria, base: t.base, iva: f.iva, irpf: f.irpf,
+      socia: f.socia, cobrado: f.cobrado, deducible: '1' };
+  };
+  FF.addEventListener('submit', async e => {
+    e.preventDefault();
+    const datos = facturaDelForm(), falta = [];
+    if (!datos.numero) falta.push('el número');
+    if (!datos.fecha) falta.push('la fecha');
+    if (!datos.cliente.nombre) falta.push('el nombre del cliente');
+    if (!datos.lineas.length || datos.lineas.some(l => !l.desc || !(l.precio >= 0) || !(l.cant > 0))) falta.push('al menos un concepto con descripción, cantidad y precio');
+    const lista = db().facturas ||= [];
+    if (lista.some(f => f.numero === datos.numero && f.id !== FF.id.value)) falta.push('un número que no esté repetido');
+    if (falta.length) { $('#facturaError').textContent = 'Falta ' + falta.join(', ') + '.'; return; }
+    if (!datos.nota && +datos.iva === 0) datos.nota = NOTA_EXENTA;
+    let f = lista.find(x => x.id === FF.id.value);
+    if (f) Object.assign(f, datos); else { f = { id: nuevoId(), creada: new Date().toISOString(), ...datos }; lista.push(f); }
+    const prev = db().movs.find(m => m.facturaId === f.id);
+    const mov = movDeFactura(f, prev);
+    if (prev) db().movs[db().movs.indexOf(prev)] = mov; else db().movs.push(mov);
+    save(); fillYears();
+    $('#cardFactura').classList.add('hidden'); renderFacturas();
+    await descargarFactura(f, neg);
+  });
+
+  // ----- PDF -----
+  const JSPDF_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+  const cargarScript = (url, listo) => listo() ? Promise.resolve(listo()) : new Promise((ok, ko) => {
+    const sc = document.createElement('script'); sc.src = url;
+    sc.onload = () => ok(listo()); sc.onerror = () => ko(new Error('no se pudo cargar el generador (revisa la conexión)'));
+    document.head.appendChild(sc);
+  });
+  const medidas = {};
+  const medirLogo = n => medidas[n] ? Promise.resolve(medidas[n]) : new Promise(ok => {
+    const img = new Image(); img.onload = () => ok(medidas[n] = img.naturalWidth / img.naturalHeight); img.onerror = () => ok(3); img.src = LOGOS[n];
+  });
+  const euroPDF = v => eur(v).replace(/ /g, ' ');
+  const fechaES = f => f.split('-').reverse().join('/');
+  const crearPDF = async (f, n) => {
+    const { jsPDF } = await cargarScript(JSPDF_URL, () => window.jspdf);
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' }), W = 210, M = 18, color = NEGOCIOS[n].color, t = totalesFactura(f), c = f.cliente || {};
+    doc.setProperties({ title: `Factura ${f.numero}`, author: emisor.nombre, subject: `${NEGOCIOS[n].nombre} · ${c.nombre || ''}` });
+    // Cabecera: logo del negocio y datos de la factura
+    const ratio = await medirLogo(n), alto = n === 'brisa' ? 26 : 14, ancho = Math.min(80, alto * ratio);
+    doc.addImage(LOGOS[n], 'PNG', M, 16, ancho, ancho / ratio);
+    doc.setTextColor(color); doc.setFont('helvetica', 'bold'); doc.setFontSize(24); doc.text('FACTURA', W - M, 24, { align: 'right' });
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(60);
+    doc.text(`Nº ${f.numero}`, W - M, 31, { align: 'right' }); doc.text(`Fecha: ${fechaES(f.fecha)}`, W - M, 36, { align: 'right' });
+    // Emisor y cliente
+    let y = 52;
+    const bloque = (x, titulo, lineas) => {
+      doc.setFontSize(8); doc.setTextColor(130); doc.setFont('helvetica', 'bold'); doc.text(titulo, x, y);
+      doc.setFontSize(10); doc.setTextColor(30); let yy = y + 6;
+      lineas.filter(Boolean).forEach((l, i) => { doc.setFont('helvetica', i === 0 ? 'bold' : 'normal'); doc.splitTextToSize(l, 80).forEach(p => { doc.text(p, x, yy); yy += 5; }); });
+      return yy;
+    };
+    const y1 = bloque(M, 'EMISORA', [emisor.nombre, emisor.nif && `NIF: ${emisor.nif}`, emisor.direccion, [emisor.cp, emisor.ciudad].filter(Boolean).join(' '),
+      [emisor.provincia, emisor.pais].filter(Boolean).join(', '), emisor.email, emisor.telefono]);
+    const y2 = bloque(110, 'CLIENTE', [c.nombre, c.nif && `DNI / NIF: ${c.nif}`, c.direccion, [c.cp, c.ciudad].filter(Boolean).join(' '),
+      [c.provincia, c.pais].filter(Boolean).join(', '), c.email]);
+    y = Math.max(y1, y2) + 8;
+    // Conceptos
+    const cols = [M, 128, 155, W - M];
+    doc.setFillColor(color); doc.rect(M, y - 5, W - 2 * M, 8, 'F');
+    doc.setTextColor(255); doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+    doc.text('DESCRIPCIÓN', M + 3, y); doc.text('CANT.', cols[1], y, { align: 'right' }); doc.text('PRECIO', cols[2] + 8, y, { align: 'right' }); doc.text('IMPORTE', cols[3] - 3, y, { align: 'right' });
+    y += 9; doc.setTextColor(30); doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+    f.lineas.forEach(l => {
+      const txt = doc.splitTextToSize(l.desc, 100);
+      if (y + txt.length * 5 > 250) { doc.addPage(); y = 25; }
+      doc.text(txt, M + 3, y);
+      doc.text(String(+l.cant).replace('.', ','), cols[1], y, { align: 'right' });
+      doc.text(euroPDF(l.precio), cols[2] + 8, y, { align: 'right' });
+      doc.text(euroPDF(r2(l.cant * l.precio)), cols[3] - 3, y, { align: 'right' });
+      y += txt.length * 5 + 3; doc.setDrawColor(225); doc.line(M, y - 3, W - M, y - 3);
+    });
+    // Totales
+    y += 4;
+    const fila = (txt, v, negrita) => { doc.setFont('helvetica', negrita ? 'bold' : 'normal'); doc.text(txt, 150, y, { align: 'right' }); doc.text(v, W - M - 3, y, { align: 'right' }); y += 6; };
+    doc.setFontSize(10); fila('Base imponible', euroPDF(t.base)); fila(`IVA (${f.iva} %)`, euroPDF(t.iva));
+    if (t.irpf) fila(`Retención IRPF (${f.irpf} %)`, '-' + euroPDF(t.irpf));
+    doc.setDrawColor(color); doc.line(110, y - 3, W - M, y - 3); y += 2;
+    doc.setFontSize(13); doc.setTextColor(color); fila('TOTAL', euroPDF(t.total), true); doc.setTextColor(30);
+    // Forma de pago y nota
+    y += 6; doc.setFontSize(9);
+    const parrafo = (titulo, txt) => {
+      if (!txt) return;
+      doc.setFont('helvetica', 'bold'); doc.text(titulo, M, y); y += 5; doc.setFont('helvetica', 'normal');
+      doc.splitTextToSize(txt, W - 2 * M).forEach(p => { doc.text(p, M, y); y += 4.5; }); y += 3;
+    };
+    parrafo('Forma de pago', [f.pago, emisor.iban && `IBAN: ${emisor.iban}`].filter(Boolean).join(' · '));
+    parrafo('Observaciones', f.nota);
+    // Pie
+    doc.setFontSize(8); doc.setTextColor(140);
+    doc.text(`${emisor.nombre} · NIF ${emisor.nif} · ${[emisor.direccion, emisor.cp, emisor.ciudad].filter(Boolean).join(', ')}`, W / 2, 285, { align: 'center' });
+    return doc.output('arraybuffer');
+  };
+  const nombrePDF = f => `Factura ${f.numero} - ${(f.cliente?.nombre || '').replace(/[\\/:*?"<>|]/g, '').slice(0, 40)}.pdf`.replace(/ - \.pdf$/, '.pdf');
+  const aBase64 = buf => { let s = ''; const u = new Uint8Array(buf); for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(s); };
+  const msgFac = t => { $('#msgFacturas').innerHTML = t; };
+  // Descarga el PDF y, dentro de Claude, guarda una copia en tu Google Drive (su enlace va al Excel)
+  const descargarFactura = async (f, n, soloDescargar = false) => {
+    msgFac(`Preparando el PDF de la factura ${esc(f.numero)}…`);
+    let pdf;
+    try { pdf = await crearPDF(f, n); } catch (err) { msgFac('No se pudo crear el PDF: ' + esc(err.message)); return; }
+    let txt = '';
+    try {
+      if (descargas) await descargas.save({ filename: nombrePDF(f), data: pdf.slice(0) });
+      else {
+        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([pdf], { type: 'application/pdf' }));
+        a.download = nombrePDF(f); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      }
+      txt = `✓ Factura ${esc(f.numero)} descargada.`;
+    } catch (err) { txt = err.code === 'declined' ? '' : 'No se pudo descargar: ' + esc(err.message); }
+    if (drive && !soloDescargar) {
+      try {
+        const r = await drive.callTool(DRIVE, 'create_file', { title: nombrePDF(f), base64Content: aBase64(pdf), contentMimeType: 'application/pdf', disableConversionToGoogleType: true });
+        const p = r.payload?.file || r.payload || {};
+        const enlace = p.webViewLink || p.alternateLink || (p.id ? `https://drive.google.com/file/d/${p.id}/view` : '');
+        const real = (dbs[n].facturas || []).find(x => x.id === f.id);
+        if (real) { real.pdf = { enlace, fecha: new Date().toISOString() }; escribir(NEGOCIOS[n].clave, dbs[n]); }
+        txt += ` Copia guardada en tu Google Drive${enlace ? ` · <a href="${esc(enlace)}" target="_blank" rel="noopener">abrir</a>` : ''}.`;
+      } catch (err) { txt += ' ' + (ERRORES_DRIVE[err.code] || 'No se pudo guardar en Google Drive: ' + esc(err.message || err)); }
+    }
+    msgFac(txt); renderFacturas();
+  };
+  const renderFacturas = () => {
+    if (total()) return;
+    const fs = [...(db().facturas || [])].sort((a, b) => b.fecha.localeCompare(a.fecha) || b.numero.localeCompare(a.numero));
+    $('#tFacturas').innerHTML = fs.length ? `<tr><th>Nº</th><th>Fecha</th><th>Cliente</th><th class="n">Base</th><th class="n">Total</th><th>Estado</th><th></th></tr>` + fs.map(f => {
+      const t = totalesFactura(f);
+      return `<tr data-f="${f.id}"><td><b>${esc(f.numero)}</b></td><td>${fechaES(f.fecha)}</td><td>${esc(f.cliente?.nombre)}${f.cliente?.nif ? `<br><small class="calc">${esc(f.cliente.nif)}</small>` : ''}</td>
+        <td class="n">${eur(t.base)}</td><td class="n">${eur(t.total)}</td>
+        <td>${f.cobrado === '1' ? '<span class="estado ok">✓ Cobrada</span>' : '<span class="estado warn">Pendiente</span>'}</td>
+        <td class="n"><button class="btn small" data-pdf>PDF</button> ${f.pdf?.enlace ? `<a class="btn small ghost" href="${esc(f.pdf.enlace)}" target="_blank" rel="noopener">Drive</a> ` : ''}${f.cobrado !== '1' ? '<button class="btn small ghost" data-cobrada>Marcar cobrada</button> ' : ''}<button class="btn small ghost" data-editarf>Editar</button> <button class="btn small danger" data-borrarf aria-label="Borrar">✕</button></td></tr>`;
+    }).join('') : `<tr><td class="empty">Todavía no hay facturas de ${esc(CFG().nombre)}. Pulsa «+ Nueva factura».</td></tr>`;
+  };
+  $('#tFacturas').addEventListener('click', e => {
+    const fila = e.target.closest('[data-f]'); if (!fila) return;
+    const f = db().facturas.find(x => x.id === fila.dataset.f), d = e.target.dataset; if (!f) return;
+    if (d.pdf !== undefined) descargarFactura(f, neg, !!f.pdf?.enlace);
+    if (d.editarf !== undefined) formFactura(f);
+    if (d.cobrada !== undefined) {
+      f.cobrado = '1'; const m = db().movs.find(x => x.facturaId === f.id); if (m) m.cobrado = '1'; save(); renderFacturas();
+    }
+    if (d.borrarf !== undefined && confirm(`¿Borrar la factura ${f.numero}? También se borrará su ingreso de Movimientos.`)) {
+      db().facturas = db().facturas.filter(x => x !== f); db().movs = db().movs.filter(m => m.facturaId !== f.id); save(); renderFacturas();
+    }
+  });
+
   // ---------- Ajustes ----------
-  const loadAjustes = () => { $('#resetNeg').textContent = CFG().nombre; pintarCopias(); };
+  const loadAjustes = () => { $('#resetNeg').textContent = CFG().nombre; pintarCopias(); pintarEmisor(); };
 
   // Dentro del visor de Claude las descargas pasan por su permiso; en un navegador normal, enlace directo.
   let descargas = null;
@@ -1234,6 +1574,7 @@ const NEGOCIOS = {
     if (view === 'movimientos') renderMovs();
     if (view === 'shopify') { renderShopify(); alAbrirShopify(); }
     if (view === 'impuestos') renderImpuestos();
+    if (view === 'facturas') renderFacturas();
     if (view === 'ajustes') loadAjustes();
   };
   const go = (v, keep) => {
@@ -1259,7 +1600,8 @@ const NEGOCIOS = {
     document.querySelectorAll('.solo-socias').forEach(e => e.classList.toggle('off', !CFG().socias));
     $('#msgShop').textContent = ''; $('#msgCsv').textContent = '';
     resetForm();
-    const ok = { movimientos: !total(), nuevo: !total(), shopify: CFG().shopify };
+    const ok = { movimientos: !total(), nuevo: !total(), facturas: !total(), shopify: CFG().shopify };
+    $('#cardFactura').classList.add('hidden'); $('#msgFacturas').textContent = '';
     go(ok[view] === false ? 'resumen' : view);
   };
   $('#switch').onclick = e => { if (e.target.dataset.neg) elegir(e.target.dataset.neg); };
@@ -1275,6 +1617,8 @@ const NEGOCIOS = {
   $('#fTxt').addEventListener('input', render);
   $('#tMovs').onclick = e => {
     const { edit, del } = e.target.dataset;
+    const mf = edit && db().movs.find(m => m.id === edit && m.origen === 'factura');
+    if (mf) { go('facturas'); formFactura(db().facturas.find(f => f.id === mf.facturaId)); return; }
     if (edit) editMov(edit);
     if (del && confirm('¿Borrar este movimiento?')) { db().movs = db().movs.filter(m => m.id !== del); save(); render(); }
   };
@@ -1286,7 +1630,7 @@ const NEGOCIOS = {
   //   negocios/<negocio>/movs/<AAAA-MM>  → movimientos de ese mes (documentos pequeños)
   //   ajustes/metasTotal                 → metas de «Total»
   // La conexión del conector de Shopify (URL y clave) nunca sale de este navegador.
-  const LISTAS = ['trabajos', 'contenido', 'seguidores', 'metas'];
+  const LISTAS = ['trabajos', 'contenido', 'seguidores', 'metas', 'facturas'];
   const nubeEstado = (txt, cls = '') => { const el = $('#nube'); el.textContent = txt; el.className = 'calc ' + cls; };
   let nube = null;
   const enviado = {};       // ruta → último contenido escrito o recibido (JSON), para no reescribir lo mismo
@@ -1354,6 +1698,9 @@ const NEGOCIOS = {
       }
       const cp = await db.doc('ajustes/copias').get();
       if (cp.exists) { copias = { ...copias, ...cp.data() }; try { localStorage.setItem('contabilidad-copias-v1', JSON.stringify(copias)); } catch { } }
+      const em = await db.doc('ajustes/emisor').get();
+      if (em.exists) { emisor = { ...emisor, ...em.data() }; try { localStorage.setItem(CLAVE_EMISOR, JSON.stringify(emisor)); } catch { } }
+      else await db.doc('ajustes/emisor').set(emisor);
       const mt = await db.doc('ajustes/metasTotal').get();
       if (mt.exists) enviado['ajustes/metasTotal'] = JSON.stringify(mt.data());
       metasTotal = unir(mt.exists ? mt.data().metas : [], metasTotal);
