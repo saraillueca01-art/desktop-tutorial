@@ -103,6 +103,10 @@
     .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
     .empty { color: var(--muted); padding: 24px; text-align: center; }
     .msg { margin-top: 12px; font-size: .88rem; }
+    #aviso { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 50; background: var(--green); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: .92rem; font-weight: 500; box-shadow: 0 6px 20px rgba(0,0,0,.18); max-width: calc(100% - 32px); text-align: center; transition: opacity .25s; }
+    #aviso.mal { background: var(--red); }
+    #aviso.oculto { opacity: 0; pointer-events: none; }
+    .msg.neg:not(:empty) { background: color-mix(in srgb, var(--red) 10%, transparent); border: 1px solid var(--red); border-radius: 10px; padding: 10px 12px; font-weight: 500; }
     /* Metas */
     :root { --amber: #a86a0b; }
     .meta h3 { margin: 0; font-size: 1.05rem; }
@@ -141,6 +145,7 @@
   </style>
 </head>
 <body>
+<div id="aviso" class="oculto" role="status" aria-live="polite"></div>
 <div class="wrap">
   <header class="top">
     <div>
@@ -507,7 +512,15 @@ const NEGOCIOS = {
   const r2 = n => Math.round(n * 100) / 100;
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   const tri = f => Math.floor((+f.slice(5, 7) - 1) / 3) + 1;
+  let avisoT = null;
+  const aviso = (txt, mal = false) => {
+    const el = document.getElementById('aviso'); el.textContent = txt; el.className = mal ? 'mal' : '';
+    clearTimeout(avisoT); avisoT = setTimeout(() => { el.className = 'oculto' + (mal ? ' mal' : ''); }, mal ? 6000 : 2500);
+  };
+  // Error de un formulario: visible, junto al botón y con aviso
+  const errorForm = (sel, txt) => { const el = $(sel); el.textContent = txt; el.scrollIntoView({ block: 'center', behavior: 'smooth' }); aviso(txt, true); };
   const leer = k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
+  const hayLocal = (() => { try { localStorage.setItem('__prueba', '1'); localStorage.removeItem('__prueba'); return true; } catch { return false; } })();
   let alGuardar = () => {};  // la sincronización con tu cuenta lo sustituye cuando está disponible
   const escribir = (k, v) => {
     try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* sin almacenamiento local: queda la nube */ }
@@ -912,7 +925,7 @@ const NEGOCIOS = {
     if (!F.fecha.disabled && !F.fecha.value) falta.push('la fecha');
     if (!F.concepto.value.trim()) falta.push('el concepto');
     if (!F.base.disabled && !(leerImporte(F.base.value) >= 0)) falta.push('el importe (base imponible), por ejemplo 12,50');
-    if (falta.length) { $('#formError').textContent = 'Falta ' + falta.join(', ') + '.'; return; }
+    if (falta.length) { errorForm('#formError', 'Falta ' + falta.join(', ') + '.'); return; }
     if (datos.base != null) datos.base = r2(leerImporte(datos.base));
     const hacerFactura = !$('#lblFacturar').classList.contains('hidden') && F.facturar.checked;
     delete datos.facturar;
@@ -922,6 +935,7 @@ const NEGOCIOS = {
     if (prev) db().movs[db().movs.indexOf(prev)] = m;
     else { m.id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6); db().movs.push(m); }
     save(); $('#fAnio').value = m.fecha.slice(0, 4); fillYears(); resetForm();
+    aviso(`✓ ${m.tipo === 'gasto' ? 'Gasto' : 'Ingreso'} guardado`);
     if (hacerFactura) { go('facturas'); formFactura(null, m); } else go('movimientos');
   });
   $('#btnCancel').onclick = () => { resetForm(); go('movimientos'); };
@@ -1091,7 +1105,7 @@ const NEGOCIOS = {
   FM.addEventListener('submit', e => {
     e.preventDefault();
     const obj = leerImporte(FM.objetivo.value), manual = FM.tipo.value === 'manual';
-    if (!(obj > 0)) { $('#metaError').textContent = 'Pon un objetivo mayor que 0 (por ejemplo 3.000).'; return; }
+    if (!(obj > 0)) { errorForm('#metaError', 'Pon un objetivo mayor que 0 (por ejemplo 3.000).'); return; }
     if (manual && !FM.unidad.value.trim() && !FM.nombre.value.trim()) { $('#metaError').textContent = 'Di qué vas a medir: escribe la unidad (seguidores, clientes…) o un nombre.'; return; }
     const meta = {
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5), tipo: FM.tipo.value,
@@ -1104,7 +1118,7 @@ const NEGOCIOS = {
       meta.valores = [{ fecha: iso(new Date()), valor: ini >= 0 ? ini : 0 }];
       if (!meta.nombre) meta.nombre = `Llegar a ${meta.objetivo.toLocaleString('es-ES')} ${meta.unidad}`;
     }
-    metas().push(meta); guardarMetas();
+    metas().push(meta); guardarMetas(); aviso('✓ Meta guardada');
     $('#cardNuevaMeta').classList.add('hidden'); renderMetas();
   });
 
@@ -1318,7 +1332,7 @@ const NEGOCIOS = {
     emisor = Object.fromEntries(Object.keys(EMISOR_INICIAL).map(k => [k, FE[k].value.trim()]));
     try { localStorage.setItem(CLAVE_EMISOR, JSON.stringify(emisor)); } catch { }
     if (nube) { try { await nube.doc('ajustes/emisor').set(emisor); } catch { } }
-    $('#msgEmisor').textContent = '✓ Guardado';
+    $('#msgEmisor').textContent = '✓ Guardado'; aviso('✓ Tus datos están guardados');
     setTimeout(() => { $('#msgEmisor').textContent = ''; }, 2500);
   });
 
@@ -1411,11 +1425,11 @@ const NEGOCIOS = {
     const datos = facturaDelForm(), falta = [];
     if (!datos.numero) falta.push('el número');
     if (!datos.fecha) falta.push('la fecha');
-    if (!datos.cliente.nombre) falta.push('el nombre del cliente');
+    if (!datos.cliente.nombre && !esAlbaran(datos)) falta.push('el nombre del cliente');
     if (!datos.lineas.length || datos.lineas.some(l => !l.desc || !(l.precio >= 0) || !(l.cant > 0))) falta.push('al menos un concepto con descripción, cantidad y precio');
     const lista = db().facturas ||= [];
     if (lista.some(f => f.numero === datos.numero && f.id !== FF.id.value)) falta.push('un número que no esté repetido');
-    if (falta.length) { $('#facturaError').textContent = 'Falta ' + falta.join(', ') + '.'; return; }
+    if (falta.length) { errorForm('#facturaError', 'Falta ' + falta.join(', ') + '.'); return; }
     if (!datos.nota && +datos.iva === 0 && !esAlbaran(datos)) datos.nota = NOTA_EXENTA;
     let f = lista.find(x => x.id === FF.id.value);
     if (f) Object.assign(f, datos); else { f = { id: nuevoId(), creada: new Date().toISOString(), ...datos }; lista.push(f); }
@@ -1423,6 +1437,7 @@ const NEGOCIOS = {
     const mov = movDeFactura(f, prev);
     if (prev) db().movs[db().movs.indexOf(prev)] = mov; else db().movs.push(mov);
     save(); fillYears();
+    aviso(`✓ ${nombreDoc(f)} ${f.numero} guardad${esAlbaran(f) ? 'o' : 'a'}`);
     $('#cardFactura').classList.add('hidden'); renderFacturas();
     await descargarFactura(f, neg);
   });
@@ -1684,10 +1699,18 @@ const NEGOCIOS = {
   let nube = null;
   const enviado = {};       // ruta → último contenido escrito o recibido (JSON), para no reescribir lo mismo
   const sucios = new Set(); // claves de localStorage con cambios por subir
+  const versionCambio = {};  // clave → nº de cambios hechos (si cambia durante la subida, se vuelve a subir)
   let temporizador = null, subiendo = false;
 
+  // Cada documento lleva un sello de tiempo (_t). Lo que llega de la cuenta solo se aplica si es MÁS NUEVO
+  // que lo último que este dispositivo escribió o recibió: así una lectura antigua que llegue tarde nunca pisa
+  // lo que acabas de guardar.
+  const sello = {};         // ruta → _t más reciente conocido
+  const limpio = o => JSON.parse(JSON.stringify(o, (k, v) => (typeof v === 'number' && !isFinite(v) ? null : v)));
+  const sinSello = d => { const { _t, ...resto } = d || {}; return resto; };
+  const cuerpoNegocio = d => Object.fromEntries(LISTAS.map(k => [k, d[k] || []]));
   const partesDe = n => {
-    const d = dbs[n], partes = { [`negocios/${n}`]: Object.fromEntries(LISTAS.map(k => [k, d[k] || []])) };
+    const d = dbs[n], partes = { [`negocios/${n}`]: cuerpoNegocio(d) };
     const meses = {};
     d.movs.forEach(m => { (meses[m.fecha.slice(0, 7)] ||= []).push(m); });
     // También los meses que antes tenían algo, para vaciarlos si se borró todo
@@ -1695,33 +1718,41 @@ const NEGOCIOS = {
     Object.entries(meses).forEach(([mes, items]) => { partes[`negocios/${n}/movs/${mes}`] = { items }; });
     return partes;
   };
+  let ultimoError = null;
   const subir = async () => {
     if (!nube || subiendo) return;
     subiendo = true; nubeEstado('☁️ Guardando…');
     try {
       while (sucios.size) {
-        const k = [...sucios][0]; sucios.delete(k);
+        const k = [...sucios][0], v = versionCambio[k];
         const n = Object.keys(NEGOCIOS).find(x => NEGOCIOS[x].clave === k);
         const partes = n ? partesDe(n) : k === CLAVE_METAS_TOTAL ? { 'ajustes/metasTotal': { metas: metasTotal } } : {};
         for (const [ruta, cuerpo] of Object.entries(partes)) {
-          const json = JSON.stringify(cuerpo);
+          const datos = limpio(cuerpo), json = JSON.stringify(datos);
           if (enviado[ruta] === json) continue;
-          try { await nube.doc(ruta).set(cuerpo); }
+          const t = Math.max(Date.now(), (sello[ruta] || 0) + 1);
+          sello[ruta] = t;  // desde ya, cualquier cosa más vieja que llegue se ignora
+          try { await nube.doc(ruta).set({ ...datos, _t: t }); }
           catch (err) {
             if (err.code !== 'unavailable') throw err;
             await new Promise(r => setTimeout(r, 800 + Math.random() * 800));
-            await nube.doc(ruta).set(cuerpo);
+            await nube.doc(ruta).set({ ...datos, _t: t });
           }
           enviado[ruta] = json;
         }
+        if (versionCambio[k] === v) sucios.delete(k);
       }
+      ultimoError = null;
       nubeEstado('☁️ Guardado en tu cuenta', 'pos');
     } catch (err) {
+      ultimoError = err;
       nubeEstado(err.code === 'quota_exceeded' ? '⚠️ Tu espacio de datos está lleno: descarga una copia y borra datos antiguos.'
-        : '⚠️ No se pudo guardar en tu cuenta (queda guardado en este dispositivo).', 'neg');
-    } finally { subiendo = false; if (sucios.size) programar(); }
+        : `⚠️ No se pudo guardar en tu cuenta (${err.code || err.message || 'error'}). Queda en este dispositivo; se reintentará.`, 'neg');
+      aviso('No se pudo guardar en tu cuenta: ' + (err.message || err.code || 'error') + '. Se reintentará.', true);
+      setTimeout(() => { if (sucios.size) programar(); }, 15000);
+    } finally { subiendo = false; if (sucios.size && !ultimoError) programar(); }
   };
-  const programar = () => { clearTimeout(temporizador); temporizador = setTimeout(subir, 500); };
+  const programar = () => { clearTimeout(temporizador); temporizador = setTimeout(subir, 400); };
 
   // Unir sin perder nada: lo de la cuenta manda, y se añade lo que solo estaba en este dispositivo
   const unir = (remoto = [], local = [], clave = 'id') => {
@@ -1729,6 +1760,8 @@ const NEGOCIOS = {
     return [...remoto, ...local.filter(x => !ids.has(x[clave]))];
   };
   const refrescar = () => { fillYears(); if (view !== 'nuevo') render(); };
+  // ¿Es más nuevo que lo que ya tengo? (y lo apunta)
+  const masNuevo = (ruta, d) => { const t = d?._t || 0; if (t <= (sello[ruta] || 0)) return false; sello[ruta] = t; return true; };
 
   window.claude?.use?.('db').then(async db => {
     if (!db) return;
@@ -1738,8 +1771,11 @@ const NEGOCIOS = {
       for (const n of Object.keys(NEGOCIOS)) {
         const doc = await db.doc(`negocios/${n}`).get(), movs = await db.collection(`negocios/${n}/movs`).get();
         const r = doc.exists ? doc.data() : {};
-        if (doc.exists) enviado[`negocios/${n}`] = JSON.stringify(r);
-        const remotos = movs.docs.flatMap(x => { enviado[`negocios/${n}/movs/${x.id}`] = JSON.stringify(x.data()); return x.data().items || []; });
+        if (doc.exists) { sello[`negocios/${n}`] = r._t || 0; enviado[`negocios/${n}`] = JSON.stringify(cuerpoNegocio(r)); }
+        const remotos = movs.docs.flatMap(x => {
+          const ruta = `negocios/${n}/movs/${x.id}`; sello[ruta] = x.data()._t || 0;
+          enviado[ruta] = JSON.stringify({ items: x.data().items || [] }); return x.data().items || [];
+        });
         const d = dbs[n];
         LISTAS.forEach(k => { d[k] = unir(r[k], d[k], k === 'seguidores' ? 'fecha' : 'id'); });
         d.seguidores.sort((a, b) => a.fecha.localeCompare(b.fecha));
@@ -1748,42 +1784,52 @@ const NEGOCIOS = {
       const cp = await db.doc('ajustes/copias').get();
       if (cp.exists) { copias = { ...copias, ...cp.data() }; try { localStorage.setItem('contabilidad-copias-v1', JSON.stringify(copias)); } catch { } }
       const em = await db.doc('ajustes/emisor').get();
-      if (em.exists) { emisor = { ...emisor, ...em.data() }; try { localStorage.setItem(CLAVE_EMISOR, JSON.stringify(emisor)); } catch { } }
+      if (em.exists) { emisor = { ...emisor, ...sinSello(em.data()) }; try { localStorage.setItem(CLAVE_EMISOR, JSON.stringify(emisor)); } catch { } }
       else await db.doc('ajustes/emisor').set(emisor);
       const mt = await db.doc('ajustes/metasTotal').get();
-      if (mt.exists) enviado['ajustes/metasTotal'] = JSON.stringify(mt.data());
+      if (mt.exists) { sello['ajustes/metasTotal'] = mt.data()._t || 0; enviado['ajustes/metasTotal'] = JSON.stringify({ metas: mt.data().metas || [] }); }
       metasTotal = unir(mt.exists ? mt.data().metas : [], metasTotal);
       nube = db;
-      alGuardar = k => { sucios.add(k); programar(); };
-      // Guardar la unión (sube lo que solo estaba aquí y deja la copia local al día)
+      alGuardar = k => { versionCambio[k] = (versionCambio[k] || 0) + 1; sucios.add(k); programar(); };
+      // Guardar la unión (sube solo lo que faltaba en la cuenta y deja la copia local al día)
       Object.keys(NEGOCIOS).forEach(n => escribir(NEGOCIOS[n].clave, dbs[n]));
       escribir(CLAVE_METAS_TOTAL, metasTotal);
       refrescar();
       if (!sucios.size) nubeEstado('☁️ Guardado en tu cuenta', 'pos');
 
-      // 2) En directo: lo que cambies en otro dispositivo aparece aquí
+      // 2) En directo: lo que cambies en otro dispositivo aparece aquí (solo si es más nuevo)
       const local = (n, cuerpo) => { try { localStorage.setItem(NEGOCIOS[n].clave, JSON.stringify(cuerpo)); } catch { } };
+      const perdida = () => nubeEstado('⚠️ Se perdió la conexión con tu cuenta: recarga la página.', 'neg');
       Object.keys(NEGOCIOS).forEach(n => {
         db.doc(`negocios/${n}`).onSnapshot(snap => {
-          if (snap.metadata.hasPendingWrites || !snap.exists || sucios.has(NEGOCIOS[n].clave)) return;
-          const json = JSON.stringify(snap.data()); if (enviado[`negocios/${n}`] === json) return;
-          enviado[`negocios/${n}`] = json;
-          LISTAS.forEach(k => { dbs[n][k] = snap.data()[k] || []; });
+          const ruta = `negocios/${n}`;
+          if (snap.metadata.hasPendingWrites || !snap.exists || sucios.has(NEGOCIOS[n].clave) || !masNuevo(ruta, snap.data())) return;
+          const cuerpo = cuerpoNegocio(snap.data()), json = JSON.stringify(cuerpo);
+          if (enviado[ruta] === json) return;
+          enviado[ruta] = json;
+          LISTAS.forEach(k => { dbs[n][k] = cuerpo[k]; });
           local(n, dbs[n]); refrescar();
-        }, () => nubeEstado('⚠️ Se perdió la conexión con tu cuenta: recarga la página.', 'neg'));
+        }, perdida);
         db.collection(`negocios/${n}/movs`).onSnapshot(snap => {
           if (snap.metadata.hasPendingWrites || sucios.has(NEGOCIOS[n].clave)) return;
-          let cambio = false;
-          snap.docs.forEach(x => { const r = `negocios/${n}/movs/${x.id}`, j = JSON.stringify(x.data()); if (enviado[r] !== j) { enviado[r] = j; cambio = true; } });
-          if (!cambio) return;
-          dbs[n].movs = snap.docs.flatMap(x => x.data().items || []);
+          // Solo se cambian los meses que llegan más nuevos; los demás se quedan como están aquí
+          const nuevos = {};
+          snap.docs.forEach(x => {
+            const ruta = `negocios/${n}/movs/${x.id}`;
+            if (!masNuevo(ruta, x.data())) return;
+            const items = x.data().items || [], j = JSON.stringify({ items });
+            if (enviado[ruta] !== j) { enviado[ruta] = j; nuevos[x.id] = items; }
+          });
+          if (!Object.keys(nuevos).length) return;
+          dbs[n].movs = [...dbs[n].movs.filter(m => !(m.fecha.slice(0, 7) in nuevos)), ...Object.values(nuevos).flat()];
           local(n, dbs[n]); refrescar();
-        }, () => nubeEstado('⚠️ Se perdió la conexión con tu cuenta: recarga la página.', 'neg'));
+        }, perdida);
       });
       db.doc('ajustes/metasTotal').onSnapshot(snap => {
-        if (snap.metadata.hasPendingWrites || !snap.exists || sucios.has(CLAVE_METAS_TOTAL)) return;
-        const j = JSON.stringify(snap.data()); if (enviado['ajustes/metasTotal'] === j) return;
-        enviado['ajustes/metasTotal'] = j; metasTotal = snap.data().metas || [];
+        const ruta = 'ajustes/metasTotal';
+        if (snap.metadata.hasPendingWrites || !snap.exists || sucios.has(CLAVE_METAS_TOTAL) || !masNuevo(ruta, snap.data())) return;
+        const j = JSON.stringify({ metas: snap.data().metas || [] }); if (enviado[ruta] === j) return;
+        enviado[ruta] = j; metasTotal = snap.data().metas || [];
         try { localStorage.setItem(CLAVE_METAS_TOTAL, JSON.stringify(metasTotal)); } catch { }
         refrescar();
       });
@@ -1793,6 +1839,7 @@ const NEGOCIOS = {
     }
   });
 
+  if (!hayLocal) nubeEstado('⚠️ Este navegador no deja guardar datos. Abre el enlace en claude.ai con tu sesión iniciada.', 'neg');
   document.querySelectorAll('[data-logo]').forEach(img => { img.src = LOGOS[img.dataset.logo]; });
   const init = () => { fillYears(); elegir(neg); };
   init();
