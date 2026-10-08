@@ -105,6 +105,10 @@
     .msg { margin-top: 12px; font-size: .88rem; }
     #aviso { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 50; background: var(--green); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: .92rem; font-weight: 500; box-shadow: 0 6px 20px rgba(0,0,0,.18); max-width: calc(100% - 32px); text-align: center; transition: opacity .25s; }
     #aviso.mal { background: var(--red); }
+    #confirmar { position: fixed; inset: 0; z-index: 60; background: rgba(20,24,31,.45); display: grid; place-items: center; padding: 16px; }
+    #confirmar .caja { background: var(--card); border-radius: var(--radius); padding: 20px; max-width: 420px; width: 100%; box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+    #confirmar p { margin: 0 0 16px; font-size: .98rem; color: var(--text); }
+    #confirmar .row { justify-content: flex-end; }
     #aviso.oculto { opacity: 0; pointer-events: none; }
     .msg.neg:not(:empty) { background: color-mix(in srgb, var(--red) 10%, transparent); border: 1px solid var(--red); border-radius: 10px; padding: 10px 12px; font-weight: 500; }
     /* Metas */
@@ -147,6 +151,11 @@
 <body>
 <div id="aviso" class="oculto" role="status" aria-live="polite"></div>
 <input type="file" id="fileAdjuntar" accept="application/pdf,image/*" hidden>
+<div id="confirmar" class="hidden" role="dialog" aria-modal="true" aria-labelledby="confirmarTxt">
+  <div class="caja"><p id="confirmarTxt"></p>
+    <div class="row"><button class="btn ghost" id="confirmarNo">Cancelar</button><button class="btn danger" id="confirmarSi">Borrar</button></div>
+  </div>
+</div>
 <div class="wrap">
   <header class="top">
     <div>
@@ -522,6 +531,17 @@ const NEGOCIOS = {
     const el = document.getElementById('aviso'); el.textContent = txt; el.className = mal ? 'mal' : '';
     clearTimeout(avisoT); avisoT = setTimeout(() => { el.className = 'oculto' + (mal ? ' mal' : ''); }, mal ? 6000 : 2500);
   };
+  // Pregunta «¿Seguro?» dentro de la página (resuelve true / false)
+  const confirmar = (texto, si = 'Borrar') => new Promise(ok => {
+    const caja = document.getElementById('confirmar'), bSi = document.getElementById('confirmarSi'), bNo = document.getElementById('confirmarNo');
+    document.getElementById('confirmarTxt').textContent = texto; bSi.textContent = si;
+    bSi.className = 'btn ' + (si === 'Borrar' ? 'danger' : '');
+    const fin = r => { caja.classList.add('hidden'); bSi.onclick = bNo.onclick = caja.onclick = null; document.removeEventListener('keydown', tecla); ok(r); };
+    const tecla = e => { if (e.key === 'Escape') fin(false); };
+    bSi.onclick = () => fin(true); bNo.onclick = () => fin(false); caja.onclick = e => { if (e.target === caja) fin(false); };
+    document.addEventListener('keydown', tecla);
+    caja.classList.remove('hidden'); bNo.focus();
+  });
   // Error de un formulario: visible, junto al botón y con aviso
   const errorForm = (sel, txt) => { const el = $(sel); el.textContent = txt; el.scrollIntoView({ block: 'center', behavior: 'smooth' }); aviso(txt, true); };
   const leer = k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
@@ -1152,10 +1172,10 @@ const NEGOCIOS = {
     const id = e.target.dataset.paso, meta = id && metaDe(e.target); if (!meta) return;
     const p = meta.pasos.find(x => x.id === id); p.hecho = e.target.checked; guardarMetas(); renderMetas();
   });
-  $('#listaMetas').addEventListener('click', e => {
+  $('#listaMetas').addEventListener('click', async e => {
     const { delpaso, delmeta } = e.target.dataset;
     if (delpaso) { const meta = metaDe(e.target); meta.pasos = meta.pasos.filter(p => p.id !== delpaso); guardarMetas(); renderMetas(); }
-    if (delmeta && confirm('¿Borrar esta meta?')) {
+    if (delmeta && await confirmar('¿Borrar esta meta?')) {
       if (total()) metasTotal = metasTotal.filter(x => x.id !== delmeta); else db().metas = db().metas.filter(x => x.id !== delmeta);
       guardarMetas(); renderMetas();
     }
@@ -1624,6 +1644,8 @@ const NEGOCIOS = {
       aviso('✓ Factura del gasto guardada en su carpeta de Drive'); if (view === 'movimientos') render();
     } catch (err) { aviso((ERRORES_DRIVE[err.code] || 'No se pudo subir la factura: ' + (err.message || err)), true); }
   };
+  // Al borrar algo con PDF en Drive, el PDF va a la papelera (se puede recuperar 30 días)
+  const aPapelera = enlace => { const fileId = idDeEnlace(enlace); if (drive && fileId) drive.callTool(DRIVE, 'trash_file', { fileId }).catch(() => {}); };
   let adjuntarA = null;
   $('#fileAdjuntar').addEventListener('change', e => {
     const archivo = e.target.files[0], a = adjuntarA; adjuntarA = null;
@@ -1684,7 +1706,7 @@ const NEGOCIOS = {
         <td class="n"><button class="btn small" data-pdf>PDF</button> ${f.pdf?.enlace ? `<a class="btn small ghost" href="${esc(f.pdf.enlace)}" target="_blank" rel="noopener">Drive</a> ` : ''}${f.cobrado !== '1' ? '<button class="btn small ghost" data-cobrada>Marcar cobrado</button> ' : ''}<button class="btn small ghost" data-editarf>Editar</button> <button class="btn small danger" data-borrarf aria-label="Borrar">✕</button></td></tr>`;
     }).join('') : `<tr><td class="empty">Todavía no hay facturas ni albaranes de ${esc(CFG().nombre)}. Pulsa «+ Nueva factura» o «+ Nuevo albarán».</td></tr>`;
   };
-  $('#tFacturas').addEventListener('click', e => {
+  $('#tFacturas').addEventListener('click', async e => {
     const fila = e.target.closest('[data-f]'); if (!fila) return;
     const f = db().facturas.find(x => x.id === fila.dataset.f), d = e.target.dataset; if (!f) return;
     if (d.pdf !== undefined) descargarFactura(f, neg, !!f.pdf?.enlace);
@@ -1692,8 +1714,10 @@ const NEGOCIOS = {
     if (d.cobrada !== undefined) {
       f.cobrado = '1'; const m = db().movs.find(x => x.facturaId === f.id); if (m) m.cobrado = '1'; save(); renderFacturas();
     }
-    if (d.borrarf !== undefined && confirm(`¿Borrar ${esAlbaran(f) ? 'el albarán' : 'la factura'} ${f.numero}? También se borrará su ingreso de Movimientos.`)) {
+    if (d.borrarf !== undefined) {
+      if (!await confirmar(`¿Borrar ${esAlbaran(f) ? 'el albarán' : 'la factura'} ${f.numero}? También se borrará su ingreso de Movimientos${f.pdf?.enlace ? ' y su PDF irá a la papelera de Google Drive' : ''}.`)) return;
       db().facturas = db().facturas.filter(x => x !== f); db().movs = db().movs.filter(m => m.facturaId !== f.id); save(); renderFacturas();
+      aPapelera(f.pdf?.enlace); aviso(`✓ ${nombreDoc(f)} ${f.numero} borrad${esAlbaran(f) ? 'o' : 'a'}`);
     }
   });
 
@@ -1706,7 +1730,7 @@ const NEGOCIOS = {
   const download = async (name, text, type) => {
     if (descargas) {
       try { await descargas.save({ filename: name, data: text }); }
-      catch (err) { if (err.code !== 'declined') alert('No se pudo descargar: ' + err.message); }
+      catch (err) { if (err.code !== 'declined') aviso('No se pudo descargar: ' + err.message, true); }
       return;
     }
     const a = document.createElement('a');
@@ -1722,21 +1746,21 @@ const NEGOCIOS = {
       const d = JSON.parse(await f.text());
       if (d.version >= 2 && d.negocios) {
         const n = Object.values(d.negocios).reduce((s, x) => s + (x.movs?.length || 0), 0);
-        if (!confirm(`¿Cargar la copia completa (${n} movimientos de todos los negocios)? Se sustituirán los datos actuales.`)) return;
+        if (!await confirmar(`¿Cargar la copia completa (${n} movimientos de todos los negocios)? Se sustituirán los datos actuales.`, 'Cargar')) return;
         Object.keys(NEGOCIOS).forEach(k => { if (d.negocios[k]) escribir(NEGOCIOS[k].clave, { ...blank(), ...d.negocios[k] }); });
         if (Array.isArray(d.metasTotal)) { metasTotal = d.metasTotal; escribir(CLAVE_METAS_TOTAL, metasTotal); }
       } else if (Array.isArray(d.movs)) {
         // Copia antigua de una sola empresa: se carga en la empresa elegida
-        if (total()) { alert('Esta copia es de una sola empresa: elige primero un negocio (Benissalud, MOOD MATCHA o Brisa Creative).'); return; }
-        if (!confirm(`¿Cargar ${d.movs.length} movimientos en ${CFG().nombre}? Se sustituirán sus datos actuales.`)) return;
+        if (total()) { aviso('Esta copia es de una sola empresa: elige primero un negocio (Benissalud, MOOD MATCHA o Brisa Creative).', true); return; }
+        if (!await confirmar(`¿Cargar ${d.movs.length} movimientos en ${CFG().nombre}? Se sustituirán sus datos actuales.`, 'Cargar')) return;
         escribir(NEGOCIOS[neg].clave, { ...blank(), ...d });
       } else throw 0;
       cargar(); init();
-    } catch { alert('El archivo no es una copia válida.'); }
+    } catch { aviso('El archivo no es una copia válida.', true); }
     e.target.value = '';
   };
-  $('#btnReset').onclick = () => {
-    if (confirm(`¿Borrar TODOS los datos de ${CFG().nombre}? Descarga antes una copia.`)) { dbs[neg] = blank(); save(); init(); }
+  $('#btnReset').onclick = async () => {
+    if (await confirmar(`¿Borrar TODOS los datos de ${CFG().nombre}? Descarga antes una copia.`)) { dbs[neg] = blank(); save(); init(); aviso('Datos borrados'); }
   };
   $('#btnCsv').onclick = () => {
     const rows = [['Fecha', 'Tipo', 'De quién', 'Nº factura', 'Concepto', 'Cliente/proveedor', 'Categoría', 'Base', 'IVA %', 'IVA', 'IRPF %', 'IRPF', 'Total', 'Cobrado', 'Deducible']];
@@ -1799,7 +1823,7 @@ const NEGOCIOS = {
   });
   ['#fAnio', '#fTri', '#fTipo'].forEach(s => $(s).addEventListener('change', render));
   $('#fTxt').addEventListener('input', render);
-  $('#tMovs').onclick = e => {
+  $('#tMovs').onclick = async e => {
     const { edit, del, facturar, pdfmov, adjuntar } = e.target.dataset;
     if (adjuntar) { adjuntarA = { id: adjuntar, n: neg }; $('#fileAdjuntar').value = ''; $('#fileAdjuntar').click(); return; }
     if (facturar) { const m = db().movs.find(x => x.id === facturar); if (m) { go('facturas'); formFactura(null, m); } return; }
@@ -1808,10 +1832,13 @@ const NEGOCIOS = {
     if (mf) { go('facturas'); formFactura(db().facturas.find(f => f.id === mf.facturaId)); return; }
     if (edit) editMov(edit);
     const md = del && db().movs.find(m => m.id === del);
-    if (md && confirm(md.facturaId ? `¿Borrar este movimiento? También se borrará su ${md.origen === 'albaran' ? 'albarán' : 'factura'}.` : '¿Borrar este movimiento?')) {
+    if (md) {
+      const doc = md.facturaId && (db().facturas || []).find(f => f.id === md.facturaId);
+      if (!await confirmar(doc ? `¿Borrar este movimiento? También se borrará su ${md.origen === 'albaran' ? 'albarán' : 'factura'} ${doc.numero}.` : `¿Borrar «${md.concepto}»?`)) return;
       db().movs = db().movs.filter(m => m !== md);
       if (md.facturaId) db().facturas = (db().facturas || []).filter(f => f.id !== md.facturaId);
       save(); render();
+      aPapelera(doc?.pdf?.enlace); aPapelera(md.adjunto?.enlace); aviso('✓ Movimiento borrado');
     }
   };
 
