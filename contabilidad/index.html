@@ -146,6 +146,23 @@
     #fFactura input, #fFactura select, #fFactura textarea, #fEmisor input { width: 100%; }
     #fFactura label[style*="span 2"] { grid-column: 1 / -1 !important; }
     fieldset legend { font-size: .8rem; font-weight: 600; color: var(--ink); padding: 0 6px; }
+    /* Caja (ventas en tienda) */
+    .caja-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+    @media (max-width: 820px) { .caja-grid { grid-template-columns: 1fr; } }
+    .productos { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+    .prod { font: inherit; text-align: left; background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--ink); border-radius: 12px; padding: 12px; cursor: pointer; min-height: 74px; display: flex; flex-direction: column; justify-content: space-between; gap: 6px; color: var(--text); }
+    .prod:active { transform: scale(.97); }
+    .prod b { font-weight: 600; font-size: .92rem; line-height: 1.25; }
+    .prod span { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+    .ticket-linea { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: .92rem; }
+    .cant { display: inline-flex; align-items: center; gap: 6px; }
+    .cant button { font: inherit; width: 30px; height: 30px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); cursor: pointer; color: var(--text); }
+    .ticket-total { display: flex; justify-content: space-between; font-size: 1.4rem; font-weight: 700; color: var(--ink); margin: 14px 0; font-variant-numeric: tabular-nums; }
+    #kpisCaja { grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 8px; }
+    #kpisCaja .card { padding: 10px 12px; }
+    #kpisCaja .val { font-size: 1.15rem; }
+    .cobrar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .cobrar .btn { padding: 14px 8px; font-size: 1rem; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -181,6 +198,7 @@
     <button data-tab="resumen" class="on">Resumen</button>
     <button data-tab="movimientos" class="solo-negocio">Movimientos</button>
     <button data-tab="shopify" class="solo-shopify">Shopify</button>
+    <button data-tab="caja" class="solo-caja">Venta en tienda</button>
     <button data-tab="facturas" class="solo-negocio">Facturas y albaranes</button>
     <button data-tab="impuestos">Impuestos</button>
     <button data-tab="metas">Metas</button>
@@ -359,6 +377,52 @@
     </div>
   </section>
 
+  <!-- CAJA: ventas rápidas en tienda -->
+  <section id="v-caja" class="hidden">
+    <div class="grid g4" id="kpisCaja"></div>
+    <div class="caja-grid" style="margin-top:14px">
+      <div class="card">
+        <div class="row" style="justify-content:space-between;margin-bottom:10px">
+          <h2 style="margin:0">Productos</h2>
+          <div class="row"><button class="btn small ghost off" id="btnShopProductos">Traer de Shopify</button><button class="btn small" id="btnNuevoProducto">+ Producto</button></div>
+        </div>
+        <form id="fProducto" class="mov hidden" style="display:grid;margin-bottom:12px" autocomplete="off" novalidate>
+          <input type="hidden" name="id">
+          <label class="wide">Nombre <input name="nombre" placeholder="Ej.: Matcha Uji 30 g"></label>
+          <label>Precio de venta (con IVA) <input name="pvp" inputmode="decimal" placeholder="0,00"></label>
+          <label>IVA
+            <select name="iva"><option value="21">21 %</option><option value="10">10 %</option><option value="4">4 %</option><option value="0">0 % / exento</option></select>
+          </label>
+          <div class="wide row"><button class="btn small" type="submit">Guardar producto</button><button class="btn small ghost" type="button" id="btnCancelProducto">Cancelar</button><button class="btn small danger hidden" type="button" id="btnBorrarProducto">Borrar</button></div>
+        </form>
+        <div class="productos" id="productos"></div>
+        <p class="note">Toca un producto para añadirlo al ticket. Mantén pulsado (o pulsa ✎) para cambiarlo.</p>
+        <h3 style="margin-top:16px">Venta libre</h3>
+        <form id="fLibre" class="mini" autocomplete="off" novalidate style="flex-wrap:wrap">
+          <input name="concepto" placeholder="Concepto" style="flex:2;min-width:140px">
+          <input name="pvp" inputmode="decimal" placeholder="Importe con IVA" style="flex:1;min-width:110px">
+          <select name="iva" style="flex:none"><option value="21">21 %</option><option value="10">10 %</option><option value="4">4 %</option><option value="0">0 %</option></select>
+          <button class="btn small">Añadir</button>
+        </form>
+      </div>
+      <div class="card">
+        <h2>Ticket</h2>
+        <div id="ticket"></div>
+        <div class="ticket-total"><span>Total</span><span id="ticketTotal">0,00 €</span></div>
+        <div class="cobrar">
+          <button class="btn" data-cobrar="Efectivo">💶 Efectivo</button>
+          <button class="btn" data-cobrar="Tarjeta">💳 Tarjeta</button>
+          <button class="btn" data-cobrar="Bizum">📱 Bizum</button>
+        </div>
+        <button class="btn small ghost" id="btnVaciar" style="margin-top:10px">Vaciar ticket</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h2>Ventas de hoy</h2>
+      <div class="table-wrap"><table id="tVentasHoy"></table></div>
+    </div>
+  </section>
+
   <!-- FACTURAS -->
   <section id="v-facturas" class="hidden">
     <div class="row" style="justify-content:space-between;margin-bottom:12px">
@@ -487,7 +551,8 @@ const NEGOCIOS = {
     serie: 'BEN', color: '#1f2a8f',
     shopify: false,
     socias: false,
-    catIng: ['Servicios / sesiones', 'Bonos y paquetes', 'Talleres y formaciones', 'Venta de producto', 'Subvención', 'Otros ingresos'],
+    caja: true,
+    catIng: ['Venta en tienda', 'Servicios / sesiones', 'Bonos y paquetes', 'Talleres y formaciones', 'Venta de producto', 'Subvención', 'Otros ingresos'],
     catGas: ['Cuota autónomos', 'Alquiler', 'Suministros (luz, agua, internet)', 'Material sanitario', 'Software y suscripciones',
       'Publicidad', 'Colegio profesional y seguros', 'Gestoría', 'Formación', 'Transporte y dietas', 'Equipos',
       'Comisiones bancarias', 'Otros gastos'],
@@ -499,7 +564,8 @@ const NEGOCIOS = {
     serie: 'MM', color: '#2f5d46',
     shopify: true,
     socias: false,
-    catIng: ['Ventas tienda online (Shopify)', 'Venta de producto (fuera de Shopify)', 'Otros ingresos'],
+    caja: true,
+    catIng: ['Ventas tienda online (Shopify)', 'Venta en tienda', 'Venta de producto (fuera de Shopify)', 'Otros ingresos'],
     catGas: ['Cuota autónomos', 'Mercancía / producto', 'Envíos y embalaje', 'Shopify: cuota y comisiones', 'Publicidad',
       'Diseño y packaging', 'Software y suscripciones', 'Gestoría', 'Transporte y dietas', 'Comisiones bancarias', 'Otros gastos'],
   },
@@ -556,7 +622,7 @@ const NEGOCIOS = {
 
   // ---------- Datos ----------
   // Cada negocio guarda sus movimientos aparte. En Brisa cada movimiento es tuyo o se divide entre dos.
-  const blank = () => ({ shopify: { url: '', clave: '', ultima: '' }, movs: [], metas: [], facturas: [], trabajos: [], contenido: [], seguidores: [] });
+  const blank = () => ({ shopify: { url: '', clave: '', ultima: '' }, movs: [], metas: [], facturas: [], productos: [], trabajos: [], contenido: [], seguidores: [] });
   const dbs = {};
   const cargar = () => {
     Object.entries(NEGOCIOS).forEach(([k, n]) => { dbs[k] = { ...blank(), ...leer(n.clave) }; });
@@ -666,7 +732,7 @@ const NEGOCIOS = {
         return `<tr>
           <td>${m.fecha.split('-').reverse().join('/')}</td>
           ${conParte ? `<td>${dividido(m) ? '<span class="tag">Entre dos</span>' : 'Para mí'}</td>` : ''}
-          <td>${esc(m.concepto)}${m.origen === 'shopify' ? ' <span class="tag shop">Shopify</span>' : m.origen === 'factura' ? ' <span class="tag">Factura</span>' : m.origen === 'albaran' ? ' <span class="tag">Albarán</span>' : ''}
+          <td>${esc(m.concepto)}${m.origen === 'shopify' ? ' <span class="tag shop">Shopify</span>' : m.origen === 'factura' ? ' <span class="tag">Factura</span>' : m.origen === 'albaran' ? ' <span class="tag">Albarán</span>' : m.origen === 'tienda' ? ` <span class="tag">Tienda · ${esc(m.pago || '')}</span>` : ''}
             ${m.contraparte ? `<br><small class="calc">${esc(m.contraparte)}${m.nfactura ? ' · ' + esc(m.nfactura) : ''}</small>` : ''}
             ${m.cobrado === '0' ? ' <span class="tag neg">pendiente</span>' : ''}${m.deducible === '0' && m.tipo === 'gasto' ? ' <span class="tag">no deducible</span>' : ''}</td>
           <td>${esc(m.categoria)}</td>
@@ -912,7 +978,7 @@ const NEGOCIOS = {
   let lastDoc = null;
   const showCalc = () => {
     const prev = editando();
-    const c = prev?.origen === 'shopify' ? calc(prev) : calc({ base: leerImporte(F.base.value) || 0, iva: F.iva.value, irpf: F.irpf.value });
+    const c = prev?.origen === 'shopify' || prev?.origen === 'tienda' ? calc(prev) : calc({ base: leerImporte(F.base.value) || 0, iva: F.iva.value, irpf: F.irpf.value });
     $('#calc').textContent = `Base ${eur(c.base)} + IVA ${eur(c.iva)}${c.irpf ? ` − retención ${eur(c.irpf)}` : ''} = total factura ${eur(c.total)}`
       + (CFG().socias && F.socia.value === 'mitad' ? ` · Tu parte: ${eur(c.total / 2)} (base ${eur(c.base / 2)})` : '')
       + (prev?.origen === 'shopify' ? ' · Importes de Shopify: se actualizan al sincronizar.' : '');
@@ -936,7 +1002,7 @@ const NEGOCIOS = {
     F.socia.value = dividido(m) ? 'mitad' : 'yo';
     F.iva.value = m.iva || '21';
     F.base.value = String(m.base).replace('.', ',');
-    lockShopify(m.origen === 'shopify');
+    lockShopify(m.origen === 'shopify' || m.origen === 'tienda');
     $('#formTitle').textContent = `Editar movimiento · ${CFG().nombre}`; showCalc(); go('nuevo', true);
   };
   F.tipo.addEventListener('change', () => {
@@ -1236,7 +1302,7 @@ const NEGOCIOS = {
         const c = calc(m), p = brisa && dividido(m) ? 0.5 : 1, d = docDe(m);
         return [aFecha(m.fecha), m.tipo === 'ingreso' ? 'Ingreso' : 'Gasto', m.concepto || '', m.contraparte || '', m.nfactura || '', m.categoria || '',
           c.base, m.ivaImp != null ? '' : +m.iva || 0, c.iva, +m.irpf || 0, c.irpf, c.total, m.cobrado === '0' ? 'Pendiente' : 'Sí', m.tipo === 'gasto' ? (m.deducible === '0' ? 'No' : 'Sí') : '',
-          ...(brisa ? [p < 1 ? 'Entre dos' : 'Para mí', r2(c.base * p)] : []), m.origen === 'shopify' ? 'Shopify' : d ? nombreDoc(d) : 'Manual',
+          ...(brisa ? [p < 1 ? 'Entre dos' : 'Para mí', r2(c.base * p)] : []), m.origen === 'shopify' ? 'Shopify' : m.origen === 'tienda' ? `Tienda (${m.pago || ''})` : d ? nombreDoc(d) : 'Manual',
           d ? `${d.numero}${d.pdf?.enlace ? ' · abrir PDF' : ''}` : m.adjunto?.enlace ? `Factura ${m.nfactura || 'del proveedor'} · abrir PDF` : ''];
       })];
       const fmt = { 0: FECHA, 6: EUR, 8: EUR, 10: EUR, 11: EUR, ...(brisa ? { 15: EUR } : {}) };
@@ -1721,6 +1787,141 @@ const NEGOCIOS = {
     }
   });
 
+  // ---------- Caja: ventas rápidas en tienda (Benissalud y MOOD MATCHA) ----------
+  // Los precios son de venta al público, con IVA incluido; al cobrar se apunta un ingreso con la base y el IVA separados.
+  let ticket = [];  // { nombre, pvp, iva, cant }
+  const FP = $('#fProducto');
+  const productos = () => (db().productos ||= []);
+  const renderCaja = () => {
+    if (total() || !CFG().caja) return;
+    $('#btnShopProductos').classList.toggle('off', !(CFG().shopify && mcp));
+    $('#productos').innerHTML = productos().length ? productos().map(p => `<button class="prod" data-prod="${p.id}" title="${esc(p.nombre)}">
+        <b>${esc(p.nombre)}</b><span>${eur(p.pvp)} <small class="calc" data-editprod="${p.id}" style="float:right;cursor:pointer">✎</small></span></button>`).join('')
+      : '<p class="calc" style="grid-column:1/-1">Todavía no tienes productos. Pulsa «+ Producto» para crear los botones de tu caja.</p>';
+    $('#ticket').innerHTML = ticket.length ? ticket.map((l, i) => `<div class="ticket-linea"><span>${esc(l.nombre)}</span>
+        <span class="cant"><button data-menos="${i}" aria-label="Uno menos">−</button><b>${l.cant}</b><button data-mas="${i}" aria-label="Uno más">+</button></span>
+        <b style="min-width:72px;text-align:right">${eur(r2(l.pvp * l.cant))}</b></div>`).join('')
+      : '<p class="calc">Toca productos para añadirlos.</p>';
+    const tot = r2(ticket.reduce((a, l) => a + l.pvp * l.cant, 0));
+    $('#ticketTotal').textContent = eur(tot);
+    document.querySelectorAll('[data-cobrar]').forEach(b => { b.disabled = !tot; });
+    // Ventas de hoy
+    // Una venta puede tener varios movimientos (uno por tipo de IVA): se agrupan por «venta»
+    const hoy = hoyISO(), grupos = {};
+    db().movs.filter(m => m.origen === 'tienda' && m.fecha === hoy).forEach(m => { (grupos[m.venta || m.id] ||= []).push(m); });
+    const ventas = Object.entries(grupos).map(([id, ms]) => ({ id, hora: ms[0].hora || '', pago: ms[0].pago, total: r2(ms.reduce((a, m) => a + calc(m).total, 0)),
+      concepto: ms.map(m => m.concepto.replace(/^Venta en tienda: /, '')).join(', ') })).sort((a, b) => b.hora.localeCompare(a.hora));
+    const total1 = v => v.total, suma = l => r2(l.reduce((a, v) => a + v.total, 0));
+    const pagos = ['Efectivo', 'Tarjeta', 'Bizum'].map(p => [p, suma(ventas.filter(m => m.pago === p))]);
+    $('#kpisCaja').innerHTML = [['Vendido hoy', eur(suma(ventas))], ['Ventas hoy', ventas.length], ...pagos.map(([p, v]) => [p, eur(v)])]
+      .map(([l, v]) => `<div class="card kpi"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
+    $('#tVentasHoy').innerHTML = ventas.length ? `<tr><th>Hora</th><th>Productos</th><th>Pago</th><th class="n">Total</th><th></th></tr>` + ventas.map(m =>
+      `<tr><td>${esc(m.hora)}</td><td>${esc(m.concepto)}</td><td>${esc(m.pago)}</td><td class="n">${eur(total1(m))}</td>
+       <td class="n"><button class="btn small danger" data-borrarventa="${m.id}" aria-label="Borrar venta">✕</button></td></tr>`).join('')
+      : '<tr><td class="empty">Hoy todavía no hay ventas en tienda.</td></tr>';
+  };
+  const anadir = l => {
+    const igual = ticket.find(x => x.nombre === l.nombre && x.pvp === l.pvp && x.iva === l.iva);
+    if (igual) igual.cant++; else ticket.push({ ...l, cant: 1 });
+    renderCaja();
+  };
+  $('#productos').addEventListener('click', e => {
+    const ed = e.target.closest('[data-editprod]'); if (ed) { e.stopPropagation(); formProducto(productos().find(p => p.id === ed.dataset.editprod)); return; }
+    const b = e.target.closest('[data-prod]'); if (!b) return;
+    const p = productos().find(x => x.id === b.dataset.prod); if (p) anadir({ nombre: p.nombre, pvp: p.pvp, iva: p.iva });
+  });
+  // Mantener pulsado un producto → editarlo
+  let pulsado = null;
+  $('#productos').addEventListener('pointerdown', e => { const b = e.target.closest('[data-prod]'); if (b) pulsado = setTimeout(() => { pulsado = 'hecho'; formProducto(productos().find(p => p.id === b.dataset.prod)); }, 650); });
+  ['pointerup', 'pointerleave'].forEach(t => $('#productos').addEventListener(t, () => { if (pulsado && pulsado !== 'hecho') clearTimeout(pulsado); }));
+  $('#productos').addEventListener('click', e => { if (pulsado === 'hecho') { pulsado = null; e.stopImmediatePropagation(); } }, true);
+  $('#ticket').addEventListener('click', e => {
+    const { mas, menos } = e.target.dataset;
+    if (mas != null) ticket[+mas].cant++;
+    if (menos != null) { ticket[+menos].cant--; if (!ticket[+menos].cant) ticket.splice(+menos, 1); }
+    renderCaja();
+  });
+  $('#btnVaciar').onclick = () => { ticket = []; renderCaja(); };
+  $('#fLibre').addEventListener('submit', e => {
+    e.preventDefault();
+    const F2 = e.target, pvp = leerImporte(F2.pvp.value);
+    if (!(pvp > 0)) { aviso('Pon el importe de la venta (por ejemplo 12,50).', true); return; }
+    anadir({ nombre: F2.concepto.value.trim() || 'Venta', pvp: r2(pvp), iva: F2.iva.value }); F2.reset();
+  });
+  // Cobrar: un ingreso por cada tipo de IVA del ticket, con la base y el IVA separados
+  document.querySelectorAll('[data-cobrar]').forEach(b => b.onclick = () => {
+    if (!ticket.length) return;
+    const pago = b.dataset.cobrar, ahora = new Date(), hora = ahora.toTimeString().slice(0, 5), venta = nuevoId();
+    const porIva = {};
+    ticket.forEach(l => { (porIva[l.iva] ||= []).push(l); });
+    let total = 0;
+    Object.entries(porIva).forEach(([iva, lineas]) => {
+      const bruto = r2(lineas.reduce((a, l) => a + l.pvp * l.cant, 0)), base = r2(bruto / (1 + +iva / 100));
+      total += bruto;
+      db().movs.push({
+        id: nuevoId(), origen: 'tienda', venta, tipo: 'ingreso', fecha: hoyISO(), hora, pago, socia: 'yo',
+        concepto: 'Venta en tienda: ' + lineas.map(l => `${l.cant > 1 ? l.cant + '× ' : ''}${l.nombre}`).join(', '),
+        categoria: 'Venta en tienda', contraparte: '', nfactura: '', base, iva: String(iva), ivaImp: r2(bruto - base), irpf: '0', cobrado: '1', deducible: '1',
+      });
+    });
+    save(); fillYears(); ticket = []; renderCaja();
+    aviso(`✓ Venta de ${eur(r2(total))} guardada (${pago})`);
+  });
+  $('#tVentasHoy').addEventListener('click', async e => {
+    const id = e.target.dataset.borrarventa; if (!id) return;
+    const ms = db().movs.filter(x => x.origen === 'tienda' && (x.venta || x.id) === id); if (!ms.length) return;
+    if (!await confirmar(`¿Borrar la venta de ${eur(r2(ms.reduce((a, m) => a + calc(m).total, 0)))} (${ms[0].pago})?`)) return;
+    db().movs = db().movs.filter(x => !ms.includes(x)); save(); renderCaja(); aviso('✓ Venta borrada');
+  });
+  // Productos
+  const formProducto = (p = null) => {
+    FP.reset(); FP.id.value = p?.id || ''; FP.classList.remove('hidden');
+    if (p) { FP.nombre.value = p.nombre; FP.pvp.value = String(p.pvp).replace('.', ','); FP.iva.value = p.iva; }
+    else FP.iva.value = neg === 'benissalud' ? '21' : '10';
+    $('#btnBorrarProducto').classList.toggle('hidden', !p); FP.nombre.focus();
+  };
+  $('#btnNuevoProducto').onclick = () => formProducto();
+  $('#btnCancelProducto').onclick = () => FP.classList.add('hidden');
+  FP.addEventListener('submit', e => {
+    e.preventDefault();
+    const pvp = leerImporte(FP.pvp.value);
+    if (!FP.nombre.value.trim() || !(pvp > 0)) { aviso('Pon el nombre y el precio del producto.', true); return; }
+    const datos = { nombre: FP.nombre.value.trim(), pvp: r2(pvp), iva: FP.iva.value };
+    const p = productos().find(x => x.id === FP.id.value);
+    if (p) Object.assign(p, datos); else productos().push({ id: nuevoId(), ...datos });
+    save(); FP.classList.add('hidden'); renderCaja(); aviso('✓ Producto guardado');
+  });
+  $('#btnBorrarProducto').onclick = async () => {
+    const p = productos().find(x => x.id === FP.id.value); if (!p || !await confirmar(`¿Borrar el producto «${p.nombre}» de la caja?`)) return;
+    db().productos = productos().filter(x => x !== p); save(); FP.classList.add('hidden'); renderCaja();
+  };
+  // MOOD MATCHA: traer los productos y precios de la tienda de Shopify
+  const PRODUCTOS_GQL = 'query Productos($first: Int!, $after: String) { products(first: $first, after: $after, query: "status:active") { pageInfo { hasNextPage endCursor } nodes { id title variants(first: 20) { nodes { id title price } } } } }';
+  $('#btnShopProductos').onclick = async () => {
+    if (!mcp) return;
+    aviso('Trayendo tus productos de Shopify…');
+    try {
+      const nuevos = []; let after = null;
+      do {
+        const input = { query: PRODUCTOS_GQL, first: 50 }; if (after) input.after = after;
+        const d = (await mcp.callTool('Shopify', 'graphql_query', input)).payload?.data?.products;
+        if (!d) throw { message: 'Shopify no devolvió productos' };
+        d.nodes.forEach(p => p.variants.nodes.forEach(v => nuevos.push({
+          shopify: v.id, nombre: p.title + (v.title && v.title !== 'Default Title' ? ` · ${v.title}` : ''), pvp: r2(+v.price),
+        })));
+        after = d.pageInfo.hasNextPage ? d.pageInfo.endCursor : null;
+      } while (after);
+      let anadidos = 0, actualizados = 0;
+      nuevos.forEach(n => {
+        const p = productos().find(x => x.shopify === n.shopify);
+        if (p) { if (p.pvp !== n.pvp || p.nombre !== n.nombre) { Object.assign(p, n); actualizados++; } }
+        else { productos().push({ id: nuevoId(), iva: '10', ...n }); anadidos++; }
+      });
+      save(); renderCaja();
+      aviso(`✓ ${anadidos} producto${anadidos === 1 ? '' : 's'} nuevo${anadidos === 1 ? '' : 's'}${actualizados ? `, ${actualizados} actualizado${actualizados === 1 ? '' : 's'}` : ''} de Shopify. Revisa su IVA (✎).`);
+    } catch (err) { aviso(ERRORES_SHOPIFY[err.code] || 'No se pudieron traer los productos: ' + (err.message || err), true); }
+  };
+
   // ---------- Ajustes ----------
   const loadAjustes = () => { $('#resetNeg').textContent = CFG().nombre; pintarCopias(); pintarEmisor(); };
 
@@ -1783,6 +1984,7 @@ const NEGOCIOS = {
     if (view === 'shopify') { renderShopify(); alAbrirShopify(); }
     if (view === 'impuestos') renderImpuestos();
     if (view === 'facturas') renderFacturas();
+    if (view === 'caja') renderCaja();
     if (view === 'ajustes') loadAjustes();
   };
   const go = (v, keep) => {
@@ -1805,10 +2007,11 @@ const NEGOCIOS = {
     document.querySelectorAll('.solo-negocio').forEach(e => e.classList.toggle('off', total()));
     document.querySelectorAll('.solo-total').forEach(e => e.classList.toggle('off', !total()));
     document.querySelectorAll('.solo-shopify').forEach(e => e.classList.toggle('off', !CFG().shopify));
+    document.querySelectorAll('.solo-caja').forEach(e => e.classList.toggle('off', !CFG().caja));
     document.querySelectorAll('.solo-socias').forEach(e => e.classList.toggle('off', !CFG().socias));
     $('#msgShop').textContent = ''; $('#msgCsv').textContent = '';
     resetForm();
-    const ok = { movimientos: !total(), nuevo: !total(), facturas: !total(), shopify: CFG().shopify };
+    const ok = { movimientos: !total(), nuevo: !total(), facturas: !total(), shopify: CFG().shopify, caja: !!CFG().caja };
     $('#cardFactura').classList.add('hidden'); $('#msgFacturas').textContent = '';
     go(ok[view] === false ? 'resumen' : view);
   };
@@ -1849,7 +2052,7 @@ const NEGOCIOS = {
   //   negocios/<negocio>/movs/<AAAA-MM>  → movimientos de ese mes (documentos pequeños)
   //   ajustes/metasTotal                 → metas de «Total»
   // La conexión del conector de Shopify (URL y clave) nunca sale de este navegador.
-  const LISTAS = ['trabajos', 'contenido', 'seguidores', 'metas', 'facturas'];
+  const LISTAS = ['trabajos', 'contenido', 'seguidores', 'metas', 'facturas', 'productos'];
   const nubeEstado = (txt, cls = '') => { const el = $('#nube'); el.textContent = txt; el.className = 'calc ' + cls; };
   let nube = null;
   const enviado = {};       // ruta → último contenido escrito o recibido (JSON), para no reescribir lo mismo
