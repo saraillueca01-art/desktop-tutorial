@@ -1,0 +1,62 @@
+<html><body style="font-family:Arial,sans-serif;font-size:11pt">
+<h1 style="color:#4a7c3a">MOOD MATCHA · Informe de recepción de mercancía</h1>
+<p><b>Lote interno:</b> {{LOTE_INTERNO}} &nbsp;·&nbsp; <b>Fecha de recepción:</b> {{FECHA_RECEPCION}} &nbsp;·&nbsp; <b>Resultado:</b> {{RESULTADO}}</p>
+
+<h2 style="color:#4a7c3a">1. Datos de la recepción</h2>
+<table border="1" cellpadding="6" style="border-collapse:collapse;width:100%">
+<tr><td width="40%"><b>Proveedor (Alibaba)</b></td><td>{{PROVEEDOR}}</td></tr>
+<tr><td><b>País de origen / envío</b></td><td>{{PAIS}}</td></tr>
+<tr><td><b>Nº pedido Alibaba</b></td><td>{{PEDIDO}}</td></tr>
+<tr><td><b>Factura</b></td><td>{{FACTURA}}</td></tr>
+<tr><td><b>Transportista / nº seguimiento</b></td><td>{{TRANSPORTE}}</td></tr>
+<tr><td><b>DUA / documento de aduanas</b></td><td>{{DUA}}</td></tr>
+</table>
+
+<h2 style="color:#4a7c3a">2. Producto recibido</h2>
+<table border="1" cellpadding="6" style="border-collapse:collapse;width:100%">
+<tr><td width="40%"><b>Producto</b></td><td>{{PRODUCTO}}</td></tr>
+<tr><td><b>Lote del proveedor</b></td><td>{{LOTE_PROVEEDOR}}</td></tr>
+<tr><td><b>Cantidad recibida</b></td><td>{{CANTIDAD}}</td></tr>
+<tr><td><b>Formato / envase de llegada</b></td><td>{{FORMATO}}</td></tr>
+<tr><td><b>Fecha de producción</b></td><td>{{FECHA_PRODUCCION}}</td></tr>
+<tr><td><b>Consumo preferente</b></td><td>{{CONSUMO_PREFERENTE}}</td></tr>
+<tr><td><b>Ubicación en almacén</b></td><td>{{UBICACION}}</td></tr>
+</table>
+
+<h2 style="color:#4a7c3a">3. Documentación del proveedor</h2>
+<table border="1" cellpadding="6" style="border-collapse:collapse;width:100%">
+<tr><th align="left">Documento</th><th align="left">Estado</th><th align="left">Enlace / observaciones</th></tr>
+<tr><td>Certificado de análisis (COA) del lote</td><td>{{COA_ESTADO}}</td><td>{{COA_NOTA}}</td></tr>
+<tr><td>Análisis de plaguicidas</td><td>{{PLAGUICIDAS_ESTADO}}</td><td>{{PLAGUICIDAS_NOTA}}</td></tr>
+<tr><td>Metales pesados (plomo)</td><td>{{METALES_ESTADO}}</td><td>{{METALES_NOTA}}</td></tr>
+<tr><td>Microbiología</td><td>{{MICRO_ESTADO}}</td><td>{{MICRO_NOTA}}</td></tr>
+<tr><td>Ficha técnica</td><td>{{FICHA_ESTADO}}</td><td>{{FICHA_NOTA}}</td></tr>
+<tr><td>Certificado ecológico (si aplica)</td><td>{{ECO_ESTADO}}</td><td>{{ECO_NOTA}}</td></tr>
+<tr><td>Declaración de conformidad del envase</td><td>{{ENVASE_ESTADO}}</td><td>{{ENVASE_NOTA}}</td></tr>
+<tr><td>¿El lote del certificado coincide con el recibido?</td><td>{{COINCIDE_ESTADO}}</td><td>{{COINCIDE_NOTA}}</td></tr>
+</table>
+
+<h2 style="color:#4a7c3a">4. Control en recepción</h2>
+<table border="1" cellpadding="6" style="border-collapse:collapse;width:100%">
+<tr><td width="40%">Embalaje íntegro y precintado</td><td>{{CTRL_EMBALAJE}}</td></tr>
+<tr><td>Etiquetado del proveedor legible (producto, lote, fecha)</td><td>{{CTRL_ETIQUETA}}</td></tr>
+<tr><td>Color y olor normales</td><td>{{CTRL_ORGANOLEPTICO}}</td></tr>
+<tr><td>Sin humedad, apelmazamiento ni plagas</td><td>{{CTRL_HUMEDAD}}</td></tr>
+<tr><td><b>Resultado</b></td><td><b>{{RESULTADO}}</b></td></tr>
+</table>
+
+<h2 style="color:#4a7c3a">5. Trazabilidad hacia delante</h2>
+<p><i>Rellenar al envasar y al vender.</i></p>
+<table border="1" cellpadding="6" style="border-collapse:collapse;width:100%">
+<tr><th align="left">Fecha</th><th align="left">Operación (envasado / venta)</th><th align="left">Formato</th><th align="left">Unidades</th><th align="left">Cliente / canal</th></tr>
+<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+</table>
+
+<h2 style="color:#4a7c3a">6. Observaciones / incidencias</h2>
+<p>{{INCIDENCIAS}}</p>
+
+<p style="margin-top:24pt"><b>Responsable de la recepción:</b> {{RESPONSABLE}} &nbsp;&nbsp; <b>Firma:</b> ____________________</p>
+<p style="font-size:9pt;color:#777">Registro conforme al art. 18 del Reglamento (CE) 178/2002 (trazabilidad). Conservar al menos 5 años.</p>
+</body></html>
