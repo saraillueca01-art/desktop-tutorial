@@ -1,0 +1,711 @@
+<title>Trazabilidad Mood Matcha</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one working column (max 960px), sticky tab bar, lot codes set like stamped labels in mono. */
+:root {
+  --bg: #f4f7f0;
+  --surface: #ffffff;
+  --sunk: #eaf0e3;
+  --ink: #1c2417;
+  --muted: #5b6852;
+  --line: #d8e0ce;
+  --accent: #46682c;
+  --accent-ink: #ffffff;
+  --ok: #2f7a3e; --ok-bg: #e2f2e2;
+  --warn: #8a5a00; --warn-bg: #fbefd2;
+  --bad: #a3322a; --bad-bg: #f8e1de;
+  --font-display: "Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #11150e; --surface: #1a2015; --sunk: #222a1c; --ink: #e6ecdc; --muted: #9ba78f; --line: #2f3a27;
+  --accent: #9cc46b; --accent-ink: #11150e;
+  --ok: #8fd39b; --ok-bg: #1f3423; --warn: #f0c46a; --warn-bg: #3a2f14; --bad: #f19a90; --bad-bg: #3e1f1b;
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #11150e; --surface: #1a2015; --sunk: #222a1c; --ink: #e6ecdc; --muted: #9ba78f; --line: #2f3a27;
+  --accent: #9cc46b; --accent-ink: #11150e;
+  --ok: #8fd39b; --ok-bg: #1f3423; --warn: #f0c46a; --warn-bg: #3a2f14; --bad: #f19a90; --bad-bg: #3e1f1b;
+  color-scheme: dark }
+
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 960px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px; }
+header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: 1.75rem; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+h1 span { color: var(--accent); }
+h2 { font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; margin: 0; text-wrap: balance; }
+h3 { font-family: var(--font-display); font-weight: 600; font-size: 1rem; margin: 0; }
+.sub { color: var(--muted); margin: 0; }
+.conn { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { font-size: 12px; padding: 2px 9px; border-radius: 999px; background: var(--sunk); color: var(--muted); border: 1px solid var(--line); }
+.chip.ok { background: var(--ok-bg); color: var(--ok); border-color: transparent; }
+.chip.warn { background: var(--warn-bg); color: var(--warn); border-color: transparent; }
+.chip.bad { background: var(--bad-bg); color: var(--bad); border-color: transparent; }
+
+nav.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); display: flex; gap: 4px; margin-block: 16px; padding-block: 6px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+nav.tabs button { font: 600 14px var(--font-body); background: none; border: 0; color: var(--muted); padding: 8px 14px; border-radius: 8px; cursor: pointer; white-space: nowrap; }
+nav.tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: inset 0 -2px 0 var(--accent); }
+
+section.panel { display: grid; gap: 16px; }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.row { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+label.f { display: grid; gap: 4px; font-size: 13px; color: var(--muted); font-weight: 500; min-width: 0; }
+label.f.wide { grid-column: 1 / -1; }
+input, select, textarea { font: 15px var(--font-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; width: 100%; box-sizing: border-box; }
+textarea { min-height: 80px; resize: vertical; }
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn { font: 600 14px var(--font-body); border-radius: 8px; padding: 10px 16px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn:disabled { opacity: .55; cursor: progress; }
+.btn.small { padding: 6px 10px; font-size: 13px; }
+a { color: var(--accent); }
+
+.drop { border: 1.5px dashed var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 8px; background: var(--sunk); }
+.drop.over { border-color: var(--accent); }
+.files { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.files li { display: flex; gap: 8px; align-items: center; justify-content: space-between; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 14px; min-width: 0; }
+.files li span { overflow-wrap: anywhere; }
+
+.lot { font-family: var(--font-mono); font-weight: 500; letter-spacing: .02em; border: 1.5px solid var(--accent); color: var(--accent); border-radius: 4px; padding: 1px 7px; font-size: 13px; white-space: nowrap; }
+.lot.big { font-size: 18px; padding: 3px 10px; }
+
+.progress { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 14px; }
+.progress li::before { content: "○ "; color: var(--muted); }
+.progress li.done::before { content: "● "; color: var(--ok); }
+.progress li.now::before { content: "◐ "; color: var(--accent); }
+.progress li.err::before { content: "✕ "; color: var(--bad); }
+
+.msg { border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+.msg.ok { background: var(--ok-bg); color: var(--ok); }
+.msg.warn { background: var(--warn-bg); color: var(--warn); }
+.msg.bad { background: var(--bad-bg); color: var(--bad); }
+
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th { text-align: left; font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+th, td { padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+.lots { display: grid; gap: 10px; }
+.lotcard { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 14px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; cursor: pointer; text-align: left; font: inherit; color: inherit; width: 100%; }
+.lotcard:hover { border-color: var(--accent); }
+.lotcard .meta { color: var(--muted); font-size: 13px; }
+@media (max-width: 560px) { .lotcard { grid-template-columns: 1fr; } }
+.kv { display: grid; grid-template-columns: minmax(140px, 220px) 1fr; gap: 6px 14px; font-size: 14px; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; overflow-wrap: anywhere; }
+@media (max-width: 480px) { .kv { grid-template-columns: 1fr; } .kv dd { margin-bottom: 6px; } }
+.empty { color: var(--muted); padding: 18px; text-align: center; border: 1px dashed var(--line); border-radius: 10px; }
+.hint { font-size: 13px; color: var(--muted); margin: 0; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Mood Matcha <span>· Trazabilidad</span></h1>
+      <p class="sub">Recepciones, lotes y ventas. Los informes se guardan en tu Drive, carpeta MOOD MATCHA.</p>
+    </div>
+    <div class="conn" id="conn">
+      <span class="chip" id="c-drive">Drive: comprobando…</span>
+      <span class="chip" id="c-shop">Shopify: comprobando…</span>
+      <span class="chip" id="c-ai">Claude: comprobando…</span>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="t-rec" aria-selected="true" data-tab="rec">Nueva recepción</button>
+    <button role="tab" id="t-lotes" aria-selected="false" data-tab="lotes">Lotes</button>
+    <button role="tab" id="t-ventas" aria-selected="false" data-tab="ventas">Ventas</button>
+  </nav>
+
+  <!-- RECEPCIÓN -->
+  <section class="panel" id="p-rec">
+    <form class="box" id="rec-form">
+      <div class="row" style="justify-content:space-between">
+        <h2>1 · Qué ha llegado</h2>
+        <span class="hint">Lote que se asignará: <span class="lot" id="next-lot">—</span></span>
+      </div>
+      <div class="grid">
+        <label class="f">Fecha de recepción<input type="date" id="r-fecha" required></label>
+        <label class="f">Producto<input id="r-producto" placeholder="Matcha ceremonial" list="dl-productos"></label>
+        <label class="f">Proveedor (tienda de Alibaba)<input id="r-proveedor" placeholder="Nombre del proveedor" list="dl-proveedores"></label>
+        <label class="f">Cantidad recibida<input id="r-cantidad" placeholder="20 kg"></label>
+        <label class="f wide">Lo que quieras añadir<textarea id="r-notas" placeholder="Nº de pedido de Alibaba, lote, transportista, DUA, dónde lo has guardado… Lo que no pongas aquí lo busco en los documentos."></textarea></label>
+      </div>
+      <datalist id="dl-productos"><option>Matcha ceremonial</option><option>Matcha culinario</option></datalist>
+      <datalist id="dl-proveedores"></datalist>
+
+      <h2>2 · Documentos recibidos</h2>
+      <div class="drop" id="drop">
+        <p class="hint">Factura, certificado de análisis (COA), ficha técnica, DUA, packing list… PDF o foto. Se suben a la carpeta del mes en Drive.</p>
+        <div class="row"><input type="file" id="r-files" multiple accept=".pdf,image/png,image/jpeg,.docx,.xlsx" style="max-width:100%"></div>
+        <ul class="files" id="file-list"></ul>
+      </div>
+
+      <h2>3 · Control al recibir</h2>
+      <div class="grid" id="ctrl-grid"></div>
+      <div class="grid">
+        <label class="f">Responsable<input id="r-resp" placeholder="Tu nombre"></label>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="btn-analyze" type="submit">Subir documentos y preparar informe</button>
+        <span class="hint" id="analyze-hint"></span>
+      </div>
+      <ul class="progress" id="progress" hidden></ul>
+      <div id="rec-msg"></div>
+    </form>
+
+    <form class="box" id="review" hidden>
+      <div class="row" style="justify-content:space-between">
+        <h2>4 · Revisa y crea el informe</h2>
+        <span class="lot big" id="rv-lot"></span>
+      </div>
+      <p class="hint">He rellenado lo que he encontrado en los documentos. Corrige lo que haga falta. Lo vacío saldrá como PENDIENTE.</p>
+      <div class="grid" id="rv-fields"></div>
+      <h3>Documentación</h3>
+      <div class="tablewrap"><table id="rv-checks"><thead><tr><th>Documento</th><th>Estado</th><th>Observaciones</th></tr></thead><tbody></tbody></table></div>
+      <div class="grid">
+        <label class="f wide">Incidencias / observaciones<textarea id="rv-incidencias"></textarea></label>
+        <label class="f">Resultado
+          <select id="rv-resultado"><option>ACEPTADO</option><option>ACEPTADO CON OBSERVACIONES</option><option>RECHAZADO</option></select>
+        </label>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="btn-create" type="submit">Crear informe en Drive</button>
+        <button class="btn" id="btn-cancel" type="button">Descartar</button>
+      </div>
+      <div id="rv-msg"></div>
+    </form>
+  </section>
+
+  <!-- LOTES -->
+  <section class="panel" id="p-lotes" hidden>
+    <div class="box">
+      <div class="row" style="justify-content:space-between">
+        <h2>Lotes</h2>
+        <label class="f" style="flex:1;min-width:200px;max-width:360px">Buscar<input id="q" placeholder="Lote, lote proveedor, cliente, pedido…"></label>
+      </div>
+      <div class="lots" id="lot-list"></div>
+    </div>
+    <div class="box" id="lot-detail" hidden></div>
+  </section>
+
+  <!-- VENTAS -->
+  <section class="panel" id="p-ventas" hidden>
+    <div class="box">
+      <div class="row" style="justify-content:space-between">
+        <h2>Pedidos de Shopify</h2>
+        <button class="btn" id="btn-shop" type="button">Cargar pedidos</button>
+      </div>
+      <p class="hint">Elige de qué lote ha salido cada pedido. Así sabrás a quién avisar si un lote tiene un problema.</p>
+      <div id="shop-out"><div class="empty">Pulsa «Cargar pedidos» para ver los últimos pedidos de moodmatcha.es.</div></div>
+    </div>
+    <form class="box" id="sale-form">
+      <h2>Venta directa (tiendas, cafeterías, ferias)</h2>
+      <div class="grid">
+        <label class="f">Fecha<input type="date" id="s-fecha" required></label>
+        <label class="f">Lote<select id="s-lote" required></select></label>
+        <label class="f">Cliente<input id="s-cliente" placeholder="Cafetería…" required></label>
+        <label class="f">Producto / formato<input id="s-formato" placeholder="Lata 30 g"></label>
+        <label class="f">Unidades<input id="s-unidades" type="number" min="1" step="1" required></label>
+        <label class="f">Factura / albarán<input id="s-ref"></label>
+      </div>
+      <div class="row"><button class="btn primary" type="submit">Guardar venta</button><span id="sale-msg" class="hint"></span></div>
+    </form>
+    <div class="box">
+      <h2>Últimas ventas registradas</h2>
+      <div class="tablewrap" id="sales-table"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const ROOT_FOLDER = "1ArwBkjiOO7990luJ7dK9kjWkvldrf1eR";
+const MONTH_FOLDERS = {
+  1: "1wfuf6xsEVE0SDWeaAVvx740ozpnWngWA", 2: "1Fi9FRBJXIGr9hUrWa2FWCisx5HeIj719", 3: "1MU8xScfC7_LSduyeB5wZTjpHpYb3JbD8",
+  4: "1cieAtdA8IylKAYBD9zNFKb8Ywne2nrER", 5: "1meoerlzMilyN6UzrFH1oRxVNCsXUizjg", 6: "1kMj5cGeMgSEOWc1T_7Xgu1rJuMf27hT0",
+  7: "18dYXYT8FNq40hsHx7jfWerJNxyZXqYCA", 8: "1LtsytbR8K0g-nRia9vqeQZrfhwlkdYVP", 9: "1gnqNVStoqP78V8eChc_nLALi0MfiuBtu",
+  10: "1KdujpDDFF_4qzQb5Q8kBxYb6IYBlvWwY", 11: "17_QE5nPyYHv-1opzu71EszpFlGtaNZET", 12: "1SomWP4CCDAHpBRwnbsHm-_pYWsA4i5-o"
+};
+const DRIVE = "Google Drive", SHOP = "Shopify";
+const CONTROLS = [
+  ["embalaje", "Embalaje íntegro y precintado"],
+  ["etiqueta", "Etiqueta del proveedor legible (producto, lote, fecha)"],
+  ["organo", "Color y olor normales"],
+  ["humedad", "Sin humedad, apelmazamiento ni plagas"]
+];
+const CHECKS = [
+  ["coa", "Certificado de análisis (COA) del lote"],
+  ["plaguicidas", "Análisis de plaguicidas"],
+  ["metales", "Metales pesados (plomo)"],
+  ["micro", "Microbiología"],
+  ["ficha", "Ficha técnica"],
+  ["factura", "Factura"],
+  ["dua", "DUA / documento de aduanas"],
+  ["eco", "Certificado ecológico (si aplica)"],
+  ["envase", "Declaración de conformidad del envase"],
+  ["coincide", "El lote del certificado coincide con el recibido"]
+];
+const ESTADOS = { ok: "✅ Correcto", pendiente: "⏳ Pendiente", revisar: "⚠️ Revisar", na: "— No aplica" };
+const FIELDS = [
+  ["producto", "Producto"], ["proveedor", "Proveedor"], ["pais", "País de origen"], ["pedido", "Nº pedido Alibaba"],
+  ["facturaNum", "Nº factura"], ["facturaFecha", "Fecha factura"], ["loteProveedor", "Lote del proveedor"],
+  ["cantidad", "Cantidad recibida"], ["formato", "Formato / envase de llegada"], ["fechaProduccion", "Fecha de producción"],
+  ["consumoPreferente", "Consumo preferente"], ["dua", "DUA / aduanas"], ["transporte", "Transportista / seguimiento"],
+  ["ubicacion", "Ubicación en almacén"], ["responsable", "Responsable"]
+];
+
+let db = null, mcp = null, sample = null, fileArgs = false;
+const state = { recepciones: [], ventas: [], files: [], draft: null, orders: null, selected: null };
+const $ = (id) => document.getElementById(id);
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const todayISO = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
+const fmtDate = (iso) => (iso && /^\d{4}-\d{2}-\d{2}/.test(iso)) ? iso.slice(8, 10) + "/" + iso.slice(5, 7) + "/" + iso.slice(0, 4) : (iso || "");
+const pend = (v) => (v === undefined || v === null || String(v).trim() === "") ? "PENDIENTE" : String(v);
+
+function mcpError(e, server) {
+  switch (e && e.code) {
+    case "needs_reauth": return `Tu conexión con ${server} ha caducado. Vuelve a conectarlo en claude.ai → Ajustes → Conectores.`;
+    case "server_not_connected": return `${server} no está conectado. Añádelo en claude.ai → Ajustes → Conectores.`;
+    case "selection_required": return `Tienes más de una cuenta de ${server}. Elige cuál usar en el aviso de Claude.`;
+    case "not_in_manifest": case "consent_required": return `No has dado permiso a esta app para usar ${server}. Puedes darlo en el menú Permisos del artefacto.`;
+    case "server_unavailable": return `${server} no responde ahora mismo. Inténtalo de nuevo en un momento.`;
+    case "tool_error": return `${server} ha devuelto un error: ${e.message}`;
+    default: return `Error con ${server}: ${(e && e.message) || "desconocido"}`;
+  }
+}
+function sampleError(e) {
+  switch (e && e.code) {
+    case "not_granted": return "No has permitido que la app use Claude, así que no puedo leer los documentos. Rellena los datos a mano abajo.";
+    case "sampling_disabled": return "Claude no está disponible en esta cuenta. Rellena los datos a mano abajo.";
+    case "rate_limited": return "Has llegado al límite de uso de Claude por ahora. Rellena los datos a mano o inténtalo más tarde.";
+    case "prompt_too_large": return "Los documentos son demasiado largos para leerlos de una vez. Rellena los datos a mano abajo.";
+    case "invalid_json": return "No he podido interpretar la respuesta de Claude. Rellena los datos a mano abajo.";
+    default: return "No he podido leer los documentos con Claude (" + ((e && e.code) || "error") + "). Rellena los datos a mano abajo.";
+  }
+}
+
+/* ---------- tabs ---------- */
+document.querySelectorAll("nav.tabs button").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
+function showTab(t) {
+  document.querySelectorAll("nav.tabs button").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === t)));
+  $("p-rec").hidden = t !== "rec"; $("p-lotes").hidden = t !== "lotes"; $("p-ventas").hidden = t !== "ventas";
+}
+
+/* ---------- lote interno ---------- */
+function lotPrefix(iso) { return "MM-" + iso.slice(2, 4) + iso.slice(5, 7) + iso.slice(8, 10); }
+function nextLot(iso) {
+  const p = lotPrefix(iso);
+  let max = 0;
+  for (const r of state.recepciones) if (r.id.startsWith(p + "-")) max = Math.max(max, parseInt(r.id.slice(p.length + 1), 10) || 0);
+  return p + "-" + String(max + 1).padStart(2, "0");
+}
+function refreshNextLot() { const d = $("r-fecha").value; $("next-lot").textContent = d ? nextLot(d) : "—"; }
+
+/* ---------- reception form ---------- */
+$("r-fecha").value = todayISO();
+$("s-fecha").value = todayISO();
+$("r-fecha").addEventListener("change", refreshNextLot);
+$("ctrl-grid").innerHTML = CONTROLS.map(([k, l]) => `<label class="f">${esc(l)}<select id="ctrl-${k}"><option value="">Sin revisar</option><option>Sí</option><option>No</option></select></label>`).join("");
+
+function renderFiles() {
+  $("file-list").innerHTML = state.files.map((f, i) => `<li><span>${esc(f.name)} · ${(f.size / 1024).toFixed(0)} KB</span><button class="btn small" type="button" data-rm="${i}">Quitar</button></li>`).join("");
+}
+$("file-list").addEventListener("click", (e) => { const i = e.target.dataset.rm; if (i !== undefined) { state.files.splice(+i, 1); renderFiles(); } });
+$("r-files").addEventListener("change", (e) => { state.files.push(...e.target.files); e.target.value = ""; renderFiles(); });
+const drop = $("drop");
+drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("over"); });
+drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+drop.addEventListener("drop", (e) => { e.preventDefault(); drop.classList.remove("over"); state.files.push(...e.dataTransfer.files); renderFiles(); });
+
+function setProgress(steps) {
+  const ul = $("progress"); ul.hidden = false;
+  ul.innerHTML = steps.map((s) => `<li class="${s.st || ""}">${esc(s.t)}</li>`).join("");
+}
+function toB64(file) {
+  return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(",")[1]); r.onerror = () => rej(r.error); r.readAsDataURL(file); });
+}
+function safeName(n) { return n.replace(/[\\/:*?"<>|]+/g, "_"); }
+
+async function uploadToDrive(file, title, parentId) {
+  const type = file.type || "application/pdf";
+  let base64Content;
+  if (fileArgs) base64Content = { $file: { data: file, name: safeName(file.name), type } };
+  else {
+    if (file.size > 700 * 1024) throw { code: "too_big", message: `${file.name} pesa demasiado para subirlo desde aquí (máx. 700 KB en esta vista). Súbelo tú a Drive.` };
+    base64Content = await toB64(file);
+  }
+  const r = await mcp.callTool(DRIVE, "create_file", { title, parentId, contentMimeType: type, base64Content, disableConversionToGoogleType: true });
+  return r.payload || {};
+}
+async function readFromDrive(fileId) {
+  const r = await mcp.callTool(DRIVE, "read_file_content", { fileId }, { cache: false });
+  const p = r.payload;
+  return (p && typeof p === "object" ? p.fileContent : p) || "";
+}
+
+$("rec-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const fecha = $("r-fecha").value;
+  if (!fecha) return;
+  const lote = nextLot(fecha);
+  const month = parseInt(fecha.slice(5, 7), 10);
+  const folder = MONTH_FOLDERS[month] || ROOT_FOLDER;
+  const btn = $("btn-analyze"); btn.disabled = true; $("rec-msg").innerHTML = "";
+  const form = {
+    fecha, producto: $("r-producto").value.trim(), proveedor: $("r-proveedor").value.trim(),
+    cantidad: $("r-cantidad").value.trim(), notas: $("r-notas").value.trim(), responsable: $("r-resp").value.trim(),
+    controles: Object.fromEntries(CONTROLS.map(([k]) => [k, $("ctrl-" + k).value]))
+  };
+  const docs = []; const warnings = [];
+  const steps = [
+    { t: `Subir ${state.files.length} documento(s) a Drive (${folderName(month)})` },
+    { t: "Leer los documentos" },
+    { t: "Extraer datos y revisar certificados con Claude" }
+  ];
+  try {
+    // 1. upload
+    steps[0].st = "now"; setProgress(steps);
+    if (state.files.length && !mcp) warnings.push("Drive no está disponible en esta vista: los documentos no se han subido.");
+    if (mcp) for (const f of state.files) {
+      try {
+        const p = await uploadToDrive(f, `${lote} · ${f.name}`, folder);
+        docs.push({ nombre: f.name, id: p.id || "", url: p.viewUrl || "", mime: f.type });
+      } catch (err) {
+        warnings.push(err.code === "too_big" ? err.message : `${f.name}: ${mcpError(err, DRIVE)}`);
+        docs.push({ nombre: f.name, id: "", url: "", mime: f.type, error: true });
+      }
+    }
+    steps[0].st = "done"; steps[1].st = "now"; setProgress(steps);
+    // 2. read
+    const texts = [];
+    for (const d of docs) {
+      if (!d.id) continue;
+      try { texts.push({ nombre: d.nombre, texto: String(await readFromDrive(d.id)).slice(0, 14000) }); }
+      catch (err) { warnings.push(`No he podido leer ${d.nombre}: ${mcpError(err, DRIVE)}`); }
+    }
+    steps[1].st = "done"; steps[2].st = "now"; setProgress(steps);
+    // 3. extract
+    let ai = null;
+    if (sample) {
+      try { ai = await sample.json(buildPrompt(form, texts), { modelTier: "default", cache: false }); }
+      catch (err) { warnings.push(sampleError(err)); }
+    } else warnings.push("Claude no está disponible en esta vista. Rellena los datos a mano abajo.");
+    steps[2].st = ai ? "done" : "err"; setProgress(steps);
+    state.draft = buildDraft(lote, folder, form, docs, ai);
+    renderReview(warnings);
+  } catch (err) {
+    $("rec-msg").innerHTML = `<div class="msg bad">${esc(err.message || String(err))}</div>`;
+  } finally { btn.disabled = false; }
+});
+
+function folderName(m) { const n = ["", "01 Enero", "02 Febrero", "03 Marzo", "04 Abril", "05 Mayo", "06 Junio", "07 Julio", "08 Agosto", "09 Septiembre", "10 Octubre", "11 Noviembre", "12 Diciembre"]; return n[m] || "MOOD MATCHA"; }
+
+function buildPrompt(form, texts) {
+  return `Eres el responsable de calidad de Mood Matcha, una marca española que importa matcha (té verde en polvo) de proveedores de Alibaba.
+Te paso los datos que ha escrito la usuaria al recibir un pedido y el texto de los documentos que ha recibido (factura, certificado de análisis, etc.).
+Extrae los datos para el informe de recepción y revisa la documentación.
+
+REGLAS:
+- No inventes nada. Si un dato no aparece, pon null.
+- Lo que ha escrito la usuaria tiene prioridad sobre los documentos, salvo que sea claramente un error (dilo en incidencias).
+- Fechas en formato AAAA-MM-DD si puedes.
+- Para cada documento de la lista "checks", estado: "ok" (está y es correcto), "pendiente" (no lo han enviado), "revisar" (está pero hay algo raro: lote que no coincide, resultado fuera de límite, plaguicida detectado, caducado, no es de este producto), "na" (no aplica, p. ej. ecológico si el producto no es ecológico).
+- En la nota de cada check: qué documento es y el dato clave (p. ej. "COA nº 123, plomo 0,3 mg/kg"). Si no estás seguro de si un valor cumple el límite legal, escribe "revisar con Reglamento (CE) 396/2005 / (UE) 2023/915" y estado "revisar".
+- "coincide": compara el lote del certificado con el lote de la mercancía / factura.
+- resultado: "ACEPTADO", "ACEPTADO CON OBSERVACIONES" o "RECHAZADO". Si falta el COA o algo está en "revisar", como mucho "ACEPTADO CON OBSERVACIONES".
+
+Responde SOLO con un objeto JSON con esta forma:
+{"producto":string|null,"proveedor":string|null,"pais":string|null,"pedido":string|null,"facturaNum":string|null,"facturaFecha":string|null,"loteProveedor":string|null,"cantidad":string|null,"formato":string|null,"fechaProduccion":string|null,"consumoPreferente":string|null,"dua":string|null,"transporte":string|null,"ubicacion":string|null,
+"checks":{"coa":{"estado":string,"nota":string},"plaguicidas":{...},"metales":{...},"micro":{...},"ficha":{...},"factura":{...},"dua":{...},"eco":{...},"envase":{...},"coincide":{...}},
+"incidencias":[string],"resultado":string}
+
+DATOS DE LA USUARIA:
+${JSON.stringify({ fecha: form.fecha, producto: form.producto, proveedor: form.proveedor, cantidad: form.cantidad, notas: form.notas, controlVisual: form.controles })}
+
+DOCUMENTOS (${texts.length}):
+${texts.length ? texts.map((t, i) => `--- Documento ${i + 1}: ${t.nombre} ---\n${t.texto}`).join("\n\n") : "(ninguno)"}`;
+}
+
+function buildDraft(lote, folder, form, docs, ai) {
+  ai = ai && typeof ai === "object" ? ai : {};
+  const f = {};
+  for (const [k] of FIELDS) f[k] = ai[k] ?? "";
+  if (form.producto) f.producto = form.producto;
+  if (form.proveedor) f.proveedor = form.proveedor;
+  if (form.cantidad) f.cantidad = form.cantidad;
+  if (form.responsable) f.responsable = form.responsable;
+  const checks = {};
+  for (const [k] of CHECKS) {
+    const c = ai.checks && ai.checks[k];
+    checks[k] = { estado: (c && ESTADOS[c.estado]) ? c.estado : "pendiente", nota: (c && c.nota) || "" };
+  }
+  const controlNo = CONTROLS.filter(([k]) => form.controles[k] === "No").map(([, l]) => l);
+  const inc = Array.isArray(ai.incidencias) ? ai.incidencias.slice() : [];
+  if (controlNo.length) inc.push("Control en recepción NO conforme: " + controlNo.join("; "));
+  let resultado = ["ACEPTADO", "ACEPTADO CON OBSERVACIONES", "RECHAZADO"].includes(ai.resultado) ? ai.resultado : "ACEPTADO CON OBSERVACIONES";
+  if (controlNo.length && resultado === "ACEPTADO") resultado = "ACEPTADO CON OBSERVACIONES";
+  return { lote, folder, fecha: form.fecha, notas: form.notas, controles: form.controles, docs, fields: f, checks, incidencias: inc.join("\n"), resultado };
+}
+
+function renderReview(warnings) {
+  const d = state.draft;
+  $("rv-lot").textContent = d.lote;
+  $("rv-fields").innerHTML = FIELDS.map(([k, l]) => `<label class="f">${esc(l)}<input id="rv-${k}" value="${esc(d.fields[k])}"></label>`).join("");
+  $("rv-checks").querySelector("tbody").innerHTML = CHECKS.map(([k, l]) => `<tr><td>${esc(l)}</td><td><select id="ck-${k}">${Object.entries(ESTADOS).map(([v, t]) => `<option value="${v}"${d.checks[k].estado === v ? " selected" : ""}>${t}</option>`).join("")}</select></td><td><input id="ckn-${k}" value="${esc(d.checks[k].nota)}"></td></tr>`).join("");
+  $("rv-incidencias").value = d.incidencias;
+  $("rv-resultado").value = d.resultado;
+  const uploaded = d.docs.filter((x) => x.url);
+  $("rv-msg").innerHTML =
+    (uploaded.length ? `<div class="msg ok">Documentos en Drive: ${uploaded.map((x) => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.nombre)}</a>`).join(", ")}</div>` : "") +
+    warnings.map((w) => `<div class="msg warn">${esc(w)}</div>`).join("");
+  $("review").hidden = false;
+  $("review").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+$("btn-cancel").addEventListener("click", () => { state.draft = null; $("review").hidden = true; $("progress").hidden = true; });
+
+$("review").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const d = state.draft; if (!d) return;
+  for (const [k] of FIELDS) d.fields[k] = $("rv-" + k).value.trim();
+  for (const [k] of CHECKS) d.checks[k] = { estado: $("ck-" + k).value, nota: $("ckn-" + k).value.trim() };
+  d.incidencias = $("rv-incidencias").value.trim();
+  d.resultado = $("rv-resultado").value;
+  const btn = $("btn-create"); btn.disabled = true; $("rv-msg").innerHTML = `<div class="msg warn">Creando informe…</div>`;
+  let informe = { id: "", url: "" }; let driveErr = "";
+  if (mcp) {
+    try {
+      const r = await mcp.callTool(DRIVE, "create_file", {
+        title: `Recepción ${d.lote} · ${d.fields.producto || "Matcha"} · ${fmtDate(d.fecha).replace(/\//g, "-")}`,
+        parentId: d.folder, contentMimeType: "text/html", textContent: reportHTML(d)
+      });
+      informe = { id: (r.payload && r.payload.id) || "", url: (r.payload && r.payload.viewUrl) || "" };
+    } catch (err) { driveErr = mcpError(err, DRIVE); }
+  } else driveErr = "Drive no está disponible en esta vista.";
+  try {
+    if (!db) throw new Error("La base de datos de la app no está disponible. Abre la app con tu cuenta de Claude.");
+    await db.collection("recepciones").doc(d.lote).set({
+      lote: d.lote, fecha: d.fecha, ...d.fields, notas: d.notas, controles: d.controles, checks: d.checks,
+      incidencias: d.incidencias, resultado: d.resultado, docs: d.docs, informeUrl: informe.url, informeId: informe.id, creado: new Date().toISOString()
+    });
+    $("rv-msg").innerHTML = (informe.url
+      ? `<div class="msg ok">Lote <b>${esc(d.lote)}</b> registrado. <a href="${esc(informe.url)}" target="_blank" rel="noopener">Abrir informe en Drive</a></div>`
+      : `<div class="msg warn">Lote <b>${esc(d.lote)}</b> guardado en la app, pero el informe no se ha creado en Drive: ${esc(driveErr)} Puedes crearlo más tarde desde la pestaña Lotes.</div>`);
+    state.files = []; renderFiles(); $("rec-form").reset(); $("r-fecha").value = todayISO();
+    $("progress").hidden = true; state.draft = null; btn.hidden = true;
+    setTimeout(() => { $("review").hidden = true; btn.hidden = false; $("rec-msg").innerHTML = $("rv-msg").innerHTML; refreshNextLot(); }, 2500);
+  } catch (err) {
+    $("rv-msg").innerHTML = `<div class="msg bad">${esc(err.message || "No se ha podido guardar.")}</div>`;
+  } finally { btn.disabled = false; }
+});
+
+/* ---------- report HTML (becomes a Google Doc) ---------- */
+const H = 'style="color:#46682c;font-family:Arial,sans-serif"';
+const T = 'border="1" cellpadding="6" style="border-collapse:collapse;width:100%;font-family:Arial,sans-serif;font-size:10.5pt"';
+function rows(pairs) { return pairs.map(([l, v]) => `<tr><td width="38%"><b>${esc(l)}</b></td><td>${esc(pend(v))}</td></tr>`).join(""); }
+function reportHTML(d) {
+  const f = d.fields;
+  const docsList = d.docs.length ? d.docs.map((x) => `<li>${x.url ? `<a href="${esc(x.url)}">${esc(x.nombre)}</a>` : esc(x.nombre) + " (no subido)"}</li>`).join("") : "<li>Ningún documento adjuntado</li>";
+  return `<html><body style="font-family:Arial,sans-serif;font-size:11pt">
+<h1 ${H}>MOOD MATCHA · Informe de recepción de mercancía</h1>
+<p><b>Lote interno:</b> ${esc(d.lote)} &nbsp;·&nbsp; <b>Fecha de recepción:</b> ${esc(fmtDate(d.fecha))} &nbsp;·&nbsp; <b>Resultado:</b> ${esc(d.resultado)}</p>
+<h2 ${H}>1. Datos de la recepción</h2>
+<table ${T}>${rows([["Proveedor (Alibaba)", f.proveedor], ["País de origen", f.pais], ["Nº pedido Alibaba", f.pedido], ["Factura", [f.facturaNum, fmtDate(f.facturaFecha)].filter(Boolean).join(" · ")], ["Transportista / seguimiento", f.transporte], ["DUA / aduanas", f.dua]])}</table>
+<h2 ${H}>2. Producto recibido</h2>
+<table ${T}>${rows([["Producto", f.producto], ["Lote del proveedor", f.loteProveedor], ["Lote interno Mood Matcha", d.lote], ["Cantidad recibida", f.cantidad], ["Formato / envase de llegada", f.formato], ["Fecha de producción", fmtDate(f.fechaProduccion)], ["Consumo preferente", fmtDate(f.consumoPreferente)], ["Ubicación en almacén", f.ubicacion]])}</table>
+<h2 ${H}>3. Documentación del proveedor</h2>
+<table ${T}><tr><th align="left">Documento</th><th align="left">Estado</th><th align="left">Observaciones</th></tr>
+${CHECKS.map(([k, l]) => `<tr><td>${esc(l)}</td><td>${esc(ESTADOS[d.checks[k].estado])}</td><td>${esc(d.checks[k].nota)}</td></tr>`).join("")}</table>
+<p><b>Documentos adjuntos (Drive):</b></p><ul>${docsList}</ul>
+<h2 ${H}>4. Control en recepción</h2>
+<table ${T}>${CONTROLS.map(([k, l]) => `<tr><td width="62%">${esc(l)}</td><td>${esc(d.controles[k] || "Sin revisar")}</td></tr>`).join("")}
+<tr><td><b>Resultado</b></td><td><b>${esc(d.resultado)}</b></td></tr></table>
+<h2 ${H}>5. Observaciones / incidencias</h2>
+<p>${d.incidencias ? esc(d.incidencias).replace(/\n/g, "<br>") : "Ninguna"}</p>
+${d.notas ? `<p><b>Notas de la recepción:</b> ${esc(d.notas)}</p>` : ""}
+<p style="margin-top:20pt"><b>Responsable de la recepción:</b> ${esc(pend(f.responsable))} &nbsp;&nbsp; <b>Firma:</b> ____________________</p>
+<p style="font-size:8.5pt;color:#777">Generado con la app de trazabilidad Mood Matcha el ${esc(fmtDate(todayISO()))}. Registro conforme al art. 18 del Reglamento (CE) 178/2002. Conservar al menos 5 años.</p>
+</body></html>`;
+}
+
+function traceHTML(r, ventas) {
+  const total = ventas.reduce((s, v) => s + (Number(v.unidades) || 0), 0);
+  return `<html><body style="font-family:Arial,sans-serif;font-size:11pt">
+<h1 ${H}>MOOD MATCHA · Informe de trazabilidad del lote ${esc(r.id)}</h1>
+<p>Fecha del informe: ${esc(fmtDate(todayISO()))}</p>
+<h2 ${H}>1. Origen (un paso atrás)</h2>
+<table ${T}>${rows([["Producto", r.producto], ["Proveedor", r.proveedor], ["País de origen", r.pais], ["Lote del proveedor", r.loteProveedor], ["Nº pedido Alibaba", r.pedido], ["Factura", r.facturaNum], ["DUA", r.dua], ["Fecha de recepción", fmtDate(r.fecha)], ["Cantidad recibida", r.cantidad], ["Consumo preferente", fmtDate(r.consumoPreferente)], ["Resultado de la recepción", r.resultado]])}</table>
+${r.informeUrl ? `<p>Informe de recepción: <a href="${esc(r.informeUrl)}">abrir</a></p>` : ""}
+<h2 ${H}>2. Destino (un paso adelante)</h2>
+<table ${T}><tr><th align="left">Fecha</th><th align="left">Canal</th><th align="left">Cliente</th><th align="left">Referencia</th><th align="left">Producto / formato</th><th align="right">Unidades</th></tr>
+${ventas.length ? ventas.map((v) => `<tr><td>${esc(fmtDate(v.fecha))}</td><td>${esc(v.canal)}</td><td>${esc(v.cliente)}</td><td>${esc(v.referencia)}</td><td>${esc(v.formato)}</td><td align="right">${esc(v.unidades)}</td></tr>`).join("") : `<tr><td colspan="6">Sin ventas registradas</td></tr>`}
+<tr><td colspan="5"><b>Total unidades vendidas</b></td><td align="right"><b>${total}</b></td></tr></table>
+<h2 ${H}>3. Incidencias</h2><p>${r.incidencias ? esc(r.incidencias).replace(/\n/g, "<br>") : "Ninguna"}</p>
+<p style="font-size:8.5pt;color:#777">Art. 18 del Reglamento (CE) 178/2002. En caso de retirada, avisar a los clientes del apartado 2 y a la autoridad sanitaria de tu comunidad autónoma.</p>
+</body></html>`;
+}
+
+/* ---------- lotes ---------- */
+$("q").addEventListener("input", renderLots);
+function ventasDe(lote) { return state.ventas.filter((v) => v.lote === lote); }
+function renderLots() {
+  const q = $("q").value.trim().toLowerCase();
+  const list = state.recepciones.slice().sort((a, b) => (b.id > a.id ? 1 : -1)).filter((r) => {
+    if (!q) return true;
+    const hay = [r.id, r.loteProveedor, r.producto, r.proveedor, r.pedido, r.facturaNum, ...ventasDe(r.id).map((v) => v.cliente + " " + v.referencia)].join(" ").toLowerCase();
+    return hay.includes(q);
+  });
+  $("lot-list").innerHTML = list.length ? list.map((r) => {
+    const v = ventasDe(r.id); const u = v.reduce((s, x) => s + (Number(x.unidades) || 0), 0);
+    const cls = r.resultado === "ACEPTADO" ? "ok" : r.resultado === "RECHAZADO" ? "bad" : "warn";
+    return `<button class="lotcard" type="button" data-lot="${esc(r.id)}"><span class="lot">${esc(r.id)}</span>
+      <span><b>${esc(r.producto || "Producto sin nombre")}</b> · ${esc(r.cantidad || "")}<br><span class="meta">${esc(r.proveedor || "")} · lote prov. ${esc(r.loteProveedor || "—")} · recibido ${esc(fmtDate(r.fecha))}</span></span>
+      <span class="conn"><span class="chip ${cls}">${esc(r.resultado || "—")}</span><span class="chip">${u} ud. vendidas</span></span></button>`;
+  }).join("") : `<div class="empty">${state.recepciones.length ? "Ningún lote coincide con la búsqueda." : "Aún no hay lotes. Registra tu primera recepción en «Nueva recepción» y aparecerá aquí."}</div>`;
+  const sel = $("s-lote"); const cur = sel.value;
+  sel.innerHTML = `<option value="">Elige lote</option>` + state.recepciones.slice().sort((a, b) => (b.id > a.id ? 1 : -1)).map((r) => `<option value="${esc(r.id)}">${esc(r.id)} · ${esc(r.producto || "")}</option>`).join("");
+  sel.value = cur;
+  $("dl-proveedores").innerHTML = [...new Set(state.recepciones.map((r) => r.proveedor).filter(Boolean))].map((p) => `<option>${esc(p)}</option>`).join("");
+  if (state.selected) renderDetail(state.selected);
+}
+$("lot-list").addEventListener("click", (e) => { const b = e.target.closest("[data-lot]"); if (b) { state.selected = b.dataset.lot; renderDetail(b.dataset.lot); $("lot-detail").scrollIntoView({ behavior: "smooth", block: "start" }); } });
+
+function renderDetail(id) {
+  const r = state.recepciones.find((x) => x.id === id); const box = $("lot-detail");
+  if (!r) { box.hidden = true; return; }
+  const v = ventasDe(id).sort((a, b) => (a.fecha < b.fecha ? 1 : -1));
+  const clientes = [...new Set(v.map((x) => x.cliente).filter(Boolean))];
+  box.hidden = false;
+  box.innerHTML = `<div class="row" style="justify-content:space-between"><h2>Lote <span class="lot big">${esc(r.id)}</span></h2>
+    <div class="row">${r.informeUrl ? `<a class="btn" href="${esc(r.informeUrl)}" target="_blank" rel="noopener">Informe de recepción</a>` : `<button class="btn" type="button" id="btn-redo">Crear informe de recepción</button>`}
+    <button class="btn primary" type="button" id="btn-trace">Informe de trazabilidad a Drive</button></div></div>
+    <div id="detail-msg"></div>
+    <dl class="kv">${[["Producto", r.producto], ["Proveedor", r.proveedor], ["País", r.pais], ["Lote del proveedor", r.loteProveedor], ["Pedido Alibaba", r.pedido], ["Factura", r.facturaNum], ["DUA", r.dua], ["Recibido", fmtDate(r.fecha)], ["Cantidad", r.cantidad], ["Consumo preferente", fmtDate(r.consumoPreferente)], ["Ubicación", r.ubicacion], ["Resultado", r.resultado], ["Incidencias", r.incidencias || "Ninguna"]].map(([l, x]) => `<dt>${esc(l)}</dt><dd>${esc(pend(x))}</dd>`).join("")}
+    <dt>Documentos</dt><dd>${(r.docs || []).length ? r.docs.map((d) => d.url ? `<a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.nombre)}</a>` : esc(d.nombre)).join(" · ") : "PENDIENTE"}</dd></dl>
+    <h3>Ventas de este lote</h3>
+    <div class="tablewrap">${salesTable(v, false)}</div>
+    <p class="hint"><b>Si hubiera que retirar este lote, avisar a:</b> ${clientes.length ? clientes.map(esc).join(", ") : "nadie todavía (no hay ventas registradas)"}.</p>`;
+  $("btn-trace").onclick = async () => {
+    const m = $("detail-msg"); if (!mcp) { m.innerHTML = `<div class="msg bad">Drive no está disponible en esta vista.</div>`; return; }
+    $("btn-trace").disabled = true; m.innerHTML = `<div class="msg warn">Creando informe…</div>`;
+    try {
+      const t = todayISO();
+      const res = await mcp.callTool(DRIVE, "create_file", { title: `Trazabilidad ${r.id} · ${fmtDate(t).replace(/\//g, "-")}`, parentId: MONTH_FOLDERS[parseInt(t.slice(5, 7), 10)] || ROOT_FOLDER, contentMimeType: "text/html", textContent: traceHTML(r, v) });
+      const url = res.payload && res.payload.viewUrl;
+      m.innerHTML = `<div class="msg ok">Informe creado en Drive. ${url ? `<a href="${esc(url)}" target="_blank" rel="noopener">Abrir</a>` : ""}</div>`;
+    } catch (err) { m.innerHTML = `<div class="msg bad">${esc(mcpError(err, DRIVE))}</div>`; }
+    finally { $("btn-trace").disabled = false; }
+  };
+  const redo = $("btn-redo");
+  if (redo) redo.onclick = async () => {
+    const m = $("detail-msg"); if (!mcp) { m.innerHTML = `<div class="msg bad">Drive no está disponible en esta vista.</div>`; return; }
+    redo.disabled = true;
+    try {
+      const d = { lote: r.id, fecha: r.fecha, notas: r.notas, controles: r.controles || {}, docs: r.docs || [], fields: Object.fromEntries(FIELDS.map(([k]) => [k, r[k] || ""])), checks: r.checks || Object.fromEntries(CHECKS.map(([k]) => [k, { estado: "pendiente", nota: "" }])), incidencias: r.incidencias, resultado: r.resultado };
+      const res = await mcp.callTool(DRIVE, "create_file", { title: `Recepción ${r.id} · ${r.producto || "Matcha"} · ${fmtDate(r.fecha).replace(/\//g, "-")}`, parentId: MONTH_FOLDERS[parseInt(r.fecha.slice(5, 7), 10)] || ROOT_FOLDER, contentMimeType: "text/html", textContent: reportHTML(d) });
+      await db.collection("recepciones").doc(r.id).update({ informeUrl: (res.payload && res.payload.viewUrl) || "", informeId: (res.payload && res.payload.id) || "" });
+    } catch (err) { m.innerHTML = `<div class="msg bad">${esc(err.code ? mcpError(err, DRIVE) : (err.message || "Error"))}</div>`; redo.disabled = false; }
+  };
+}
+
+/* ---------- ventas ---------- */
+function salesTable(v, withLot) {
+  if (!v.length) return `<div class="empty">Sin ventas registradas.</div>`;
+  return `<table><thead><tr><th>Fecha</th>${withLot ? "<th>Lote</th>" : ""}<th>Canal</th><th>Cliente</th><th>Referencia</th><th>Producto</th><th class="num">Ud.</th><th></th></tr></thead><tbody>${v.map((x) => `<tr><td>${esc(fmtDate(x.fecha))}</td>${withLot ? `<td><span class="lot">${esc(x.lote)}</span></td>` : ""}<td>${esc(x.canal)}</td><td>${esc(x.cliente)}</td><td>${esc(x.referencia)}</td><td>${esc(x.formato)}</td><td class="num">${esc(x.unidades)}</td><td><button class="btn small" type="button" data-del-sale="${esc(x.id)}">Borrar</button></td></tr>`).join("")}</tbody></table>`;
+}
+function renderSales() {
+  const v = state.ventas.slice().sort((a, b) => (a.fecha < b.fecha ? 1 : -1)).slice(0, 50);
+  $("sales-table").innerHTML = salesTable(v, true);
+  if (state.orders) renderOrders();
+}
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-del-sale]"); if (!b || !db) return;
+  if (b.dataset.confirm !== "1") { b.dataset.confirm = "1"; b.textContent = "¿Seguro?"; return; }
+  b.disabled = true;
+  try { await db.collection("ventas").doc(b.dataset.delSale).delete(); } catch { b.textContent = "Error"; }
+});
+
+$("sale-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!db) { $("sale-msg").textContent = "La base de datos no está disponible."; return; }
+  const data = { fecha: $("s-fecha").value, lote: $("s-lote").value, canal: "Venta directa", cliente: $("s-cliente").value.trim(), formato: $("s-formato").value.trim(), unidades: Number($("s-unidades").value), referencia: $("s-ref").value.trim(), creado: new Date().toISOString() };
+  try { await db.collection("ventas").add(data); $("sale-msg").textContent = "Venta guardada."; ["s-cliente", "s-formato", "s-unidades", "s-ref"].forEach((i) => ($(i).value = "")); }
+  catch (err) { $("sale-msg").textContent = "No se ha podido guardar: " + (err.message || err.code); }
+});
+
+const pick = (o, ks) => { for (const k of ks) { const v = k.split(".").reduce((a, p) => (a == null ? a : a[p]), o); if (v != null && v !== "" && typeof v !== "object") return v; } return ""; };
+$("btn-shop").addEventListener("click", async () => {
+  const out = $("shop-out");
+  if (!mcp) { out.innerHTML = `<div class="msg bad">Shopify no está disponible en esta vista.</div>`; return; }
+  $("btn-shop").disabled = true; out.innerHTML = `<div class="hint">Cargando pedidos…</div>`;
+  try {
+    const r = await mcp.callTool(SHOP, "list-orders", { first: 50 }, { cache: false });
+    const p = r.payload || {};
+    state.orders = Array.isArray(p.orders) ? p.orders : (Array.isArray(p) ? p : []);
+    renderOrders();
+  } catch (err) { out.innerHTML = `<div class="msg bad">${esc(mcpError(err, SHOP))}</div>`; }
+  finally { $("btn-shop").disabled = false; }
+});
+function orderKey(o) { return String(pick(o, ["name", "id"])).replace(/[^A-Za-z0-9_-]/g, ""); }
+function renderOrders() {
+  const out = $("shop-out"); const orders = state.orders || [];
+  if (!orders.length) { out.innerHTML = `<div class="empty">No hay pedidos en Shopify todavía. Cuando entren, aparecerán aquí.</div>`; return; }
+  const lotOpts = `<option value="">Lote…</option>` + state.recepciones.slice().sort((a, b) => (b.id > a.id ? 1 : -1)).map((r) => `<option value="${esc(r.id)}">${esc(r.id)}</option>`).join("");
+  out.innerHTML = `<div class="tablewrap"><table><thead><tr><th>Pedido</th><th>Fecha</th><th>Cliente</th><th class="num">Total</th><th>Lote</th><th>Ud.</th><th></th></tr></thead><tbody>${orders.map((o) => {
+    const key = orderKey(o); const done = state.ventas.filter((v) => v.shopifyKey === key);
+    const name = pick(o, ["name", "id"]); const fecha = String(pick(o, ["createdAt", "created_at", "processedAt", "date"])).slice(0, 10);
+    const cliente = pick(o, ["customer.displayName", "customer.name", "customerName", "customer", "email"]);
+    const total = pick(o, ["totalPrice", "total", "totalPriceSet.shopMoney.amount", "totalPriceSet.amount", "total_price"]);
+    return `<tr><td>${esc(name)}</td><td>${esc(fmtDate(fecha))}</td><td>${esc(cliente)}</td><td class="num">${esc(total)}</td>
+      ${done.length ? `<td colspan="3">${done.map((d) => `<span class="lot">${esc(d.lote)}</span> ${esc(d.unidades)} ud.`).join(" ")}</td>`
+      : `<td><select id="ol-${esc(key)}">${lotOpts}</select></td><td><input id="ou-${esc(key)}" type="number" min="1" value="1" style="width:70px"></td><td><button class="btn small" type="button" data-assign="${esc(key)}">Asignar</button></td>`}</tr>`;
+  }).join("")}</tbody></table></div>`;
+}
+$("shop-out").addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-assign]"); if (!b || !db) return;
+  const key = b.dataset.assign; const o = (state.orders || []).find((x) => orderKey(x) === key); if (!o) return;
+  const lote = $("ol-" + key).value; const unidades = Number($("ou-" + key).value);
+  if (!lote) { $("ol-" + key).focus(); return; }
+  b.disabled = true;
+  try {
+    await db.collection("ventas").doc("shopify-" + key).set({
+      fecha: String(pick(o, ["createdAt", "created_at", "processedAt", "date"])).slice(0, 10) || todayISO(), lote, canal: "Shopify",
+      cliente: String(pick(o, ["customer.displayName", "customer.name", "customerName", "customer", "email"])) || "Cliente online",
+      referencia: String(pick(o, ["name", "id"])), formato: "", unidades, shopifyKey: key, creado: new Date().toISOString()
+    });
+  } catch (err) { b.disabled = false; b.textContent = "Error"; }
+});
+
+/* ---------- boot ---------- */
+function chip(id, cls, text) { const c = $(id); c.className = "chip " + cls; c.textContent = text; }
+refreshNextLot(); renderLots(); renderSales();
+(async () => {
+  const use = (n) => (window.claude && window.claude.use) ? window.claude.use(n).catch(() => null) : Promise.resolve(null);
+  [db, mcp, sample] = await Promise.all([use("db"), use("mcp"), use("sample")]);
+  if (db) {
+    db.collection("recepciones").onSnapshot((s) => { state.recepciones = s.docs.map((d) => ({ id: d.id, ...d.data() })); refreshNextLot(); renderLots(); if (state.orders) renderOrders(); },
+      () => { $("rec-msg").innerHTML = `<div class="msg bad">No se pueden leer los lotes guardados. Recarga la página.</div>`; });
+    db.collection("ventas").onSnapshot((s) => { state.ventas = s.docs.map((d) => ({ id: d.id, ...d.data() })); renderSales(); renderLots(); }, () => {});
+  } else {
+    $("rec-msg").innerHTML = `<div class="msg warn">Abre esta app con tu cuenta de Claude para guardar lotes y ventas.</div>`;
+  }
+  chip("c-ai", sample ? "ok" : "bad", sample ? "Claude: listo" : "Claude: no disponible");
+  if (mcp) {
+    try {
+      const lt = await mcp.listTools();
+      fileArgs = !!lt.fileArgs;
+      const st = (n) => { const s = lt.servers.find((x) => x.server === n); return !s ? "bad" : s.authStatus === "needs_reauth" ? "warn" : "ok"; };
+      const lbl = { ok: "conectado", warn: "reconectar", bad: "no conectado" };
+      const d = st(DRIVE), sh = st(SHOP);
+      chip("c-drive", d, "Drive: " + lbl[d]); chip("c-shop", sh, "Shopify: " + lbl[sh]);
+    } catch { chip("c-drive", "warn", "Drive: sin comprobar"); chip("c-shop", "warn", "Shopify: sin comprobar"); }
+  } else { chip("c-drive", "bad", "Drive: no disponible"); chip("c-shop", "bad", "Shopify: no disponible"); }
+})();
+</script>
