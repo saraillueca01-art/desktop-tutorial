@@ -1,7 +1,7 @@
 # Genera el email de bienvenida (versión Klaviyo con etiquetas) y una versión de vista previa
 import sys
 OUT = sys.argv[1]
-LATA = "https://cdn.shopify.com/s/files/1/1091/1029/6907/files/PHOTO-2026-10-05-15-23-42.jpg?v=1791299990"
+LATA = sys.argv[2] if len(sys.argv) > 2 else "lata-misterio.jpg"
 G = "#1f6b2e"; LIME = "#c9dc5c"; SOFT = "#f3f5ef"; INK = "#1b2a1f"; MUTED = "#5f6a5f"; LINE = "#e3e7dd"
 F = "'Jost','Futura','Century Gothic','Helvetica Neue',Arial,sans-serif"
 
@@ -50,7 +50,6 @@ def email(saludo, unsub, direccion, preheader):
     .wrap {{ width:100% !important; }}
     .px {{ padding-left:22px !important; padding-right:22px !important; }}
     .h1 {{ font-size:34px !important; line-height:38px !important; }}
-    .hero-pad {{ padding:22px 16px !important; }}
     .hero-img {{ width:100% !important; }}
     .m-col {{ display:block !important; width:100% !important; padding:0 0 10px 0 !important; }}
   }}
@@ -65,11 +64,15 @@ def email(saludo, unsub, direccion, preheader):
     <!-- Logo -->
     <tr><td align="center" class="px" style="padding:12px 40px 26px;font-family:{F};font-size:22px;letter-spacing:4px;color:{G};font-weight:300;">MOODMATCHA</td></tr>
 
-    <!-- Foto de la lata sobre el degradado de la etiqueta -->
+    <!-- La lata en penumbra: todavía no se enseña -->
     <tr><td class="px" style="padding:0 24px;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-radius:24px;background:{SOFT};background-image:linear-gradient(180deg,#ffffff 0%,#f1f2ef 45%,#e2ebb6 85%,#d4e486 100%);">
-        <tr><td align="center" class="hero-pad" style="padding:34px 30px 30px;">
-          <img class="hero-img" src="{LATA}" width="330" alt="Lata de Mood Matcha, Matcha Uji de primera cosecha, 30 g" style="display:block;width:330px;max-width:100%;height:auto;border:0;border-radius:16px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-radius:24px;background:#0b140c;">
+        <tr><td align="center" style="padding:0;">
+          <img class="hero-img" src="{LATA}" width="552" alt="La lata de Mood Matcha en penumbra, todavía en secreto" style="display:block;width:552px;max-width:100%;height:auto;border:0;border-radius:24px 24px 0 0;">
+        </td></tr>
+        <tr><td align="center" style="padding:4px 30px 30px;font-family:{F};">
+          <div style="font-size:13px;line-height:20px;letter-spacing:3px;color:#c9dc5c;">TODAVÍA EN SECRETO</div>
+          <div style="font-size:16px;line-height:24px;color:#cfd8c6;padding-top:6px;">Aún no podemos enseñártela. Pero ya puedes ir eligiendo tu mood.</div>
         </td></tr>
       </table>
     </td></tr>
@@ -84,7 +87,7 @@ def email(saludo, unsub, direccion, preheader):
     <!-- Qué es -->
     <tr><td class="px" style="padding:40px 48px 0;font-family:{F};">
       <div style="font-size:26px;line-height:32px;color:{INK};font-weight:300;">Lo que estamos preparando</div>
-      <p style="margin:10px 0 24px;font-size:16px;line-height:25px;color:{MUTED};">Una sola lata, <strong style="color:{INK};font-weight:400;">Matcha Uji</strong>, pensada para acompañarte en cualquier momento del día.</p>
+      <p style="margin:10px 0 24px;font-size:16px;line-height:25px;color:{MUTED};">Una sola lata, <strong style="color:{INK};font-weight:400;">Matcha Uji</strong>. Te adelantamos lo que hay dentro:</p>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">{det_rows}
       </table>
     </td></tr>
@@ -142,7 +145,7 @@ def email(saludo, unsub, direccion, preheader):
 </html>
 '''
 
-PRE = "Matcha Uji de primera cosecha, molido en piedra. Te avisaremos antes que a nadie."
+PRE = "Todavía no podemos enseñártela, pero tú vas a ser de los primeros en verla."
 # Versión para Klaviyo (etiquetas de Klaviyo)
 k = email("Hola{% if first_name %} {{ first_name }}{% endif %}, gracias por estar aquí desde el principio.",
           '<a href="{% unsubscribe_url %}" style="color:#5f6a5f;">Darme de baja</a>',
