@@ -5,7 +5,7 @@ LATA = sys.argv[2] if len(sys.argv) > 2 else "lata-misterio.jpg"
 G = "#1f6b2e"; LIME = "#c9dc5c"; SOFT = "#f3f5ef"; INK = "#1b2a1f"; MUTED = "#5f6a5f"; LINE = "#e3e7dd"
 F = "'Jost','Futura','Century Gothic','Helvetica Neue',Arial,sans-serif"
 
-def email(saludo, unsub, direccion, preheader):
+def email(saludo, unsub, direccion, preheader, tracking=""):
     moods = [("Focus", "Solo, con agua a 80 °C"), ("Calma", "Latte templado de avena"),
              ("Energía", "Con hielo y tónica"), ("Antojo", "Affogato con vainilla")]
     mood_cells = "".join(f'''
@@ -42,7 +42,6 @@ def email(saludo, unsub, direccion, preheader):
 <meta name="color-scheme" content="light">
 <meta name="supported-color-schemes" content="light">
 <title>Ya estás en la lista</title>
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400&display=swap" rel="stylesheet">
 <style>
   body {{ margin:0; padding:0; background:#ffffff; -webkit-text-size-adjust:100%; }}
   a {{ color:{G}; }}
@@ -140,13 +139,16 @@ def email(saludo, unsub, direccion, preheader):
   </table>
 </td></tr>
 </table>
+{tracking}
 </body>
 </html>
 '''
 
 PRE = "Todavía no podemos enseñártela, pero tú vas a ser de los primeros en verla."
 # Versión para Shopify Messaging: Shopify añade solo el pie legal con el enlace de baja
-k = email("Hola, gracias por estar aquí desde el principio.", "", "", PRE)
+k = email("Hola, gracias por estar aquí desde el principio.",
+          '<a href="{{ unsubscribe_link }}" style="color:#5f6a5f;">Darme de baja</a>', "", PRE,
+          tracking="{{ open_tracking_block }}")
 open(OUT + "/bienvenida-lista-espera.shopify.html", "w").write(k)
 # Vista previa con datos de ejemplo
 p = email("Hola, gracias por estar aquí desde el principio.",
