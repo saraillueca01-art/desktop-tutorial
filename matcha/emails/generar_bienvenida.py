@@ -134,9 +134,7 @@ def email(saludo, unsub, direccion, preheader):
       <div style="height:1px;background:{LINE};line-height:1px;font-size:0;">&nbsp;</div>
     </td></tr>
     <tr><td class="px" align="center" style="padding:20px 48px 0;font-family:{F};font-size:12px;line-height:19px;color:{MUTED};">
-      Recibes este email porque te apuntaste en moodmatcha.es.<br>
-      {direccion}<br>
-      {unsub}
+      Recibes este email porque te apuntaste en moodmatcha.es.{('<br>' + direccion) if direccion else ''}{('<br>' + unsub) if unsub else ''}
     </td></tr>
 
   </table>
@@ -147,11 +145,9 @@ def email(saludo, unsub, direccion, preheader):
 '''
 
 PRE = "Todavía no podemos enseñártela, pero tú vas a ser de los primeros en verla."
-# Versión para Klaviyo (etiquetas de Klaviyo)
-k = email("Hola{% if first_name %} {{ first_name }}{% endif %}, gracias por estar aquí desde el principio.",
-          '<span style="color:#5f6a5f;">{% unsubscribe \'Darme de baja\' %}</span>',
-          "{{ organization.name }} · {{ organization.full_address }}", PRE)
-open(OUT + "/bienvenida-lista-espera.klaviyo.html", "w").write(k)
+# Versión para Shopify Messaging: Shopify añade solo el pie legal con el enlace de baja
+k = email("Hola, gracias por estar aquí desde el principio.", "", "", PRE)
+open(OUT + "/bienvenida-lista-espera.shopify.html", "w").write(k)
 # Vista previa con datos de ejemplo
 p = email("Hola, gracias por estar aquí desde el principio.",
           '<a href="#" style="color:#5f6a5f;">Darme de baja</a>',

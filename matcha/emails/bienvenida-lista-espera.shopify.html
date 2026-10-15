@@ -45,7 +45,7 @@
     <!-- Bienvenida -->
     <tr><td class="px" style="padding:38px 48px 0;font-family:'Jost','Futura','Century Gothic','Helvetica Neue',Arial,sans-serif;">
       <div class="h1" style="font-size:42px;line-height:46px;color:#1b2a1f;font-weight:300;letter-spacing:-0.4px;">Ya estás en la lista.</div>
-      <p style="margin:18px 0 0;font-size:17px;line-height:27px;color:#1b2a1f;">Hola{% if first_name %} {{ first_name }}{% endif %}, gracias por estar aquí desde el principio.</p>
+      <p style="margin:18px 0 0;font-size:17px;line-height:27px;color:#1b2a1f;">Hola, gracias por estar aquí desde el principio.</p>
       <p style="margin:12px 0 0;font-size:17px;line-height:27px;color:#5f6a5f;">Te apuntaste cuando la web todavía estaba cerrada, y eso te pone delante de la cola. El día que abramos, serás de las primeras personas en enterarte y en poder pedir tu lata, antes de que lo anunciemos en ningún otro sitio.</p>
     </td></tr>
 
@@ -167,9 +167,7 @@
       <div style="height:1px;background:#e3e7dd;line-height:1px;font-size:0;">&nbsp;</div>
     </td></tr>
     <tr><td class="px" align="center" style="padding:20px 48px 0;font-family:'Jost','Futura','Century Gothic','Helvetica Neue',Arial,sans-serif;font-size:12px;line-height:19px;color:#5f6a5f;">
-      Recibes este email porque te apuntaste en moodmatcha.es.<br>
-      {{ organization.name }} · {{ organization.full_address }}<br>
-      <span style="color:#5f6a5f;">{% unsubscribe 'Darme de baja' %}</span>
+      Recibes este email porque te apuntaste en moodmatcha.es.
     </td></tr>
 
   </table>
