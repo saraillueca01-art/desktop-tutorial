@@ -75,9 +75,26 @@
       {%- if section.settings.legal != blank -%}<p class="mm-pronto__legal">{{ section.settings.legal }}</p>{%- endif -%}
 
       {%- if section.settings.insta_titulo != blank -%}
+        {%- liquid
+          assign meta = section.settings.insta_meta
+          assign actual = section.settings.insta_actual
+          assign pct = 0
+          if meta > 0
+            assign pct = actual | times: 100 | divided_by: meta | floor
+            if pct > 100
+              assign pct = 100
+            endif
+          endif
+        -%}
         <a class="mm-pronto__insta" href="{{ insta }}" target="_blank" rel="noopener">
           <b>{{ section.settings.insta_titulo }}</b>
           <span>{{ section.settings.insta_texto }}</span>
+          {%- if meta > 0 and actual > 0 -%}
+            <span class="mm-pronto__goal" style="--p: {{ pct }}%;" role="img" aria-label="{{ actual }} de {{ meta }} seguidores">
+              <span class="mm-pronto__bar"><i></i></span>
+              <small>{% render 'mm-miles', n: actual %} de {% render 'mm-miles', n: meta %} seguidores</small>
+            </span>
+          {%- endif -%}
           <em>{{ section.settings.insta_boton }} <span aria-hidden="true">→</span></em>
         </a>
       {%- endif -%}
@@ -165,6 +182,11 @@
   .mm-pronto__insta:hover { transform: translateY(-2px); }
   .mm-pronto__insta b { font-weight: 500; font-size: 1.15rem; color: var(--green); }
   .mm-pronto__insta span { color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
+  .mm-pronto__goal { display: grid; gap: 6px; margin-top: 6px; }
+  .mm-pronto__bar { display: block; block-size: 8px; border-radius: 999px; background: rgb(255 255 255 / 0.8); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; }
+  .mm-pronto__bar i { display: block; block-size: 100%; inline-size: var(--p); border-radius: inherit; background: var(--green); transform-origin: left; animation: mm-grow 1.6s cubic-bezier(.2,.7,.2,1) both 0.4s; }
+  @keyframes mm-grow { from { transform: scaleX(0); } }
+  .mm-pronto__goal small { font-size: 0.85rem; color: var(--green); font-variant-numeric: tabular-nums; }
   .mm-pronto__insta em { font-style: normal; color: var(--green); font-size: 0.95rem; margin-top: 4px; }
   .mm-pronto__count { display: flex; gap: 10px; }
   .mm-pronto__count[hidden] { display: none; }
@@ -246,8 +268,10 @@
     { "type": "text", "id": "gracias", "label": "Mensaje al apuntarse", "default": "¡Ya estás dentro! Te escribiremos antes que a nadie." },
     { "type": "text", "id": "legal", "label": "Texto legal", "default": "Al apuntarte aceptas recibir emails de Mood Matcha. Puedes darte de baja cuando quieras." },
     { "type": "header", "content": "Instagram" },
-    { "type": "text", "id": "insta_titulo", "label": "Titular", "default": "1 seguidor = 1 céntimo" },
-    { "type": "text", "id": "insta_texto", "label": "Texto", "default": "Por cada persona que nos siga en Instagram, invertimos 1 céntimo en Mood Matcha. Síguenos y ayúdanos a que exista." },
+    { "type": "text", "id": "insta_titulo", "label": "Titular", "default": "Cada seguidor nos acerca" },
+    { "type": "text", "id": "insta_texto", "label": "Texto", "default": "Cuando lleguemos a 1.000 seguidores en Instagram, enseñamos el diseño. Allí antes que en ningún sitio." },
+    { "type": "number", "id": "insta_meta", "label": "Meta de seguidores", "info": "La barra se llena hasta este número.", "default": 1000 },
+    { "type": "number", "id": "insta_actual", "label": "Seguidores ahora", "info": "Actualízalo a mano de vez en cuando. 0 oculta la barra.", "default": 0 },
     { "type": "text", "id": "insta_boton", "label": "Enlace", "default": "Seguir a @bymoodmatcha" },
     { "type": "url", "id": "instagram", "label": "Instagram", "info": "Vacío: @bymoodmatcha." },
     { "type": "url", "id": "tiktok", "label": "TikTok", "info": "Vacío: @bymoodmatcha." },
