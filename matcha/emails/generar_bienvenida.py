@@ -117,9 +117,10 @@ def email(saludo, unsub, direccion, preheader):
     <tr><td class="px" align="left" style="padding:24px 48px 0;">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
         <td style="border-radius:999px;background:{G};">
-          <a href="https://www.instagram.com/" target="_blank" style="display:inline-block;padding:14px 28px;font-family:{F};font-size:15px;color:#ffffff;text-decoration:none;border-radius:999px;">Síguenos en Instagram</a>
+          <a href="https://www.instagram.com/bymoodmatcha/" target="_blank" style="display:inline-block;padding:14px 28px;font-family:{F};font-size:15px;color:#ffffff;text-decoration:none;border-radius:999px;">Síguenos en Instagram</a>
         </td>
       </tr></table>
+      <p style="margin:14px 0 0;font-family:{F};font-size:14px;line-height:22px;color:{MUTED};">Nos encontrarás como <a href="https://www.instagram.com/bymoodmatcha/" target="_blank" style="color:{G};">@bymoodmatcha</a> en Instagram y en <a href="https://www.tiktok.com/@bymoodmatcha" target="_blank" style="color:{G};">TikTok</a>.</p>
     </td></tr>
 
     <!-- Firma -->
@@ -148,7 +149,7 @@ def email(saludo, unsub, direccion, preheader):
 PRE = "Todavía no podemos enseñártela, pero tú vas a ser de los primeros en verla."
 # Versión para Klaviyo (etiquetas de Klaviyo)
 k = email("Hola{% if first_name %} {{ first_name }}{% endif %}, gracias por estar aquí desde el principio.",
-          '<a href="{% unsubscribe_url %}" style="color:#5f6a5f;">Darme de baja</a>',
+          '<span style="color:#5f6a5f;">{% unsubscribe \'Darme de baja\' %}</span>',
           "{{ organization.name }} · {{ organization.full_address }}", PRE)
 open(OUT + "/bienvenida-lista-espera.klaviyo.html", "w").write(k)
 # Vista previa con datos de ejemplo
