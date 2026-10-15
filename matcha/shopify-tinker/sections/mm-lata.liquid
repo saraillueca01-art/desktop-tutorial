@@ -146,18 +146,23 @@
       {%- endform -%}
 
       {%- if section.settings.stock -%}
-        <p class="mm-lata__stock">
-          {%- if v.available -%}
-            <i aria-hidden="true"></i>
-            {%- if v.inventory_management == 'shopify' and v.inventory_quantity > 0 and v.inventory_quantity <= section.settings.stock_aviso -%}
-              En stock, quedan {{ v.inventory_quantity }} latas
-            {%- else -%}
-              En stock
-            {%- endif -%}
-          {%- else -%}
-            <i class="is-out" aria-hidden="true"></i>Agotado por ahora
-          {%- endif -%}
-        </p>
+        {%- liquid
+          assign stock_nivel = 'ok'
+          assign stock_texto = 'En stock'
+          if v.available == false
+            assign stock_nivel = 'out'
+            assign stock_texto = 'Sin stock'
+          elsif v.inventory_management == 'shopify' and v.inventory_quantity > 0
+            if v.inventory_quantity < section.settings.stock_aviso
+              assign stock_nivel = 'last'
+              assign stock_texto = 'Unidades muy limitadas: quedan ' | append: v.inventory_quantity
+            elsif v.inventory_quantity <= section.settings.stock_pocas
+              assign stock_nivel = 'low'
+              assign stock_texto = 'Pocas unidades'
+            endif
+          endif
+        -%}
+        <p class="mm-lata__stock is-{{ stock_nivel }}"><i aria-hidden="true"></i>{{ stock_texto }}</p>
       {%- endif -%}
       {%- if section.settings.garantias != blank -%}
         {%- assign garantias = section.settings.garantias | newline_to_br | split: '<br />' -%}
@@ -222,7 +227,8 @@
     { "type": "checkbox", "id": "cantidad", "label": "Mostrar selector de cantidad", "default": true },
     { "type": "checkbox", "id": "pago_rapido", "label": "Mostrar botones de pago rápido", "default": false },
     { "type": "checkbox", "id": "stock", "label": "Mostrar stock", "default": true },
-    { "type": "range", "id": "stock_aviso", "label": "Decir cuántas quedan cuando haya menos de", "min": 0, "max": 100, "step": 1, "default": 30 },
+    { "type": "range", "id": "stock_pocas", "label": "«Pocas unidades» (naranja) cuando queden", "min": 0, "max": 200, "step": 5, "unit": "ud", "default": 50, "info": "o menos" },
+    { "type": "range", "id": "stock_aviso", "label": "«Unidades muy limitadas» (rojo) cuando queden menos de", "min": 0, "max": 100, "step": 1, "unit": "ud", "default": 20 },
     { "type": "textarea", "id": "garantias", "label": "Garantías bajo el botón", "info": "Una por línea.", "default": "Envío en 24–72 h\nPago seguro\n14 días para devolverlo" },
     { "type": "checkbox", "id": "barra_fija", "label": "Barra de compra fija al bajar", "info": "Aparece abajo cuando el botón de compra ya no se ve.", "default": true },
     { "type": "header", "content": "Packs" },

@@ -172,7 +172,14 @@
 .mm-btn[aria-busy="true"] { opacity: 0.7; }
 .mm-lata__stock { display: flex; align-items: center; gap: 10px; margin-block: 20px 6px !important; font-size: 0.95rem; }
 .mm-lata__stock i { inline-size: 7px; block-size: 7px; border-radius: 50%; background: var(--mm-green); animation: mm-ping 2.4s infinite; }
-.mm-lata__stock i.is-out { background: #b44; animation: none; }
+.mm-lata__stock.is-low { color: #b2640f; }
+.mm-lata__stock.is-low i { background: #e08a1e; animation-name: mm-ping-low; }
+.mm-lata__stock.is-last { color: #b3261e; font-weight: 500; }
+.mm-lata__stock.is-last i { background: #d93025; animation: mm-ping-last 1.4s infinite; }
+.mm-lata__stock.is-out { color: #8a8f88; }
+.mm-lata__stock.is-out i { background: #a3a8a1; animation: none; }
+@keyframes mm-ping-low { 0% { box-shadow: 0 0 0 0 rgb(224 138 30 / 0.45); } 70%, 100% { box-shadow: 0 0 0 9px rgb(224 138 30 / 0); } }
+@keyframes mm-ping-last { 0% { box-shadow: 0 0 0 0 rgb(217 48 37 / 0.5); } 70%, 100% { box-shadow: 0 0 0 9px rgb(217 48 37 / 0); } }
 @keyframes mm-ping { 0% { box-shadow: 0 0 0 0 rgb(31 107 46 / 0.45); } 70%, 100% { box-shadow: 0 0 0 9px rgb(31 107 46 / 0); } }
 .mm-lata__ship { font-size: 0.95rem; color: var(--mm-muted); }
 .mm-lata__ship b { color: var(--color-foreground); font-weight: 400; }
@@ -411,6 +418,6 @@ body:has([data-mm-flotante]) #header-component .header__row--bottom { margin-blo
 
 @media (prefers-reduced-motion: reduce) {
   .mm-intro { display: none; }
-  .mm-lata__stock i { animation: none; }
+  .mm-lata__stock i, .mm-lata__stock.is-last i { animation: none; }
   .mm *, .mm *::before, .mm *::after { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }
 }
