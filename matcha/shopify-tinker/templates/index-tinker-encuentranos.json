@@ -1,0 +1,455 @@
+{
+  "sections": {
+    "mm_portada": {
+      "type": "mm-portada",
+      "settings": {
+        "oscurecer": 35,
+        "altura": 100,
+        "titulo": "Un matcha para tu",
+        "palabras": "focus., calma., energía., antojo., mood.",
+        "texto": "<p>Matcha de primera cosecha, molido en piedra. Una lata para todos tus momentos del día.</p>",
+        "boton": "Comprar",
+        "enlace": "",
+        "producto": "",
+        "mostrar_precio": true,
+        "intro": true
+      }
+    },
+    "mm_lata": {
+      "type": "mm-lata",
+      "blocks": {
+        "pack_1": {
+          "type": "pack",
+          "settings": {
+            "cantidad": 1,
+            "descuento": 0,
+            "etiqueta": "",
+            "destacado": false
+          }
+        },
+        "pack_2": {
+          "type": "pack",
+          "settings": {
+            "cantidad": 2,
+            "descuento": 10,
+            "etiqueta": "El más elegido",
+            "destacado": true
+          }
+        },
+        "pack_3": {
+          "type": "pack",
+          "settings": {
+            "cantidad": 3,
+            "descuento": 15,
+            "etiqueta": "Más ahorro",
+            "destacado": false
+          }
+        },
+        "dato_1": {
+          "type": "dato",
+          "settings": {
+            "valor": "30 g",
+            "texto": "en cada lata",
+            "contar": false
+          }
+        },
+        "dato_2": {
+          "type": "dato",
+          "settings": {
+            "valor": "15",
+            "texto": "tazas",
+            "contar": true
+          }
+        },
+        "dato_3": {
+          "type": "dato",
+          "settings": {
+            "valor": "2 g",
+            "texto": "por taza",
+            "contar": false
+          }
+        }
+      },
+      "block_order": [
+        "pack_1",
+        "pack_2",
+        "pack_3",
+        "dato_1",
+        "dato_2",
+        "dato_3"
+      ],
+      "settings": {
+        "producto": "matcha-uji",
+        "kicker": "DE PRIMERA COSECHA",
+        "gramos": "30 GR",
+        "titulo": "Una sola lata, de primera cosecha",
+        "texto": "<p>Hojas jóvenes cultivadas a la sombra y molidas en piedra. Verde intenso, textura cremosa y final dulce. La misma lata sirve para tomarlo solo, en latte, con hielo o en un postre.</p>",
+        "boton": "Añadir a la cesta",
+        "cantidad": true,
+        "pago_rapido": false,
+        "stock": true,
+        "stock_aviso": 30,
+        "garantias": "Envío en 24–72 h\nPago seguro\n14 días para devolverlo",
+        "barra_fija": true,
+        "packs_titulo": "Elige tu pack",
+        "packs_nota": "El descuento se aplica en la cesta.",
+        "envio": true,
+        "hora_corte": 24,
+        "dias_min": 1,
+        "dias_max": 3,
+        "envio_gratis": 35
+      }
+    },
+    "mm_moods": {
+      "type": "mm-moods",
+      "blocks": {
+        "mood_1": {
+          "type": "mood",
+          "settings": {
+            "mood": "Focus",
+            "receta": "Solo con agua",
+            "texto": "2 g de matcha y 70 ml de agua a 80 °C. Bate en zigzag quince segundos y bébelo tranquilo."
+          }
+        },
+        "mood_2": {
+          "type": "mood",
+          "settings": {
+            "mood": "Calma",
+            "receta": "Latte templado de avena",
+            "texto": "Bate 2 g con un poco de agua y añade 200 ml de bebida de avena espumada."
+          }
+        },
+        "mood_3": {
+          "type": "mood",
+          "settings": {
+            "mood": "Energía",
+            "receta": "Con hielo y tónica",
+            "texto": "Hielo, 150 ml de tónica y el matcha batido en agua fría por encima."
+          }
+        },
+        "mood_4": {
+          "type": "mood",
+          "settings": {
+            "mood": "Social",
+            "receta": "Matcha lemonade",
+            "texto": "Limón, agua con gas y matcha. Para compartir en la terraza."
+          }
+        },
+        "mood_5": {
+          "type": "mood",
+          "settings": {
+            "mood": "Antojo",
+            "receta": "Matcha affogato",
+            "texto": "Una bola de helado de vainilla y el matcha recién batido por encima."
+          }
+        }
+      },
+      "block_order": [
+        "mood_1",
+        "mood_2",
+        "mood_3",
+        "mood_4",
+        "mood_5"
+      ],
+      "settings": {
+        "titulo": "¿Cómo te sientes hoy?"
+      }
+    },
+    "mm_preparacion": {
+      "type": "mm-preparacion",
+      "blocks": {
+        "paso_1": {
+          "type": "paso",
+          "settings": {
+            "dato": "2 g",
+            "titulo": "Tamiza",
+            "texto": "Dos cucharaditas en el cuenco, sin grumos."
+          }
+        },
+        "paso_2": {
+          "type": "paso",
+          "settings": {
+            "dato": "80 °C",
+            "titulo": "Añade el agua",
+            "texto": "70 ml caliente, nunca hirviendo."
+          }
+        },
+        "paso_3": {
+          "type": "paso",
+          "settings": {
+            "dato": "15 s",
+            "titulo": "Bate en zigzag",
+            "texto": "Dibuja una M con el chasen hasta que haga espuma."
+          }
+        },
+        "paso_4": {
+          "type": "paso",
+          "settings": {
+            "dato": "Tu mood",
+            "titulo": "Disfrútalo",
+            "texto": "Solo, con leche, con hielo o con tónica."
+          }
+        }
+      },
+      "block_order": [
+        "paso_1",
+        "paso_2",
+        "paso_3",
+        "paso_4"
+      ],
+      "settings": {
+        "titulo": "Cómo se prepara",
+        "texto": "<p>Un minuto y cuatro gestos.</p>",
+        "utensilios": "Cuenco, colador fino y chasen (o espumador de leche)."
+      }
+    },
+    "mm_cifras": {
+      "type": "mm-cifras",
+      "blocks": {
+        "cifra_1": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "Primera cosecha",
+            "texto": "Está hecho de las nuevas hojas de té de esta primavera y es molido en un molino de piedra"
+          }
+        },
+        "cifra_2": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "Sombrado durate al menos 20 días",
+            "texto": "Para que no tenga sabor amargo en absoluto"
+          }
+        },
+        "cifra_3": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "Color intenso",
+            "texto": ""
+          }
+        },
+        "cifra_4": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "80 °C",
+            "texto": "nunca hirviendo"
+          }
+        },
+        "cifra_5": {
+          "type": "cifra",
+          "settings": {
+            "cifra": "24–72 h",
+            "texto": "de nuestra casa a la tuya"
+          }
+        }
+      },
+      "block_order": [
+        "cifra_1",
+        "cifra_2",
+        "cifra_3",
+        "cifra_4",
+        "cifra_5"
+      ],
+      "settings": {
+        "titulo": "Cifras clave",
+        "texto": "Lo que hay detrás de cada taza."
+      }
+    },
+    "mm_preguntas": {
+      "type": "mm-preguntas",
+      "blocks": {
+        "pregunta_1": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cuántas tazas salen de una lata?",
+            "respuesta": "<p>Unas 15 tazas, usando 2 g (una cucharadita de bambú) por taza.</p>"
+          }
+        },
+        "pregunta_2": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Qué significa de primera cosecha?",
+            "respuesta": "<p>Son las primeras hojas del año, las más tiernas. Dan un verde más intenso y un sabor más dulce y menos amargo.</p>"
+          }
+        },
+        "pregunta_3": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Necesito un chasen para prepararlo?",
+            "respuesta": "<p>Es lo ideal para que salga espuma fina, pero un espumador de leche eléctrico también funciona.</p>"
+          }
+        },
+        "pregunta_4": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cuánto tarda en llegar?",
+            "respuesta": "<p>Si pides antes de medianoche, sale al día siguiente laborable y te llega en 24–72 h. El envío es gratis a partir de 35 €.</p>"
+          }
+        },
+        "pregunta_5": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cómo lo conservo?",
+            "respuesta": "<p>Bien cerrado, lejos de la luz y del calor. Una vez abierto, guárdalo en la nevera y tómalo en uno o dos meses para que no pierda color ni aroma.</p>"
+          }
+        },
+        "pregunta_6": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Tiene cafeína?",
+            "respuesta": "<p>Sí, algo menos que un café. Se nota de forma más suave y sostenida.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "pregunta_1",
+        "pregunta_2",
+        "pregunta_3",
+        "pregunta_4",
+        "pregunta_5",
+        "pregunta_6"
+      ],
+      "settings": {
+        "titulo": "Preguntas frecuentes",
+        "texto": "<p>¿Te queda alguna duda? Escríbenos y te contestamos el mismo día.</p>",
+        "abrir_primera": true,
+        "datos_google": true
+      }
+    },
+    "mm_momentos": {
+      "type": "mm-momentos",
+      "blocks": {
+        "foto_1": {
+          "type": "foto",
+          "settings": {
+            "forma": "alta"
+          }
+        },
+        "foto_2": {
+          "type": "foto",
+          "settings": {
+            "forma": "muy-alta"
+          }
+        },
+        "foto_3": {
+          "type": "foto",
+          "settings": {
+            "forma": "cuadrada"
+          }
+        },
+        "foto_4": {
+          "type": "foto",
+          "settings": {
+            "forma": "alta"
+          }
+        },
+        "foto_5": {
+          "type": "foto",
+          "settings": {
+            "forma": "cuadrada"
+          }
+        },
+        "lata_6": {
+          "type": "lata",
+          "settings": {
+            "forma": "cuadrada"
+          }
+        },
+        "foto_7": {
+          "type": "foto",
+          "settings": {
+            "forma": "alta"
+          }
+        },
+        "foto_8": {
+          "type": "foto",
+          "settings": {
+            "forma": "cuadrada"
+          }
+        }
+      },
+      "block_order": [
+        "foto_1",
+        "foto_2",
+        "foto_3",
+        "foto_4",
+        "foto_5",
+        "lata_6",
+        "foto_7",
+        "foto_8"
+      ],
+      "settings": {
+        "titulo": "Momentos en calma",
+        "enlace_texto": "Síguenos en Instagram",
+        "enlace": ""
+      }
+    },
+    "mm_marca": {
+      "type": "mm-marca",
+      "settings": {
+        "verde": "#1f6b2e",
+        "lima": "#c9dc5c",
+        "gris": "#dfe0dc",
+        "flotante": true,
+        "logo_fuente": true
+      }
+    },
+    "mm_confian": {
+      "type": "mm-confian",
+      "settings": {
+        "titulo": "Nos encontrarás en",
+        "texto": "Cafeterías y tiendas que ya sirven Mood Matcha.",
+        "movimiento": true,
+        "velocidad": 40,
+        "cta_texto": "¿Quieres vender Mood Matcha o ponerlo en tu cafetería?",
+        "cta_boton": "Escríbenos"
+      },
+      "blocks": {
+        "sitio_1": {
+          "type": "sitio",
+          "settings": {
+            "nombre": "Cafetería 1",
+            "ciudad": "Ciudad"
+          }
+        },
+        "sitio_2": {
+          "type": "sitio",
+          "settings": {
+            "nombre": "Tienda 2",
+            "ciudad": "Ciudad"
+          }
+        },
+        "sitio_3": {
+          "type": "sitio",
+          "settings": {
+            "nombre": "Cafetería 3",
+            "ciudad": "Ciudad"
+          }
+        },
+        "sitio_4": {
+          "type": "sitio",
+          "settings": {
+            "nombre": "Tienda 4",
+            "ciudad": "Ciudad"
+          }
+        }
+      },
+      "block_order": [
+        "sitio_1",
+        "sitio_2",
+        "sitio_3",
+        "sitio_4"
+      ]
+    }
+  },
+  "order": [
+    "mm_portada",
+    "mm_lata",
+    "mm_moods",
+    "mm_preparacion",
+    "mm_cifras",
+    "mm_confian",
+    "mm_preguntas",
+    "mm_momentos",
+    "mm_marca"
+  ]
+}
