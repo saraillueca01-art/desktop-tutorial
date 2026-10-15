@@ -155,7 +155,7 @@
           elsif v.inventory_management == 'shopify' and v.inventory_quantity > 0
             if v.inventory_quantity < section.settings.stock_aviso
               assign stock_nivel = 'last'
-              assign stock_texto = 'Unidades muy limitadas: quedan ' | append: v.inventory_quantity
+              assign stock_texto = 'Unidades muy limitadas'
             elsif v.inventory_quantity <= section.settings.stock_pocas
               assign stock_nivel = 'low'
               assign stock_texto = 'Pocas unidades'
