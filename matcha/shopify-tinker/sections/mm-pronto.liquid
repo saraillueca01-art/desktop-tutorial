@@ -1,0 +1,189 @@
+{% render 'mm-recursos' %}
+{%- comment -%}
+  Página de «Muy pronto» para la tienda cerrada (plantilla de contraseña).
+  Recoge emails como clientes suscritos, con la etiqueta «lista-espera».
+{%- endcomment -%}
+{%- liquid
+  assign insta = section.settings.instagram | default: 'https://www.instagram.com/bymoodmatcha/'
+  assign tiktok = section.settings.tiktok | default: 'https://www.tiktok.com/@bymoodmatcha'
+-%}
+<section class="mm-pronto" style="--mm-pronto-lime: {{ section.settings.lima }};">
+  <div class="mm-pronto__glow" aria-hidden="true"></div>
+  <div class="mm-pronto__dust" aria-hidden="true">
+    {%- for i in (1..36) -%}
+      {%- assign x = i | times: 37 | modulo: 100 -%}
+      {%- assign d = i | times: 13 | modulo: 9 | plus: 7 -%}
+      {%- assign delay = i | times: 7 | modulo: 11 -%}
+      {%- assign s = i | modulo: 3 | plus: 1 -%}
+      <i style="--x: {{ x }}%; --d: {{ d }}s; --delay: -{{ delay }}s; --s: {{ s }}px;"></i>
+    {%- endfor -%}
+  </div>
+
+  <header class="mm-pronto__top">{% render 'mm-logo' %}</header>
+
+  <div class="mm-pronto__main">
+    <div class="mm-pronto__tin" aria-hidden="true">
+      <div class="mm-pronto__shadow"></div>
+      <div class="mm-pronto__body"></div>
+      <div class="mm-pronto__lid"></div>
+      <div class="mm-pronto__cap"></div>
+      <div class="mm-pronto__sweep"></div>
+    </div>
+
+    <div class="mm-pronto__copy">
+      {%- if section.settings.antetitulo != blank -%}<p class="mm-pronto__kicker">{{ section.settings.antetitulo }}</p>{%- endif -%}
+      <h1>{{ section.settings.titulo }}</h1>
+      {%- if section.settings.texto != blank -%}<div class="mm-pronto__text">{{ section.settings.texto }}</div>{%- endif -%}
+
+      {%- if section.settings.fecha != blank -%}
+        <div class="mm-pronto__count" data-mm-count="{{ section.settings.fecha }}" hidden>
+          <div><b data-u="d">00</b><span>días</span></div>
+          <div><b data-u="h">00</b><span>horas</span></div>
+          <div><b data-u="m">00</b><span>min</span></div>
+          <div><b data-u="s">00</b><span>seg</span></div>
+        </div>
+      {%- endif -%}
+
+      {%- form 'customer', id: 'mm-pronto-form', class: 'mm-pronto__form' -%}
+        <input type="hidden" name="contact[tags]" value="lista-espera, password page">
+        {%- if form.posted_successfully? -%}
+          <p class="mm-pronto__ok" role="status">{{ section.settings.gracias }}</p>
+        {%- else -%}
+          <label class="visually-hidden" for="mm-pronto-email">Tu email</label>
+          <input id="mm-pronto-email" type="email" name="contact[email]" placeholder="Tu email" autocomplete="email" required>
+          <button type="submit">{{ section.settings.boton }}</button>
+          {%- if form.errors -%}<p class="mm-pronto__err" role="alert">Revisa el email e inténtalo otra vez.</p>{%- endif -%}
+        {%- endif -%}
+      {%- endform -%}
+      {%- if section.settings.legal != blank -%}<p class="mm-pronto__legal">{{ section.settings.legal }}</p>{%- endif -%}
+    </div>
+  </div>
+
+  <footer class="mm-pronto__foot">
+    <div class="mm-pronto__social">
+      {%- if insta != blank -%}<a href="{{ insta }}" target="_blank" rel="noopener">Instagram</a>{%- endif -%}
+      {%- if tiktok != blank -%}<a href="{{ tiktok }}" target="_blank" rel="noopener">TikTok</a>{%- endif -%}
+    </div>
+    <details class="mm-pronto__pass">
+      <summary>Entrar con contraseña</summary>
+      {%- form 'storefront_password', class: 'mm-pronto__passform' -%}
+        <label class="visually-hidden" for="mm-pronto-pass">Contraseña</label>
+        <input id="mm-pronto-pass" type="password" name="password" placeholder="Contraseña" autocomplete="current-password">
+        <button type="submit">Entrar</button>
+        {%- if form.errors -%}<p class="mm-pronto__err" role="alert">Contraseña incorrecta.</p>{%- endif -%}
+      {%- endform -%}
+    </details>
+  </footer>
+</section>
+
+<style>
+  .mm-pronto {
+    --bg: #070d08; --ink: #e8eee4; --muted: #9aa695; --lime: var(--mm-pronto-lime, #c9dc5c);
+    position: relative; min-block-size: 100svh; overflow: hidden; isolation: isolate;
+    display: grid; grid-template-rows: auto 1fr auto; gap: 24px; padding: clamp(20px, 4vw, 40px) clamp(16px, 5vw, 64px);
+    background: radial-gradient(60% 55% at 30% 55%, #1d3a17 0%, #0e1d10 45%, var(--bg) 85%); color: var(--ink);
+    font-family: var(--mm-logo-font);
+  }
+  .mm-pronto__glow { position: absolute; z-index: -1; left: 30%; top: 55%; width: min(80vw, 760px); aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--lime) 45%, transparent), transparent 72%); filter: blur(10px); animation: mm-breathe 6s ease-in-out infinite; }
+  @keyframes mm-breathe { 50% { opacity: 0.55; transform: translate(-50%, -50%) scale(0.92); } }
+  .mm-pronto__dust { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+  .mm-pronto__dust i { position: absolute; left: var(--x); bottom: -10px; width: var(--s); height: var(--s); border-radius: 50%; background: var(--lime); opacity: 0;
+    animation: mm-rise var(--d) linear infinite; animation-delay: var(--delay); }
+  @keyframes mm-rise { 10% { opacity: 0.7; } 90% { opacity: 0.4; } to { transform: translate(30px, -105svh); opacity: 0; } }
+  .mm-pronto__top { display: flex; justify-content: center; }
+  .mm-pronto__top .mm-logo { color: var(--lime); font-size: clamp(1.2rem, 2.4vw, 1.6rem); }
+  .mm-pronto__main { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); align-items: center; gap: clamp(28px, 6vw, 100px); max-inline-size: 1180px; margin-inline: auto; inline-size: 100%; }
+
+  /* La lata en silueta, con el borde encendido */
+  .mm-pronto__tin { position: relative; justify-self: center; width: min(70%, 340px); aspect-ratio: 360 / 400; animation: mm-float 7s ease-in-out infinite; }
+  @keyframes mm-float { 50% { transform: translateY(-12px); } }
+  .mm-pronto__tin > div { position: absolute; left: 0; right: 0; }
+  .mm-pronto__shadow { top: 92%; height: 12%; left: -20% !important; right: -20% !important; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.7), transparent); }
+  .mm-pronto__body { top: 16%; bottom: 6%; border-radius: 0 0 50% 50% / 0 0 9% 9%; background: linear-gradient(90deg, #050906, #0b130c 40%, #0d170e 60%, #040805);
+    box-shadow: inset 3px 0 0 color-mix(in srgb, var(--lime) 60%, transparent), inset -3px 0 0 color-mix(in srgb, var(--lime) 35%, transparent); }
+  .mm-pronto__lid { top: 5%; height: 30%; border-radius: 0 0 50% 50% / 0 0 18% 18%; background: linear-gradient(90deg, #060a07, #101a11 45%, #050906);
+    box-shadow: inset 3px 0 0 color-mix(in srgb, var(--lime) 65%, transparent), inset -3px 0 0 color-mix(in srgb, var(--lime) 40%, transparent), 0 3px 0 rgba(0,0,0,.6); }
+  .mm-pronto__cap { top: 0; height: 12%; border-radius: 50%; background: radial-gradient(ellipse at 50% 40%, #1a2a17, #070c08 70%);
+    box-shadow: 0 -2px 0 color-mix(in srgb, var(--lime) 90%, white), 0 -10px 30px color-mix(in srgb, var(--lime) 50%, transparent); }
+  .mm-pronto__sweep { top: 6%; bottom: 7%; width: 18%; left: -20%; right: auto !important; border-radius: 40%; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--lime) 22%, transparent), transparent);
+    mix-blend-mode: screen; animation: mm-sweep 5.5s ease-in-out infinite; }
+  @keyframes mm-sweep { 0%, 15% { left: -20%; opacity: 0; } 30% { opacity: 1; } 70% { opacity: 1; } 85%, 100% { left: 100%; opacity: 0; } }
+
+  .mm-pronto__copy { max-inline-size: 520px; display: grid; gap: 18px; }
+  .mm-pronto__kicker { margin: 0; font-size: 0.8rem; letter-spacing: 0.3em; color: var(--lime); }
+  .mm-pronto h1 { margin: 0; font-weight: 300; font-size: clamp(2.4rem, 5.4vw, 4.6rem); line-height: 1.02; letter-spacing: -0.01em; text-wrap: balance; color: var(--ink); }
+  .mm-pronto__text { color: var(--muted); font-size: 1.08rem; line-height: 1.6; }
+  .mm-pronto__text p { margin: 0; }
+  .mm-pronto__count { display: flex; gap: 10px; }
+  .mm-pronto__count[hidden] { display: none; }
+  .mm-pronto__count div { display: grid; justify-items: center; min-inline-size: 64px; padding: 10px 6px; border-radius: 14px; background: rgb(255 255 255 / 0.04); box-shadow: inset 0 0 0 1px rgb(201 220 92 / 0.18); }
+  .mm-pronto__count b { font-weight: 300; font-size: 1.7rem; line-height: 1; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .mm-pronto__count span { font-size: 0.72rem; color: var(--muted); }
+  .mm-pronto__form { display: flex; flex-wrap: wrap; gap: 8px; padding: 6px; border-radius: 999px; background: rgb(255 255 255 / 0.06); box-shadow: inset 0 0 0 1px rgb(201 220 92 / 0.25); }
+  .mm-pronto__form input { flex: 1 1 180px; min-inline-size: 0; border: 0; background: none; color: var(--ink); font: inherit; font-size: 1rem; padding: 12px 16px; }
+  .mm-pronto__form input::placeholder { color: var(--muted); }
+  .mm-pronto__form input:focus { outline: none; }
+  .mm-pronto__form:focus-within { box-shadow: inset 0 0 0 1.5px var(--lime); }
+  .mm-pronto__form button, .mm-pronto__passform button { border: 0; border-radius: 999px; padding: 12px 24px; background: var(--lime); color: #0b140c; font: inherit; font-size: 0.98rem; cursor: pointer; transition: transform 0.4s, filter 0.3s; }
+  .mm-pronto__form button:hover { transform: translateY(-1px); filter: brightness(1.06); }
+  .mm-pronto__ok { margin: 0; padding: 10px 16px; color: var(--lime); }
+  .mm-pronto__err { flex-basis: 100%; margin: 0; padding: 0 16px 6px; font-size: 0.9rem; color: #f2b8a8; }
+  .mm-pronto__legal { margin: 0; font-size: 0.8rem; color: var(--muted); }
+  .mm-pronto__foot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px 24px; font-size: 0.9rem; color: var(--muted); }
+  .mm-pronto__social { display: flex; gap: 20px; }
+  .mm-pronto__foot a { color: var(--ink); text-decoration: none; border-bottom: 1px solid rgb(201 220 92 / 0.4); padding-bottom: 2px; }
+  .mm-pronto__pass summary { cursor: pointer; list-style: none; }
+  .mm-pronto__pass summary::-webkit-details-marker { display: none; }
+  .mm-pronto__passform { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .mm-pronto__passform input { border: 1px solid rgb(201 220 92 / 0.3); background: none; color: var(--ink); border-radius: 999px; padding: 10px 16px; font: inherit; }
+  .mm-pronto .visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .mm-pronto :focus-visible { outline: 1.5px solid var(--lime); outline-offset: 3px; }
+  @media (max-width: 820px) {
+    .mm-pronto__main { grid-template-columns: 1fr; text-align: center; }
+    .mm-pronto__copy { justify-items: center; margin-inline: auto; }
+    .mm-pronto__tin { width: min(46vw, 210px); }
+    .mm-pronto__glow { left: 50%; top: 34%; }
+    .mm-pronto__foot { justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) { .mm-pronto *, .mm-pronto { animation: none !important; } .mm-pronto__dust { display: none; } }
+</style>
+
+<script>
+  (() => {
+    // Cuenta atrás hasta la fecha de apertura (si se ha puesto una)
+    document.querySelectorAll('[data-mm-count]').forEach((box) => {
+      const end = new Date(box.dataset.mmCount);
+      if (isNaN(end)) return;
+      const out = (u, v) => (box.querySelector(`[data-u="${u}"]`).textContent = String(v).padStart(2, '0'));
+      const tick = () => {
+        const ms = end - new Date();
+        if (ms <= 0) { box.hidden = true; return; }
+        box.hidden = false;
+        out('d', Math.floor(ms / 864e5)); out('h', Math.floor(ms / 36e5) % 24); out('m', Math.floor(ms / 6e4) % 60); out('s', Math.floor(ms / 1e3) % 60);
+      };
+      tick(); setInterval(tick, 1000);
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "MM · Muy pronto",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "TODAVÍA EN SECRETO" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Algo verde se está preparando." },
+    { "type": "richtext", "id": "texto", "label": "Texto", "default": "<p>Un matcha de primera cosecha para cada mood. Déjanos tu email y serás de los primeros en probarlo, antes de que abramos a todo el mundo.</p>" },
+    { "type": "text", "id": "fecha", "label": "Fecha de apertura (opcional)", "info": "Formato 2026-11-20T10:00. Muestra una cuenta atrás; vacío la oculta." },
+    { "type": "text", "id": "boton", "label": "Botón", "default": "Avisadme" },
+    { "type": "text", "id": "gracias", "label": "Mensaje al apuntarse", "default": "¡Ya estás dentro! Te escribiremos antes que a nadie." },
+    { "type": "text", "id": "legal", "label": "Texto legal", "default": "Al apuntarte aceptas recibir emails de Mood Matcha. Puedes darte de baja cuando quieras." },
+    { "type": "url", "id": "instagram", "label": "Instagram", "info": "Vacío: @bymoodmatcha." },
+    { "type": "url", "id": "tiktok", "label": "TikTok", "info": "Vacío: @bymoodmatcha." },
+    { "type": "color", "id": "lima", "label": "Color de la luz", "default": "#c9dc5c" }
+  ],
+  "presets": [{ "name": "MM · Muy pronto", "category": "Mood Matcha" }]
+}
+{% endschema %}
