@@ -147,7 +147,7 @@ def email(saludo, unsub, direccion, preheader, tracking=""):
 PRE = "Todavía no podemos enseñártela, pero tú vas a ser de los primeros en verla."
 # Versión para Shopify Messaging: Shopify añade solo el pie legal con el enlace de baja
 k = email("Hola, gracias por estar aquí desde el principio.",
-          '<a href="{{ unsubscribe_link }}" style="color:#5f6a5f;">Darme de baja</a>', "", PRE,
+          '<span style="color:#5f6a5f;">¿Ya no quieres recibir nuestros emails? {{ unsubscribe_link }}</span>', "", PRE,
           tracking="{{ open_tracking_block }}")
 open(OUT + "/bienvenida-lista-espera.shopify.html", "w").write(k)
 # Vista previa con datos de ejemplo
