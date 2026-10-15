@@ -1,0 +1,41 @@
+<!doctype html>
+{%- comment -%}
+  Layout limpio para la página «Muy pronto»: sin el pie ni el diálogo de contraseña de Tinker,
+  porque la sección mm-pronto ya trae su propio acceso con contraseña.
+{%- endcomment -%}
+<html
+  class="no-js{% if request.design_mode %} shopify-design-mode{% endif %}"
+  lang="{{ request.locale.iso_code }}"
+  dir="{{ request.locale.direction | default: 'ltr' }}"
+>
+  <head>
+    {%- render 'stylesheets' -%}
+
+    {%- if settings.favicon != blank -%}
+      <link
+        rel="icon"
+        type="image/png"
+        href="{{ settings.favicon | image_url: width: 32, height: 32 }}"
+      >
+    {%- endif -%}
+
+    {%- render 'meta-tags' -%}
+    {%- render 'fonts' -%}
+    {%- render 'scripts' -%}
+    {%- render 'theme-styles-variables' -%}
+    {%- render 'color-palette' -%}
+
+    {% if request.design_mode %}
+      {%- render 'theme-editor' -%}
+    {% endif %}
+
+    {{ content_for_header }}
+    <style>html, body { margin: 0; background: #fff; }</style>
+  </head>
+
+  <body class="page-width-{{ settings.page_width }}">
+    <main id="MainContent" class="content-for-layout" role="main">
+      {{ content_for_layout }}
+    </main>
+  </body>
+</html>
