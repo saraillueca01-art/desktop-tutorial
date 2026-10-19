@@ -61,8 +61,17 @@
 
     /* Portada */
     .hero { padding: clamp(36px, 4.5vw, 60px) 0 clamp(56px, 8vw, 96px); border-bottom: 1px solid var(--line); }
-    .hero .wrap { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(40px, 7vw, 96px); align-items: start; }
-    .hero h1 { font-size: clamp(3.2rem, 7.5vw, 5.6rem); margin: 14px 0 18px; }
+    .hero .wrap { display: grid; grid-template-columns: 1.15fr .85fr; grid-template-areas: "text form" "ticket form"; grid-template-rows: auto 1fr; column-gap: clamp(40px, 7vw, 96px); row-gap: 0; align-items: start; }
+    .hero-text { grid-area: text; }
+    .hero .form-box { grid-area: form; }
+    .hero-ticket { grid-area: ticket; }
+    .quick-price { margin-top: 18px; font-size: 1.02rem; color: var(--soft); }
+    .quick-price strong { font-size: 1.5rem; font-weight: 500; color: var(--gold-text); margin-right: 4px; }
+    .quick-price span { color: var(--ink); font-weight: 400; }
+    .how { list-style: none; counter-reset: how; display: grid; gap: 8px; margin: 4px 0 24px; }
+    .how li { counter-increment: how; display: flex; gap: 12px; align-items: center; font-size: .92rem; color: var(--soft); }
+    .how li::before { content: counter(how); flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--gold-tint); color: var(--gold-text); font-size: .75rem; font-weight: 600; display: grid; place-items: center; }
+    .hero h1 { font-size: clamp(2.6rem, 6vw, 4.6rem); margin: 14px 0 18px; }
     .hero .lead { max-width: 470px; color: var(--soft); font-size: 1.08rem; }
 
     /* Tarjeta de la promoción */
@@ -175,7 +184,16 @@
 
     @media (max-width: 880px) {
       body { font-size: 16px; }
-      .hero .wrap, .mask .wrap, .results .wrap { grid-template-columns: 1fr; }
+      .mask .wrap, .results .wrap { grid-template-columns: 1fr; }
+      .hero .wrap { grid-template-columns: 1fr; grid-template-areas: "text" "form" "ticket"; row-gap: 28px; }
+      .hero .ticket { margin-top: 0; }
+      .hero .lead { font-size: 1rem; }
+      .hero { padding-top: 24px; }
+      .hero h1 { font-size: 2.5rem; margin: 10px 0 12px; }
+      .quick-price { margin-top: 12px; }
+      .how { display: none; }
+      .form-box h2 { margin-bottom: 18px; }
+      .nav .wrap { padding: 10px 0; }
       .steps { grid-template-columns: 1fr; }
       .mask-media { max-width: 280px; }
       .processes li { grid-template-columns: 1fr; gap: 2px; }
@@ -213,10 +231,45 @@
 
   <header class="hero">
     <div class="wrap">
-      <div class="fade">
-        <span class="label">Tratamiento post-verano</span>
-        <h1>Facial<br>Luminus</h1>
-        <p class="lead">Ilumina, exfolia y despigmenta tu piel después del verano. Para manchas y tono apagado, en cualquier tipo de piel.</p>
+      <div class="hero-text">
+        <span class="label">Facial Luminus</span>
+        <h1>Tu piel, luminosa otra vez</h1>
+        <p class="lead">Limpia, exfolia e ilumina las manchas que deja el verano en una sola sesión de cabina. Apto para cualquier tipo de piel.</p>
+        <p class="quick-price"><strong>59 €</strong> precio de inauguración · <span>Plazas limitadas</span></p>
+      </div>
+
+      <div class="form-box" id="reserva">
+        <span class="pill">Plazas limitadas</span>
+        <h2>Reserva en 30 segundos</h2>
+        <ol class="how">
+          <li>Déjanos tu nombre y teléfono</li>
+          <li>Te llamamos y eliges día y hora</li>
+          <li>Vienes a tu sesión de 75 minutos</li>
+        </ol>
+
+        <form id="lead-form" data-endpoint="https://script.google.com/macros/s/AKfycbxz-JLAeGgqUpyB1MlOYLW8mb-WUkxU2r_KOYEHD0MFrOmCNtFs98VKXB5vW0bjEgfl9w/exec" novalidate>
+          <label class="field"><span>Nombre</span>
+            <input type="text" name="nombre" autocomplete="given-name" required placeholder="Tu nombre">
+          </label>
+          <label class="field"><span>Teléfono</span>
+            <input type="tel" name="telefono" autocomplete="tel" inputmode="tel" required placeholder="600 000 000">
+          </label>
+          <label class="field"><span>Email</span>
+            <input type="email" name="email" autocomplete="email" inputmode="email" required placeholder="tu@email.com">
+          </label>
+          <div class="hp" aria-hidden="true"><input type="text" name="web" tabindex="-1" autocomplete="off"></div>
+          <label class="check">
+            <input type="checkbox" name="novedades" value="Sí">
+            <span>Quiero recibir promociones por email (opcional).</span>
+          </label>
+          <button class="btn" type="submit">Quiero mi cita a 59 €</button>
+          <div class="form-msg" role="status" hidden></div>
+          <p class="note-small">✓ Sin pagar nada ahora &nbsp;·&nbsp; ✓ Te llamamos en menos de 24 h</p>
+          <p class="legal">Al enviar aceptas que <span data-centro="nombre">el centro</span> use tus datos para gestionar tu cita. Puedes acceder, rectificar o suprimirlos cuando quieras. <a href="#privacidad" data-legal="privacidad">Política de privacidad</a>.</p>
+        </form>
+      </div>
+
+      <div class="hero-ticket">
         <div class="ticket">
           <div class="ticket-main">
             <span class="ticket-kicker">Promoción de inauguración</span>
@@ -229,37 +282,6 @@
             <span class="ticket-stamp">Plazas limitadas</span>
           </div>
         </div>
-      </div>
-
-      <div class="form-box fade" id="reserva">
-        <span class="pill">Plazas limitadas</span>
-        <h2>Reserva tu cita</h2>
-        <p>Déjanos tus datos y te contactamos para elegir día y hora.</p>
-
-        <form id="lead-form" data-endpoint="https://script.google.com/macros/s/AKfycbxz-JLAeGgqUpyB1MlOYLW8mb-WUkxU2r_KOYEHD0MFrOmCNtFs98VKXB5vW0bjEgfl9w/exec" novalidate>
-          <label class="field"><span>Nombre</span>
-            <input type="text" name="nombre" autocomplete="given-name" required placeholder="Tu nombre">
-          </label>
-          <label class="field"><span>Email</span>
-            <input type="email" name="email" autocomplete="email" required placeholder="tu@email.com">
-          </label>
-          <label class="field"><span>Teléfono</span>
-            <input type="tel" name="telefono" autocomplete="tel" inputmode="tel" required placeholder="600 000 000">
-          </label>
-          <div class="hp" aria-hidden="true"><input type="text" name="web" tabindex="-1" autocomplete="off"></div>
-          <label class="check">
-            <input type="checkbox" name="privacidad" value="Sí" required>
-            <span>He leído y acepto la <a href="#privacidad" data-legal="privacidad">política de privacidad</a> y que me contactéis para reservar mi cita.</span>
-          </label>
-          <label class="check">
-            <input type="checkbox" name="novedades" value="Sí">
-            <span>Quiero recibir promociones y consejos para mi piel por email.</span>
-          </label>
-          <button class="btn" type="submit">Reservar mi cita</button>
-          <div class="form-msg" role="status" hidden></div>
-          <p class="note-small">Sin compromiso. Te contactamos en menos de 24 horas.</p>
-          <p class="legal">Responsable: <span data-centro="nombre">el centro</span>. Finalidad: gestionar tu reserva y, si lo marcas, enviarte promociones. Legitimación: tu consentimiento. Destinatarios: Google, que aloja los datos del formulario. Derechos: acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <span data-centro="email">nuestro email</span>. Más información en la <a href="#privacidad" data-legal="privacidad">política de privacidad</a>.</p>
-        </form>
       </div>
     </div>
   </header>
@@ -365,7 +387,7 @@
     <p>No tomamos decisiones automatizadas ni elaboramos perfiles con tus datos.</p>
 
     <h3>Base legal</h3>
-    <p>Tu consentimiento (art. 6.1.a del RGPD), que nos das al marcar las casillas del formulario. Son dos consentimientos separados: puedes reservar sin aceptar las promociones. Puedes retirar cualquiera de ellos cuando quieras, sin que afecte al tratamiento hecho antes.</p>
+    <p>Para gestionar tu cita, la aplicación de medidas precontractuales a petición tuya (art. 6.1.b del RGPD): nos pides que te contactemos para reservar. Para las promociones, tu consentimiento (art. 6.1.a del RGPD), que solo das si marcas esa casilla; puedes reservar sin aceptarlas y retirarlo cuando quieras, sin que afecte al tratamiento hecho antes.</p>
 
     <h3>Cuánto tiempo los guardamos</h3>
     <p>Los datos para gestionar la reserva, mientras dure la promoción y, como máximo, 12 meses desde el último contacto si no llegas a reservar. Si te haces clienta, los conservaremos el tiempo que exijan las obligaciones legales. Los datos para promociones, hasta que te des de baja: cada email incluirá la forma de hacerlo.</p>
@@ -388,7 +410,7 @@
     <p>Esta página no usa cookies propias ni de terceros para analítica o publicidad.</p>
   </dialog>
 
-  <div class="sticky"><a class="btn" href="#reserva">Reservar · Plazas limitadas</a></div>
+  <div class="sticky"><a class="btn" href="#reserva">Quiero mi cita a 59 €</a></div>
 
   <script>
     // Datos del centro: se actualizan en toda la página
@@ -426,7 +448,7 @@
     const sticky = document.querySelector('.sticky');
     // Botón fijo del móvil: aparece al bajar y se oculta cuando el formulario está a la vista
     let formVisible = false;
-    const updateSticky = () => sticky.classList.toggle('hide', formVisible || scrollY < 600);
+    const updateSticky = () => sticky.classList.toggle('hide', formVisible);
     new IntersectionObserver(([en]) => { formVisible = en.isIntersecting; updateSticky(); })
       .observe(document.getElementById('reserva'));
     addEventListener('scroll', updateSticky, { passive: true });
@@ -449,7 +471,6 @@
       if (!form.nombre.value.trim()) return show('Escribe tu nombre.', true);
       if (form.telefono.value.replace(/\D/g, '').length < 9) return show('Escribe tu teléfono para poder contactarte.', true);
       if (!form.email.value || !form.email.checkValidity()) return show('Revisa tu email.', true);
-      if (!form.privacidad.checked) return show('Para reservar tienes que aceptar la política de privacidad.', true);
 
       data.set('origen', new URLSearchParams(location.search).get('utm_source') || document.referrer || 'directo');
       const nombre = form.nombre.value.trim().split(' ')[0];
