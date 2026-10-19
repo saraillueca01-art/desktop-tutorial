@@ -10,6 +10,7 @@ from urllib.parse import quote
 WA = 'https://wa.me/34648795983?text='
 def wa(msg): return WA + quote(msg)
 WA_LUMINUS = wa('Hola, vengo del email y quiero mi LUMINUS 😊')
+from precios import email_precios, WA_RSVP
 
 TEMAS = {
     'chakra': dict(fondo='#f4f1ea', tinta='#1d1d1b', suave='#6b6760', linea='#ece5d6', acento='#bf9628',
@@ -107,7 +108,7 @@ def email(tema, titulo, preheader, barra, kicker, h1, intro, cuerpo, pie_nombre,
 
 # ---------- 1. Inauguración (Chakra) ----------
 CAL = ('https://calendar.google.com/calendar/render?action=TEMPLATE'
-       '&text=Inauguraci%C3%B3n%20Pilates%20Reformer%20%2B%20Chakra%20Wellness%20Center'
+       '&text=Inauguraci%C3%B3n%20Espai%20Pilates%20Reformer%20%2B%20Chakra%20Wellness%20Center'
        '&dates=20261026T180000/20261026T210000&ctz=Europe/Madrid'
        '&location=C%2F%20Benidoleig%2031%2C%20Benissa')
 
@@ -195,7 +196,7 @@ def cuerpo_precios(servicio, mensaje_wa):
           <tr>
             <td align="center" style="background:{t['claro']};padding:30px 24px;">
               <p style="margin:0 0 6px;font-size:11px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;color:{t['acento_texto']};">Y no te pierdas</p>
-              <p style="margin:0;font-size:17px;line-height:1.5;color:{t['tinta']};">La inauguración del nuevo centro de Pilates Reformer y Chakra Wellness Center<br><strong>Lunes 26 de octubre · 18:00 h · C/ Benidoleig 31</strong></p>
+              <p style="margin:0;font-size:17px;line-height:1.5;color:{t['tinta']};">La inauguración del nuevo centro Espai Pilates Reformer y Chakra Wellness Center<br><strong>Lunes 26 de octubre · 18:00 h · C/ Benidoleig 31</strong></p>
             </td>
           </tr>'''
     return f
@@ -227,6 +228,7 @@ def email_invitacion():
       .wide {{ letter-spacing: 4px !important; }}
       .day {{ font-size: 96px !important; }}
       .price {{ font-size: 60px !important; }}
+      .logo-p {{ width: 130px !important; height: auto !important; }}
     }}
   </style>
 </head>
@@ -238,21 +240,25 @@ def email_invitacion():
 
         <tr><td align="center" style="padding:0 0 10px;background:#e9e4da;font-family:{sans};font-size:11px;color:{S};">¿No ves bien este email? <a href="*|ARCHIVE|*" style="color:{S};">Ábrelo en el navegador</a></td></tr>
 
-        <tr><td align="center" style="padding:36px 24px 30px;background:#ffffff;">
-          <img src="{BASE}/facial-luminus/media/logo-chakra.png" width="98" height="110" alt="Chakra Wellness Center by Espai Vital" style="display:block;border:0;width:98px;height:110px;">
+        <tr><td align="center" style="padding:34px 12px 30px;background:#ffffff;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr>
+            <td valign="middle" style="padding:0 22px;"><img src="{BASE}/campanas-octubre/media/logo-espai-pilates.png" width="176" height="75" alt="Espai Pilates Reformer" class="logo-p" style="display:block;border:0;width:176px;height:75px;"></td>
+            <td valign="middle" style="border-left:1px solid #e8dfcc;padding:0 22px;"><img src="{BASE}/facial-luminus/media/logo-chakra.png" width="80" height="90" alt="Chakra Wellness Center by Espai Vital" style="display:block;border:0;width:80px;height:90px;"></td>
+          </tr></table>
         </td></tr>
 
         <!-- Invitación -->
         <tr><td class="px" align="center" bgcolor="{N}" style="background:{N};padding:56px 48px 52px;">
           <p style="margin:0;font-family:{sans};font-size:11px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:{GL};">Te invitamos a la</p>
           <p class="big" style="margin:18px 0 0;font-family:{serif};font-size:46px;line-height:1.05;letter-spacing:6px;text-transform:uppercase;color:#ffffff;">Inauguración</p>
-          <p style="margin:16px 0 0;font-family:{serif};font-style:italic;font-size:19px;line-height:1.5;color:#d8d2c6;">de nuestro nuevo centro<br>Pilates Reformer &amp; Chakra Wellness Center</p>
+          <p style="margin:16px 0 0;font-family:{serif};font-style:italic;font-size:19px;line-height:1.5;color:#d8d2c6;">de nuestro nuevo centro<br>Espai Pilates Reformer &amp; Chakra Wellness Center</p>
           <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:34px auto 0;"><tr><td width="64" style="border-top:1px solid {G};font-size:0;line-height:0;">&nbsp;</td></tr></table>
           <p style="margin:30px 0 0;font-family:{sans};font-size:12px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:{GL};">Lunes</p>
           <p class="day" style="margin:4px 0 0;font-family:{serif};font-size:120px;line-height:1;color:{G};">26</p>
           <p class="wide" style="margin:6px 0 0;font-family:{sans};font-size:13px;font-weight:bold;letter-spacing:8px;text-transform:uppercase;color:#ffffff;">Octubre · 18:00 h</p>
           <p style="margin:26px 0 0;font-family:{sans};font-size:15px;line-height:1.6;color:#d8d2c6;">C/ Benidoleig 31 · Benissa<br><span style="color:#9c968b;">junto a Espai Vital</span></p>
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:36px auto 0;"><tr><td>{btn('Añadir a mi calendario', CAL)}</td></tr></table>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:36px auto 0;"><tr><td>{btn('Confirmar asistencia', WA_RSVP)}</td></tr></table>
+          <p style="margin:16px 0 0;font-family:{sans};font-size:13px;"><a href="{CAL}" style="color:#d8d2c6;">Añadir a mi calendario</a></p>
         </td></tr>
 
         <tr><td class="px" align="center" style="padding:44px 56px 46px;background:#ffffff;">
@@ -303,22 +309,16 @@ def email_invitacion():
 
 EMAILS = {
     'email-inauguracion': email_invitacion(),
-    'email-pilates-precios': email(
-        'pilates', 'Última semana con el precio actual · Espai Pilates Reformer', 'Hasta el domingo 25 de octubre mantienes el precio de ahora.',
-        'Última semana · Precio actual hasta el domingo 25', 'Espai Pilates Reformer',
-        'Última semana con tu precio actual',
-        'Con la apertura de nuestro nuevo centro de Pilates Reformer, el <strong style="color:#575855;">lunes 26 de octubre</strong> actualizamos nuestras tarifas. Si reservas o renuevas tu plan esta semana, mantienes el precio de ahora.',
-        cuerpo_precios('tus clases de Pilates', 'Hola, vengo del email y quiero mantener mi tarifa actual de Pilates 😊'),
-        'Espai Pilates Reformer · by Espai Vital', 'Clínica Espai Vital SLP · C/ Benidoleig 31, bajo · 03720 Benissa (Alicante)',
-        '+34 648 79 59 83', 'info@espaivitalbenissa.com'),
-    'email-estetica-precios': email(
-        'espai', 'Última semana con el precio actual · Estética Espai Vital', 'Hasta el domingo 25 de octubre mantienes el precio de ahora en tus tratamientos.',
-        'Última semana · Precio actual hasta el domingo 25', 'Estética Espai Vital',
-        'Última semana con el precio actual',
-        'A partir del <strong style="color:#1f3458;">lunes 26 de octubre</strong> actualizamos las tarifas de nuestros tratamientos de estética. Si reservas tu tratamiento o tu bono esta semana, te lo dejamos al precio de ahora.',
-        cuerpo_precios('tus tratamientos de estética', 'Hola, vengo del email y quiero mantener mi tarifa actual de estética 😊'),
-        'Espai Vital · Fisioteràpia i Estètica', 'Clínica Espai Vital SLP · C/ Benidoleig 31, bajo · 03720 Benissa (Alicante)',
-        '+34 648 79 59 83', 'info@espaivitalbenissa.com'),
+    'email-pilates-precios': email_precios(
+        'pilates', 'tu plan de Pilates', 'Hola, vengo del email y quiero mantener mi tarifa actual de Pilates 😊',
+        'Tu precio actual, solo hasta el domingo · Espai Pilates Reformer',
+        'Hasta el domingo 25 de octubre mantienes tu precio de siempre.',
+        'Espai Pilates Reformer · by Espai Vital'),
+    'email-estetica-precios': email_precios(
+        'espai', 'tu tratamiento o bono de estética', 'Hola, vengo del email y quiero mantener mi tarifa actual de estética 😊',
+        'Tu precio actual, solo hasta el domingo · Estética Espai Vital',
+        'Hasta el domingo 25 de octubre mantienes tu precio de siempre en estética.',
+        'Espai Vital · Fisioteràpia i Estètica'),
 }
 
 if __name__ == '__main__':
