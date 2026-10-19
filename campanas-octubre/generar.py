@@ -6,6 +6,10 @@ import base64, os
 
 BASE = 'https://saraillueca01-art.github.io/desktop-tutorial'
 LANDING = BASE + '/facial-luminus/'
+from urllib.parse import quote
+WA = 'https://wa.me/34648795983?text='
+def wa(msg): return WA + quote(msg)
+WA_LUMINUS = wa('Hola, vengo del email y quiero mi LUMINUS 😊')
 
 TEMAS = {
     'chakra': dict(fondo='#f4f1ea', tinta='#1d1d1b', suave='#6b6760', linea='#ece5d6', acento='#bf9628',
@@ -125,7 +129,7 @@ def cuerpo_inauguracion(t):
           </tr>
           <tr>
             <td class="px" style="padding:44px 40px 0;">
-              <a href="{LANDING}?utm_source=email-inauguracion" style="text-decoration:none;">
+              <a href="{WA_LUMINUS}" style="text-decoration:none;">
                 <img src="{BASE}/facial-luminus/media/email-mascarilla.jpg" width="520" alt="Tratamiento facial Luminus" style="display:block;border:0;width:100%;max-width:520px;height:auto;border-radius:12px;">
               </a>
             </td>
@@ -151,7 +155,8 @@ def cuerpo_inauguracion(t):
           </tr>
           <tr>
             <td align="center" style="padding:24px 24px 8px;">
-              {boton(t, 'Reservar mi LUMINUS', LANDING + '?utm_source=email-inauguracion')}
+              {boton(t, 'Reservar mi LUMINUS', WA_LUMINUS)}
+              <p style="margin:12px 0 0;font-size:13px;color:{t['suave']};">Te abrimos WhatsApp con el mensaje ya escrito</p>
             </td>
           </tr>
           <tr>
@@ -168,9 +173,9 @@ def cuerpo_inauguracion(t):
 
 
 # ---------- 2 y 3. Subida de precios (Espai Vital) ----------
-def cuerpo_precios(servicio, cta_asunto):
+def cuerpo_precios(servicio, mensaje_wa):
     def f(t):
-        mail = 'mailto:info@espaivitalbenissa.com?subject=' + cta_asunto.replace(' ', '%20')
+        mail = wa(mensaje_wa)
         return f'''          <tr>
             <td class="px" style="padding:28px 40px 0;">
               {caja(t, ['✓&nbsp; Mantienes el <strong>precio actual</strong>', '✓&nbsp; Válido para quien reserve o contrate <strong>hasta el domingo 25 de octubre</strong>', '✓&nbsp; A partir del lunes 26 se aplican las nuevas tarifas'])}
@@ -179,7 +184,7 @@ def cuerpo_precios(servicio, cta_asunto):
           <tr>
             <td align="center" style="padding:28px 24px 8px;">
               {boton(t, 'Quiero mantener mi precio', mail)}
-              <p style="margin:14px 0 0;font-size:14px;line-height:1.6;color:{t['suave']};">O llámanos al <a href="tel:+34965730697" style="color:{t['tinta']};font-weight:bold;">965 73 06 97</a> y te lo dejamos reservado.</p>
+              <p style="margin:14px 0 0;font-size:14px;line-height:1.6;color:{t['suave']};">Te abrimos WhatsApp con el mensaje ya escrito. También puedes escribirnos al <a href="{mail}" style="color:{t['tinta']};font-weight:bold;">648 79 59 83</a>.</p>
             </td>
           </tr>
           <tr>
@@ -209,17 +214,17 @@ EMAILS = {
         'Última semana · Precio actual hasta el domingo 25', 'Espai Pilates Reformer',
         'Última semana con tu precio actual',
         'Con la apertura de nuestro nuevo centro de Pilates Reformer, el <strong style="color:#575855;">lunes 26 de octubre</strong> actualizamos nuestras tarifas. Si reservas o renuevas tu plan esta semana, mantienes el precio de ahora.',
-        cuerpo_precios('tus clases de Pilates', 'Quiero mantener mi precio de Pilates'),
+        cuerpo_precios('tus clases de Pilates', 'Hola, vengo del email y quiero mantener mi tarifa actual de Pilates 😊'),
         'Espai Pilates Reformer · by Espai Vital', 'Clínica Espai Vital SLP · C/ Benidoleig 31, bajo · 03720 Benissa (Alicante)',
-        '+34 965 73 06 97', 'info@espaivitalbenissa.com'),
+        '+34 648 79 59 83', 'info@espaivitalbenissa.com'),
     'email-estetica-precios': email(
         'espai', 'Última semana con el precio actual · Estética Espai Vital', 'Hasta el domingo 25 de octubre mantienes el precio de ahora en tus tratamientos.',
         'Última semana · Precio actual hasta el domingo 25', 'Estética Espai Vital',
         'Última semana con el precio actual',
         'A partir del <strong style="color:#1f3458;">lunes 26 de octubre</strong> actualizamos las tarifas de nuestros tratamientos de estética. Si reservas tu tratamiento o tu bono esta semana, te lo dejamos al precio de ahora.',
-        cuerpo_precios('tus tratamientos de estética', 'Quiero mantener mi precio de estética'),
+        cuerpo_precios('tus tratamientos de estética', 'Hola, vengo del email y quiero mantener mi tarifa actual de estética 😊'),
         'Espai Vital · Fisioteràpia i Estètica', 'Clínica Espai Vital SLP · C/ Benidoleig 31, bajo · 03720 Benissa (Alicante)',
-        '+34 965 73 06 97', 'info@espaivitalbenissa.com'),
+        '+34 648 79 59 83', 'info@espaivitalbenissa.com'),
 }
 
 if __name__ == '__main__':
