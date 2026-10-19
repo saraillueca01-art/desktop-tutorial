@@ -12,6 +12,10 @@ TEMAS = {
                    acento_texto='#8f6d14', claro='#faf6ea', boton_texto='#1d1d1b', barra='#1d1d1b', barra_texto='#e2be4a',
                    logo=BASE + '/facial-luminus/media/logo-chakra.png', logo_w=107, logo_h=120,
                    logo_alt='Chakra Wellness Center by Espai Vital'),
+    'pilates': dict(fondo='#f1f6f4', tinta='#575855', suave='#6f716d', linea='#dde9e4', acento='#7db7a3',
+                    acento_texto='#4f8a76', claro='#eaf4f0', boton_texto='#ffffff', barra='#575855', barra_texto='#bfe0d4',
+                    logo=BASE + '/campanas-octubre/media/logo-espai-pilates.png', logo_w=220, logo_h=94,
+                    logo_alt='Espai Pilates Reformer'),
     'espai': dict(fondo='#eef5fa', tinta='#1f3458', suave='#5d6b80', linea='#d9e6f0', acento='#8fcdee',
                   acento_texto='#2f6f99', claro='#eaf6fc', boton_texto='#1f3458', barra='#1f3458', barra_texto='#8fcdee',
                   logo=BASE + '/campanas-octubre/media/logo-espai-vital.png', logo_w=220, logo_h=72,
@@ -201,12 +205,12 @@ EMAILS = {
         cuerpo_inauguracion, 'Chakra Wellness Center by Espai Vital', 'C/ Calpe, 5 · 03720 Benissa (Alicante) · junto a Espai Vital',
         '+34 633 38 81 52', 'info@chakracenterbenissa.com'),
     'email-pilates-precios': email(
-        'espai', 'Última semana con el precio actual · Espai Pilates', 'Hasta el domingo 25 de octubre mantienes el precio de ahora.',
-        'Última semana · Precio actual hasta el domingo 25', 'Espai Pilates',
+        'pilates', 'Última semana con el precio actual · Espai Pilates Reformer', 'Hasta el domingo 25 de octubre mantienes el precio de ahora.',
+        'Última semana · Precio actual hasta el domingo 25', 'Espai Pilates Reformer',
         'Última semana con tu precio actual',
-        'Con la apertura de nuestro nuevo centro de Pilates Reformer, el <strong style="color:#1f3458;">lunes 26 de octubre</strong> actualizamos nuestras tarifas. Si reservas o renuevas tu plan esta semana, mantienes el precio de ahora.',
+        'Con la apertura de nuestro nuevo centro de Pilates Reformer, el <strong style="color:#575855;">lunes 26 de octubre</strong> actualizamos nuestras tarifas. Si reservas o renuevas tu plan esta semana, mantienes el precio de ahora.',
         cuerpo_precios('tus clases de Pilates', 'Quiero mantener mi precio de Pilates'),
-        'Espai Vital · Fisioteràpia i Estètica', 'Clínica Espai Vital SLP · C/ Benidoleig 31, bajo · 03720 Benissa (Alicante)',
+        'Espai Pilates Reformer · by Espai Vital', 'Clínica Espai Vital SLP · C/ Benidoleig 31, bajo · 03720 Benissa (Alicante)',
         '+34 965 73 06 97', 'info@espaivitalbenissa.com'),
     'email-estetica-precios': email(
         'espai', 'Última semana con el precio actual · Estética Espai Vital', 'Hasta el domingo 25 de octubre mantienes el precio de ahora en tus tratamientos.',
@@ -226,6 +230,7 @@ if __name__ == '__main__':
         BASE + '/facial-luminus/media/logo-chakra.png': ('facial-luminus/media/logo-chakra.png', 'image/png'),
         BASE + '/facial-luminus/media/email-mascarilla.jpg': ('facial-luminus/media/email-mascarilla.jpg', 'image/jpeg'),
         BASE + '/campanas-octubre/media/logo-espai-vital.png': ('campanas-octubre/media/logo-espai-vital.png', 'image/png'),
+        BASE + '/campanas-octubre/media/logo-espai-pilates.png': ('campanas-octubre/media/logo-espai-pilates.png', 'image/png'),
     }
     for nombre, html in EMAILS.items():
         open(os.path.join(here, nombre + '.html'), 'w').write(html)
