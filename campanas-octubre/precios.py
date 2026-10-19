@@ -6,11 +6,11 @@ WA = 'https://wa.me/34648795983?text='
 WA_RSVP = WA + quote('Hola, vengo del email y confirmo mi asistencia a la inauguración del lunes 26 😊')
 
 MARCAS = {
-    'pilates': dict(D='#4a4b48', A='#7db7a3', AT='#ffffff', TINT='#eef6f2', LINE='#dce9e3', K='#bfe0d4',
-                    T='#2b2c2a', ETQ='#4f8a76',
+    'pilates': dict(D='#4a4b48', A='#7db7a3', AT='#ffffff', TINT='#f7f2e8', LINE='#e8dfcc', K='#7db7a3',
+                    T='#3f403d', ETQ='#4f8a76', HERO='#efe6d4', HT='#3f403d', HK='#4f8a76',
                     logo=(BASE + '/campanas-octubre/media/logo-espai-pilates.png', 220, 94, 'Espai Pilates Reformer')),
     'espai': dict(D='#1f3458', A='#8fcdee', AT='#1f3458', TINT='#eef6fb', LINE='#d9e6f0', K='#8fcdee',
-                  T='#1f3458', ETQ='#2f6f99',
+                  T='#1f3458', ETQ='#2f6f99', HERO='#1f3458', HT='#ffffff', HK='#8fcdee',
                   logo=(BASE + '/campanas-octubre/media/logo-espai-vital.png', 220, 72, 'Espai Vital · Fisioteràpia i Estètica')),
 }
 SERIF = "Georgia,'Times New Roman',serif"
@@ -20,7 +20,7 @@ S = '#6b6f75'
 
 def email_precios(marca, servicio, mensaje_wa, titulo, preheader, pie_nombre):
     m = MARCAS[marca]
-    D, A, AT, TINT, LINE, K, T, ETQ = (m[k] for k in ('D', 'A', 'AT', 'TINT', 'LINE', 'K', 'T', 'ETQ'))
+    D, A, AT, TINT, LINE, K, T, ETQ, HERO, HT, HK = (m[k] for k in ('D', 'A', 'AT', 'TINT', 'LINE', 'K', 'T', 'ETQ', 'HERO', 'HT', 'HK'))
     logo = m['logo']
     url = WA + quote(mensaje_wa)
 
@@ -31,8 +31,8 @@ def email_precios(marca, servicio, mensaje_wa, titulo, preheader, pie_nombre):
                 f'font-weight:bold;letter-spacing:3px;text-transform:uppercase;color:{color};text-decoration:none;">{texto}</a>'
                 f'</td></tr></table>')
 
-    pasos = [('1', 'Pulsa el botón', 'Se abre WhatsApp con el mensaje ya escrito.'),
-             ('2', 'Envíanos el mensaje', 'Solo tienes que darle a enviar.'),
+    pasos = [('1', 'Pulsa el botón', 'Te lleva a nuestro WhatsApp.'),
+             ('2', 'Envíanos el mensaje', 'Dinos que quieres mantener tu precio.'),
              ('3', 'Listo', f'Te guardamos {servicio} al precio actual.')]
     pasos_html = ''.join(
         f'<tr><td width="46" valign="top" style="padding:14px 0;">'
@@ -73,16 +73,15 @@ def email_precios(marca, servicio, mensaje_wa, titulo, preheader, pie_nombre):
           <img src="{logo[0]}" width="{logo[1]}" height="{logo[2]}" alt="{logo[3]}" style="display:block;border:0;width:{logo[1]}px;height:{logo[2]}px;">
         </td></tr>
 
-        <tr><td class="px" align="center" bgcolor="{D}" style="background:{D};padding:52px 48px 50px;">
-          <p style="margin:0;font-family:{SANS};font-size:11px;font-weight:bold;letter-spacing:5px;text-transform:uppercase;color:{K};">Aviso para nuestros clientes</p>
-          <p class="h1" style="margin:16px 0 0;font-family:{SERIF};font-size:40px;line-height:1.15;color:#ffffff;">Tu precio actual,<br><em>solo hasta el domingo</em></p>
+        <tr><td class="px" align="center" bgcolor="{HERO}" style="background:{HERO};padding:52px 48px 50px;">
+          <p style="margin:0;font-family:{SANS};font-size:11px;font-weight:bold;letter-spacing:5px;text-transform:uppercase;color:{HK};">Aviso para nuestros clientes</p>
+          <p class="h1" style="margin:16px 0 0;font-family:{SERIF};font-size:40px;line-height:1.15;color:{HT};">Tu precio actual,<br><em>solo hasta el domingo</em></p>
           <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:32px auto 0;"><tr><td align="center" style="border:1px solid {K};padding:18px 40px 20px;">
-            <p style="margin:0;font-family:{SANS};font-size:11px;font-weight:bold;letter-spacing:5px;text-transform:uppercase;color:{K};">Último día</p>
-            <p class="day" style="margin:4px 0 0;font-family:{SERIF};font-size:104px;line-height:1;color:#ffffff;">25</p>
-            <p style="margin:6px 0 0;font-family:{SANS};font-size:12px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:#ffffff;">Domingo · Octubre</p>
+            <p style="margin:0;font-family:{SANS};font-size:11px;font-weight:bold;letter-spacing:5px;text-transform:uppercase;color:{HK};">Último día</p>
+            <p class="day" style="margin:4px 0 0;font-family:{SERIF};font-size:104px;line-height:1;color:{HT};">25</p>
+            <p style="margin:6px 0 0;font-family:{SANS};font-size:12px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:{HT};">Domingo · Octubre</p>
           </td></tr></table>
           <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:34px auto 0;"><tr><td>{btn('Mantener mi precio', url)}</td></tr></table>
-          <p style="margin:14px 0 0;font-family:{SANS};font-size:13px;color:{K};">Te abrimos WhatsApp con el mensaje ya escrito</p>
         </td></tr>
 
         <tr><td class="px" align="center" style="padding:44px 56px 8px;">

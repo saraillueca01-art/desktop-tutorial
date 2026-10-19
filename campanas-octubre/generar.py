@@ -267,7 +267,7 @@ def email_invitacion():
 
         <!-- LUMINUS -->
         <tr><td bgcolor="{C}" style="background:{C};padding:0;">
-          <a href="{WA_LUMINUS}" style="text-decoration:none;"><img src="{BASE}/facial-luminus/media/email-mascarilla.jpg" width="600" alt="Tratamiento facial LUMINUS" style="display:block;border:0;width:100%;max-width:600px;height:auto;"></a>
+          <a href="{LANDING}?utm_source=email-inauguracion" style="text-decoration:none;"><img src="{BASE}/facial-luminus/media/email-mascarilla.jpg" width="600" alt="Tratamiento facial LUMINUS" style="display:block;border:0;width:100%;max-width:600px;height:auto;"></a>
         </td></tr>
         <tr><td class="px" align="center" bgcolor="{C}" style="background:{C};padding:40px 56px 8px;">
           <p style="margin:0;font-family:{sans};font-size:11px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:#8f6d14;">Para celebrarlo presentamos</p>
@@ -281,9 +281,8 @@ def email_invitacion():
         <tr><td class="px" align="center" bgcolor="{C}" style="background:{C};padding:36px 48px 44px;">
           <p style="margin:0;font-family:{sans};font-size:11px;font-weight:bold;letter-spacing:5px;text-transform:uppercase;color:#8f6d14;">Precio especial de lanzamiento</p>
           <p class="price" style="margin:10px 0 4px;font-family:{serif};font-size:72px;line-height:1;color:{G};">59&nbsp;€</p>
-          <p style="margin:0 0 26px;font-family:{sans};font-size:14px;color:{S};">Plazas limitadas</p>
-          {btn('Reservar mi LUMINUS', WA_LUMINUS, N, GL)}
-          <p style="margin:14px 0 0;font-family:{sans};font-size:13px;color:{S};">Te abrimos WhatsApp con el mensaje ya escrito</p>
+          <p style="margin:0 0 26px;font-family:{sans};font-size:15px;line-height:1.5;color:{T};">Reserva tu cita de LUMINUS <strong>antes de que se agoten</strong>.<br><span style="color:{S};font-size:14px;">Las plazas son limitadas y pueden agotarse antes de la inauguración.</span></p>
+          {btn('Reservar mi cita', LANDING + '?utm_source=email-inauguracion', N, GL)}
           <p style="margin:28px 0 0;font-family:{sans};font-size:14px;line-height:1.6;color:{S};">Y para las manchas más rebeldes, este año contamos con <strong style="color:{T};">láser DPL</strong>.</p>
         </td></tr>
 
