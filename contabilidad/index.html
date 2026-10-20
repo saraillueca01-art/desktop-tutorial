@@ -599,9 +599,9 @@ const NEGOCIOS = {
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   const tri = f => Math.floor((+f.slice(5, 7) - 1) / 3) + 1;
   let avisoT = null;
-  const aviso = (txt, mal = false) => {
+  const aviso = (txt, mal = false, ms) => {
     const el = document.getElementById('aviso'); el.textContent = txt; el.className = mal ? 'mal' : '';
-    clearTimeout(avisoT); avisoT = setTimeout(() => { el.className = 'oculto' + (mal ? ' mal' : ''); }, mal ? 6000 : 2500);
+    clearTimeout(avisoT); avisoT = setTimeout(() => { el.className = 'oculto' + (mal ? ' mal' : ''); }, ms || (mal ? 6000 : 2500));
   };
   // Pregunta «¿Seguro?» dentro de la página (resuelve true / false)
   const confirmar = (texto, si = 'Borrar') => new Promise(ok => {
@@ -1414,7 +1414,7 @@ const NEGOCIOS = {
       await asegurarPDFs();
       const parentId = await carpeta([`Contabilidad ${new Date().getFullYear()}`]);
       const r = await drive.callTool(DRIVE, 'create_file', {
-        title: 'Contabilidad.xlsx', base64Content: aBase64(await crearExcel()), contentMimeType: XLSX_MIME, disableConversionToGoogleType: true, parentId,
+        title: 'Contabilidad.xlsx', base64Content: await contenidoDrive(await crearExcel(), 'Contabilidad.xlsx', XLSX_MIME), contentMimeType: XLSX_MIME, disableConversionToGoogleType: true, parentId,
       });
       const f = r.payload?.file || r.payload || {};
       const enlace = enlaceDrive(f);
@@ -1666,7 +1666,8 @@ const NEGOCIOS = {
   const msgFac = t => { $('#msgFacturas').innerHTML = t; };
   // ----- Carpetas en tu Google Drive: Contabilidad AAAA / Negocio / 1T / 01 Enero -----
   const MESES_CARPETA = ['01 Enero', '02 Febrero', '03 Marzo', '04 Abril', '05 Mayo', '06 Junio', '07 Julio', '08 Agosto', '09 Septiembre', '10 Octubre', '11 Noviembre', '12 Diciembre'];
-  const rutaMes = (n, fecha) => { const y = fecha.slice(0, 4), m = +fecha.slice(5, 7); return [`Contabilidad ${y}`, NEGOCIOS[n].nombre, `${Math.floor((m - 1) / 3) + 1}T`, MESES_CARPETA[m - 1]]; };
+  // Dentro de cada mes: «Ingresos» (tus facturas) y «Gastos» (facturas de proveedores)
+  const rutaMes = (n, fecha, sub) => { const y = fecha.slice(0, 4), m = +fecha.slice(5, 7); return [`Contabilidad ${y}`, NEGOCIOS[n].nombre, `${Math.floor((m - 1) / 3) + 1}T`, MESES_CARPETA[m - 1], ...(sub ? [sub] : [])]; };
   let carpetas = leer('contabilidad-carpetas-v1') || {};  // ruta de carpeta → id en Drive
   let colaCarpetas = Promise.resolve();
   const datosDrive = r => r.payload?.file || r.payload || {};
@@ -1688,15 +1689,25 @@ const NEGOCIOS = {
     }
     return padre;
   }));
-  // Sube un archivo a la carpeta del mes y devuelve { enlace, id, carpeta }
-  const subirAlMes = async (n, fecha, titulo, base64, mime) => {
-    const parentId = await carpeta(rutaMes(n, fecha));
-    const p = datosDrive(await drive.callTool(DRIVE, 'create_file', { title: titulo, base64Content: base64, contentMimeType: mime, disableConversionToGoogleType: true, parentId }));
+  // Contenido para Drive: los archivos pequeños van dentro de la llamada (límite 1 MB);
+  // los grandes se mandan como archivo aparte, si este Claude lo permite.
+  let archivosAparte = null;
+  const contenidoDrive = async (datos, nombre, tipo) => {
+    const tam = datos.size ?? datos.byteLength;
+    if (tam < 700000) return aBase64(datos.arrayBuffer ? await datos.arrayBuffer() : datos);
+    if (archivosAparte === null) { try { archivosAparte = !!(await drive.listTools()).fileArgs; } catch { archivosAparte = false; } }
+    if (archivosAparte) return { $file: { data: datos, name: nombre, type: tipo } };
+    throw new Error(`el archivo pesa ${(tam / 1e6).toFixed(1).replace('.', ',')} MB y desde aquí solo se pueden mandar a Drive archivos de menos de 0,7 MB`);
+  };
+  // Sube un archivo a la carpeta del mes (Ingresos o Gastos) y devuelve { enlace, id, carpeta }
+  const subirAlMes = async (n, fecha, sub, titulo, datos, mime) => {
+    const parentId = await carpeta(rutaMes(n, fecha, sub));
+    const p = datosDrive(await drive.callTool(DRIVE, 'create_file', { title: titulo, base64Content: await contenidoDrive(datos, titulo, mime), contentMimeType: mime, disableConversionToGoogleType: true, parentId }));
     return { enlace: enlaceDrive(p), id: p.id || idDeEnlace(enlaceDrive(p)), carpeta: parentId };
   };
   // Guarda el PDF en su carpeta de Drive y apunta su enlace en la factura o albarán (lo usa el Excel)
   const subirPDF = async (f, n, pdf) => {
-    const { enlace, carpeta: c } = await subirAlMes(n, f.fecha, nombrePDF(f), aBase64(pdf), 'application/pdf');
+    const { enlace, carpeta: c } = await subirAlMes(n, f.fecha, 'Ingresos', nombrePDF(f), pdf, 'application/pdf');
     const real = (dbs[n].facturas || []).find(x => x.id === f.id);
     if (real && enlace) { real.pdf = { enlace, carpeta: c, fecha: new Date().toISOString() }; escribir(NEGOCIOS[n].clave, dbs[n]); }
     return enlace;
@@ -1723,7 +1734,7 @@ const NEGOCIOS = {
     };
     subiendoAdj.add(m.id); if (view === 'movimientos') render();
     aviso('Adjuntando la factura del gasto…');
-    let guardado = false, fallo = '';
+    let guardado = false; const fallos = [];
     try {
       const archivo = await prepararArchivo(original);
       if (archivo.size > 19.5e6) throw new Error('pesa más de 20 MB; prueba con una foto o un PDF más pequeño');
@@ -1731,19 +1742,21 @@ const NEGOCIOS = {
         try {
           const r = await assets.upload(archivo, archivo.type ? {} : { type: 'application/pdf' });
           poner({ asset: r.id, nombre: original.name }); guardado = true;
-        } catch (err) { fallo = err.message || err.code || String(err); }
+        } catch (err) { fallos.push(`programa: ${err.code || ''} ${err.message || err}`.trim()); }
       }
       if (drive) {
         try {
           const ext = (archivo.name.match(/\.\w+$/) || ['.pdf'])[0].toLowerCase();
-          const r = await subirAlMes(n, m.fecha, tituloGasto(m, ext), aBase64(await archivo.arrayBuffer()), archivo.type || 'application/pdf');
+          const r = await subirAlMes(n, m.fecha, 'Gastos', tituloGasto(m, ext), archivo, archivo.type || 'application/pdf');
           poner({ enlace: r.enlace, carpeta: r.carpeta, nombre: original.name });
           aviso('✓ Factura adjuntada y guardada en su carpeta de Google Drive'); return;
-        } catch (err) { fallo = ERRORES_DRIVE[err.code] || 'Google Drive: ' + (err.message || err); }
+        } catch (err) { fallos.push('Google Drive: ' + (ERRORES_DRIVE[err.code] || `${err.code || ''} ${err.message || err}`.trim())); }
       }
-      if (guardado) aviso('✓ Factura adjuntada al gasto' + (drive ? '. Aún no se pudo copiar a Drive (se reintentará solo): ' + fallo : ''), !!drive);
-      else aviso('No se pudo adjuntar la factura: ' + (fallo || 'abre el panel en claude.ai con tu cuenta.'), true);
-    } catch (err) { aviso('No se pudo adjuntar la factura: ' + (err.message || err), true); }
+      if (!assets) fallos.push('programa: sin permiso para guardar archivos');
+      if (!drive) fallos.push('Google Drive: no conectado en esta página');
+      if (guardado) aviso('✓ Factura adjuntada al gasto' + (drive ? '. Aún no se pudo copiar a Drive (se reintentará solo) — ' + fallos.join(' · ') : ''), !!drive, 20000);
+      else aviso('No se pudo adjuntar la factura — ' + fallos.join(' · '), true, 20000);
+    } catch (err) { aviso('No se pudo adjuntar la factura: ' + (err.message || err), true, 20000); }
     finally { subiendoAdj.delete(m.id); if (view === 'movimientos') render(); }
   };
   // Facturas de gastos que solo están en el programa: se copian a Drive cuando hay conexión
@@ -1752,32 +1765,32 @@ const NEGOCIOS = {
       try {
         const b = await (await fetch('/_blob/' + m.adjunto.asset)).blob(); if (!b.size) continue;
         const ext = b.type === 'application/pdf' ? '.pdf' : b.type === 'image/png' ? '.png' : '.jpg';
-        const r = await subirAlMes(n, m.fecha, tituloGasto(m, ext), aBase64(await b.arrayBuffer()), b.type || 'application/pdf');
+        const r = await subirAlMes(n, m.fecha, 'Gastos', tituloGasto(m, ext), b, b.type || 'application/pdf');
         m.adjunto = { ...m.adjunto, enlace: r.enlace, carpeta: r.carpeta }; escribir(NEGOCIOS[n].clave, dbs[n]);
       } catch { /* se reintenta la próxima vez */ }
     }
   };
   // Al borrar algo con PDF en Drive, el PDF va a la papelera (se puede recuperar 30 días)
   const aPapelera = enlace => { const fileId = idDeEnlace(enlace); if (drive && fileId) drive.callTool(DRIVE, 'trash_file', { fileId }).catch(() => {}); };
-  // Crear de una vez todo el árbol del año: Contabilidad AAAA / 3 negocios / 4 trimestres / 12 meses
+  // Crear de una vez todo el árbol del año: Contabilidad AAAA / 3 negocios / 4 trimestres / 12 meses / Ingresos y Gastos
   const estructuraAnio = async y => {
-    const faltan = Object.keys(NEGOCIOS).flatMap(n => MESES_CARPETA.map((_, i) => rutaMes(n, `${y}-${String(i + 1).padStart(2, '0')}-01`)))
+    const faltan = Object.keys(NEGOCIOS).flatMap(n => MESES_CARPETA.flatMap((_, i) => ['Ingresos', 'Gastos'].map(sub => rutaMes(n, `${y}-${String(i + 1).padStart(2, '0')}-01`, sub))))
       .filter(r => !carpetas[r.join('/')]);
     if (!faltan.length) return;
     aviso(`Creando tus carpetas de Contabilidad ${y} en Google Drive…`);
     for (const r of faltan) await carpeta(r);
     aviso(`✓ Carpetas de Contabilidad ${y} listas en tu Google Drive`);
   };
-  // Ordenar lo que ya estaba en Drive: mover cada PDF a la carpeta de su mes (una vez)
+  // Ordenar lo que ya estaba en Drive: mover cada PDF a su carpeta (mes / Ingresos o Gastos)
   const ordenarDrive = async () => {
     for (const n of Object.keys(NEGOCIOS)) {
       // Albaranes que se subieron antes: a la papelera de Drive y sin enlace
       (dbs[n].facturas || []).filter(f => esAlbaran(f) && f.pdf?.enlace).forEach(f => { aPapelera(f.pdf.enlace); delete f.pdf; escribir(NEGOCIOS[n].clave, dbs[n]); });
-      const pendientes = [...(dbs[n].facturas || []).filter(f => f.pdf?.enlace && !f.pdf.carpeta && !esAlbaran(f)).map(f => [f.fecha, f.pdf]),
-        ...dbs[n].movs.filter(m => m.adjunto?.enlace && !m.adjunto.carpeta).map(m => [m.fecha, m.adjunto])];
-      for (const [fecha, info] of pendientes) {
+      const pendientes = [...(dbs[n].facturas || []).filter(f => f.pdf?.enlace && !esAlbaran(f)).map(f => [f.fecha, f.pdf, 'Ingresos']),
+        ...dbs[n].movs.filter(m => m.adjunto?.enlace).map(m => [m.fecha, m.adjunto, 'Gastos'])];
+      for (const [fecha, info, sub] of pendientes) {
         const fileId = idDeEnlace(info.enlace); if (!fileId) continue;
-        try { const c = await carpeta(rutaMes(n, fecha)); await drive.callTool(DRIVE, 'update_file', { fileId, parentId: c }); info.carpeta = c; escribir(NEGOCIOS[n].clave, dbs[n]); }
+        try { const c = await carpeta(rutaMes(n, fecha, sub)); if (info.carpeta === c) continue; await drive.callTool(DRIVE, 'update_file', { fileId, parentId: c }); info.carpeta = c; escribir(NEGOCIOS[n].clave, dbs[n]); }
         catch { /* se reintenta la próxima vez */ }
       }
     }
