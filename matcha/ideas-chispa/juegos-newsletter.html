@@ -1,0 +1,271 @@
+<title>Juegos Mood Matcha</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,400&display=swap" rel="stylesheet">
+<style>
+  /* Cuatro juegos en tarjetas iguales: arriba el juego, abajo la explicación. Todos acaban en el mismo paso: email para recibir el código */
+  :root {
+    --bg: #ffffff; --card: #ffffff; --ink: #1b2a1f; --muted: #5d6b5f; --line: #e2e7dc;
+    --deep: #1e3322; --soft: #f2f5ee; --green: #1f6b2e; --light: #eef1e8;
+    --sans: 'Jost', 'Futura', 'Century Gothic', system-ui, sans-serif;
+    --serif: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #111811; --card: #172017; --ink: #e9f0e2; --muted: #a2b09f; --line: #2a362a; --green: #7cc56a; color-scheme: dark; } }
+  :root[data-theme="dark"] { --bg: #111811; --card: #172017; --ink: #e9f0e2; --muted: #a2b09f; --line: #2a362a; --green: #7cc56a; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 300 16px/1.6 var(--sans); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 44px 80px; }
+  .wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 40px; }
+  header { display: grid; gap: 10px; max-width: 62ch; }
+  .eyebrow { margin: 0; font-size: 0.74rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--green); }
+  h1 { margin: 0; font-weight: 300; font-size: clamp(2.2rem, 5.5vw, 3.8rem); line-height: 1.04; text-wrap: balance; }
+  h1 em, h2 em { font-family: var(--serif); font-style: italic; font-weight: 400; }
+  header p { margin: 0; color: var(--muted); font-size: 1.05rem; }
+  .flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 0.88rem; color: var(--muted); }
+  .flow b { font-weight: 400; color: var(--ink); background: var(--soft); padding: 4px 12px; border-radius: 999px; }
+  :root:not([data-theme="light"]) .flow b { color: #1b2a1f; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+  @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+  .game { background: var(--card); border: 1px solid var(--line); border-radius: 24px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; min-width: 0; }
+  .stage { position: relative; height: 360px; background: #f2f5ee; color: #1b2a1f; overflow: hidden; display: grid; place-items: center; }
+  .txt { padding: 20px 22px 24px; display: grid; gap: 6px; align-content: start; }
+  .txt h2 { margin: 0; font-weight: 400; font-size: 1.35rem; }
+  .txt p { margin: 0; color: var(--muted); }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .tags span { font-size: 0.78rem; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+  .pick { color: var(--green) !important; font-size: 0.9rem; }
+  .hint { position: absolute; left: 14px; bottom: 12px; z-index: 3; font-size: 0.74rem; letter-spacing: 0.06em; background: rgb(255 255 255 / 0.9); padding: 3px 10px; border-radius: 999px; pointer-events: none; transition: opacity 0.4s; }
+  button { font: inherit; }
+  :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+
+  /* Paso común: email para recibir el premio */
+  .win { position: absolute; inset: 0; z-index: 5; display: grid; place-content: center; justify-items: center; gap: 10px; padding: 24px; text-align: center; background: #1e3322; color: #eef1e8; opacity: 0; pointer-events: none; transition: opacity 0.6s; }
+  .win.on { opacity: 1; pointer-events: auto; }
+  .win .prize { font-family: var(--serif); font-style: italic; font-size: 2.2rem; line-height: 1; }
+  .win p { margin: 0; max-width: 32ch; font-size: 0.98rem; opacity: 0.85; }
+  .win form { display: flex; gap: 6px; padding: 5px; border-radius: 999px; background: #fff; width: min(100%, 340px); }
+  .win input { flex: 1; min-width: 0; border: 0; background: none; padding: 9px 14px; font: inherit; font-size: 0.95rem; color: #1b2a1f; }
+  .win input:focus { outline: none; }
+  .win form button { border: 0; border-radius: 999px; padding: 9px 16px; background: #1e3322; color: #fff; cursor: pointer; font-size: 0.9rem; white-space: nowrap; }
+  .win small { font-size: 0.72rem; opacity: 0.65; max-width: 34ch; }
+  .win .again { border: 0; background: none; color: inherit; text-decoration: underline; cursor: pointer; font-size: 0.85rem; opacity: 0.8; }
+  .win .done { font-family: var(--serif); font-style: italic; font-size: 1.5rem; }
+
+  /* 1. Rasca */
+  .scratch { position: relative; width: min(82%, 380px); aspect-ratio: 1.6; border-radius: 18px; overflow: hidden; background: #fff; box-shadow: 0 20px 40px -28px rgb(15 36 20 / 0.6); display: grid; place-items: center; text-align: center; }
+  .scratch .under b { display: block; font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 2.8rem; line-height: 1; color: #1f6b2e; }
+  .scratch .under span { font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: #5d6b5f; }
+  .scratch canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+
+  /* 2. Test */
+  .quiz { width: min(88%, 420px); display: grid; gap: 14px; text-align: center; }
+  .quiz .step { font-size: 0.72rem; letter-spacing: 0.24em; text-transform: uppercase; color: #5d6b5f; }
+  .quiz .q { margin: 0; font-size: 1.5rem; font-weight: 300; line-height: 1.2; }
+  .quiz .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .quiz .opts button { border: 1px solid #cdd6c4; background: #fff; color: #1b2a1f; border-radius: 14px; padding: 12px 10px; cursor: pointer; font-size: 0.95rem; transition: background 0.3s, border-color 0.3s, transform 0.3s; }
+  .quiz .opts button:hover { border-color: #1f6b2e; transform: translateY(-2px); }
+  .quiz .bar { height: 2px; background: #dfe5d8; } .quiz .bar i { display: block; height: 100%; width: 0; background: #1f6b2e; transition: width 0.4s; }
+
+  /* 3. Cuencos */
+  .bowls { display: flex; gap: clamp(12px, 3vw, 26px); }
+  .bowl { position: relative; width: clamp(86px, 13vw, 118px); aspect-ratio: 1; border: 0; padding: 0; border-radius: 50%; cursor: pointer; background: transparent; perspective: 600px; transition: transform 0.4s; }
+  .bowl:hover { transform: translateY(-6px); }
+  .bowl .in { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(.2,.8,.2,1); }
+  .bowl.open .in { transform: rotateY(180deg); }
+  .bowl .face, .bowl .back { position: absolute; inset: 0; border-radius: 50%; backface-visibility: hidden; display: grid; place-items: center; }
+  .bowl .face { background: radial-gradient(circle at 50% 50%, #5c9a2e 0 46%, #fff 47% 56%, #e4e9de 57%); box-shadow: 0 16px 26px -18px rgb(15 36 20 / 0.7); }
+  .bowl .face::after { content: "?"; font-family: var(--serif); font-style: italic; font-size: 2rem; color: #eef1e8; }
+  .bowl .back { transform: rotateY(180deg); background: #1e3322; color: #eef1e8; font-family: var(--serif); font-style: italic; font-size: 1.15rem; line-height: 1.05; text-align: center; padding: 10px; }
+  .bowl.dim .back { background: #dfe5d8; color: #1b2a1f; }
+
+  /* 4. Batir */
+  .whisk { width: min(78%, 300px); aspect-ratio: 1; }
+  .whisk canvas { width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+  .meter { position: absolute; left: 50%; bottom: 22px; translate: -50% 0; width: 140px; height: 2px; background: rgb(30 51 34 / 0.15); } .meter i { display: block; height: 100%; width: 0; background: #1e3322; }
+
+  footer { display: grid; gap: 6px; max-width: 64ch; }
+  footer h2 { margin: 0; font-weight: 400; font-size: 1.4rem; }
+  footer p { margin: 0; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Juegos para la newsletter</p>
+    <h1>Juega, suscríbete y <em>llévate tu premio</em></h1>
+    <p>Cuatro dinámicas distintas. En todas el premio solo se consigue dejando el email, así cada partida es un suscriptor nuevo. Iría justo debajo de la portada.</p>
+    <div class="flow"><b>Juega</b>→<b>Gana un premio</b>→<b>Deja tu email</b>→<b>Le llega el código</b></div>
+  </header>
+
+  <div class="grid">
+    <article class="game">
+      <div class="stage" style="background:#f6f2e9">
+        <div class="scratch">
+          <div class="under"><b data-scr-prize>10 %</b><span>en tu primera lata</span></div>
+          <canvas id="scr" aria-label="Rasca con el ratón o el dedo"></canvas>
+        </div>
+        <span class="hint">Rasca el polvo de matcha</span>
+        <div class="win" data-win></div>
+      </div>
+      <div class="txt">
+        <h2>Rasca el matcha</h2>
+        <p>Una tarjeta cubierta de polvo de matcha. Rascas con el dedo y debajo aparece el premio: 10 %, envío gratis o una lata de regalo en el próximo pedido. Es el gesto más natural en el móvil.</p>
+        <div class="tags"><span>Muy rápido</span><span>Ideal en móvil</span><span>Premios variados</span></div>
+      </div>
+    </article>
+
+    <article class="game">
+      <div class="stage" style="background:#eef3f2">
+        <div class="quiz" id="quiz"></div>
+        <div class="win" data-win></div>
+      </div>
+      <div class="txt">
+        <h2>¿Qué mood eres?</h2>
+        <p>Tres preguntas rápidas y te dice tu mood con su receta. Para recibir la receta y tu descuento deja el email. Además, cada persona queda guardada con su mood para mandarle luego emails a su medida.</p>
+        <div class="tags"><span>El más elegante</span><span>Te dice qué le gusta a cada cliente</span></div>
+        <p class="pick">Mi favorito: es el que más encaja con la marca.</p>
+      </div>
+    </article>
+
+    <article class="game">
+      <div class="stage" style="background:#f2f5ee">
+        <div class="bowls" id="bowls"></div>
+        <span class="hint">Elige un cuenco</span>
+        <div class="win" data-win></div>
+      </div>
+      <div class="txt">
+        <h2>Elige tu cuenco</h2>
+        <p>Tres cuencos tapados. Eliges uno, se da la vuelta y descubres tu premio; luego se ven los otros dos para dar ganas de volver. Muy sencillo y con un punto de suerte.</p>
+        <div class="tags"><span>Un solo toque</span><span>Efecto sorpresa</span></div>
+      </div>
+    </article>
+
+    <article class="game">
+      <div class="stage" style="background:#eef2ea">
+        <div class="whisk"><canvas id="whk" aria-label="Cuenco de matcha: muévete en zigzag para batir"></canvas></div>
+        <div class="meter" aria-hidden="true"><i id="whk-m"></i></div>
+        <span class="hint">Muévete en zigzag para batir</span>
+        <div class="win" data-win></div>
+      </div>
+      <div class="txt">
+        <h2>Bate y gana</h2>
+        <p>El de antes, más sobrio: cuenco visto desde arriba, espuma que crece al hacer zigzag y, al llenarse, el email para recibir el código. Enseña a preparar el matcha mientras juegas.</p>
+        <div class="tags"><span>Enseña el ritual</span><span>Más largo</span></div>
+      </div>
+    </article>
+  </div>
+
+  <footer>
+    <h2>¿Cuál te gusta?</h2>
+    <p>Elige uno, o dos para ir cambiándolos. Lo pondría justo debajo de la portada. El código no se enseña en la web: llega al email, así nadie se lo lleva sin suscribirse.</p>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fit = (cv) => { const r = cv.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2); cv.width = r.width * d; cv.height = r.height * d; const c = cv.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); return { c, w: r.width, h: r.height }; };
+
+  // Paso común: premio + email
+  let uid = 0;
+  const win = (stage, prize, line, reset) => {
+    const el = stage.querySelector('[data-win]'); const id = 'email-' + (++uid);
+    el.innerHTML = `<span class="prize">${prize}</span><p>${line}</p>
+      <form><label for="${id}" style="position:absolute;left:-9999px">Tu email</label><input id="${id}" type="email" placeholder="Tu email" required><button type="submit">Enviarme el premio</button></form>
+      <small>Te suscribes a la newsletter de Mood Matcha. Puedes darte de baja cuando quieras.</small>
+      <button type="button" class="again">Volver a jugar</button>`;
+    el.classList.add('on');
+    el.querySelector('form').addEventListener('submit', (e) => { e.preventDefault(); el.innerHTML = `<span class="done">Revisa tu email</span><p>Tu premio va de camino. (Vista previa: en la web real te suscribe y te llega el código.)</p><button type="button" class="again">Volver a jugar</button>`; el.querySelector('.again').addEventListener('click', () => { el.classList.remove('on'); reset(); }); });
+    el.querySelector('.again').addEventListener('click', () => { el.classList.remove('on'); reset(); });
+  };
+  const prizes = [['10 % de descuento', 'en tu primera lata'], ['Envío gratis', 'en tu primer pedido'], ['15 % de descuento', 'en el pack de 2 latas']];
+
+  // 1. Rasca el matcha
+  const scr = document.getElementById('scr'); let S, scratched = false, done1 = false;
+  const cover = () => {
+    S = fit(scr); const { c, w, h } = S; c.globalCompositeOperation = 'source-over';
+    const g = c.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#6f9e3a'); g.addColorStop(1, '#4c7f27'); c.fillStyle = g; c.fillRect(0, 0, w, h);
+    for (let i = 0; i < 1600; i++) { c.fillStyle = `rgba(${200 + Math.random() * 40},${230 + Math.random() * 20},${140 + Math.random() * 60},${Math.random() * 0.35})`; c.fillRect(Math.random() * w, Math.random() * h, 1.5, 1.5); }
+    c.fillStyle = 'rgba(238,241,232,0.92)'; c.font = '400 13px Jost, sans-serif'; c.textAlign = 'center'; c.fillText('R A S C A   A Q U Í', w / 2, h / 2 + 4);
+    const p = prizes[(Math.random() * prizes.length) | 0]; scr.parentElement.querySelector('[data-scr-prize]').textContent = p[0].replace(' de descuento', ''); scr.dataset.p = p[0]; scr.dataset.l = p[1];
+    done1 = false;
+  };
+  let down = false;
+  const rub = (e) => { if (!down || done1) return; const r = scr.getBoundingClientRect(); const { c } = S; c.globalCompositeOperation = 'destination-out'; c.beginPath(); c.arc(e.clientX - r.left, e.clientY - r.top, 20, 0, 7); c.fill(); };
+  scr.addEventListener('pointerdown', (e) => { down = true; scr.setPointerCapture?.(e.pointerId); rub(e); });
+  scr.addEventListener('pointermove', rub);
+  const check = () => {
+    down = false; if (done1) return;
+    const { c } = S; const d = c.getImageData(0, 0, scr.width, scr.height).data; let clear = 0;
+    for (let i = 3; i < d.length; i += 64) if (d[i] < 40) clear++;
+    if (clear / (d.length / 64) > 0.45) { done1 = true; const stage = scr.closest('.stage'); stage.querySelector('.hint').style.opacity = 0; setTimeout(() => win(stage, scr.dataset.p, `¡Premio! ${scr.dataset.l}. Déjanos tu email y te lo enviamos ahora.`, () => { cover(); stage.querySelector('.hint').style.opacity = 1; }), 500); }
+  };
+  addEventListener('pointerup', check);
+  cover();
+
+  // 2. ¿Qué mood eres?
+  const quiz = document.getElementById('quiz');
+  const Q = [
+    ['¿Cómo empiezas el día?', [['Con prisa', 'energia'], ['Con calma', 'calma'], ['Con una lista', 'focus'], ['Con algo dulce', 'antojo']]],
+    ['¿Qué te pide el cuerpo a media tarde?', [['Concentrarme', 'focus'], ['Un capricho', 'antojo'], ['Desconectar', 'calma'], ['Un empujón', 'energia']]],
+    ['¿Frío o caliente?', [['Con hielo', 'energia'], ['Templado', 'calma'], ['Caliente', 'focus'], ['Con helado', 'antojo']]],
+  ];
+  const R = { focus: ['Focus', 'Solo con agua, 2 g a 80 °C. Claro y directo.', '#eef5d6'], calma: ['Calma', 'Latte templado de avena. Para bajar el ritmo.', '#e3f1ee'], energia: ['Energía', 'Con hielo y tónica. Para arrancar sin bajón.', '#fff3c4'], antojo: ['Antojo', 'Matcha affogato con helado de vainilla.', '#fde6ed'] };
+  let qi = 0, score = {};
+  const renderQ = () => {
+    const stage = quiz.closest('.stage');
+    if (qi >= Q.length) {
+      const k = Object.entries(score).sort((a, b) => b[1] - a[1])[0][0]; const r = R[k];
+      stage.style.background = r[2];
+      quiz.innerHTML = `<span class="step">Tu mood es</span><p class="q" style="font-family:var(--serif);font-style:italic;font-size:2.6rem">${r[0]}</p><p style="margin:0;color:#5d6b5f">${r[1]}</p>`;
+      setTimeout(() => win(stage, `Mood ${r[0]}`, 'Te mandamos tu receta y un 10 % para tu primera lata. Solo falta tu email.', () => { qi = 0; score = {}; stage.style.background = '#eef3f2'; renderQ(); }), 1400);
+      return;
+    }
+    const [q, opts] = Q[qi];
+    quiz.innerHTML = `<span class="step">Pregunta ${qi + 1} de ${Q.length}</span><div class="bar"><i style="width:${(qi / Q.length) * 100}%"></i></div><p class="q">${q}</p><div class="opts">${opts.map(([t, m]) => `<button type="button" data-m="${m}">${t}</button>`).join('')}</div>`;
+    quiz.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { score[b.dataset.m] = (score[b.dataset.m] || 0) + 1; qi++; renderQ(); }));
+  };
+  renderQ();
+
+  // 3. Elige tu cuenco
+  const bowls = document.getElementById('bowls');
+  const renderBowls = () => {
+    const ps = [...prizes].sort(() => Math.random() - 0.5);
+    bowls.innerHTML = ps.map((p, i) => `<button type="button" class="bowl" aria-label="Cuenco ${i + 1}"><span class="in"><span class="face"></span><span class="back">${p[0].replace(' de descuento', '<br>dto.')}</span></span></button>`).join('');
+    const all = [...bowls.children];
+    all.forEach((b, i) => b.addEventListener('click', () => {
+      if (bowls.dataset.done) return; bowls.dataset.done = '1'; b.classList.add('open');
+      setTimeout(() => all.forEach((o) => { if (o !== b) { o.classList.add('open', 'dim'); } }), 900);
+      const stage = bowls.closest('.stage'); stage.querySelector('.hint').style.opacity = 0;
+      setTimeout(() => win(stage, ps[i][0], `${ps[i][1][0].toUpperCase() + ps[i][1].slice(1)}. Déjanos tu email y te lo enviamos.`, () => { delete bowls.dataset.done; renderBowls(); stage.querySelector('.hint').style.opacity = 1; }), 2200);
+    }));
+  };
+  renderBowls();
+
+  // 4. Bate y gana
+  const wc = document.getElementById('whk'), wm = document.getElementById('whk-m');
+  let W = fit(wc), foam = 0, last = null, dir = 0, won = false, bub = [];
+  const draw = () => {
+    const { c, w, h } = W; c.clearRect(0, 0, w, h); const cx = w / 2, cy = h / 2, R = w * 0.42;
+    c.fillStyle = '#ffffff'; c.beginPath(); c.arc(cx, cy, R + 12, 0, 7); c.fill(); c.strokeStyle = '#dfe5d8'; c.lineWidth = 1; c.stroke();
+    const g = c.createRadialGradient(cx, cy, 0, cx, cy, R); g.addColorStop(0, '#5f9433'); g.addColorStop(1, '#3a6b20'); c.fillStyle = g; c.beginPath(); c.arc(cx, cy, R, 0, 7); c.fill();
+    c.save(); c.beginPath(); c.arc(cx, cy, R, 0, 7); c.clip();
+    bub.forEach((b) => { c.globalAlpha = b.a; c.fillStyle = b.c; c.beginPath(); c.arc(b.x, b.y, b.r, 0, 7); c.fill(); });
+    c.restore(); c.globalAlpha = 1;
+  };
+  const addFoam = (x, y) => {
+    const { w } = W, cx = w / 2, R = w * 0.42;
+    for (let i = 0; i < 6; i++) { const a = Math.random() * 7, rr = Math.random() * R * (0.3 + foam / 140); bub.push({ x: cx + Math.cos(a) * rr * (x ? 0.4 : 1) + (x ? (x - cx) * 0.6 : 0), y: cx + Math.sin(a) * rr * (y ? 0.4 : 1) + (y ? (y - cx) * 0.6 : 0), r: Math.random() * 5 + 2, a: 0.5 + Math.random() * 0.4, c: Math.random() < 0.5 ? '#c4dc7c' : '#dcebac' }); }
+    if (bub.length > 1600) bub.splice(0, bub.length - 1600);
+  };
+  wc.addEventListener('pointermove', (e) => {
+    if (won) return; const r = wc.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    if (last) { const s = Math.sign(x - last.x); if (s && s !== dir && Math.abs(x - last.x) > 1) { foam = Math.min(100, foam + 3); dir = s; addFoam(x, y); } }
+    last = { x, y }; wm.style.width = foam + '%';
+    if (foam >= 100) { won = true; const stage = wc.closest('.stage'); stage.querySelector('.hint').style.opacity = 0; setTimeout(() => win(stage, 'Espuma perfecta', '10 % en tu primera lata. Déjanos tu email y te lo enviamos.', () => { foam = 0; won = false; bub = []; wm.style.width = '0'; stage.querySelector('.hint').style.opacity = 1; }), 600); }
+  });
+  wc.addEventListener('pointerleave', () => (last = null));
+  const loop = () => { draw(); requestAnimationFrame(loop); }; loop();
+  addEventListener('resize', () => { W = fit(wc); cover(); });
+})();
+</script>
