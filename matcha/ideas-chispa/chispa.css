@@ -21,7 +21,7 @@
   .ch-tape__row span::after { content: "✦"; padding-left: 2.2em; opacity: 0.5; font-size: 0.7em; vertical-align: 0.15em; }
 
   /* Caja de mood: solo ella cambia de color */
-  .ch-moodbox-wrap { padding: clamp(50px, 8vw, 100px) var(--mm-gutter) 0; }
+  .ch-moodbox-wrap { padding: clamp(50px, 8vw, 100px) var(--mm-gutter); }
   .ch-moodbox { --a: #5f8f12; --b: #eef5d6; --t: #1b2a1f; position: relative; overflow: hidden; isolation: isolate; max-width: 1100px; margin: 0 auto; border-radius: 28px; padding: clamp(40px, 7vw, 80px) clamp(20px, 5vw, 60px); display: grid; justify-items: center; gap: 20px; text-align: center; background: var(--b); color: var(--t); transition: background 0.7s, color 0.7s; }
   .ch-moodbox__big { margin: 0; font-family: var(--font-heading--family); font-weight: 300; font-size: clamp(2rem, 5vw, 3.6rem); line-height: 1.05; text-wrap: balance; }
   .ch-moodbox__big span { font-family: var(--ch-serif); font-style: italic; font-weight: 400; color: var(--a); transition: color 0.7s; display: inline-block; }

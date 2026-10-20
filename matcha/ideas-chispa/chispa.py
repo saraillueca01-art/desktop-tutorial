@@ -44,6 +44,9 @@ before_section('mm-moods', '''<section class="ch-moodbox-wrap" aria-label="Elige
   </div>
 </section>''')
 
+# Fuera «¿Cómo te sientes hoy?»: la caja de mood la sustituye
+replace_section('mm-moods', '')
+
 # Segunda cinta, clara, tras los moods
 before_section('mm-prep', tape('Primera cosecha · Molido en piedra · Uji, Japón · Sin amargor', 'soft'))
 
