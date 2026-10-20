@@ -29,6 +29,21 @@ before_section('mm-moods', '''<section class="ch-ink" aria-label="Nuestra idea">
   <p class="ch-ink__p" data-ch-ink>Un <em>matcha</em> de primera cosecha para cada <em>mood</em> del día: el que te centra, el que te calma, el que te enciende y el que te mima.</p>
 </section>''')
 
+# Caja de mood que cambia de color (solo ella), antes de «¿Cómo te sientes hoy?»
+before_section('mm-moods', '''<section class="ch-moodbox-wrap" aria-label="Elige tu mood">
+  <div class="ch-moodbox" data-ch-moodbox>
+    <span class="ch-blob"></span><span class="ch-blob"></span>
+    <p class="ch-moodbox__big">Hoy estoy en modo <span data-ch-word>focus</span></p>
+    <div class="ch-moodbox__chips" role="group" aria-label="Elige tu mood">
+      <button type="button" aria-pressed="true" data-ch-mood="focus">Focus</button>
+      <button type="button" aria-pressed="false" data-ch-mood="calma">Calma</button>
+      <button type="button" aria-pressed="false" data-ch-mood="energia">Energía</button>
+      <button type="button" aria-pressed="false" data-ch-mood="antojo">Antojo</button>
+    </div>
+    <p class="ch-moodbox__line" data-ch-line>Para concentrarte: solo con agua, 2 g y 70 ml a 80 °C.</p>
+  </div>
+</section>''')
+
 # Segunda cinta, clara, tras los moods
 before_section('mm-prep', tape('Primera cosecha · Molido en piedra · Uji, Japón · Sin amargor', 'soft'))
 

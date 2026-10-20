@@ -1,42 +1,42 @@
   /* ---- Chispa elegante: cada mood tiñe la web con su propia gama, apagada y profunda ----
      --ch-deep: bandas oscuras · --ch-surf: fondo de la página · --ch-soft: tarjetas y fotos
      --ch-a: acento · --ch-light: texto claro sobre oscuro */
-  html { --ch-deep: #1e3322; --ch-surf: #e6eadf; --ch-soft: #d8dfcf; --ch-a: #5c7f3c; --ch-light: #eef1e8;
+  html { --ch-deep: #1e3322; --ch-surf: #ffffff; --ch-soft: #f2f5ee; --ch-a: #5c7f3c; --ch-light: #eef1e8;
     --ch-serif: 'Cormorant Garamond', 'Cormorant', Garamond, 'Times New Roman', serif; }
-  html, body { transition: background-color 0.9s; }
-  body { background: var(--ch-surf); }
-  :root { --mm-soft: var(--ch-soft); }
-  .mm-cifras, .mm-moods, .mm-prep, .mm-faq, .mm-momentos, .mm-confian, .mm-lata { background: transparent; }
-  .mm-media, .mm-gal__main, .mm-moods__pics, .mm-free { transition: background-color 0.9s; }
-  .mm-prep__pic { background: var(--ch-soft); }
+  body { background: #fff; }
 
   /* Toques de serif cursiva */
   .mm-roll span { font-family: var(--ch-serif); font-style: italic; font-weight: 300; }
   .ch-eyebrow { margin: 0; font-size: 0.74rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--ch-a); transition: color 0.9s; }
 
-  /* Mood en la portada */
-  .ch-moodpick { display: grid; gap: 10px; margin-top: 6px; }
-  .ch-moodpick > span { font-size: 0.74rem; letter-spacing: 0.28em; text-transform: uppercase; opacity: 0.9; }
-  .ch-moodpick > span b { font-family: var(--ch-serif); font-style: italic; font-weight: 400; font-size: 1.5rem; letter-spacing: 0; text-transform: none; margin-left: 4px; }
-  .ch-moodpick div { display: flex; flex-wrap: wrap; gap: 6px; }
-  .ch-moodpick button { border: 0; border-radius: 999px; padding: 8px 16px; font: inherit; font-size: 0.92rem; cursor: pointer; background: transparent; color: #fff; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.55); transition: background 0.4s, color 0.4s; }
-  .ch-moodpick button:hover { background: rgb(255 255 255 / 0.14); }
-  .ch-moodpick button[aria-pressed="true"] { background: #fff; color: var(--ch-deep); box-shadow: none; }
-  .mm-portada::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: var(--ch-deep); mix-blend-mode: color; opacity: 0.35; transition: background 0.9s; }
-  .mm-portada .mm-portada__in { z-index: 3; }
   .ch-flash { animation: ch-flash 0.6s var(--mm-out); display: inline-block; }
   @keyframes ch-flash { from { transform: translateY(8px); opacity: 0; } }
 
-  /* Cintas: serif cursiva fina, una sola fila */
-  .ch-tape { overflow: hidden; padding-block: clamp(18px, 3vw, 30px); border-block: 1px solid transparent; transition: background 0.9s, color 0.9s; }
-  .ch-tape--deep { background: var(--ch-deep); color: var(--ch-light); }
-  .ch-tape--soft { background: var(--ch-surf); color: var(--ch-deep); border-color: color-mix(in srgb, var(--ch-deep) 18%, transparent); }
-  .ch-tape__row { display: flex; width: max-content; white-space: nowrap; font-family: var(--ch-serif); font-style: italic; font-weight: 300; font-size: clamp(2.2rem, 6vw, 4.6rem); line-height: 1.1; will-change: transform; }
-  .ch-tape__row span { padding-right: 0.45em; }
-  .ch-tape__row span::after { content: "·"; padding-left: 0.45em; font-style: normal; opacity: 0.45; }
+  /* Cintas: discretas, letra pequeña espaciada */
+  .ch-tape { overflow: hidden; padding-block: 14px; border-block: 1px solid rgb(30 51 34 / 0.14); }
+  .ch-tape--deep { background: var(--ch-deep); color: var(--ch-light); border-color: transparent; }
+  .ch-tape--soft { background: #fff; color: var(--ch-deep); }
+  .ch-tape__row { display: flex; width: max-content; white-space: nowrap; font-family: var(--mm-logo-font); font-weight: 400; font-size: 0.82rem; letter-spacing: 0.32em; text-transform: uppercase; line-height: 1; will-change: transform; }
+  .ch-tape__row span { padding-right: 2.2em; }
+  .ch-tape__row span::after { content: "✦"; padding-left: 2.2em; opacity: 0.5; font-size: 0.7em; vertical-align: 0.15em; }
+
+  /* Caja de mood: solo ella cambia de color */
+  .ch-moodbox-wrap { padding: clamp(50px, 8vw, 100px) var(--mm-gutter) 0; }
+  .ch-moodbox { --a: #5f8f12; --b: #eef5d6; --t: #1b2a1f; position: relative; overflow: hidden; isolation: isolate; max-width: 1100px; margin: 0 auto; border-radius: 28px; padding: clamp(40px, 7vw, 80px) clamp(20px, 5vw, 60px); display: grid; justify-items: center; gap: 20px; text-align: center; background: var(--b); color: var(--t); transition: background 0.7s, color 0.7s; }
+  .ch-moodbox__big { margin: 0; font-family: var(--font-heading--family); font-weight: 300; font-size: clamp(2rem, 5vw, 3.6rem); line-height: 1.05; text-wrap: balance; }
+  .ch-moodbox__big span { font-family: var(--ch-serif); font-style: italic; font-weight: 400; color: var(--a); transition: color 0.7s; display: inline-block; }
+  .ch-moodbox__chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .ch-moodbox__chips button { border: 0; border-radius: 999px; padding: 9px 20px; font: inherit; font-size: 0.98rem; cursor: pointer; background: rgb(255 255 255 / 0.75); color: #1b2a1f; transition: background 0.3s, color 0.3s, transform 0.3s; }
+  .ch-moodbox__chips button:hover { transform: translateY(-2px); }
+  .ch-moodbox__chips button[aria-pressed="true"] { background: var(--t); color: var(--b); }
+  .ch-moodbox__line { margin: 0; max-width: 44ch; font-size: 1.02rem; opacity: 0.8; }
+  .ch-blob { position: absolute; z-index: -1; width: min(50vw, 380px); aspect-ratio: 1; border-radius: 50%; background: var(--a); filter: blur(70px); opacity: 0.45; transition: background 0.7s; animation: ch-drift 9s ease-in-out infinite alternate; }
+  .ch-blob:nth-of-type(1) { left: -8%; top: -30%; }
+  .ch-blob:nth-of-type(2) { right: -8%; bottom: -35%; animation-delay: -4.5s; }
+  @keyframes ch-drift { to { transform: translate(50px, 30px) scale(1.15); } }
 
   /* Sellos que giran (sustituyen a Cifras clave) */
-  .ch-seals { overflow: hidden; padding: clamp(70px, 10vw, 130px) var(--mm-gutter); display: grid; gap: clamp(36px, 5vw, 64px); }
+  .ch-seals { overflow: hidden; background: #fff; padding: clamp(70px, 10vw, 130px) var(--mm-gutter); display: grid; gap: clamp(36px, 5vw, 64px); }
   .ch-seals__head { display: grid; gap: 12px; max-width: 34ch; }
   .ch-seals h2 { margin: 0; font-family: var(--font-heading--family); font-weight: 300; font-size: clamp(2.2rem, 5vw, 3.8rem); line-height: 1.04; color: var(--ch-deep); text-wrap: balance; transition: color 0.9s; }
   .ch-seals h2 em { font-family: var(--ch-serif); font-style: italic; font-weight: 400; }
@@ -66,7 +66,7 @@
   .ch-ink__p em i.on { color: color-mix(in srgb, var(--ch-a) 55%, #fff); }
 
   /* Bate y gana */
-  .ch-whisk { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 80px); align-items: center; padding: clamp(60px, 9vw, 120px) var(--mm-gutter); background: var(--ch-soft); transition: background 0.9s; }
+  .ch-whisk { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 80px); align-items: center; padding: clamp(60px, 9vw, 120px) var(--mm-gutter); background: var(--ch-soft); }
   .ch-whisk__copy { display: grid; gap: 14px; max-width: 44ch; }
   .ch-whisk h2 { margin: 0; font-family: var(--font-heading--family); font-weight: 300; font-size: clamp(2.4rem, 5.5vw, 4.4rem); line-height: 1; color: var(--ch-deep); }
   .ch-whisk h2 em { font-family: var(--ch-serif); font-style: italic; font-weight: 400; }
@@ -91,4 +91,4 @@
     .ch-seals__row { justify-content: center; }
     .ch-seal { width: 40vw; max-width: 160px; }
   }
-  @media (prefers-reduced-motion: reduce) { .ch-seal svg, .ch-flash { animation: none !important; } }
+  @media (prefers-reduced-motion: reduce) { .ch-seal svg, .ch-flash, .ch-blob { animation: none !important; } }

@@ -2,32 +2,22 @@
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const root = document.documentElement;
 
-  // ---- Cada mood, su color ----
+  // ---- Caja de mood: cambia de color solo ella ----
   const MOODS = {
-    focus:   { deep: '#1e3322', surf: '#e6eadf', soft: '#d8dfcf', a: '#5c7f3c', light: '#eef1e8' },
-    calma:   { deep: '#1d3036', surf: '#e3e9ea', soft: '#d2dcdf', a: '#56838c', light: '#eaf0f1' },
-    energia: { deep: '#3a2a0e', surf: '#efe7d2', soft: '#e4d6b0', a: '#b8862a', light: '#f6efdc' },
-    antojo:  { deep: '#3b1d26', surf: '#efe1e2', soft: '#e3cdd0', a: '#a8566c', light: '#f5e9ea' },
+    focus:   { a: '#5f8f12', b: '#eef5d6', t: '#1b2a1f', w: 'focus',   line: 'Para concentrarte: solo con agua, 2 g y 70 ml a 80 °C.' },
+    calma:   { a: '#3f8f86', b: '#e3f1ee', t: '#16302c', w: 'calma',   line: 'Para bajar el ritmo: latte templado con bebida de avena.' },
+    energia: { a: '#d29a00', b: '#fff3c4', t: '#2a2400', w: 'energía', line: 'Para arrancar: con hielo y tónica, el matcha por encima.' },
+    antojo:  { a: '#d65f80', b: '#fde6ed', t: '#3a1220', w: 'antojo',  line: 'Para darte un capricho: matcha affogato con helado de vainilla.' },
   };
-  const key = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
-  let current = 'focus';
-  const setMood = (name) => {
-    const k = key(name); const m = MOODS[k]; if (!m) return; current = k;
-    for (const [p, v] of Object.entries(m)) root.style.setProperty('--ch-' + p, v);
-    document.querySelectorAll('[data-ch-mood]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.chMood === k)));
-    const w = document.querySelector('[data-ch-word]');
-    if (w) { w.textContent = name.toLowerCase(); w.classList.remove('ch-flash'); void w.offsetWidth; w.classList.add('ch-flash'); }
+  const box = document.querySelector('[data-ch-moodbox]');
+  const setMood = (k) => {
+    const m = MOODS[k]; if (!m || !box) return;
+    box.style.setProperty('--a', m.a); box.style.setProperty('--b', m.b); box.style.setProperty('--t', m.t);
+    box.querySelectorAll('[data-ch-mood]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.chMood === k)));
+    const w = box.querySelector('[data-ch-word]'); w.textContent = m.w; w.classList.remove('ch-flash'); void w.offsetWidth; w.classList.add('ch-flash');
+    box.querySelector('[data-ch-line]').textContent = m.line;
   };
-
-  const side = document.querySelector('.mm-portada__side');
-  if (side) {
-    const box = document.createElement('div'); box.className = 'ch-moodpick';
-    box.innerHTML = '<span>Hoy estoy en modo <b data-ch-word>focus</b></span><div role="group" aria-label="Elige tu mood">' +
-      ['Focus', 'Calma', 'Energía', 'Antojo'].map((n) => `<button type="button" data-ch-mood="${key(n)}" aria-pressed="${key(n) === 'focus'}">${n}</button>`).join('') + '</div>';
-    side.prepend(box);
-    box.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => setMood(b.textContent)));
-  }
-  document.querySelectorAll('.mm-moods__tab').forEach((t) => t.addEventListener('click', () => setMood(t.querySelector('b')?.textContent || '')));
+  box?.querySelectorAll('[data-ch-mood]').forEach((b) => b.addEventListener('click', () => setMood(b.dataset.chMood)));
 
   // Canvas al tamaño de su caja
   const fit = (cv) => { const r = cv.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2); cv.width = r.width * d; cv.height = r.height * d; const c = cv.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); return { c, w: r.width, h: r.height }; };
@@ -40,7 +30,7 @@
   const tapeLoop = (now) => {
     const dt = Math.min(now - last, 50); last = now;
     if (!reduced) {
-      x += dt * 0.03 * (1 + boost); boost *= 0.93;
+      x += dt * 0.025 * (1 + boost); boost *= 0.93;
       rows.forEach((r) => { const w = r.scrollWidth / 4; const off = x % w; r.style.transform = `translateX(${r.dataset.dir === '-1' ? -off : off - w}px)`; });
     }
     requestAnimationFrame(tapeLoop);
