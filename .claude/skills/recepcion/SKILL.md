@@ -1,6 +1,6 @@
 ---
 name: recepcion
-description: Registra una recepción de matcha de Mood Matcha (compras a proveedores de Alibaba) y crea el informe de recepción y trazabilidad en Google Drive, dentro de la carpeta del mes. Usar cuando la usuaria escriba "recepción ...", "ha llegado un pedido", "registra la recepción", "/recepcion" o similar.
+description: Registra una recepción de matcha de Mood Matcha (compras a proveedores de Alibaba) y crea el informe de recepción y trazabilidad en Google Drive, dentro de TRAZABILIDAD MOOD MATCHA › año › mes. Usar cuando la usuaria escriba "recepción ...", "ha llegado un pedido", "registra la recepción", "/recepcion" o similar.
 ---
 
 # Recepción de mercancía · Mood Matcha
@@ -46,24 +46,8 @@ Formato `MM-AAMMDD-NN` con la fecha de recepción (ej.: `MM-261014-01`). Antes d
 
 ## 4. Carpeta de destino
 
-Raíz: **MOOD MATCHA** (`1ArwBkjiOO7990luJ7dK9kjWkvldrf1eR`). El informe va en la carpeta del mes de la fecha de recepción:
-
-| Mes | Carpeta | ID |
-|---|---|---|
-| Enero | 1T / 01 Enero | `1wfuf6xsEVE0SDWeaAVvx740ozpnWngWA` |
-| Febrero | 1T / 02 Febrero | `1Fi9FRBJXIGr9hUrWa2FWCisx5HeIj719` |
-| Marzo | 1T / 03 Marzo | `1MU8xScfC7_LSduyeB5wZTjpHpYb3JbD8` |
-| Abril | 2T / 04 Abril | `1cieAtdA8IylKAYBD9zNFKb8Ywne2nrER` |
-| Mayo | 2T / 05 Mayo | `1meoerlzMilyN6UzrFH1oRxVNCsXUizjg` |
-| Junio | 2T / 06 Junio | `1kMj5cGeMgSEOWc1T_7Xgu1rJuMf27hT0` |
-| Julio | 3T / 07 Julio | `18dYXYT8FNq40hsHx7jfWerJNxyZXqYCA` |
-| Agosto | 3T / 08 Agosto | `1LtsytbR8K0g-nRia9vqeQZrfhwlkdYVP` |
-| Septiembre | 3T / 09 Septiembre | `1gnqNVStoqP78V8eChc_nLALi0MfiuBtu` |
-| Octubre | 4T / 10 Octubre | `1KdujpDDFF_4qzQb5Q8kBxYb6IYBlvWwY` |
-| Noviembre | 4T / 11 Noviembre | `17_QE5nPyYHv-1opzu71EszpFlGtaNZET` |
-| Diciembre | 4T / 12 Diciembre | `1SomWP4CCDAHpBRwnbsHm-_pYWsA4i5-o` |
-
-Si un ID ya no existe (la usuaria ha reorganizado el Drive), busca la carpeta por nombre dentro de MOOD MATCHA.
+Raíz: **TRAZABILIDAD MOOD MATCHA** en Mi unidad (`1cZ5NlM-Myd8lNdO8eKnzxGtla61bS8y4`). Nunca en la carpeta de Contabilidad.
+Dentro hay una carpeta por año (`2026`) y, dentro, una por mes (`10 Octubre`). Busca la del mes de la recepción con `search_files` (`parentId = '<id del año>' and title = '10 Octubre'`); si no existe, créala con `create_file` y `contentMimeType: application/vnd.google-apps.folder`. Igual con la del año.
 
 ## 5. Crear el informe
 

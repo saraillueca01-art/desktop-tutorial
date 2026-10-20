@@ -104,7 +104,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   <header class="top">
     <div>
       <h1>Mood Matcha <span>· Trazabilidad</span></h1>
-      <p class="sub">Recepciones, lotes y ventas. Los informes se guardan en tu Drive, carpeta MOOD MATCHA.</p>
+      <p class="sub">Recepciones, lotes y ventas. Los informes se guardan en tu Drive, carpeta TRAZABILIDAD MOOD MATCHA.</p>
     </div>
     <div class="conn" id="conn">
       <span class="chip" id="c-drive">Drive: comprobando…</span>
@@ -138,7 +138,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 
       <h2>2 · Documentos recibidos</h2>
       <div class="drop" id="drop">
-        <p class="hint">Factura, certificado de análisis (COA), ficha técnica, DUA, packing list… PDF o foto. Se suben a la carpeta del mes en Drive.</p>
+        <p class="hint">Factura, certificado de análisis (COA), ficha técnica, DUA, packing list… PDF o foto. Se suben a Drive, a TRAZABILIDAD MOOD MATCHA › año › mes.</p>
         <div class="row"><input type="file" id="r-files" multiple accept=".pdf,image/png,image/jpeg,.docx,.xlsx" style="max-width:100%"></div>
         <ul class="files" id="file-list"></ul>
       </div>
@@ -221,13 +221,10 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 </div>
 
 <script>
-const ROOT_FOLDER = "1ArwBkjiOO7990luJ7dK9kjWkvldrf1eR";
-const MONTH_FOLDERS = {
-  1: "1wfuf6xsEVE0SDWeaAVvx740ozpnWngWA", 2: "1Fi9FRBJXIGr9hUrWa2FWCisx5HeIj719", 3: "1MU8xScfC7_LSduyeB5wZTjpHpYb3JbD8",
-  4: "1cieAtdA8IylKAYBD9zNFKb8Ywne2nrER", 5: "1meoerlzMilyN6UzrFH1oRxVNCsXUizjg", 6: "1kMj5cGeMgSEOWc1T_7Xgu1rJuMf27hT0",
-  7: "18dYXYT8FNq40hsHx7jfWerJNxyZXqYCA", 8: "1LtsytbR8K0g-nRia9vqeQZrfhwlkdYVP", 9: "1gnqNVStoqP78V8eChc_nLALi0MfiuBtu",
-  10: "1KdujpDDFF_4qzQb5Q8kBxYb6IYBlvWwY", 11: "17_QE5nPyYHv-1opzu71EszpFlGtaNZET", 12: "1SomWP4CCDAHpBRwnbsHm-_pYWsA4i5-o"
-};
+// Carpeta "TRAZABILIDAD MOOD MATCHA" en Mi unidad. Dentro: una carpeta por año y, dentro, una por mes.
+const ROOT_FOLDER = "1cZ5NlM-Myd8lNdO8eKnzxGtla61bS8y4";
+const MESES = ["", "01 Enero", "02 Febrero", "03 Marzo", "04 Abril", "05 Mayo", "06 Junio", "07 Julio", "08 Agosto", "09 Septiembre", "10 Octubre", "11 Noviembre", "12 Diciembre"];
+const folderCache = { "2026": "1TtALKtuZOrPbIkixKYZ-sJtbKGW-hxaa", "2026-10": "1xlBYNyOAaX-JGzyO7aPfljbOso9SpbxA" };
 const DRIVE = "Google Drive", SHOP = "Shopify";
 const CONTROLS = [
   ["embalaje", "Embalaje íntegro y precintado"],
@@ -247,7 +244,14 @@ const CHECKS = [
   ["envase", "Declaración de conformidad del envase"],
   ["coincide", "El lote del certificado coincide con el recibido"]
 ];
-const ESTADOS = { ok: "✅ Correcto", pendiente: "⏳ Pendiente", revisar: "⚠️ Revisar", na: "— No aplica" };
+const ESTADOS = { pendiente: "⏳ Pendiente", ok: "✅ Correcto", revisar: "⚠️ Revisar", na: "— No aplica" };
+function normEstado(v) {
+  const t = String(v || "").toLowerCase().trim();
+  if (t === "ok" || t.startsWith("correct")) return "ok";
+  if (t.startsWith("revis")) return "revisar";
+  if (t === "na" || t === "n/a" || t.startsWith("no aplica")) return "na";
+  return "pendiente";
+}
 const FIELDS = [
   ["producto", "Producto"], ["proveedor", "Proveedor"], ["pais", "País de origen"], ["pedido", "Nº pedido Alibaba"],
   ["facturaNum", "Nº factura"], ["facturaFecha", "Fecha factura"], ["loteProveedor", "Lote del proveedor"],
@@ -351,7 +355,7 @@ $("rec-form").addEventListener("submit", async (e) => {
   if (!fecha) return;
   const lote = nextLot(fecha);
   const month = parseInt(fecha.slice(5, 7), 10);
-  const folder = MONTH_FOLDERS[month] || ROOT_FOLDER;
+  let folder = ROOT_FOLDER;
   const btn = $("btn-analyze"); btn.disabled = true; $("rec-msg").innerHTML = "";
   const form = {
     fecha, producto: $("r-producto").value.trim(), proveedor: $("r-proveedor").value.trim(),
@@ -367,6 +371,10 @@ $("rec-form").addEventListener("submit", async (e) => {
   try {
     // 1. upload
     steps[0].st = "now"; setProgress(steps);
+    if (mcp) {
+      try { folder = await monthFolder(fecha); }
+      catch (err) { warnings.push("No he podido preparar la carpeta del mes; guardo en la carpeta principal. " + mcpError(err, DRIVE)); }
+    }
     if (state.files.length && !mcp) warnings.push("Drive no está disponible en esta vista: los documentos no se han subido.");
     if (mcp) for (const f of state.files) {
       try {
@@ -400,7 +408,24 @@ $("rec-form").addEventListener("submit", async (e) => {
   } finally { btn.disabled = false; }
 });
 
-function folderName(m) { const n = ["", "01 Enero", "02 Febrero", "03 Marzo", "04 Abril", "05 Mayo", "06 Junio", "07 Julio", "08 Agosto", "09 Septiembre", "10 Octubre", "11 Noviembre", "12 Diciembre"]; return n[m] || "MOOD MATCHA"; }
+function folderName(m) { return MESES[m] || "TRAZABILIDAD MOOD MATCHA"; }
+
+async function findOrCreateFolder(title, parentId) {
+  const query = `parentId = '${parentId}' and title = '${title}' and mimeType = 'application/vnd.google-apps.folder'`;
+  const r = await mcp.callTool(DRIVE, "search_files", { query, excludeContentSnippets: true, pageSize: 5 }, { cache: false });
+  const found = (r.payload && r.payload.files) || [];
+  if (found.length && found[0].id) return found[0].id;
+  const c = await mcp.callTool(DRIVE, "create_file", { title, parentId, contentMimeType: "application/vnd.google-apps.folder" });
+  if (!c.payload || !c.payload.id) throw { code: "tool_error", message: "Drive no ha devuelto la carpeta creada." };
+  return c.payload.id;
+}
+async function monthFolder(iso) {
+  const y = iso.slice(0, 4), key = y + "-" + iso.slice(5, 7);
+  if (folderCache[key]) return folderCache[key];
+  if (!folderCache[y]) folderCache[y] = await findOrCreateFolder(y, ROOT_FOLDER);
+  folderCache[key] = await findOrCreateFolder(MESES[parseInt(iso.slice(5, 7), 10)], folderCache[y]);
+  return folderCache[key];
+}
 
 function buildPrompt(form, texts) {
   return `Eres el responsable de calidad de Mood Matcha, una marca española que importa matcha (té verde en polvo) de proveedores de Alibaba.
@@ -439,7 +464,7 @@ function buildDraft(lote, folder, form, docs, ai) {
   const checks = {};
   for (const [k] of CHECKS) {
     const c = ai.checks && ai.checks[k];
-    checks[k] = { estado: (c && ESTADOS[c.estado]) ? c.estado : "pendiente", nota: (c && c.nota) || "" };
+    checks[k] = { estado: normEstado(c && c.estado), nota: (c && c.nota) || "" };
   }
   const controlNo = CONTROLS.filter(([k]) => form.controles[k] === "No").map(([, l]) => l);
   const inc = Array.isArray(ai.incidencias) ? ai.incidencias.slice() : [];
@@ -592,7 +617,7 @@ function renderDetail(id) {
     $("btn-trace").disabled = true; m.innerHTML = `<div class="msg warn">Creando informe…</div>`;
     try {
       const t = todayISO();
-      const res = await mcp.callTool(DRIVE, "create_file", { title: `Trazabilidad ${r.id} · ${fmtDate(t).replace(/\//g, "-")}`, parentId: MONTH_FOLDERS[parseInt(t.slice(5, 7), 10)] || ROOT_FOLDER, contentMimeType: "text/html", textContent: traceHTML(r, v) });
+      const res = await mcp.callTool(DRIVE, "create_file", { title: `Trazabilidad ${r.id} · ${fmtDate(t).replace(/\//g, "-")}`, parentId: await monthFolder(t), contentMimeType: "text/html", textContent: traceHTML(r, v) });
       const url = res.payload && res.payload.viewUrl;
       m.innerHTML = `<div class="msg ok">Informe creado en Drive. ${url ? `<a href="${esc(url)}" target="_blank" rel="noopener">Abrir</a>` : ""}</div>`;
     } catch (err) { m.innerHTML = `<div class="msg bad">${esc(mcpError(err, DRIVE))}</div>`; }
@@ -604,7 +629,7 @@ function renderDetail(id) {
     redo.disabled = true;
     try {
       const d = { lote: r.id, fecha: r.fecha, notas: r.notas, controles: r.controles || {}, docs: r.docs || [], fields: Object.fromEntries(FIELDS.map(([k]) => [k, r[k] || ""])), checks: r.checks || Object.fromEntries(CHECKS.map(([k]) => [k, { estado: "pendiente", nota: "" }])), incidencias: r.incidencias, resultado: r.resultado };
-      const res = await mcp.callTool(DRIVE, "create_file", { title: `Recepción ${r.id} · ${r.producto || "Matcha"} · ${fmtDate(r.fecha).replace(/\//g, "-")}`, parentId: MONTH_FOLDERS[parseInt(r.fecha.slice(5, 7), 10)] || ROOT_FOLDER, contentMimeType: "text/html", textContent: reportHTML(d) });
+      const res = await mcp.callTool(DRIVE, "create_file", { title: `Recepción ${r.id} · ${r.producto || "Matcha"} · ${fmtDate(r.fecha).replace(/\//g, "-")}`, parentId: await monthFolder(r.fecha), contentMimeType: "text/html", textContent: reportHTML(d) });
       await db.collection("recepciones").doc(r.id).update({ informeUrl: (res.payload && res.payload.viewUrl) || "", informeId: (res.payload && res.payload.id) || "" });
     } catch (err) { m.innerHTML = `<div class="msg bad">${esc(err.code ? mcpError(err, DRIVE) : (err.message || "Error"))}</div>`; redo.disabled = false; }
   };
