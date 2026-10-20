@@ -1326,12 +1326,11 @@ const NEGOCIOS = {
     facs.forEach((f, i) => { if (f.pdf?.enlace) { const cel = wsF[X.utils.encode_cell({ r: i + 1, c: 13 })]; cel.l = { Target: f.pdf.enlace, Tooltip: 'Abrir el PDF en Google Drive' }; } });
     X.utils.book_append_sheet(wb, wsF, 'Facturas emitidas');
     // Albaranes (sin impuestos)
-    const filasA = [['Nº albarán', 'Fecha', 'Negocio', 'Cliente', 'DNI / NIF', 'Dirección', 'Total', 'Cobrado', 'PDF'],
+    const filasA = [['Nº albarán', 'Fecha', 'Negocio', 'Cliente', 'DNI / NIF', 'Dirección', 'Total', 'Cobrado'],
       ...albs.map(f => { const c = f.cliente || {};
         return [f.numero, aFecha(f.fecha), f._n, c.nombre || '', c.nif || '', [c.direccion, c.cp, c.ciudad, c.provincia].filter(Boolean).join(', '),
-          totalesFactura(f).total, f.cobrado === '1' ? 'Sí' : 'No', f.pdf?.enlace ? 'Abrir PDF' : 'Descárgalo desde el panel']; })];
-    const wsA = hoja(X, filasA, [20, 11, 15, 28, 13, 34, 12, 9, 22], { 1: FECHA, 6: EUR });
-    albs.forEach((f, i) => { if (f.pdf?.enlace) { const cel = wsA[X.utils.encode_cell({ r: i + 1, c: 8 })]; cel.l = { Target: f.pdf.enlace, Tooltip: 'Abrir el PDF en Google Drive' }; } });
+          totalesFactura(f).total, f.cobrado === '1' ? 'Sí' : 'No']; })];
+    const wsA = hoja(X, filasA, [20, 11, 15, 28, 13, 34, 12, 9], { 1: FECHA, 6: EUR });
     X.utils.book_append_sheet(wb, wsA, 'Albaranes');
     // Libro de gastos (facturas recibidas)
     const gastos = Object.entries(NEGOCIOS).flatMap(([k, n]) => dbs[k].movs.filter(m => m.tipo === 'gasto').map(m => ({ ...m, _n: n.nombre }))).sort((a, b) => a.fecha.localeCompare(b.fecha));
@@ -1344,7 +1343,7 @@ const NEGOCIOS = {
   };
   const asegurarPDFs = async avance => {
     if (!drive) return;
-    const faltan = Object.keys(NEGOCIOS).flatMap(n => (dbs[n].facturas || []).filter(f => !f.pdf?.enlace).map(f => [f, n]));
+    const faltan = Object.keys(NEGOCIOS).flatMap(n => (dbs[n].facturas || []).filter(f => !f.pdf?.enlace && !esAlbaran(f)).map(f => [f, n]));
     for (const [i, [f, n]] of faltan.entries()) {
       avance?.(`Guardando en Google Drive el PDF de ${nombreDoc(f).toLowerCase()} ${f.numero} (${i + 1} de ${faltan.length})…`);
       try { await subirPDF(f, n, await crearPDF(f, n)); } catch { /* sin enlace: el Excel lo indica */ }
@@ -1730,7 +1729,9 @@ const NEGOCIOS = {
   // Ordenar lo que ya estaba en Drive: mover cada PDF a la carpeta de su mes (una vez)
   const ordenarDrive = async () => {
     for (const n of Object.keys(NEGOCIOS)) {
-      const pendientes = [...(dbs[n].facturas || []).filter(f => f.pdf?.enlace && !f.pdf.carpeta).map(f => [f.fecha, f.pdf]),
+      // Albaranes que se subieron antes: a la papelera de Drive y sin enlace
+      (dbs[n].facturas || []).filter(f => esAlbaran(f) && f.pdf?.enlace).forEach(f => { aPapelera(f.pdf.enlace); delete f.pdf; escribir(NEGOCIOS[n].clave, dbs[n]); });
+      const pendientes = [...(dbs[n].facturas || []).filter(f => f.pdf?.enlace && !f.pdf.carpeta && !esAlbaran(f)).map(f => [f.fecha, f.pdf]),
         ...dbs[n].movs.filter(m => m.adjunto?.enlace && !m.adjunto.carpeta).map(m => [m.fecha, m.adjunto])];
       for (const [fecha, info] of pendientes) {
         const fileId = idDeEnlace(info.enlace); if (!fileId) continue;
@@ -1753,7 +1754,7 @@ const NEGOCIOS = {
       }
       txt = `✓ PDF de ${esc(nombreDoc(f).toLowerCase())} ${esc(f.numero)} descargado.`;
     } catch (err) { txt = err.code === 'declined' ? '' : 'No se pudo descargar: ' + esc(err.message); }
-    if (drive && !soloDescargar) {
+    if (drive && !soloDescargar && !esAlbaran(f)) {  // los albaranes no se guardan en Drive
       try {
         const enlace = await subirPDF(f, n, pdf);
         txt += ` Copia guardada en tu Google Drive${enlace ? ` · <a href="${esc(enlace)}" target="_blank" rel="noopener">abrir</a>` : ''}.`;
