@@ -599,10 +599,92 @@ function forms(root) {
   });
 }
 
+/* ---------- Cinta que se acelera al bajar ---------- */
+let cintaBoost = 0, cintaLastY = scrollY, cintaRun = false;
+function cintas(root) {
+  const rows = $$('[data-mm-cinta] .mm-cinta__row', root).filter((r) => !r.dataset.mmBound);
+  if (!rows.length) return;
+  rows.forEach((r) => { r.dataset.mmBound = '1'; r._x = 0; });
+  addEventListener('scroll', () => { cintaBoost = Math.min(cintaBoost + Math.abs(scrollY - cintaLastY) * 0.02, 5); cintaLastY = scrollY; }, { passive: true });
+  if (cintaRun || reduced) return;
+  cintaRun = true;
+  let last = performance.now();
+  const loop = (now) => {
+    const dt = Math.min(now - last, 50); last = now;
+    $$('[data-mm-cinta] .mm-cinta__row').forEach((r) => {
+      const v = Number(r.closest('[data-mm-cinta]').style.getPropertyValue('--mm-cinta-v')) || 4;
+      r._x = (r._x || 0) + dt * 0.006 * v * (1 + cintaBoost);
+      const w = r.scrollWidth / 4; const off = r._x % w;
+      r.style.transform = `translateX(${r.dataset.dir === '1' ? off - w : -off}px)`;
+    });
+    cintaBoost *= 0.93;
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+}
+
+/* ---------- Manifiesto: las palabras se tiñen al bajar ---------- */
+function manifiesto(root) {
+  $$('[data-mm-ink]', root).forEach((box) => {
+    if (box.dataset.mmBound) return; box.dataset.mmBound = '1';
+    const wrap = (node) => [...node.childNodes].forEach((n) => {
+      if (n.nodeType === 3) {
+        const f = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach((p) => { if (!p) return; if (/^\s+$/.test(p)) f.append(p); else { const i = document.createElement('i'); i.textContent = p; f.append(i); } });
+        n.replaceWith(f);
+      } else if (n.nodeType === 1) wrap(n);
+    });
+    wrap(box);
+    const words = $$('i', box);
+    const fn = () => {
+      const r = box.getBoundingClientRect(), vh = innerHeight;
+      const p = reduced ? 1 : clamp((vh * 0.85 - r.top) / (r.height + vh * 0.35), 0, 1);
+      const n = Math.round(p * words.length);
+      words.forEach((w, i) => w.classList.toggle('is-on', i < n));
+    };
+    scrollFns.add(fn); fn();
+  });
+}
+
+/* ---------- Recuadro «Hoy estoy en modo…» ---------- */
+function moodbox(root) {
+  $$('[data-mm-moodbox]', root).forEach((box) => {
+    if (box.dataset.mmBound) return; box.dataset.mmBound = '1';
+    const word = box.querySelector('[data-mm-mood-word]');
+    $$('button[data-a]', box).forEach((b) => b.addEventListener('click', () => {
+      $$('button[data-a]', box).forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+      box.style.setProperty('--a', b.dataset.a);
+      word.textContent = b.dataset.word; word.classList.remove('is-new'); void word.offsetWidth; word.classList.add('is-new');
+      box.querySelector('[data-mm-mood-receta]').textContent = b.dataset.receta;
+      box.querySelector('[data-mm-mood-texto]').textContent = b.dataset.texto;
+    }));
+  });
+}
+
+/* ---------- Juego «Elige tu mood» ---------- */
+function juego(root) {
+  $$('[data-mm-juego]', root).forEach((game) => {
+    if (game.dataset.mmBound) return; game.dataset.mmBound = '1';
+    const win = game.querySelector('[data-mm-juego-win]');
+    if (!win) return;
+    $$('.mm-juego__card', game).forEach((card) => card.addEventListener('click', () => {
+      if (game.classList.contains('is-played')) return;
+      card.classList.add('is-open'); game.classList.add('is-played');
+      const prize = game.querySelector('[data-mm-juego-prize]');
+      prize.innerHTML = '';
+      prize.append(`Mood ${card.dataset.nombre}: `, Object.assign(document.createElement('b'), { textContent: card.dataset.premio }), ` ${card.dataset.detalle}`);
+      const tags = game.querySelector('[data-mm-juego-tags]');
+      tags.value = `newsletter, juego-mood, mood-${card.dataset.mood}`;
+      setTimeout(() => { win.hidden = false; win.querySelector('input[type="email"]')?.focus({ preventScroll: true }); }, reduced ? 0 : 900);
+    }));
+  });
+}
+
 /* ---------- Arranque ---------- */
 function init(root = document) {
   intro(root); roll(root); videos(root); moods(root); carousel(root); tins(root); galeria(root);
   momentos(root); counters(root); preparacion(root); ship(root); freeBars(root); forms(root);
+  cintas(root); manifiesto(root); moodbox(root); juego(root);
   runScroll();
 }
 init();

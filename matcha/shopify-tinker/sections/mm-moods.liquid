@@ -1,35 +1,59 @@
 {% render 'mm-recursos' %}
-{%- assign fondos = 'mm-ceremonia,mm-acuarela-latte.jpg,mm-acuarela-polvo.jpg,mm-acuarela-arco.jpg,mm-acuarela-bodegon.jpg' | split: ',' -%}
-<section class="mm mm-moods" data-mm-moods>
-  <div>
-    <h2>{{ section.settings.titulo }}</h2>
-    <div class="mm-moods__tabs" role="tablist" aria-label="{{ section.settings.titulo | escape }}">
+{%- comment -%} Recuadro «Hoy estoy en modo…»: al elegir un mood cambia de color solo el recuadro y enseña su receta. {%- endcomment -%}
+{%- assign colores = 'focus:#5f8f12,calma:#3f8f86,energia:#b8860b,social:#7a62b0,antojo:#c45577' | split: ',' -%}
+{%- assign primero = section.blocks.first -%}
+<section class="mm mm-moodbox-wrap">
+  {%- if primero -%}
+  {%- liquid
+    assign c0 = primero.settings.color
+    if c0 == blank
+      assign k0 = primero.settings.mood | handleize
+      for par in colores
+        assign kv = par | split: ':'
+        if kv[0] == k0
+          assign c0 = kv[1]
+        endif
+      endfor
+    endif
+    if c0 == blank
+      assign c0 = '#5f8f12'
+    endif
+  -%}
+  <div class="mm-moodbox" style="--a: {{ c0 }};" data-mm-moodbox>
+    <span class="mm-moodbox__blob" aria-hidden="true"></span><span class="mm-moodbox__blob" aria-hidden="true"></span>
+    <h2 class="mm-moodbox__big">{{ section.settings.titulo }} <span data-mm-mood-word>{{ primero.settings.mood | downcase }}</span></h2>
+    <div class="mm-moodbox__chips" role="group" aria-label="{{ section.settings.titulo | escape }}">
       {%- for block in section.blocks -%}
-        <button type="button" class="mm-moods__tab" role="tab" id="mm-tab-{{ block.id }}" aria-controls="mm-pic-{{ block.id }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}" {{ block.shopify_attributes }}>
-          <b>{{ block.settings.mood }}</b>
-          <span>{{ block.settings.receta }}</span>
-          <p>{{ block.settings.texto }}</p>
-        </button>
+        {%- liquid
+          assign c = block.settings.color
+          if c == blank
+            assign k = block.settings.mood | handleize
+            for par in colores
+              assign kv = par | split: ':'
+              if kv[0] == k
+                assign c = kv[1]
+              endif
+            endfor
+          endif
+          if c == blank
+            assign c = '#5f8f12'
+          endif
+        -%}
+        <button type="button" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}" data-a="{{ c }}" data-word="{{ block.settings.mood | downcase | escape }}" data-receta="{{ block.settings.receta | escape }}" data-texto="{{ block.settings.texto | escape }}" {{ block.shopify_attributes }}>{{ block.settings.mood }}</button>
       {%- endfor -%}
     </div>
+    <p class="mm-moodbox__line" aria-live="polite"><b data-mm-mood-receta>{{ primero.settings.receta }}</b> <span data-mm-mood-texto>{{ primero.settings.texto }}</span></p>
   </div>
-  <div class="mm-moods__pics">
-    {%- for block in section.blocks -%}
-      {%- assign i = forloop.index0 | modulo: fondos.size -%}
-      <div class="mm-moods__pic{% if forloop.first %} is-on{% endif %}" id="mm-pic-{{ block.id }}" role="tabpanel" aria-labelledby="mm-tab-{{ block.id }}" data-mm-pic>
-        {% render 'mm-media', video: block.settings.video, image: block.settings.imagen, fallback: fondos[i], sizes: '(min-width: 900px) 50vw, 100vw' %}
-      </div>
-    {%- endfor -%}
-  </div>
+  {%- endif -%}
 </section>
 
 {% schema %}
 {
-  "name": "MM · Moods",
+  "name": "MM · Hoy estoy en modo",
   "tag": "div",
   "class": "mm-section",
   "settings": [
-    { "type": "text", "id": "titulo", "label": "Titular", "default": "¿Cómo te sientes hoy?" }
+    { "type": "text", "id": "titulo", "label": "Titular", "info": "Va delante del mood elegido.", "default": "Hoy estoy en modo" }
   ],
   "blocks": [
     {
@@ -39,8 +63,9 @@
         { "type": "text", "id": "mood", "label": "Mood", "default": "Focus" },
         { "type": "text", "id": "receta", "label": "Receta", "default": "Solo con agua" },
         { "type": "textarea", "id": "texto", "label": "Cómo se hace", "default": "2 g de matcha y 70 ml de agua a 80 °C. Bate en zigzag quince segundos y bébelo tranquilo." },
-        { "type": "image_picker", "id": "imagen", "label": "Imagen" },
-        { "type": "video", "id": "video", "label": "Vídeo", "info": "Si eliges vídeo, se muestra en lugar de la imagen." }
+        { "type": "color", "id": "color", "label": "Color del recuadro", "info": "Vacío: verde para Focus, azul agua para Calma, amarillo para Energía, lila para Social y rosa para Antojo." },
+        { "type": "image_picker", "id": "imagen", "label": "Imagen", "info": "No se usa en el diseño del recuadro." },
+        { "type": "video", "id": "video", "label": "Vídeo", "info": "No se usa en el diseño del recuadro." }
       ]
     }
   ],

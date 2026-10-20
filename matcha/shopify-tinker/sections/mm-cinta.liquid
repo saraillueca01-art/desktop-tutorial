@@ -1,0 +1,24 @@
+{% render 'mm-recursos' %}
+{%- assign partes = section.settings.texto | split: '·' -%}
+<div class="mm mm-cinta mm-cinta--{{ section.settings.estilo }}" style="--mm-cinta-v: {{ section.settings.velocidad }};" data-mm-cinta aria-hidden="true">
+  <div class="mm-cinta__row" data-dir="{{ section.settings.direccion }}">
+    {%- for i in (1..4) -%}
+      {%- for p in partes -%}{%- assign t = p | strip -%}{%- if t != blank -%}<span>{{ t }}</span>{%- endif -%}{%- endfor -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "MM · Cinta",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "text", "id": "texto", "label": "Texto", "info": "Separa las palabras con un punto medio ( · ).", "default": "Focus · Calma · Energía · Antojo · Mood" },
+    { "type": "select", "id": "estilo", "label": "Estilo", "options": [{ "value": "oscuro", "label": "Verde oscuro" }, { "value": "claro", "label": "Blanco con líneas" }], "default": "oscuro" },
+    { "type": "select", "id": "direccion", "label": "Dirección", "options": [{ "value": "-1", "label": "Hacia la izquierda" }, { "value": "1", "label": "Hacia la derecha" }], "default": "-1" },
+    { "type": "range", "id": "velocidad", "label": "Velocidad", "min": 1, "max": 10, "step": 1, "default": 4 }
+  ],
+  "presets": [{ "name": "MM · Cinta", "category": "Mood Matcha" }]
+}
+{% endschema %}

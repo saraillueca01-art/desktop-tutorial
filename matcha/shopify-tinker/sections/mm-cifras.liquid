@@ -1,32 +1,34 @@
 {% render 'mm-recursos' %}
-{%- assign fondos = 'mm-acuarela-molino.jpg,mm-acuarela-polvo.jpg,mm-acuarela-latte.jpg,mm-ceremonia.jpg,mm-acuarela-arco.jpg,mm-acuarela-bodegon.jpg' | split: ',' -%}
-<section class="mm mm-cifras">
-  <div class="mm-cifras__head">
-    <h2>{{ section.settings.titulo }}</h2>
-    {%- if section.settings.texto != blank -%}<p>{{ section.settings.texto }}</p>{%- endif -%}
-    <div class="mm-cifras__arrows">
-      <button type="button" data-mm-prev aria-label="Cifra anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
-      <button type="button" data-mm-next aria-label="Cifra siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
-    </div>
+{%- comment -%} Sellos redondos con el texto girando alrededor. {%- endcomment -%}
+{%- assign estilos = 'deep,line,accent,line' | split: ',' -%}
+<section class="mm mm-sellos">
+  <div class="mm-sellos__head">
+    {%- if section.settings.texto != blank -%}<p class="mm-eyebrow">{{ section.settings.titulo }}</p><h2>{{ section.settings.texto }}</h2>{%- else -%}<h2>{{ section.settings.titulo }}</h2>{%- endif -%}
   </div>
-  <div class="mm-cifras__track" data-mm-track>
+  <div class="mm-sellos__row">
     {%- for block in section.blocks -%}
-      {%- assign i = forloop.index0 | modulo: fondos.size -%}
-      <article class="mm-cifras__card" {{ block.shopify_attributes }}>
-        {%- if block.settings.imagen != blank -%}
-          {% render 'mm-media', image: block.settings.imagen, sizes: '330px' %}
-        {%- else -%}
-          {% render 'mm-media', fallback: fondos[i], sizes: '330px' %}
-        {%- endif -%}
-        <h3>{{ block.settings.cifra }}<small>{{ block.settings.texto }}</small></h3>
-      </article>
+      {%- liquid
+        assign e = forloop.index0 | modulo: estilos.size
+        assign centro = block.settings.centro | default: block.settings.cifra
+        assign aro = block.settings.aro
+        if aro == blank
+          assign aro = block.settings.texto | default: block.settings.cifra
+        endif
+        assign aro = aro | upcase | append: ' · '
+        assign giro = forloop.index | times: 37 | modulo: 13 | minus: 6
+      -%}
+      <div class="mm-sello mm-sello--{{ estilos[e] }}" style="--r: {{ giro }}deg;" {{ block.shopify_attributes }}>
+        <svg viewBox="0 0 100 100" aria-hidden="true"><defs><path id="mm-aro-{{ block.id }}" d="M50,50 m-41,0 a41,41 0 1,1 82,0 a41,41 0 1,1 -82,0"/></defs><text><textPath href="#mm-aro-{{ block.id }}" textLength="252">{{ aro | truncate: 70, '' }}</textPath></text></svg>
+        <b>{{ centro }}{%- if block.settings.pie != blank -%}<small>{{ block.settings.pie }}</small>{%- endif -%}</b>
+        <span class="visually-hidden">{{ block.settings.cifra }}. {{ block.settings.texto }}</span>
+      </div>
     {%- endfor -%}
   </div>
 </section>
 
 {% schema %}
 {
-  "name": "MM · Cifras clave",
+  "name": "MM · Sellos",
   "tag": "div",
   "class": "mm-section",
   "settings": [
@@ -40,7 +42,11 @@
       "settings": [
         { "type": "text", "id": "cifra", "label": "Cifra", "default": "21 días" },
         { "type": "text", "id": "texto", "label": "Texto", "default": "a la sombra antes de la cosecha" },
-        { "type": "image_picker", "id": "imagen", "label": "Imagen" }
+        { "type": "header", "content": "Sello" },
+        { "type": "text", "id": "centro", "label": "Centro del sello", "info": "Algo corto, como «20 días». Vacío: la cifra." },
+        { "type": "text", "id": "pie", "label": "Debajo del centro", "info": "Opcional, en letra pequeña." },
+        { "type": "text", "id": "aro", "label": "Texto que gira", "info": "Vacío: el texto de la cifra." },
+        { "type": "image_picker", "id": "imagen", "label": "Imagen", "info": "No se usa en el diseño de sellos." }
       ]
     }
   ],

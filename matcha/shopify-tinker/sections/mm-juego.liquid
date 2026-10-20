@@ -1,0 +1,86 @@
+{% render 'mm-recursos' %}
+{%- comment -%}
+  Juego «Elige tu mood»: cada tarjeta esconde un premio. Para recibir el código hay que suscribirse.
+  El email se guarda como cliente suscrito con las etiquetas «newsletter, juego-mood, mood-…».
+  El código se envía con un email automático de Shopify Messaging para esas etiquetas.
+{%- endcomment -%}
+{%- assign form_id = 'mm-juego-' | append: section.id -%}
+<section class="mm mm-juego" id="{{ form_id }}-zona" data-mm-juego>
+  <div class="mm-juego__head">
+    {%- if section.settings.antetitulo != blank -%}<p class="mm-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+    <h2>{{ section.settings.titulo }}</h2>
+    {%- if section.settings.texto != blank -%}<p class="mm-juego__text">{{ section.settings.texto }}</p>{%- endif -%}
+  </div>
+
+  {%- form 'customer', id: form_id, class: 'mm-juego__form-wrap' -%}
+    {%- if form.posted_successfully? -%}
+      <p class="mm-juego__done" role="status">{{ section.settings.gracias }}</p>
+    {%- else -%}
+      <div class="mm-juego__cards">
+        {%- for block in section.blocks -%}
+          {%- assign k = block.settings.mood | handleize -%}
+          <button type="button" class="mm-juego__card" style="--k: {{ block.settings.color }};" data-mood="{{ k }}" data-premio="{{ block.settings.premio | escape }}" data-detalle="{{ block.settings.detalle | escape }}" data-nombre="{{ block.settings.mood | escape }}" aria-label="Elegir {{ block.settings.mood | escape }}" {{ block.shopify_attributes }}>
+            <span class="mm-juego__in">
+              <span class="mm-juego__face"><em>{{ block.settings.mood }}</em><small>{{ section.settings.pista }}</small></span>
+              <span class="mm-juego__back"><small>{{ block.settings.mood }}</small><b>{{ block.settings.premio }}</b><span>{{ block.settings.detalle }}</span></span>
+            </span>
+          </button>
+        {%- endfor -%}
+      </div>
+      <div class="mm-juego__win" data-mm-juego-win hidden>
+        <p class="mm-juego__prize" data-mm-juego-prize></p>
+        <input type="hidden" name="contact[tags]" value="newsletter, juego-mood" data-mm-juego-tags>
+        <div class="mm-juego__form">
+          <label for="{{ form_id }}-email" class="visually-hidden">Tu email</label>
+          <input id="{{ form_id }}-email" type="email" name="contact[email]" placeholder="Tu email" autocomplete="email" required>
+          <button type="submit">{{ section.settings.boton }}</button>
+        </div>
+        {%- if section.settings.legal != blank -%}<p class="mm-juego__legal">{{ section.settings.legal }}</p>{%- endif -%}
+      </div>
+      {%- if form.errors -%}<p class="mm-juego__err" role="alert">Revisa el email e inténtalo otra vez.</p>{%- endif -%}
+    {%- endif -%}
+  {%- endform -%}
+</section>
+
+{% schema %}
+{
+  "name": "MM · Juego Elige tu mood",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "Juega y gana" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Elige tu mood" },
+    { "type": "text", "id": "texto", "label": "Texto", "default": "Cada mood esconde un premio distinto. Elige el tuyo." },
+    { "type": "text", "id": "pista", "label": "Texto de las tarjetas", "default": "Toca para descubrir" },
+    { "type": "text", "id": "boton", "label": "Botón", "default": "Enviarme el código" },
+    { "type": "text", "id": "legal", "label": "Texto legal", "default": "Te llega el código al email y te suscribes a la newsletter. Puedes darte de baja cuando quieras." },
+    { "type": "text", "id": "gracias", "label": "Mensaje al apuntarse", "default": "Listo. Revisa tu email: tu código va de camino." },
+    { "type": "paragraph", "content": "Cada suscriptor se guarda con las etiquetas «newsletter», «juego-mood» y su mood (por ejemplo «mood-focus»). Crea en Descuentos un código para cada premio y un email automático en Shopify Messaging que lo envíe según la etiqueta." }
+  ],
+  "blocks": [
+    {
+      "type": "premio",
+      "name": "Mood y premio",
+      "limit": 6,
+      "settings": [
+        { "type": "text", "id": "mood", "label": "Mood", "default": "Focus" },
+        { "type": "color", "id": "color", "label": "Color", "default": "#5f8f12" },
+        { "type": "text", "id": "premio", "label": "Premio", "default": "10 %" },
+        { "type": "text", "id": "detalle", "label": "Detalle", "default": "en tu primera lata" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "MM · Juego Elige tu mood",
+      "category": "Mood Matcha",
+      "blocks": [
+        { "type": "premio", "settings": { "mood": "Focus", "color": "#5f8f12", "premio": "10 %", "detalle": "en tu primera lata" } },
+        { "type": "premio", "settings": { "mood": "Calma", "color": "#3f8f86", "premio": "Envío gratis", "detalle": "en tu primer pedido" } },
+        { "type": "premio", "settings": { "mood": "Energía", "color": "#b8860b", "premio": "15 %", "detalle": "en el pack de 2 latas" } },
+        { "type": "premio", "settings": { "mood": "Antojo", "color": "#c45577", "premio": "12 %", "detalle": "en tu primera lata" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

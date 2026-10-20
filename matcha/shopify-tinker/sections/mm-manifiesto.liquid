@@ -1,0 +1,19 @@
+{% render 'mm-recursos' %}
+<section class="mm mm-manifiesto" style="--mm-man-bg: {{ section.settings.fondo }};" aria-label="{{ section.settings.antetitulo | escape }}">
+  {%- if section.settings.antetitulo != blank -%}<p class="mm-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+  <div class="mm-manifiesto__p" data-mm-ink>{{ section.settings.texto }}</div>
+</section>
+
+{% schema %}
+{
+  "name": "MM · Manifiesto",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "Nuestra idea" },
+    { "type": "richtext", "id": "texto", "label": "Frase", "info": "Las palabras en cursiva salen destacadas en color.", "default": "<p>Un <em>matcha</em> de primera cosecha para cada <em>mood</em> del día: el que te centra, el que te calma, el que te enciende y el que te mima.</p>" },
+    { "type": "color", "id": "fondo", "label": "Color de fondo", "default": "#1e3322" }
+  ],
+  "presets": [{ "name": "MM · Manifiesto", "category": "Mood Matcha" }]
+}
+{% endschema %}
