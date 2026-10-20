@@ -1778,7 +1778,11 @@ const NEGOCIOS = {
       return b ? new File([b], archivo.name.replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg' }) : archivo;
     } catch { return archivo; }
   };
-  const tituloGasto = (m, ext) => nombreArchivo(`Gasto ${m.fecha} - ${m.contraparte || 'proveedor'} - ${m.concepto}`) + ext;
+  // En Drive la factura del gasto se guarda con su nombre original (el del archivo que adjuntaste)
+  const tituloGasto = (m, ext, nombre = m.adjunto?.nombre) => {
+    const base = String(nombre || '').replace(/\.\w+$/, '').replace(/[\\/:*?"<>|]/g, '').trim();
+    return (base || nombreArchivo(`Gasto ${m.fecha} - ${m.contraparte || 'proveedor'} - ${m.concepto}`)) + ext;
+  };
   // 1) se guarda dentro del programa (no se pierde aunque falle Drive) y 2) se copia a la carpeta del mes en Drive
   const adjuntarFactura = async (m, n, original) => {
     const poner = datos => {
@@ -1800,8 +1804,8 @@ const NEGOCIOS = {
       if (drive) {
         try {
           const ext = (archivo.name.match(/\.\w+$/) || ['.pdf'])[0].toLowerCase();
-          const r = await subirAlMes(n, m.fecha, 'Gastos', tituloGasto(m, ext), archivo, archivo.type || 'application/pdf');
-          poner({ enlace: r.enlace, carpeta: r.carpeta, nombre: original.name });
+          const r = await subirAlMes(n, m.fecha, 'Gastos', tituloGasto(m, ext, original.name), archivo, archivo.type || 'application/pdf');
+          poner({ enlace: r.enlace, carpeta: r.carpeta, nombre: original.name, titulo: true });
           aviso('✓ Factura adjuntada y guardada en su carpeta de Google Drive'); return;
         } catch (err) { fallos.push('Google Drive: ' + (ERRORES_DRIVE[err.code] || `${err.code || ''} ${err.message || err}`.trim())); }
       }
@@ -1822,7 +1826,7 @@ const NEGOCIOS = {
         const b = await resp.blob(); if (!b.size) continue;
         const ext = b.type === 'application/pdf' ? '.pdf' : b.type === 'image/png' ? '.png' : '.jpg';
         const r = await subirAlMes(n, m.fecha, 'Gastos', tituloGasto(m, ext), b, b.type || 'application/pdf');
-        m.adjunto = { ...m.adjunto, enlace: r.enlace, carpeta: r.carpeta }; escribir(NEGOCIOS[n].clave, dbs[n]);
+        m.adjunto = { ...m.adjunto, enlace: r.enlace, carpeta: r.carpeta, titulo: true }; escribir(NEGOCIOS[n].clave, dbs[n]);
       } catch (err) { res.ok = false; res.error = ERRORES_DRIVE[err.code] || `${err.code || ''} ${err.message || err}`.trim(); }
     }
     return res;
@@ -1841,6 +1845,13 @@ const NEGOCIOS = {
   // Ordenar lo que ya estaba en Drive: mover cada PDF a su carpeta (mes / Ingresos o Gastos)
   const ordenarDrive = async () => {
     for (const n of Object.keys(NEGOCIOS)) {
+      // Facturas de gastos subidas antes con otro nombre: se les pone el nombre original
+      for (const m of dbs[n].movs.filter(x => x.adjunto?.enlace && x.adjunto.nombre && !x.adjunto.titulo)) {
+        const fileId = idDeEnlace(m.adjunto.enlace); if (!fileId) continue;
+        const ext = (m.adjunto.nombre.match(/\.\w+$/) || ['.pdf'])[0].toLowerCase();
+        try { await drive.callTool(DRIVE, 'update_file', { fileId, title: tituloGasto(m, ext) }); m.adjunto.titulo = true; escribir(NEGOCIOS[n].clave, dbs[n]); }
+        catch { /* se reintenta la próxima vez */ }
+      }
       // Albaranes que se subieron antes: a la papelera de Drive y sin enlace
       (dbs[n].facturas || []).filter(f => esAlbaran(f) && f.pdf?.enlace).forEach(f => { aPapelera(f.pdf.enlace); delete f.pdf; escribir(NEGOCIOS[n].clave, dbs[n]); });
       const pendientes = [...(dbs[n].facturas || []).filter(f => f.pdf?.enlace && !esAlbaran(f)).map(f => [f.fecha, f.pdf, 'Ingresos']),
