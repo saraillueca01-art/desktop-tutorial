@@ -23,6 +23,52 @@ tape = lambda words, mod: f'''<div class="ch-tape ch-tape--{mod}" aria-hidden="t
 # Cinta elegante tras la portada
 before_section('mm-lata', tape('Focus · Calma · Energía · Antojo · Mood', 'deep'))
 
+# Juego «Elige tu mood», justo debajo de la portada
+before_section('mm-lata', '''<section class="ch-game" aria-labelledby="ch-game-t" data-ch-game>
+  <div class="ch-game__head">
+    <p class="ch-eyebrow">Juega y gana</p>
+    <h2 id="ch-game-t">Elige tu <em>mood</em></h2>
+    <p>Cada mood esconde un premio distinto. Elige el tuyo.</p>
+  </div>
+  <div class="ch-game__cards">
+      <button type="button" class="ch-card ch-card--focus" data-mood="focus" data-prize="10 %" data-sub="en tu primera lata" aria-label="Elegir Focus">
+        <span class="ch-card__in">
+          <span class="ch-card__face"><em>Focus</em><small>Toca para descubrir</small></span>
+          <span class="ch-card__back"><small>Focus</small><b>10 %</b><span>en tu primera lata</span></span>
+        </span>
+      </button>
+      <button type="button" class="ch-card ch-card--calma" data-mood="calma" data-prize="Envío gratis" data-sub="en tu primer pedido" aria-label="Elegir Calma">
+        <span class="ch-card__in">
+          <span class="ch-card__face"><em>Calma</em><small>Toca para descubrir</small></span>
+          <span class="ch-card__back"><small>Calma</small><b>Envío gratis</b><span>en tu primer pedido</span></span>
+        </span>
+      </button>
+      <button type="button" class="ch-card ch-card--energia" data-mood="energia" data-prize="15 %" data-sub="en el pack de 2 latas" aria-label="Elegir Energía">
+        <span class="ch-card__in">
+          <span class="ch-card__face"><em>Energía</em><small>Toca para descubrir</small></span>
+          <span class="ch-card__back"><small>Energía</small><b>15 %</b><span>en el pack de 2 latas</span></span>
+        </span>
+      </button>
+      <button type="button" class="ch-card ch-card--antojo" data-mood="antojo" data-prize="12 %" data-sub="en tu primera lata" aria-label="Elegir Antojo">
+        <span class="ch-card__in">
+          <span class="ch-card__face"><em>Antojo</em><small>Toca para descubrir</small></span>
+          <span class="ch-card__back"><small>Antojo</small><b>12 %</b><span>en tu primera lata</span></span>
+        </span>
+      </button>
+  </div>
+  <div class="ch-game__win" data-ch-gwin hidden>
+    <p class="ch-game__prize"><span data-ch-gmood></span>: <b data-ch-gprize></b> <span data-ch-gsub></span></p>
+    <form class="ch-game__form" data-ch-gform>
+      <input type="hidden" name="contact[tags]" value="newsletter, juego-mood" data-ch-gtags>
+      <label for="ch-game-email" class="ch-vh">Tu email</label>
+      <input id="ch-game-email" type="email" name="contact[email]" placeholder="Tu email" autocomplete="email" required>
+      <button type="submit">Enviarme el código</button>
+    </form>
+    <p class="ch-game__legal">Te llega el código al email y te suscribes a la newsletter. Puedes darte de baja cuando quieras.</p>
+  </div>
+  <p class="ch-game__done" data-ch-gdone hidden>Listo. Revisa tu email: tu código va de camino.</p>
+</section>''')
+
 # Manifiesto que se tiñe, tras la lata, sobre banda oscura
 before_section('mm-moods', '''<section class="ch-ink" aria-label="Nuestra idea">
   <p class="ch-eyebrow">Nuestra idea</p>
@@ -49,24 +95,6 @@ replace_section('mm-moods', '')
 
 # Segunda cinta, clara, tras los moods
 before_section('mm-prep', tape('Primera cosecha · Molido en piedra · Uji, Japón · Sin amargor', 'soft'))
-
-# Bate y gana, tras la preparación
-before_section('mm-cifras', '''<section class="ch-whisk" aria-labelledby="ch-whisk-t">
-  <div class="ch-whisk__copy">
-    <p class="ch-eyebrow">Minijuego</p>
-    <h2 id="ch-whisk-t">Bate y <em>gana</em></h2>
-    <p>Mueve el ratón o el dedo en zigzag sobre el cuenco, como con el chasen. Cuando salga la espuma, el descuento es tuyo.</p>
-    <div class="ch-meter" aria-hidden="true"><i data-ch-meter></i></div>
-  </div>
-  <div class="ch-whisk__bowl">
-    <canvas data-ch-whisk aria-label="Cuenco de matcha: arrastra en zigzag para batir"></canvas>
-    <div class="ch-prize" data-ch-prize aria-live="polite">
-      <b>BIENVENIDA10</b>
-      <span>Espuma perfecta. 10 % en tu primera lata.</span>
-      <button type="button" data-ch-again>Batir otra vez</button>
-    </div>
-  </div>
-</section>''')
 
 # Sellos que giran en lugar de «Cifras clave»
 n = [0]

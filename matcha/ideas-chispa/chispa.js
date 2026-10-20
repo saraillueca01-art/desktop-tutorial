@@ -52,52 +52,20 @@
     addEventListener('scroll', paint, { passive: true }); paint();
   }
 
-  // ---- Bate y gana ----
-  const wc = document.querySelector('[data-ch-whisk]');
-  if (wc) {
-    const meter = document.querySelector('[data-ch-meter]'), prize = document.querySelector('[data-ch-prize]');
-    let W = fit(wc), foam = 0, bubbles = [], lastP = null, dirX = 0, won = false, swirl = 0;
-    const draw = () => {
-      const { c, w, h } = W; c.clearRect(0, 0, w, h);
-      const cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.4;
-      c.fillStyle = 'rgba(15,36,20,0.12)'; c.beginPath(); c.ellipse(cx, cy + R + 18, R * 0.9, 14, 0, 0, 7); c.fill();
-      c.fillStyle = '#ffffff'; c.beginPath(); c.arc(cx, cy, R + 16, 0, 7); c.fill();
-      c.strokeStyle = '#e3e8db'; c.lineWidth = 2; c.stroke();
-      const g = c.createRadialGradient(cx - R * 0.2, cy - R * 0.2, R * 0.1, cx, cy, R);
-      g.addColorStop(0, '#6aa83a'); g.addColorStop(1, '#2c6a1a');
-      c.fillStyle = g; c.beginPath(); c.arc(cx, cy, R, 0, 7); c.fill();
-      const f = foam / 100;
-      if (f > 0) {
-        c.save(); c.beginPath(); c.arc(cx, cy, R, 0, 7); c.clip();
-        c.globalAlpha = Math.min(1, f * 1.2);
-        const fg = c.createRadialGradient(cx, cy, 0, cx, cy, R); fg.addColorStop(0, '#d6eb8c'); fg.addColorStop(0.8, '#b3d463'); fg.addColorStop(1, 'rgba(179,212,99,0.2)');
-        c.fillStyle = fg; c.beginPath(); c.arc(cx, cy, R * (0.25 + 0.75 * f), 0, 7); c.fill();
-        c.globalAlpha = 0.5 * f; c.strokeStyle = '#f2f8d8'; c.lineWidth = 1.5;
-        for (let i = 0; i < 4; i++) { c.beginPath(); c.arc(cx, cy, R * (0.2 + i * 0.18) * f, swirl + i, swirl + i + 2.4); c.stroke(); }
-        c.restore();
-      }
-      bubbles.forEach((b) => { c.globalAlpha = b.a; c.fillStyle = '#f4fadf'; c.beginPath(); c.arc(b.x, b.y, b.r, 0, 7); c.fill(); });
-      c.globalAlpha = 1;
-    };
-    const move = (e) => {
-      if (won) return;
-      const r = wc.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
-      if (lastP) {
-        const s = Math.sign(x - lastP.x);
-        if (s && s !== dirX && Math.abs(x - lastP.x) > 1) { foam = Math.min(100, foam + 3); dirX = s; swirl += 0.4; }
-        const R = Math.min(W.w, W.h) * 0.4;
-        if (Math.hypot(x - W.w / 2, y - W.h / 2) < R) for (let i = 0; i < 3; i++) bubbles.push({ x: x + (Math.random() - 0.5) * 34, y: y + (Math.random() - 0.5) * 34, r: Math.random() * 3 + 1, a: 0.9 });
-      }
-      lastP = { x, y }; meter.style.width = foam + '%';
-      if (foam >= 100) { won = true; prize.classList.add('on'); }
-    };
-    wc.addEventListener('pointermove', move);
-    wc.addEventListener('pointerdown', (e) => wc.setPointerCapture?.(e.pointerId));
-    wc.addEventListener('pointerleave', () => (lastP = null));
-    document.querySelector('[data-ch-again]').addEventListener('click', () => { foam = 0; won = false; bubbles = []; prize.classList.remove('on'); meter.style.width = '0'; });
-    const loop = () => { bubbles.forEach((b) => (b.a *= 0.95)); bubbles = bubbles.filter((b) => b.a > 0.05).slice(-300); draw(); requestAnimationFrame(loop); };
-    loop();
-    addEventListener('resize', () => (W = fit(wc)));
+  // ---- Juego: Elige tu mood ----
+  const game = document.querySelector('[data-ch-game]');
+  if (game) {
+    const winBox = game.querySelector('[data-ch-gwin]');
+    game.querySelectorAll('.ch-card').forEach((card) => card.addEventListener('click', () => {
+      if (game.classList.contains('is-played')) return;
+      card.classList.add('open'); game.classList.add('is-played');
+      game.querySelector('[data-ch-gmood]').textContent = 'Mood ' + card.querySelector('.ch-card__back small').textContent;
+      game.querySelector('[data-ch-gprize]').textContent = card.dataset.prize;
+      game.querySelector('[data-ch-gsub]').textContent = card.dataset.sub;
+      const tags = game.querySelector('[data-ch-gtags]'); tags.value = `newsletter, juego-mood, mood-${card.dataset.mood}`;
+      setTimeout(() => { winBox.hidden = false; game.querySelector('#ch-game-email').focus({ preventScroll: true }); }, 900);
+    }));
+    game.querySelector('[data-ch-gform]').addEventListener('submit', (e) => { e.preventDefault(); winBox.hidden = true; game.querySelector('[data-ch-gdone]').hidden = false; });
   }
 
   // ---- Textos con chispa: aviso al añadir a la cesta ----

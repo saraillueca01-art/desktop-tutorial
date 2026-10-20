@@ -65,29 +65,47 @@
   .ch-ink__p em i { font-family: var(--ch-serif); font-style: italic; font-weight: 400; }
   .ch-ink__p em i.on { color: color-mix(in srgb, var(--ch-a) 55%, #fff); }
 
-  /* Bate y gana */
-  .ch-whisk { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 80px); align-items: center; padding: clamp(60px, 9vw, 120px) var(--mm-gutter); background: var(--ch-soft); }
-  .ch-whisk__copy { display: grid; gap: 14px; max-width: 44ch; }
-  .ch-whisk h2 { margin: 0; font-family: var(--font-heading--family); font-weight: 300; font-size: clamp(2.4rem, 5.5vw, 4.4rem); line-height: 1; color: var(--ch-deep); }
-  .ch-whisk h2 em { font-family: var(--ch-serif); font-style: italic; font-weight: 400; }
-  .ch-whisk__copy > p:not(.ch-eyebrow) { margin: 0; color: color-mix(in srgb, var(--ch-deep) 75%, transparent); font-size: 1.05rem; }
-  .ch-meter { height: 2px; background: color-mix(in srgb, var(--ch-deep) 15%, transparent); overflow: hidden; max-width: 320px; }
-  .ch-meter i { display: block; height: 100%; width: 0; background: var(--ch-deep); transition: width 0.2s; }
-  .ch-whisk__bowl { position: relative; aspect-ratio: 1; max-width: 440px; width: 100%; justify-self: center; }
-  .ch-whisk__bowl canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
-  .ch-prize { position: absolute; inset: 9%; border-radius: 50%; display: grid; place-content: center; text-align: center; gap: 8px; background: var(--ch-deep); color: var(--ch-light); opacity: 0; transform: scale(0.85); pointer-events: none; transition: opacity 0.6s, transform 0.6s var(--mm-out); }
-  .ch-prize.on { opacity: 1; transform: none; pointer-events: auto; }
-  .ch-prize b { font-family: var(--mm-logo-font); font-weight: 400; font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: 0.14em; }
-  .ch-prize span { font-family: var(--ch-serif); font-style: italic; font-size: 1.25rem; padding-inline: 20px; }
-  .ch-prize button { justify-self: center; margin-top: 4px; border: 1px solid currentColor; background: none; color: inherit; border-radius: 999px; padding: 7px 18px; font: inherit; font-size: 0.9rem; cursor: pointer; }
+  /* Juego: Elige tu mood */
+  .ch-game { padding: clamp(60px, 9vw, 110px) var(--mm-gutter); display: grid; gap: clamp(28px, 4vw, 44px); justify-items: center; text-align: center; background: #fff; }
+  .ch-game__head { display: grid; gap: 10px; justify-items: center; }
+  .ch-game h2 { margin: 0; font-family: var(--font-heading--family); font-weight: 300; font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1.04; color: var(--ch-deep); }
+  .ch-game h2 em, .ch-card em { font-family: var(--ch-serif); font-style: italic; font-weight: 400; }
+  .ch-game__head > p:last-child { margin: 0; color: var(--mm-muted); font-size: 1.05rem; }
+  .ch-game__cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(10px, 2vw, 20px); width: 100%; max-width: 1000px; }
+  .ch-card { --c: #eef5d6; --k: #5f8f12; position: relative; aspect-ratio: 3 / 4; border: 0; padding: 0; background: none; cursor: pointer; perspective: 900px; font: inherit; color: inherit; transition: transform 0.4s var(--mm-out), opacity 0.5s; }
+  .ch-card:hover { transform: translateY(-6px); }
+  .ch-card--calma { --c: #e3f1ee; --k: #3f8f86; } .ch-card--energia { --c: #fff3c4; --k: #b8860b; } .ch-card--antojo { --c: #fde6ed; --k: #c45577; }
+  .ch-card__in { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform 0.9s cubic-bezier(.2,.8,.2,1); }
+  .ch-card.open .ch-card__in { transform: rotateY(180deg); }
+  .ch-card__face, .ch-card__back { position: absolute; inset: 0; border-radius: 22px; backface-visibility: hidden; display: grid; place-content: center; gap: 10px; padding: 14px; overflow: hidden; }
+  .ch-card__face { background: var(--c); color: #1b2a1f; }
+  .ch-card__face::before { content: ""; position: absolute; width: 90%; aspect-ratio: 1; border-radius: 50%; left: -20%; bottom: -25%; background: var(--k); filter: blur(40px); opacity: 0.35; }
+  .ch-card__face em { position: relative; font-size: clamp(1.8rem, 3.4vw, 2.8rem); line-height: 1; color: var(--k); }
+  .ch-card__face small { position: relative; font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.7; }
+  .ch-card__back { transform: rotateY(180deg); background: var(--k); color: #fff; }
+  .ch-card__back small { font-size: 0.68rem; letter-spacing: 0.24em; text-transform: uppercase; opacity: 0.85; }
+  .ch-card__back b { font-family: var(--ch-serif); font-style: italic; font-weight: 400; font-size: clamp(1.9rem, 3.6vw, 3rem); line-height: 1; }
+  .ch-card__back span { font-size: 0.85rem; opacity: 0.9; }
+  .ch-game.is-played .ch-card:not(.open) { opacity: 0.35; pointer-events: none; }
+  .ch-game__win { display: grid; gap: 12px; justify-items: center; width: 100%; max-width: 480px; animation: ch-flash 0.6s var(--mm-out); }
+  .ch-game__prize { margin: 0; font-size: 1.1rem; color: var(--ch-deep); }
+  .ch-game__prize b { font-family: var(--ch-serif); font-style: italic; font-weight: 400; font-size: 1.5rem; }
+  .ch-game__form { display: flex; gap: 6px; padding: 5px; width: 100%; border-radius: 999px; background: #fff; box-shadow: inset 0 0 0 1px rgb(30 51 34 / 0.2); }
+  .ch-game__form:focus-within { box-shadow: inset 0 0 0 1.5px var(--ch-deep); }
+  .ch-game__form input[type="email"] { flex: 1; min-width: 0; border: 0; background: none; padding: 11px 16px; font: inherit; font-size: 1rem; color: #1b2a1f; }
+  .ch-game__form input:focus { outline: none; }
+  .ch-game__form button { border: 0; border-radius: 999px; padding: 11px 20px; background: var(--ch-deep); color: #fff; font: inherit; font-size: 0.95rem; cursor: pointer; white-space: nowrap; }
+  .ch-game__legal { margin: 0; font-size: 0.8rem; color: var(--mm-muted); }
+  .ch-game__done { margin: 0; font-family: var(--ch-serif); font-style: italic; font-size: 1.6rem; color: var(--ch-deep); }
+  .ch-game [hidden] { display: none !important; }
+  .ch-vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  @media (max-width: 700px) { .ch-game__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ch-card { aspect-ratio: 1; } .ch-game__form { flex-wrap: wrap; border-radius: 22px; } .ch-game__form button { flex: 1 1 100%; } }
 
   /* Aviso al añadir */
   .ch-toast { position: fixed; z-index: 90; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); translate: -50% 20px; opacity: 0; pointer-events: none; background: var(--ch-deep); color: var(--ch-light); padding: 12px 22px; border-radius: 999px; font-family: var(--ch-serif); font-style: italic; font-size: 1.15rem; transition: opacity 0.4s, translate 0.4s; max-width: calc(100vw - 32px); text-align: center; }
   .ch-toast.on { opacity: 1; translate: -50% 0; }
 
   @media (max-width: 760px) {
-    .ch-whisk { grid-template-columns: 1fr; }
-    .ch-whisk__bowl { max-width: 300px; }
     .ch-seals__row { justify-content: center; }
     .ch-seal { width: 40vw; max-width: 160px; }
   }
