@@ -744,7 +744,7 @@ const NEGOCIOS = {
           <td>${esc(m.categoria)}</td>
           <td class="n ${sg < 0 ? 'neg' : 'pos'}">${eur(sg * c.base)}</td>
           <td class="n">${eur(c.iva)}</td><td class="n">${c.irpf ? eur(-c.irpf) : '—'}</td><td class="n">${eur(c.total)}${conParte && dividido(m) ? `<br><small class="calc">tu parte ${eur(c.total / 2)}</small>` : ''}</td>
-          <td class="n">${m.tipo === 'gasto' ? (urlAdjunto(m.adjunto) ? `<a class="btn small ghost" href="${esc(urlAdjunto(m.adjunto))}" target="_blank" rel="noopener">Ver factura</a> ` : subiendoAdj.has(m.id) ? '<span class="calc">Subiendo factura…</span> ' : `<label class="btn small adjuntar">Adjuntar factura<input type="file" accept="application/pdf,image/*" data-adjuntar="${m.id}"></label> `) : ''}${m.tipo === 'ingreso' && !m.facturaId && m.origen !== 'shopify' ? `<button class="btn small${c.iva > 0 ? '' : ' ghost'}" data-facturar="${m.id}">${c.iva > 0 || c.irpf > 0 ? 'Hacer factura' : 'Hacer albarán'}</button> ` : ''}${m.facturaId ? `<button class="btn small" data-pdfmov="${m.id}">PDF</button> ` : ''}${(e => e ? `<a class="btn small ghost" href="${esc(e)}" target="_blank" rel="noopener">Drive</a> ` : '')(m.facturaId && (db().facturas || []).find(f => f.id === m.facturaId)?.pdf?.enlace)}<button class="btn small ghost" data-edit="${m.id}">Editar</button> <button class="btn small danger" data-del="${m.id}">✕</button></td>
+          <td class="n">${m.tipo === 'gasto' ? (urlAdjunto(m.adjunto) ? `<a class="btn small ghost" href="${esc(urlAdjunto(m.adjunto))}" target="_blank" rel="noopener">Ver factura</a> ${m.adjunto.asset && !m.adjunto.enlace && drive ? `<button class="btn small" data-adrive="${m.id}">Subir a Drive</button> ` : ''}` : subiendoAdj.has(m.id) ? '<span class="calc">Subiendo factura…</span> ' : `<label class="btn small adjuntar">Adjuntar factura<input type="file" accept="application/pdf,image/*" data-adjuntar="${m.id}"></label> `) : ''}${m.tipo === 'ingreso' && !m.facturaId && m.origen !== 'shopify' ? `<button class="btn small${c.iva > 0 ? '' : ' ghost'}" data-facturar="${m.id}">${c.iva > 0 || c.irpf > 0 ? 'Hacer factura' : 'Hacer albarán'}</button> ` : ''}${m.facturaId ? `<button class="btn small" data-pdfmov="${m.id}">PDF</button> ` : ''}${(e => e ? `<a class="btn small ghost" href="${esc(e)}" target="_blank" rel="noopener">Drive</a> ` : '')(m.facturaId && (db().facturas || []).find(f => f.id === m.facturaId)?.pdf?.enlace)}<button class="btn small ghost" data-edit="${m.id}">Editar</button> <button class="btn small danger" data-del="${m.id}">✕</button></td>
         </tr>`;
       }).join('');
   };
@@ -1414,7 +1414,7 @@ const NEGOCIOS = {
       await asegurarPDFs();
       const parentId = await carpeta([`Contabilidad ${new Date().getFullYear()}`]);
       const r = await drive.callTool(DRIVE, 'create_file', {
-        title: 'Contabilidad.xlsx', base64Content: await contenidoDrive(await crearExcel(), 'Contabilidad.xlsx', XLSX_MIME), contentMimeType: XLSX_MIME, disableConversionToGoogleType: true, parentId,
+        title: 'Contabilidad.xlsx', base64Content: aBase64(await crearExcel()), contentMimeType: XLSX_MIME, disableConversionToGoogleType: true, parentId,
       });
       const f = r.payload?.file || r.payload || {};
       const enlace = enlaceDrive(f);
@@ -1696,13 +1696,25 @@ const NEGOCIOS = {
     const tam = datos.size ?? datos.byteLength;
     if (tam < 700000) return aBase64(datos.arrayBuffer ? await datos.arrayBuffer() : datos);
     if (archivosAparte === null) { try { archivosAparte = !!(await drive.listTools()).fileArgs; } catch { archivosAparte = false; } }
-    if (archivosAparte) return { $file: { data: datos, name: nombre, type: tipo } };
+    if (archivosAparte) return 'aparte';
     throw new Error(`el archivo pesa ${(tam / 1e6).toFixed(1).replace('.', ',')} MB y desde aquí solo se pueden mandar a Drive archivos de menos de 0,7 MB`);
   };
   // Sube un archivo a la carpeta del mes (Ingresos o Gastos) y devuelve { enlace, id, carpeta }
   const subirAlMes = async (n, fecha, sub, titulo, datos, mime) => {
     const parentId = await carpeta(rutaMes(n, fecha, sub));
-    const p = datosDrive(await drive.callTool(DRIVE, 'create_file', { title: titulo, base64Content: await contenidoDrive(datos, titulo, mime), contentMimeType: mime, disableConversionToGoogleType: true, parentId }));
+    const base = { title: titulo, contentMimeType: mime, disableConversionToGoogleType: true, parentId };
+    let contenido = await contenidoDrive(datos, titulo, mime), r;
+    if (contenido !== 'aparte') r = await drive.callTool(DRIVE, 'create_file', { ...base, base64Content: contenido });
+    else {
+      // Archivo grande: se prueba con varias formas de mandarlo (algunas versiones rechazan alguna con «415»)
+      const buf = datos.arrayBuffer ? await datos.arrayBuffer() : datos, ext = (titulo.match(/\.\w+$/) || ['.pdf'])[0].toLowerCase();
+      const formas = [{ data: buf, name: 'factura' + ext, type: mime }, { data: new Blob([buf], { type: mime }), name: 'factura' + ext, type: mime }, { data: buf, name: 'factura.bin', type: 'application/octet-stream' }];
+      for (let i = 0; i < formas.length; i++) {
+        try { r = await drive.callTool(DRIVE, 'create_file', { ...base, base64Content: { $file: formas[i] } }); break; }
+        catch (err) { if (i === formas.length - 1 || err.code !== 'bad_request') throw err; }
+      }
+    }
+    const p = datosDrive(r);
     return { enlace: enlaceDrive(p), id: p.id || idDeEnlace(enlaceDrive(p)), carpeta: parentId };
   };
   // Guarda el PDF en su carpeta de Drive y apunta su enlace en la factura o albarán (lo usa el Excel)
@@ -1761,14 +1773,16 @@ const NEGOCIOS = {
   };
   // Facturas de gastos que solo están en el programa: se copian a Drive cuando hay conexión
   const adjuntosADrive = async () => {
+    const res = { ok: true, error: '' };
     for (const n of Object.keys(NEGOCIOS)) for (const m of dbs[n].movs.filter(x => x.adjunto?.asset && !x.adjunto.enlace)) {
       try {
         const b = await (await fetch('/_blob/' + m.adjunto.asset)).blob(); if (!b.size) continue;
         const ext = b.type === 'application/pdf' ? '.pdf' : b.type === 'image/png' ? '.png' : '.jpg';
         const r = await subirAlMes(n, m.fecha, 'Gastos', tituloGasto(m, ext), b, b.type || 'application/pdf');
         m.adjunto = { ...m.adjunto, enlace: r.enlace, carpeta: r.carpeta }; escribir(NEGOCIOS[n].clave, dbs[n]);
-      } catch { /* se reintenta la próxima vez */ }
+      } catch (err) { res.ok = false; res.error = ERRORES_DRIVE[err.code] || `${err.code || ''} ${err.message || err}`.trim(); }
     }
+    return res;
   };
   // Al borrar algo con PDF en Drive, el PDF va a la papelera (se puede recuperar 30 días)
   const aPapelera = enlace => { const fileId = idDeEnlace(enlace); if (drive && fileId) drive.callTool(DRIVE, 'trash_file', { fileId }).catch(() => {}); };
@@ -2087,7 +2101,8 @@ const NEGOCIOS = {
     if (archivo && m) adjuntarFactura(m, neg, archivo);
   });
   $('#tMovs').onclick = async e => {
-    const { edit, del, facturar, pdfmov } = e.target.dataset;
+    const { edit, del, facturar, pdfmov, adrive } = e.target.dataset;
+    if (adrive) { e.target.disabled = true; aviso('Copiando la factura a Google Drive…'); const r = await adjuntosADrive(); render(); aviso(r.ok ? '✓ Factura copiada a su carpeta de Google Drive' : 'No se pudo copiar a Drive — ' + r.error, !r.ok, r.ok ? 0 : 20000); return; }
     if (facturar) { const m = db().movs.find(x => x.id === facturar); if (m) { go('facturas'); formFactura(null, m); } return; }
     if (pdfmov) { const m = db().movs.find(x => x.id === pdfmov), f = m && db().facturas.find(x => x.id === m.facturaId); if (f) descargarFactura(f, neg, !!f.pdf?.enlace); return; }
     const mf = edit && db().movs.find(m => m.id === edit && m.facturaId);
