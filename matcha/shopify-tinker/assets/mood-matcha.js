@@ -16,7 +16,10 @@ const money = (cents) =>
 const scrollFns = new Set();
 let queued = false;
 const runScroll = () => { queued = false; scrollFns.forEach((fn) => fn()); };
-addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(runScroll); } }, { passive: true });
+// Tinker en ordenador no mueve la ventana sino .page-wrapper: escuchamos el scroll de cualquier caja (fase de captura)
+const pageScroller = () => document.querySelector('.page-wrapper');
+const pageY = () => scrollY + (pageScroller()?.scrollTop || 0);
+document.addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(runScroll); } }, { passive: true, capture: true });
 addEventListener('resize', runScroll);
 
 /* ---------- Entrada con el logo ---------- */
@@ -522,7 +525,7 @@ function forms(root) {
       const mainBtn = form.querySelector('[type="submit"]');
       let btnVisible = true;
       const show = () => {
-        const on = !btnVisible && scrollY > innerHeight * 0.6;
+        const on = !btnVisible && pageY() > innerHeight * 0.6;
         sticky.classList.toggle('is-on', on);
         sticky.querySelector('button')?.setAttribute('tabindex', on ? '0' : '-1');
         sticky.setAttribute('aria-hidden', String(!on));
@@ -600,12 +603,12 @@ function forms(root) {
 }
 
 /* ---------- Cinta que se acelera al bajar ---------- */
-let cintaBoost = 0, cintaLastY = scrollY, cintaRun = false;
+let cintaBoost = 0, cintaLastY = 0, cintaRun = false;
 function cintas(root) {
   const rows = $$('[data-mm-cinta] .mm-cinta__row', root).filter((r) => !r.dataset.mmBound);
   if (!rows.length) return;
   rows.forEach((r) => { r.dataset.mmBound = '1'; r._x = 0; });
-  addEventListener('scroll', () => { cintaBoost = Math.min(cintaBoost + Math.abs(scrollY - cintaLastY) * 0.02, 5); cintaLastY = scrollY; }, { passive: true });
+  if (!cintaRun) scrollFns.add(() => { const y = pageY(); cintaBoost = Math.min(cintaBoost + Math.abs(y - cintaLastY) * 0.02, 5); cintaLastY = y; });
   if (cintaRun || reduced) return;
   cintaRun = true;
   let last = performance.now();
