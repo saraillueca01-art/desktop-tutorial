@@ -1,0 +1,76 @@
+  /* ---- Chispa: capa de personalidad sobre la web ---- */
+  html { --ch-a: #5f8f12; --ch-bg: #eef5d6; --ch-t: #1b2a1f; }
+  html, body { transition: background-color 0.8s; }
+  body { background: color-mix(in srgb, var(--ch-bg) 45%, #fff); }
+
+  /* Mood en la portada */
+  .ch-moodpick { display: grid; gap: 8px; margin-top: 6px; }
+  .ch-moodpick > span { font-size: 0.78rem; letter-spacing: 0.22em; text-transform: uppercase; opacity: 0.85; }
+  .ch-moodpick div { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ch-moodpick button { border: 0; border-radius: 999px; padding: 8px 16px; font: inherit; font-size: 0.95rem; cursor: pointer; background: rgb(255 255 255 / 0.18); color: #fff; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.5); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: background 0.3s, color 0.3s, transform 0.3s; }
+  .ch-moodpick button:hover { transform: translateY(-2px); }
+  .ch-moodpick button[aria-pressed="true"] { background: var(--ch-bg); color: var(--ch-t); box-shadow: none; }
+  .mm-portada::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: var(--ch-a); mix-blend-mode: soft-light; opacity: 0.55; transition: background 0.8s; }
+  .mm-portada .mm-portada__in { z-index: 3; }
+  .ch-dust { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; pointer-events: none; }
+  .ch-flash { animation: ch-flash 0.5s cubic-bezier(.3,1.6,.5,1); display: inline-block; }
+  @keyframes ch-flash { from { transform: scale(0.7) rotate(-5deg); opacity: 0; } }
+
+  /* Cintas */
+  .ch-tapewrap { overflow: hidden; padding-block: 24px; }
+  .ch-tape { overflow: hidden; background: #0f2414; padding-block: 18px; display: grid; gap: 4px; transform: rotate(-1.6deg); margin-inline: -4%; }
+  .ch-tape--light { background: var(--ch-a); transform: rotate(1.2deg); transition: background 0.8s; }
+  .ch-tape__row { display: flex; width: max-content; white-space: nowrap; font-family: var(--mm-logo-font); font-weight: 500; font-size: clamp(2.6rem, 8vw, 6rem); line-height: 1; text-transform: uppercase; color: var(--mm-lime); will-change: transform; }
+  .ch-tape__row span { padding-right: 0.35em; }
+  .ch-tape__row--line { color: transparent; -webkit-text-stroke: 1.5px #e9f0dc; }
+  .ch-tape--light .ch-tape__row { color: #fff; font-size: clamp(1.8rem, 5vw, 3.6rem); }
+  .ch-tape--light .ch-tape__row--line { color: transparent; -webkit-text-stroke: 1.2px #fff; }
+
+  /* Pegatinas */
+  .mm-lata__stage { position: relative; }
+  .ch-stickers { position: absolute; z-index: 4; top: 14px; right: 14px; display: grid; gap: 4px; justify-items: end; pointer-events: none; }
+  .ch-stk { position: relative; width: clamp(84px, 11vw, 120px); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; font-family: var(--mm-logo-font); box-shadow: 0 10px 24px -14px rgb(15 36 20 / 0.6); pointer-events: auto; transition: transform 0.4s cubic-bezier(.3,1.6,.5,1); }
+  .ch-stk:hover { transform: rotate(-12deg) scale(1.1); }
+  .ch-stk svg { position: absolute; inset: 0; width: 100%; height: 100%; animation: ch-spin 14s linear infinite; font-family: var(--mm-logo-font); }
+  .ch-stk b { font-weight: 600; font-size: clamp(1.1rem, 1.6vw, 1.4rem); line-height: 1; text-align: center; }
+  .ch-stk small { display: block; font-size: 0.6rem; font-weight: 400; letter-spacing: 0.1em; }
+  .ch-stk--a { background: var(--mm-lime); color: #0f2414; rotate: -8deg; }
+  .ch-stk--b { background: var(--ch-a); color: #fff; rotate: 7deg; margin-right: 34px; transition: background 0.8s, transform 0.4s cubic-bezier(.3,1.6,.5,1); }
+  .ch-stk--b svg { animation-direction: reverse; }
+  @keyframes ch-spin { to { transform: rotate(360deg); } }
+
+  /* Manifiesto que se tiñe */
+  .ch-ink { padding: clamp(70px, 12vw, 150px) var(--mm-gutter); display: grid; gap: 18px; max-width: 1200px; margin: 0 auto; }
+  .ch-ink__eyebrow { margin: 0; font-size: 0.78rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--ch-a); transition: color 0.8s; }
+  .ch-ink__p { margin: 0; font-family: var(--mm-logo-font); font-weight: 300; font-size: clamp(2rem, 5.2vw, 4.4rem); line-height: 1.08; letter-spacing: -0.01em; text-wrap: balance; }
+  .ch-ink__p i { font-style: normal; color: rgb(27 42 31 / 0.16); transition: color 0.4s; }
+  .ch-ink__p i.on { color: #1b2a1f; }
+  .ch-ink__p em { font-style: normal; }
+  .ch-ink__p em i.on { color: var(--ch-a); }
+
+  /* Bate y gana */
+  .ch-whisk { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 80px); align-items: center; padding: clamp(50px, 8vw, 110px) var(--mm-gutter); background: var(--ch-bg); transition: background 0.8s; }
+  .ch-whisk__copy { display: grid; gap: 14px; max-width: 46ch; }
+  .ch-whisk h2 { margin: 0; font-family: var(--mm-logo-font); font-weight: 300; font-size: clamp(2.4rem, 6vw, 4.8rem); line-height: 1; }
+  .ch-whisk p { margin: 0; color: rgb(27 42 31 / 0.7); font-size: 1.08rem; }
+  .ch-whisk .ch-ink__eyebrow { color: var(--ch-a); font-size: 0.78rem; }
+  .ch-meter { height: 10px; border-radius: 999px; background: #fff; overflow: hidden; max-width: 320px; }
+  .ch-meter i { display: block; height: 100%; width: 0; background: var(--ch-a); transition: width 0.2s, background 0.8s; }
+  .ch-whisk__bowl { position: relative; aspect-ratio: 1; max-width: 460px; width: 100%; justify-self: center; }
+  .ch-whisk__bowl canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+  .ch-prize { position: absolute; inset: 8%; border-radius: 50%; display: grid; place-content: center; text-align: center; gap: 6px; background: rgb(255 255 255 / 0.9); opacity: 0; transform: scale(0.8); pointer-events: none; transition: opacity 0.5s, transform 0.5s cubic-bezier(.3,1.6,.5,1); }
+  .ch-prize.on { opacity: 1; transform: none; pointer-events: auto; }
+  .ch-prize b { font-family: var(--mm-logo-font); font-weight: 500; font-size: clamp(1.6rem, 3vw, 2.2rem); color: var(--mm-green); letter-spacing: 0.08em; }
+  .ch-prize span { color: rgb(27 42 31 / 0.7); padding-inline: 16px; }
+  .ch-prize button { justify-self: center; margin-top: 4px; border: 1px solid var(--mm-green); background: none; color: var(--mm-green); border-radius: 999px; padding: 7px 18px; font: inherit; cursor: pointer; }
+
+  /* Aviso al añadir */
+  .ch-toast { position: fixed; z-index: 90; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); translate: -50% 20px; opacity: 0; pointer-events: none; background: #0f2414; color: #fff; padding: 12px 20px; border-radius: 999px; font-size: 0.98rem; transition: opacity 0.4s, translate 0.4s; max-width: calc(100vw - 32px); text-align: center; }
+  .ch-toast.on { opacity: 1; translate: -50% 0; }
+
+  @media (max-width: 760px) {
+    .ch-whisk { grid-template-columns: 1fr; }
+    .ch-whisk__bowl { max-width: 320px; }
+    .ch-stk--b { margin-right: 22px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .ch-stk svg, .ch-flash { animation: none !important; } }

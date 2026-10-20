@@ -1,0 +1,307 @@
+<title>Mood Matcha con chispa</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Fraunces:ital,opsz,wght@1,9..144,400&display=swap" rel="stylesheet">
+<style>
+  /* Tablero de ideas: cada idea es una tarjeta con su demo en vivo arriba y la explicación debajo. Blanco y verde, como la marca */
+  :root {
+    --bg: #fbfcf8; --card: #ffffff; --ink: #1b2a1f; --muted: #5d6b5f; --line: #dfe5d6;
+    --green: #1f6b2e; --deep: #0f2414; --lime: #c9dc5c; --pink: #f2b8c6; --sun: #f6d365;
+    --sans: 'Jost', 'Futura', 'Century Gothic', system-ui, sans-serif;
+    --script: 'Fraunces', Georgia, serif;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #101710; --card: #172017; --ink: #e9f0e2; --muted: #a2b09f; --line: #2a362a; --green: #7cc56a; color-scheme: dark; } }
+  :root[data-theme="dark"] { --bg: #101710; --card: #172017; --ink: #e9f0e2; --muted: #a2b09f; --line: #2a362a; --green: #7cc56a; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--sans); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 72px; }
+  .wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 40px; }
+  header { display: grid; gap: 10px; max-width: 64ch; }
+  .eyebrow { margin: 0; font-size: 0.78rem; letter-spacing: 0.28em; color: var(--green); text-transform: uppercase; }
+  h1 { margin: 0; font-weight: 300; font-size: clamp(2.2rem, 6vw, 4rem); line-height: 1.02; text-wrap: balance; }
+  h1 em { font-family: var(--script); font-style: italic; color: var(--green); }
+  header p { margin: 0; color: var(--muted); font-size: 1.08rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 20px; }
+  .idea { background: var(--card); border: 1px solid var(--line); border-radius: 22px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; min-width: 0; }
+  .idea--wide { grid-column: 1 / -1; }
+  .demo { position: relative; height: 260px; overflow: hidden; background: #f1f5ea; color: #1b2a1f; }
+  .txt { padding: 18px 20px 22px; display: grid; gap: 6px; align-content: start; }
+  .txt h2 { margin: 0; font-weight: 500; font-size: 1.25rem; }
+  .txt p { margin: 0; color: var(--muted); }
+  .where { font-size: 0.85rem; color: var(--green) !important; }
+  .hint { position: absolute; left: 14px; bottom: 12px; font-size: 0.75rem; letter-spacing: 0.06em; background: rgb(255 255 255 / 0.85); color: #1b2a1f; padding: 3px 10px; border-radius: 999px; pointer-events: none; }
+  button { font: inherit; }
+  :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+
+  /* 1. Mood que cambia el color */
+  .mood { --a: #5f8f12; --b: #eef5d6; --t: #1b2a1f; background: var(--b); transition: background 0.7s; display: grid; place-content: center; gap: 14px; text-align: center; padding: 16px; }
+  .mood .big { font-weight: 300; font-size: clamp(1.8rem, 4.5vw, 2.6rem); line-height: 1.05; color: var(--t); transition: color 0.7s; }
+  .mood .big span { font-family: var(--script); font-style: italic; color: var(--a); transition: color 0.7s; display: inline-block; }
+  .mood .big span.pop { animation: pop 0.5s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes pop { from { transform: scale(0.6) rotate(-6deg); opacity: 0; } }
+  .mood .chips { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+  .mood .chips button { border: 0; border-radius: 999px; padding: 7px 15px; background: rgb(255 255 255 / 0.75); color: #1b2a1f; cursor: pointer; }
+  .mood .chips button[aria-pressed="true"] { background: var(--t); color: var(--b); }
+  .mood .blob { position: absolute; width: 220px; aspect-ratio: 1; border-radius: 50%; background: var(--a); filter: blur(50px); opacity: 0.55; z-index: 0; transition: background 0.7s; animation: drift 8s ease-in-out infinite alternate; }
+  .mood .blob:nth-of-type(1) { left: -60px; top: -60px; }
+  .mood .blob:nth-of-type(2) { right: -70px; bottom: -80px; animation-delay: -4s; }
+  .mood > *:not(.blob) { position: relative; z-index: 1; }
+  @keyframes drift { to { transform: translate(40px, 30px) scale(1.2); } }
+
+  /* 2. Cinta gigante */
+  .tape { background: var(--deep); display: grid; align-content: center; gap: 6px; }
+  .tape .row { display: flex; width: max-content; font-weight: 600; font-size: 4.4rem; line-height: 1; text-transform: uppercase; letter-spacing: -0.01em; white-space: nowrap; }
+  .tape .row span { padding-right: 0.4em; }
+  .tape .r1 { color: var(--lime); }
+  .tape .r2 { color: transparent; -webkit-text-stroke: 1.5px #e9f0dc; }
+  .tape .r3 { color: #3f9a4a; }
+  .tape .hint { background: rgb(201 220 92 / 0.9); }
+
+  /* 4. Pegatinas */
+  .stickers { background: #f6f1ff; display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; }
+  .stk { position: relative; width: 132px; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; transition: transform 0.4s cubic-bezier(.3,1.6,.5,1); cursor: grab; }
+  .stk:hover { transform: rotate(-10deg) scale(1.08); }
+  .stk svg { position: absolute; inset: 0; width: 100%; height: 100%; animation: spin 14s linear infinite; }
+  .stk b { font-weight: 600; font-size: 1.5rem; line-height: 1; text-align: center; }
+  .stk small { display: block; font-size: 0.7rem; font-weight: 400; letter-spacing: 0.1em; }
+  .stk--a { background: var(--lime); color: #0f2414; transform: rotate(-8deg); }
+  .stk--b { background: var(--green); color: #fff; transform: rotate(6deg); }
+  .stk--c { background: var(--pink); color: #0f2414; transform: rotate(-3deg); width: 112px; }
+  .stk--b svg { animation-direction: reverse; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* 5. Texto que se tiñe */
+  .ink { background: #fff; display: grid; align-content: center; padding: 22px 26px; }
+  .ink p { margin: 0; font-weight: 400; font-size: 1.45rem; line-height: 1.3; color: #c9d1c4; }
+  .ink p i { font-style: normal; transition: color 0.35s; }
+  .ink p i.on { color: #1b2a1f; }
+  .ink p i.on.g { color: #1f6b2e; font-family: var(--script); font-style: italic; }
+
+  /* 6. Microcopy con chispa */
+  .copy { background: #fffbea; display: grid; align-content: center; gap: 10px; padding: 18px 20px; }
+  .bubble { background: #fff; border-radius: 16px; padding: 10px 14px; box-shadow: 0 8px 20px -14px rgb(15 36 20 / 0.5); font-size: 0.95rem; display: grid; gap: 2px; }
+  .bubble small { color: #5d6b5f; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .bubble:nth-child(2) { margin-left: 22px; }
+  .bubble:nth-child(3) { margin-left: 8px; }
+
+  canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+  .whisk { background: #f1f5ea; }
+  .prize { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 4px; background: rgb(241 245 234 / 0.92); opacity: 0; pointer-events: none; transition: opacity 0.5s; }
+  .prize.on { opacity: 1; pointer-events: auto; }
+  .prize b { font-size: 1.8rem; font-weight: 500; color: #1f6b2e; letter-spacing: 0.08em; }
+  .prize span { color: #5d6b5f; }
+  .prize button { justify-self: center; margin-top: 6px; border: 1px solid #1f6b2e; background: none; color: #1f6b2e; border-radius: 999px; padding: 6px 16px; cursor: pointer; }
+  .meter { position: absolute; right: 14px; top: 14px; width: 110px; height: 8px; border-radius: 999px; background: rgb(255 255 255 / 0.9); overflow: hidden; }
+  .meter i { display: block; height: 100%; width: 0; background: #1f6b2e; transition: width 0.2s; }
+
+  footer { display: grid; gap: 6px; max-width: 64ch; }
+  footer h2 { margin: 0; font-weight: 400; font-size: 1.4rem; }
+  footer p { margin: 0; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Ideas para Mood Matcha</p>
+    <h1>Que la web tenga <em>chispa</em></h1>
+    <p>Siete ideas para darle más personalidad y movimiento. Todas se pueden tocar: prueba cada una aquí y luego me dices cuáles quieres en tu web.</p>
+  </header>
+
+  <div class="grid">
+    <article class="idea">
+      <div class="demo mood" id="mood">
+        <span class="blob"></span><span class="blob"></span>
+        <div class="big">Hoy estoy en modo <span id="mood-word">focus</span></div>
+        <div class="chips" role="group" aria-label="Elige un mood">
+          <button type="button" id="m-focus" aria-pressed="true" data-w="focus" data-a="#5f8f12" data-b="#eef5d6" data-t="#1b2a1f">Focus</button>
+          <button type="button" id="m-calma" aria-pressed="false" data-w="calma" data-a="#6fa8a0" data-b="#e6f1ee" data-t="#16302c">Calma</button>
+          <button type="button" id="m-energia" aria-pressed="false" data-w="energía" data-a="#e2b100" data-b="#fff6cf" data-t="#2a2400">Energía</button>
+          <button type="button" id="m-antojo" aria-pressed="false" data-w="antojo" data-a="#e0708c" data-b="#fde8ee" data-t="#3a1220">Antojo</button>
+        </div>
+      </div>
+      <div class="txt">
+        <h2>Cada mood, su color</h2>
+        <p>Al elegir un mood, toda la web cambia de color y de palabra: verde para Focus, azul agua para Calma, amarillo para Energía y rosa para Antojo. Es la idea de la marca hecha diseño.</p>
+        <p class="where">En la portada y en «¿Cómo te sientes hoy?»</p>
+      </div>
+    </article>
+
+    <article class="idea">
+      <div class="demo whisk" id="whisk-box">
+        <canvas id="whisk" aria-label="Cuenco de matcha: arrastra en zigzag para batir"></canvas>
+        <div class="meter" aria-hidden="true"><i id="whisk-meter"></i></div>
+        <div class="prize" id="prize" aria-live="polite">
+          <b>BIENVENIDA10</b>
+          <span>¡Espuma perfecta! 10 % en tu primera lata.</span>
+          <button type="button" id="whisk-again">Batir otra vez</button>
+        </div>
+        <span class="hint">Arrastra en zigzag para batir</span>
+      </div>
+      <div class="txt">
+        <h2>Bate y gana</h2>
+        <p>Un minijuego: mueves el ratón o el dedo en zigzag como con el chasen, sale la espuma y, al llenarse, aparece tu código de descuento. Engancha y enseña a preparar el matcha.</p>
+        <p class="where">En «Cómo se prepara» o como ventana de bienvenida</p>
+      </div>
+    </article>
+
+    <article class="idea">
+      <div class="demo copy">
+        <div class="bubble"><small>Cesta vacía</small>Tu cesta está más vacía que un cuenco sin matcha.</div>
+        <div class="bubble"><small>Botón de compra</small>Lo quiero ya</div>
+        <div class="bubble"><small>Al añadir</small>Buena elección. Tu yo de mañana te lo agradece.</div>
+      </div>
+      <div class="txt">
+        <h2>Textos con chispa</h2>
+        <p>La personalidad también está en las palabras: botones, cesta vacía, avisos y errores con el tono cercano y con humor de la marca. No cuesta nada y se nota mucho.</p>
+        <p class="where">En toda la web</p>
+      </div>
+    </article>
+    <article class="idea idea--wide">
+      <div class="demo tape" id="tape" aria-label="Cinta de texto en movimiento: Focus, Calma, Energía, Antojo">
+        <div class="row r1" data-dir="-1"></div>
+        <div class="row r2" data-dir="1"></div>
+        <div class="row r3" data-dir="-1"></div>
+        <span class="hint">Pasa el ratón o desliza: se acelera</span>
+      </div>
+      <div class="txt">
+        <h2>Cintas gigantes en movimiento</h2>
+        <p>Palabras enormes que cruzan la pantalla en direcciones opuestas y van más rápido cuando bajas por la página. Separa las secciones con energía y se queda en la cabeza.</p>
+        <p class="where">Entre secciones de la portada</p>
+      </div>
+    </article>
+
+    <article class="idea">
+      <div class="demo" id="dust-box" style="background:#ffffff">
+        <canvas id="dust" aria-label="Mueve el ratón para dejar polvo de matcha"></canvas>
+        <span class="hint">Mueve el ratón o el dedo por aquí</span>
+      </div>
+      <div class="txt">
+        <h2>Polvo de matcha</h2>
+        <p>Al mover el ratón, o el dedo en el móvil, va soltando polvo verde que cae despacio. Un detalle que nadie más tiene y que recuerda al producto en cada gesto.</p>
+        <p class="where">En la portada, detrás del titular</p>
+      </div>
+    </article>
+
+    <article class="idea">
+      <div class="demo stickers">
+        <div class="stk stk--a"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><path id="c1" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs><text font-size="9" letter-spacing="2" fill="#0f2414" font-family="Jost"><textPath href="#c1">PRIMERA COSECHA · MOLIDO EN PIEDRA ·</textPath></text></svg><b>Uji<small>JAPÓN</small></b></div>
+        <div class="stk stk--b"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><path id="c2" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs><text font-size="9" letter-spacing="2" fill="#fff" font-family="Jost"><textPath href="#c2">SIN AMARGOR · SOMBREADO 20 DÍAS ·</textPath></text></svg><b>0 %<small>AMARGO</small></b></div>
+        <div class="stk stk--c"><b>15<small>TAZAS</small></b></div>
+      </div>
+      <div class="txt">
+        <h2>Pegatinas que giran</h2>
+        <p>Sellos redondos con texto girando, como pegatinas de una lata de té. Ponen los datos clave con gracia en vez de en una lista seria.</p>
+        <p class="where">Junto al botón de compra y en la ficha</p>
+      </div>
+    </article>
+
+    <article class="idea">
+      <div class="demo ink" id="ink"><p id="ink-p"></p><span class="hint">Se tiñe sola (en la web, al bajar)</span></div>
+      <div class="txt">
+        <h2>Texto que se tiñe de verde</h2>
+        <p>La frase de la marca empieza en gris y se va tiñendo palabra a palabra mientras bajas, como el agua cuando le echas el matcha.</p>
+        <p class="where">En la sección de la historia o de origen</p>
+      </div>
+    </article>
+
+  </div>
+
+  <footer>
+    <h2>¿Cuáles te gustan?</h2>
+    <p>Dime las que quieres y te las preparo en tu web. Mi recomendación para empezar es la de cada mood con su color, junto con «Bate y gana» y las cintas gigantes. Juntas le dan carácter a la portada sin recargarla.</p>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // 1. Mood que cambia de color
+  const mood = document.getElementById('mood'), word = document.getElementById('mood-word');
+  mood.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
+    mood.querySelectorAll('button').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+    mood.style.setProperty('--a', b.dataset.a); mood.style.setProperty('--b', b.dataset.b); mood.style.setProperty('--t', b.dataset.t);
+    word.textContent = b.dataset.w; word.classList.remove('pop'); void word.offsetWidth; word.classList.add('pop');
+  }));
+
+  // 2. Cintas
+  const words = ['Focus', 'Calma', 'Energía', 'Antojo', 'Mood'];
+  const rows = [...document.querySelectorAll('#tape .row')];
+  rows.forEach((r, i) => { const s = words.slice(i).concat(words.slice(0, i)).map((w) => `<span>${w} ✦</span>`).join(''); r.innerHTML = s + s + s; });
+  let boost = 0, x = 0, last = performance.now();
+  const tape = document.getElementById('tape');
+  ['pointermove', 'touchmove'].forEach((e) => tape.addEventListener(e, () => (boost = Math.min(boost + 0.6, 6)), { passive: true }));
+  addEventListener('scroll', () => (boost = Math.min(boost + 0.8, 6)), { passive: true });
+  const loop = (t) => {
+    const dt = Math.min(t - last, 50); last = t;
+    if (!reduced) {
+      x += dt * 0.04 * (1 + boost); boost *= 0.94;
+      rows.forEach((r) => { const w = r.scrollWidth / 3; const d = Number(r.dataset.dir); const off = (x % w); r.style.transform = `translateX(${d < 0 ? -off : off - w}px)`; });
+    }
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+
+  // Ajusta un canvas al tamaño de su caja
+  const fit = (cv) => { const r = cv.getBoundingClientRect(), d = devicePixelRatio || 1; cv.width = r.width * d; cv.height = r.height * d; const c = cv.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); return { c, w: r.width, h: r.height }; };
+
+  // 3. Bate y gana
+  const wc = document.getElementById('whisk'), meter = document.getElementById('whisk-meter'), prize = document.getElementById('prize');
+  let W = fit(wc), foam = 0, bubbles = [], lastP = null, dirX = 0, won = false;
+  const drawBowl = () => {
+    const { c, w, h } = W; c.clearRect(0, 0, w, h);
+    const cx = w / 2, cy = h / 2 + 6, R = Math.min(w, h) * 0.38;
+    c.fillStyle = '#e7ebe0'; c.beginPath(); c.arc(cx, cy, R + 14, 0, 7); c.fill();
+    c.fillStyle = '#ffffff'; c.beginPath(); c.arc(cx, cy, R + 6, 0, 7); c.fill();
+    const g = c.createRadialGradient(cx, cy, R * 0.1, cx, cy, R);
+    g.addColorStop(0, '#5c9a2e'); g.addColorStop(1, '#2f6d1c');
+    c.fillStyle = g; c.beginPath(); c.arc(cx, cy, R, 0, 7); c.fill();
+    const f = foam / 100;
+    if (f > 0) { c.globalAlpha = Math.min(1, f * 1.1); const fg = c.createRadialGradient(cx, cy, 0, cx, cy, R); fg.addColorStop(0, '#c7e07a'); fg.addColorStop(0.85, '#a9cc58'); fg.addColorStop(1, 'rgba(169,204,88,0)'); c.fillStyle = fg; c.beginPath(); c.arc(cx, cy, R * (0.3 + 0.7 * f), 0, 7); c.fill(); c.globalAlpha = 1; }
+    bubbles.forEach((b) => { c.fillStyle = `rgba(240,248,215,${b.a})`; c.beginPath(); c.arc(b.x, b.y, b.r, 0, 7); c.fill(); });
+  };
+  const add = (x, y) => {
+    if (won) return;
+    if (lastP) {
+      const dx = x - lastP.x, s = Math.sign(dx);
+      if (s && s !== dirX) { foam = Math.min(100, foam + 3.2); dirX = s; }
+      const cx = W.w / 2, cy = W.h / 2 + 6, R = Math.min(W.w, W.h) * 0.38;
+      if (Math.hypot(x - cx, y - cy) < R) for (let i = 0; i < 3; i++) bubbles.push({ x: x + (Math.random() - 0.5) * 30, y: y + (Math.random() - 0.5) * 30, r: Math.random() * 3 + 1, a: 0.9 });
+    }
+    lastP = { x, y }; meter.style.width = foam + '%';
+    if (foam >= 100) { won = true; prize.classList.add('on'); }
+  };
+  const pos = (e) => { const r = wc.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  wc.addEventListener('pointermove', (e) => add(...pos(e)));
+  wc.addEventListener('pointerleave', () => (lastP = null));
+  document.getElementById('whisk-again').addEventListener('click', () => { foam = 0; won = false; bubbles = []; prize.classList.remove('on'); meter.style.width = '0'; });
+  const wloop = () => { bubbles.forEach((b) => (b.a *= 0.96)); bubbles = bubbles.filter((b) => b.a > 0.05).slice(-300); drawBowl(); requestAnimationFrame(wloop); };
+  wloop();
+
+  // 4. Polvo de matcha
+  const dc = document.getElementById('dust'); let D = fit(dc), motes = [];
+  const shades = ['#7aa834', '#9cc24a', '#c9dc5c', '#4e8a2a'];
+  const puff = (x, y, n) => { for (let i = 0; i < n; i++) motes.push({ x, y, vx: (Math.random() - 0.5) * 1.6, vy: Math.random() * -1.2, r: Math.random() * 2.4 + 0.6, a: 1, c: shades[(Math.random() * 4) | 0] }); };
+  dc.addEventListener('pointermove', (e) => { const r = dc.getBoundingClientRect(); puff(e.clientX - r.left, e.clientY - r.top, 4); });
+  let demoT = 0;
+  const dloop = () => {
+    const { c, w, h } = D; c.clearRect(0, 0, w, h);
+    if (!reduced && motes.length < 20) { demoT += 0.03; puff(w / 2 + Math.cos(demoT) * w * 0.3, h / 2 + Math.sin(demoT * 2) * h * 0.2, 2); }
+    motes.forEach((m) => { m.vy += 0.04; m.vx *= 0.98; m.x += m.vx; m.y += m.vy; m.a *= 0.985; c.globalAlpha = m.a; c.fillStyle = m.c; c.beginPath(); c.arc(m.x, m.y, m.r, 0, 7); c.fill(); });
+    c.globalAlpha = 1; motes = motes.filter((m) => m.a > 0.05 && m.y < h + 10).slice(-600);
+    requestAnimationFrame(dloop);
+  };
+  dloop();
+
+  // 5. Texto que se tiñe
+  const phrase = 'Un matcha de primera cosecha para cada mood del día: el que te centra, el que te calma, el que te enciende y el que te mima.';
+  const greens = ['matcha', 'mood'];
+  const ip = document.getElementById('ink-p');
+  ip.innerHTML = phrase.split(' ').map((w) => `<i${greens.some((g) => w.toLowerCase().startsWith(g)) ? ' class="g"' : ''}>${w}</i>`).join(' ');
+  const iw = [...ip.querySelectorAll('i')]; let k = 0;
+  if (reduced) iw.forEach((w) => w.classList.add('on'));
+  else setInterval(() => { if (k < iw.length) iw[k++].classList.add('on'); else { iw.forEach((w) => w.classList.remove('on')); k = 0; } }, 260);
+
+  addEventListener('resize', () => { W = fit(wc); D = fit(dc); });
+})();
+</script>
