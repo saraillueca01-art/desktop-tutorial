@@ -1593,6 +1593,45 @@ const NEGOCIOS = {
     sc.onload = () => ok(listo()); sc.onerror = () => ko(new Error('no se pudo cargar el generador (revisa la conexión)'));
     document.head.appendChild(sc);
   });
+  // Archivos grandes → versión ligera, para que quepan en una llamada a Drive (menos de 0,7 MB).
+  // PDF: cada página pasa a imagen y se rehace el PDF; foto: se reduce. El original se queda en el programa.
+  const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+  const aJPEG = async (fuente, ancho, alto, q) => {
+    const c = document.createElement('canvas'); c.width = ancho; c.height = alto;
+    const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, ancho, alto);
+    await fuente(ctx); return c;
+  };
+  const aligerar = async (buf, mime, limite) => {
+    const pasos = [[1.6, 0.7], [1.2, 0.55], [0.9, 0.45]];
+    if (/^image\//.test(mime)) {
+      const img = await createImageBitmap(new Blob([buf], { type: mime }));
+      for (const [k, q] of [[1800, 0.7], [1400, 0.6], [1100, 0.5]]) {
+        const f = Math.min(1, k / Math.max(img.width, img.height));
+        const c = await aJPEG(ctx => ctx.drawImage(img, 0, 0, img.width * f, img.height * f), Math.round(img.width * f), Math.round(img.height * f));
+        const b = await new Promise(r => c.toBlob(r, 'image/jpeg', q));
+        if (b && b.size < limite) return { datos: await b.arrayBuffer(), mime: 'image/jpeg' };
+      }
+      return null;
+    }
+    if (mime !== 'application/pdf') return null;
+    await cargarScript(PDFJS + 'pdf.worker.min.js', () => window.pdfjsWorker);
+    const lib = await cargarScript(PDFJS + 'pdf.min.js', () => window.pdfjsLib);
+    lib.GlobalWorkerOptions.workerSrc = PDFJS + 'pdf.worker.min.js';
+    const { jsPDF } = await cargarScript(JSPDF_URL, () => window.jspdf);
+    const pdf = await lib.getDocument({ data: new Uint8Array(buf.slice(0)) }).promise;
+    for (const [esc, q] of pasos) {
+      let doc;
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const pg = await pdf.getPage(i), v = pg.getViewport({ scale: esc });
+        const c = await aJPEG(ctx => pg.render({ canvasContext: ctx, viewport: v }).promise, Math.round(v.width), Math.round(v.height));
+        const w = v.width / esc * 25.4 / 72, h = v.height / esc * 25.4 / 72, o = w > h ? 'l' : 'p';
+        if (!doc) doc = new jsPDF({ unit: 'mm', format: [w, h], orientation: o }); else doc.addPage([w, h], o);
+        doc.addImage(c.toDataURL('image/jpeg', q), 'JPEG', 0, 0, w, h);
+      }
+      const out = doc.output('arraybuffer'); if (out.byteLength < limite) return { datos: out, mime };
+    }
+    return null;
+  };
   const medidas = {};
   const medirLogo = n => medidas[n] ? Promise.resolve(medidas[n]) : new Promise(ok => {
     const img = new Image(); img.onload = () => ok(medidas[n] = img.naturalWidth / img.naturalHeight); img.onerror = () => ok(3); img.src = LOGOS[n];
@@ -1703,16 +1742,18 @@ const NEGOCIOS = {
   const subirAlMes = async (n, fecha, sub, titulo, datos, mime) => {
     const parentId = await carpeta(rutaMes(n, fecha, sub));
     const base = { title: titulo, contentMimeType: mime, disableConversionToGoogleType: true, parentId };
+    if ((datos.size ?? datos.byteLength) >= 700000) {
+      try { const l = await aligerar(datos.arrayBuffer ? await datos.arrayBuffer() : datos, mime, 700000); if (l) { datos = l.datos; if (l.mime !== mime) { mime = l.mime; titulo = titulo.replace(/\.\w+$/, '.jpg'); } } }
+      catch { /* se intenta con el archivo tal cual */ }
+    }
+    base.title = titulo; base.contentMimeType = mime;
     let contenido = await contenidoDrive(datos, titulo, mime), r;
     if (contenido !== 'aparte') r = await drive.callTool(DRIVE, 'create_file', { ...base, base64Content: contenido });
     else {
-      // Archivo grande: se prueba con varias formas de mandarlo (algunas versiones rechazan alguna con «415»)
+      // No se pudo aligerar: se manda como archivo aparte (con tiempo máximo, para no quedarse esperando)
       const buf = datos.arrayBuffer ? await datos.arrayBuffer() : datos, ext = (titulo.match(/\.\w+$/) || ['.pdf'])[0].toLowerCase();
-      const formas = [{ data: buf, name: 'factura' + ext, type: mime }, { data: new Blob([buf], { type: mime }), name: 'factura' + ext, type: mime }, { data: buf, name: 'factura.bin', type: 'application/octet-stream' }];
-      for (let i = 0; i < formas.length; i++) {
-        try { r = await drive.callTool(DRIVE, 'create_file', { ...base, base64Content: { $file: formas[i] } }); break; }
-        catch (err) { if (i === formas.length - 1 || err.code !== 'bad_request') throw err; }
-      }
+      const espera = new Promise((_, ko) => setTimeout(() => ko(new Error('Google Drive no respondió (archivo demasiado grande)')), 90000));
+      r = await Promise.race([drive.callTool(DRIVE, 'create_file', { ...base, base64Content: { $file: { data: buf, name: 'factura' + ext, type: mime } } }), espera]);
     }
     const p = datosDrive(r);
     return { enlace: enlaceDrive(p), id: p.id || idDeEnlace(enlaceDrive(p)), carpeta: parentId };
@@ -1776,7 +1817,9 @@ const NEGOCIOS = {
     const res = { ok: true, error: '' };
     for (const n of Object.keys(NEGOCIOS)) for (const m of dbs[n].movs.filter(x => x.adjunto?.asset && !x.adjunto.enlace)) {
       try {
-        const b = await (await fetch('/_blob/' + m.adjunto.asset)).blob(); if (!b.size) continue;
+        const resp = await fetch('/_blob/' + m.adjunto.asset, { signal: AbortSignal.timeout?.(30000) });
+        if (!resp.ok) throw new Error(`no se pudo leer la copia guardada en el programa (${resp.status})`);
+        const b = await resp.blob(); if (!b.size) continue;
         const ext = b.type === 'application/pdf' ? '.pdf' : b.type === 'image/png' ? '.png' : '.jpg';
         const r = await subirAlMes(n, m.fecha, 'Gastos', tituloGasto(m, ext), b, b.type || 'application/pdf');
         m.adjunto = { ...m.adjunto, enlace: r.enlace, carpeta: r.carpeta }; escribir(NEGOCIOS[n].clave, dbs[n]);
