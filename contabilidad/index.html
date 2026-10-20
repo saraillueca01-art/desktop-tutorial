@@ -73,6 +73,8 @@
     .btn { font: inherit; border: 1px solid var(--ink); background: var(--ink); color: var(--card); padding: 8px 14px; border-radius: 999px; cursor: pointer; }
     .btn.ghost { background: transparent; color: var(--ink); }
     .btn.small { padding: 4px 10px; font-size: .8rem; }
+    .btn.adjuntar { position: relative; overflow: hidden; display: inline-block; }
+    .btn.adjuntar input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; font-size: 0; }
     .btn.danger { border-color: var(--red); color: var(--red); background: transparent; }
     .btn:disabled { opacity: .5; cursor: wait; }
     .grid { display: grid; gap: 14px; }
@@ -167,7 +169,6 @@
 </head>
 <body>
 <div id="aviso" class="oculto" role="status" aria-live="polite"></div>
-<input type="file" id="fileAdjuntar" accept="application/pdf,image/*" hidden>
 <div id="confirmar" class="hidden" role="dialog" aria-modal="true" aria-labelledby="confirmarTxt">
   <div class="caja"><p id="confirmarTxt"></p>
     <div class="row"><button class="btn ghost" id="confirmarNo">Cancelar</button><button class="btn danger" id="confirmarSi">Borrar</button></div>
@@ -590,6 +591,11 @@ const NEGOCIOS = {
   const $ = s => document.querySelector(s);
   const eur = n => (n || 0).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
   const r2 = n => Math.round(n * 100) / 100;
+  // Factura adjunta a un gasto: enlace de Drive o, si aún no está en Drive, la copia guardada en el programa
+  let assets = null; const subiendoAdj = new Set();
+  window.claude?.use?.('assets').then(a => { assets = a; });
+  const urlAdjunto = a => a?.enlace || (a?.asset ? '/_blob/' + a.asset : '');
+  const urlAbs = a => { const u = urlAdjunto(a); try { return u && new URL(u, location.href).href; } catch { return u; } };
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   const tri = f => Math.floor((+f.slice(5, 7) - 1) / 3) + 1;
   let avisoT = null;
@@ -738,7 +744,7 @@ const NEGOCIOS = {
           <td>${esc(m.categoria)}</td>
           <td class="n ${sg < 0 ? 'neg' : 'pos'}">${eur(sg * c.base)}</td>
           <td class="n">${eur(c.iva)}</td><td class="n">${c.irpf ? eur(-c.irpf) : '—'}</td><td class="n">${eur(c.total)}${conParte && dividido(m) ? `<br><small class="calc">tu parte ${eur(c.total / 2)}</small>` : ''}</td>
-          <td class="n">${m.tipo === 'gasto' ? (m.adjunto?.enlace ? `<a class="btn small ghost" href="${esc(m.adjunto.enlace)}" target="_blank" rel="noopener">Ver factura</a> ` : `<button class="btn small" data-adjuntar="${m.id}">Adjuntar factura</button> `) : ''}${m.tipo === 'ingreso' && !m.facturaId && m.origen !== 'shopify' ? `<button class="btn small${c.iva > 0 ? '' : ' ghost'}" data-facturar="${m.id}">${c.iva > 0 || c.irpf > 0 ? 'Hacer factura' : 'Hacer albarán'}</button> ` : ''}${m.facturaId ? `<button class="btn small" data-pdfmov="${m.id}">PDF</button> ` : ''}${(e => e ? `<a class="btn small ghost" href="${esc(e)}" target="_blank" rel="noopener">Drive</a> ` : '')(m.facturaId && (db().facturas || []).find(f => f.id === m.facturaId)?.pdf?.enlace)}<button class="btn small ghost" data-edit="${m.id}">Editar</button> <button class="btn small danger" data-del="${m.id}">✕</button></td>
+          <td class="n">${m.tipo === 'gasto' ? (urlAdjunto(m.adjunto) ? `<a class="btn small ghost" href="${esc(urlAdjunto(m.adjunto))}" target="_blank" rel="noopener">Ver factura</a> ` : subiendoAdj.has(m.id) ? '<span class="calc">Subiendo factura…</span> ' : `<label class="btn small adjuntar">Adjuntar factura<input type="file" accept="application/pdf,image/*" data-adjuntar="${m.id}"></label> `) : ''}${m.tipo === 'ingreso' && !m.facturaId && m.origen !== 'shopify' ? `<button class="btn small${c.iva > 0 ? '' : ' ghost'}" data-facturar="${m.id}">${c.iva > 0 || c.irpf > 0 ? 'Hacer factura' : 'Hacer albarán'}</button> ` : ''}${m.facturaId ? `<button class="btn small" data-pdfmov="${m.id}">PDF</button> ` : ''}${(e => e ? `<a class="btn small ghost" href="${esc(e)}" target="_blank" rel="noopener">Drive</a> ` : '')(m.facturaId && (db().facturas || []).find(f => f.id === m.facturaId)?.pdf?.enlace)}<button class="btn small ghost" data-edit="${m.id}">Editar</button> <button class="btn small danger" data-del="${m.id}">✕</button></td>
         </tr>`;
       }).join('');
   };
@@ -986,7 +992,7 @@ const NEGOCIOS = {
     const conIva = +F.iva.value > 0 || +F.irpf.value > 0;
     $('#lblFacturar').classList.toggle('hidden', !(F.tipo.value === 'ingreso' && !prev?.origen && !prev?.facturaId));
     $('#lblAdjunto').classList.toggle('hidden', F.tipo.value !== 'gasto');
-    $('#adjuntoActual').innerHTML = prev?.adjunto?.enlace ? `Ya tiene factura: <a href="${esc(prev.adjunto.enlace)}" target="_blank" rel="noopener">ver</a> (si eliges otra, se sustituye)` : '';
+    $('#adjuntoActual').innerHTML = urlAdjunto(prev?.adjunto) ? `Ya tiene factura: <a href="${esc(urlAdjunto(prev.adjunto))}" target="_blank" rel="noopener">ver</a> (si eliges otra, se sustituye)` : '';
     if (lastDoc !== conIva) { lastDoc = conIva; F.facturar.checked = conIva; }  // factura marcada por defecto; albarán, a elegir
     $('#txtFacturar').textContent = conIva ? 'Hacer la factura (PDF) al guardar' : 'Hacer el albarán (PDF) al guardar';
   };
@@ -1303,12 +1309,12 @@ const NEGOCIOS = {
         return [aFecha(m.fecha), m.tipo === 'ingreso' ? 'Ingreso' : 'Gasto', m.concepto || '', m.contraparte || '', m.nfactura || '', m.categoria || '',
           c.base, m.ivaImp != null ? '' : +m.iva || 0, c.iva, +m.irpf || 0, c.irpf, c.total, m.cobrado === '0' ? 'Pendiente' : 'Sí', m.tipo === 'gasto' ? (m.deducible === '0' ? 'No' : 'Sí') : '',
           ...(brisa ? [p < 1 ? 'Entre dos' : 'Para mí', r2(c.base * p)] : []), m.origen === 'shopify' ? 'Shopify' : m.origen === 'tienda' ? `Tienda (${m.pago || ''})` : d ? nombreDoc(d) : 'Manual',
-          d ? `${d.numero}${d.pdf?.enlace ? ' · abrir PDF' : ''}` : m.adjunto?.enlace ? `Factura ${m.nfactura || 'del proveedor'} · abrir PDF` : ''];
+          d ? `${d.numero}${d.pdf?.enlace ? ' · abrir PDF' : ''}` : urlAbs(m.adjunto) ? `Factura ${m.nfactura || 'del proveedor'} · abrir PDF` : ''];
       })];
       const fmt = { 0: FECHA, 6: EUR, 8: EUR, 10: EUR, 11: EUR, ...(brisa ? { 15: EUR } : {}) };
       const wsN = hoja(X, filasN, [11, 9, 34, 22, 12, 26, 12, 7, 11, 7, 11, 13, 15, 10, ...(brisa ? [11, 15] : []), 9, 30], fmt);
       ordenados.forEach((m, i) => {
-        const d = docDe(m), destino = d?.pdf?.enlace || m.adjunto?.enlace; if (!destino) return;
+        const d = docDe(m), destino = d?.pdf?.enlace || urlAbs(m.adjunto); if (!destino) return;
         const cel = wsN[X.utils.encode_cell({ r: i + 1, c: cab.length - 1 })];
         cel.l = { Target: destino, Tooltip: d ? `Abrir ${nombreDoc(d).toLowerCase()} ${d.numero}` : 'Abrir la factura del gasto' };
       });
@@ -1335,9 +1341,9 @@ const NEGOCIOS = {
     // Libro de gastos (facturas recibidas)
     const gastos = Object.entries(NEGOCIOS).flatMap(([k, n]) => dbs[k].movs.filter(m => m.tipo === 'gasto').map(m => ({ ...m, _n: n.nombre }))).sort((a, b) => a.fecha.localeCompare(b.fecha));
     const filasG = [['Fecha', 'Negocio', 'Proveedor', 'Nº factura', 'Concepto', 'Categoría', 'Base', 'IVA', 'IRPF', 'Total', 'Deducible', 'Factura (PDF)'],
-      ...gastos.map(m => { const c = calc(m); return [aFecha(m.fecha), m._n, m.contraparte || '', m.nfactura || '', m.concepto || '', m.categoria || '', c.base, c.iva, c.irpf, c.total, m.deducible === '0' ? 'No' : 'Sí', m.adjunto?.enlace ? 'Abrir PDF' : 'Sin adjuntar']; })];
+      ...gastos.map(m => { const c = calc(m); return [aFecha(m.fecha), m._n, m.contraparte || '', m.nfactura || '', m.concepto || '', m.categoria || '', c.base, c.iva, c.irpf, c.total, m.deducible === '0' ? 'No' : 'Sí', urlAbs(m.adjunto) ? 'Abrir factura' : 'Sin adjuntar']; })];
     const wsG = hoja(X, filasG, [11, 15, 24, 14, 32, 26, 12, 11, 11, 12, 10, 16], { 0: FECHA, 6: EUR, 7: EUR, 8: EUR, 9: EUR });
-    gastos.forEach((m, i) => { if (m.adjunto?.enlace) wsG[X.utils.encode_cell({ r: i + 1, c: 11 })].l = { Target: m.adjunto.enlace, Tooltip: 'Abrir la factura del gasto' }; });
+    gastos.forEach((m, i) => { if (urlAbs(m.adjunto)) wsG[X.utils.encode_cell({ r: i + 1, c: 11 })].l = { Target: urlAbs(m.adjunto), Tooltip: 'Abrir la factura del gasto' }; });
     X.utils.book_append_sheet(wb, wsG, 'Gastos');
     return X.write(wb, { type: 'array', bookType: 'xlsx' });
   };
@@ -1455,7 +1461,7 @@ const NEGOCIOS = {
     $('#btnDrive').classList.remove('off'); $('#lblAuto').classList.remove('off');
     alCambiarNegocio = () => programarExcel();
     programarExcel(5000);  // deja que primero se carguen los datos de tu cuenta
-    setTimeout(() => estructuraAnio(new Date().getFullYear()).then(ordenarDrive).catch(() => {}), 7000);
+    setTimeout(() => estructuraAnio(new Date().getFullYear()).then(ordenarDrive).then(adjuntosADrive).catch(() => {}), 7000);
   });
 
   // ---------- Facturas en PDF ----------
@@ -1697,26 +1703,62 @@ const NEGOCIOS = {
   };
   // Factura de un gasto (PDF o foto) → carpeta del mes en Drive
   const nombreArchivo = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\\/:*?"<>|]/g, '').replace(/[^\x20-\x7e]/g, '').slice(0, 90);
-  const adjuntarFactura = async (m, n, archivo) => {
-    if (!drive) { aviso('Para guardar la factura del gasto abre el panel en claude.ai con Google Drive conectado.', true); return; }
-    aviso('Subiendo la factura del gasto a tu Google Drive…');
+  // Las fotos grandes del móvil se reducen (JPEG, máx. 2000 px) para que suban rápido
+  const prepararArchivo = async archivo => {
+    if (!/^image\//.test(archivo.type) || (archivo.size < 1.5e6 && /jpe?g|png/.test(archivo.type))) return archivo;
     try {
-      const b64 = aBase64(await archivo.arrayBuffer()), ext = (archivo.name.match(/\.\w+$/) || ['.pdf'])[0].toLowerCase();
-      const titulo = nombreArchivo(`Gasto ${m.fecha} - ${m.contraparte || 'proveedor'} - ${m.concepto}`) + ext;
-      const r = await subirAlMes(n, m.fecha, titulo, b64, archivo.type || 'application/pdf');
+      const img = await createImageBitmap(archivo), k = Math.min(1, 2000 / Math.max(img.width, img.height));
+      const c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      const b = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.82));
+      return b ? new File([b], archivo.name.replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg' }) : archivo;
+    } catch { return archivo; }
+  };
+  const tituloGasto = (m, ext) => nombreArchivo(`Gasto ${m.fecha} - ${m.contraparte || 'proveedor'} - ${m.concepto}`) + ext;
+  // 1) se guarda dentro del programa (no se pierde aunque falle Drive) y 2) se copia a la carpeta del mes en Drive
+  const adjuntarFactura = async (m, n, original) => {
+    const poner = datos => {
       const real = dbs[n].movs.find(x => x.id === m.id);
-      if (real) { real.adjunto = { enlace: r.enlace, carpeta: r.carpeta, nombre: archivo.name }; escribir(NEGOCIOS[n].clave, dbs[n]); }
-      aviso('✓ Factura del gasto guardada en su carpeta de Drive'); if (view === 'movimientos') render();
-    } catch (err) { aviso((ERRORES_DRIVE[err.code] || 'No se pudo subir la factura: ' + (err.message || err)), true); }
+      if (real) { real.adjunto = { ...real.adjunto, ...datos }; escribir(NEGOCIOS[n].clave, dbs[n]); }
+    };
+    subiendoAdj.add(m.id); if (view === 'movimientos') render();
+    aviso('Adjuntando la factura del gasto…');
+    let guardado = false, fallo = '';
+    try {
+      const archivo = await prepararArchivo(original);
+      if (archivo.size > 19.5e6) throw new Error('pesa más de 20 MB; prueba con una foto o un PDF más pequeño');
+      if (assets) {
+        try {
+          const r = await assets.upload(archivo, archivo.type ? {} : { type: 'application/pdf' });
+          poner({ asset: r.id, nombre: original.name }); guardado = true;
+        } catch (err) { fallo = err.message || err.code || String(err); }
+      }
+      if (drive) {
+        try {
+          const ext = (archivo.name.match(/\.\w+$/) || ['.pdf'])[0].toLowerCase();
+          const r = await subirAlMes(n, m.fecha, tituloGasto(m, ext), aBase64(await archivo.arrayBuffer()), archivo.type || 'application/pdf');
+          poner({ enlace: r.enlace, carpeta: r.carpeta, nombre: original.name });
+          aviso('✓ Factura adjuntada y guardada en su carpeta de Google Drive'); return;
+        } catch (err) { fallo = ERRORES_DRIVE[err.code] || 'Google Drive: ' + (err.message || err); }
+      }
+      if (guardado) aviso('✓ Factura adjuntada al gasto' + (drive ? '. Aún no se pudo copiar a Drive (se reintentará solo): ' + fallo : ''), !!drive);
+      else aviso('No se pudo adjuntar la factura: ' + (fallo || 'abre el panel en claude.ai con tu cuenta.'), true);
+    } catch (err) { aviso('No se pudo adjuntar la factura: ' + (err.message || err), true); }
+    finally { subiendoAdj.delete(m.id); if (view === 'movimientos') render(); }
+  };
+  // Facturas de gastos que solo están en el programa: se copian a Drive cuando hay conexión
+  const adjuntosADrive = async () => {
+    for (const n of Object.keys(NEGOCIOS)) for (const m of dbs[n].movs.filter(x => x.adjunto?.asset && !x.adjunto.enlace)) {
+      try {
+        const b = await (await fetch('/_blob/' + m.adjunto.asset)).blob(); if (!b.size) continue;
+        const ext = b.type === 'application/pdf' ? '.pdf' : b.type === 'image/png' ? '.png' : '.jpg';
+        const r = await subirAlMes(n, m.fecha, tituloGasto(m, ext), aBase64(await b.arrayBuffer()), b.type || 'application/pdf');
+        m.adjunto = { ...m.adjunto, enlace: r.enlace, carpeta: r.carpeta }; escribir(NEGOCIOS[n].clave, dbs[n]);
+      } catch { /* se reintenta la próxima vez */ }
+    }
   };
   // Al borrar algo con PDF en Drive, el PDF va a la papelera (se puede recuperar 30 días)
   const aPapelera = enlace => { const fileId = idDeEnlace(enlace); if (drive && fileId) drive.callTool(DRIVE, 'trash_file', { fileId }).catch(() => {}); };
-  let adjuntarA = null;
-  $('#fileAdjuntar').addEventListener('change', e => {
-    const archivo = e.target.files[0], a = adjuntarA; adjuntarA = null;
-    const m = a && dbs[a.n].movs.find(x => x.id === a.id);
-    if (archivo && m) adjuntarFactura(m, a.n, archivo);
-  });
   // Crear de una vez todo el árbol del año: Contabilidad AAAA / 3 negocios / 4 trimestres / 12 meses
   const estructuraAnio = async y => {
     const faltan = Object.keys(NEGOCIOS).flatMap(n => MESES_CARPETA.map((_, i) => rutaMes(n, `${y}-${String(i + 1).padStart(2, '0')}-01`)))
@@ -2027,9 +2069,12 @@ const NEGOCIOS = {
   });
   ['#fAnio', '#fTri', '#fTipo'].forEach(s => $(s).addEventListener('change', render));
   $('#fTxt').addEventListener('input', render);
+  $('#tMovs').addEventListener('change', e => {
+    const id = e.target.dataset.adjuntar, archivo = e.target.files?.[0], m = id && db().movs.find(x => x.id === id);
+    if (archivo && m) adjuntarFactura(m, neg, archivo);
+  });
   $('#tMovs').onclick = async e => {
-    const { edit, del, facturar, pdfmov, adjuntar } = e.target.dataset;
-    if (adjuntar) { adjuntarA = { id: adjuntar, n: neg }; $('#fileAdjuntar').value = ''; $('#fileAdjuntar').click(); return; }
+    const { edit, del, facturar, pdfmov } = e.target.dataset;
     if (facturar) { const m = db().movs.find(x => x.id === facturar); if (m) { go('facturas'); formFactura(null, m); } return; }
     if (pdfmov) { const m = db().movs.find(x => x.id === pdfmov), f = m && db().facturas.find(x => x.id === m.facturaId); if (f) descargarFactura(f, neg, !!f.pdf?.enlace); return; }
     const mf = edit && db().movs.find(m => m.id === edit && m.facturaId);
