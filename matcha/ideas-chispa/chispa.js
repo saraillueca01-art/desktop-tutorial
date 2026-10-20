@@ -4,16 +4,16 @@
 
   // ---- Cada mood, su color ----
   const MOODS = {
-    focus:   { a: '#5f8f12', bg: '#eef5d6', t: '#1b2a1f', dust: ['#7aa834', '#9cc24a', '#c9dc5c', '#4e8a2a'] },
-    calma:   { a: '#3f8f86', bg: '#e3f1ee', t: '#16302c', dust: ['#7fbfb6', '#a9d8d0', '#5ea69c', '#cde9e3'] },
-    energia: { a: '#d29a00', bg: '#fff3c4', t: '#2a2400', dust: ['#f6d365', '#ffe08a', '#e2b100', '#fff1b8'] },
-    antojo:  { a: '#d65f80', bg: '#fde6ed', t: '#3a1220', dust: ['#f2b8c6', '#e98aa5', '#f7d1db', '#d65f80'] },
+    focus:   { deep: '#1e3322', surf: '#e6eadf', soft: '#d8dfcf', a: '#5c7f3c', light: '#eef1e8' },
+    calma:   { deep: '#1d3036', surf: '#e3e9ea', soft: '#d2dcdf', a: '#56838c', light: '#eaf0f1' },
+    energia: { deep: '#3a2a0e', surf: '#efe7d2', soft: '#e4d6b0', a: '#b8862a', light: '#f6efdc' },
+    antojo:  { deep: '#3b1d26', surf: '#efe1e2', soft: '#e3cdd0', a: '#a8566c', light: '#f5e9ea' },
   };
   const key = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
   let current = 'focus';
   const setMood = (name) => {
     const k = key(name); const m = MOODS[k]; if (!m) return; current = k;
-    root.style.setProperty('--ch-a', m.a); root.style.setProperty('--ch-bg', m.bg); root.style.setProperty('--ch-t', m.t);
+    for (const [p, v] of Object.entries(m)) root.style.setProperty('--ch-' + p, v);
     document.querySelectorAll('[data-ch-mood]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.chMood === k)));
     const w = document.querySelector('[data-ch-word]');
     if (w) { w.textContent = name.toLowerCase(); w.classList.remove('ch-flash'); void w.offsetWidth; w.classList.add('ch-flash'); }
@@ -32,34 +32,15 @@
   // Canvas al tamaño de su caja
   const fit = (cv) => { const r = cv.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2); cv.width = r.width * d; cv.height = r.height * d; const c = cv.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); return { c, w: r.width, h: r.height }; };
 
-  // ---- Polvo de matcha en la portada ----
-  const hero = document.querySelector('.mm-portada');
-  let D = null, motes = [];
-  if (hero) {
-    const cv = document.createElement('canvas'); cv.className = 'ch-dust'; cv.setAttribute('aria-hidden', 'true'); hero.append(cv); D = fit(cv);
-    const puff = (x, y, n) => { const sh = MOODS[current].dust; for (let i = 0; i < n; i++) motes.push({ x, y, vx: (Math.random() - 0.5) * 1.8, vy: Math.random() * -1.4, r: Math.random() * 2.6 + 0.6, a: 1, c: sh[(Math.random() * sh.length) | 0] }); };
-    hero.addEventListener('pointermove', (e) => { const r = cv.getBoundingClientRect(); puff(e.clientX - r.left, e.clientY - r.top, 5); });
-    let t = 0;
-    const loop = () => {
-      const { c, w, h } = D; c.clearRect(0, 0, w, h);
-      if (!reduced && motes.length < 30) { t += 0.02; puff(w * (0.5 + Math.cos(t) * 0.35), h * (0.35 + Math.sin(t * 1.7) * 0.15), 2); }
-      motes.forEach((m) => { m.vy += 0.035; m.vx *= 0.985; m.x += m.vx; m.y += m.vy; m.a *= 0.985; c.globalAlpha = m.a; c.fillStyle = m.c; c.beginPath(); c.arc(m.x, m.y, m.r, 0, 7); c.fill(); });
-      c.globalAlpha = 1; motes = motes.filter((m) => m.a > 0.05 && m.y < h + 10).slice(-700);
-      requestAnimationFrame(loop);
-    };
-    loop();
-    addEventListener('resize', () => (D = fit(cv)));
-  }
-
   // ---- Cintas que se aceleran al bajar ----
   const rows = [...document.querySelectorAll('.ch-tape__row')];
-  rows.forEach((r) => { const s = r.textContent.split('✦').filter((x) => x.trim()).map((x) => `<span>${x.trim()} ✦</span>`).join(''); r.innerHTML = s + s + s + s; });
+  rows.forEach((r) => { const s = r.textContent.split('·').filter((x) => x.trim()).map((x) => `<span>${x.trim()}</span>`).join(''); r.innerHTML = s + s + s + s; });
   let boost = 0, x = 0, lastY = scrollY, last = performance.now();
-  addEventListener('scroll', () => { boost = Math.min(boost + Math.abs(scrollY - lastY) * 0.03, 8); lastY = scrollY; }, { passive: true });
+  addEventListener('scroll', () => { boost = Math.min(boost + Math.abs(scrollY - lastY) * 0.02, 5); lastY = scrollY; }, { passive: true });
   const tapeLoop = (now) => {
     const dt = Math.min(now - last, 50); last = now;
     if (!reduced) {
-      x += dt * 0.05 * (1 + boost); boost *= 0.93;
+      x += dt * 0.03 * (1 + boost); boost *= 0.93;
       rows.forEach((r) => { const w = r.scrollWidth / 4; const off = x % w; r.style.transform = `translateX(${r.dataset.dir === '-1' ? -off : off - w}px)`; });
     }
     requestAnimationFrame(tapeLoop);
