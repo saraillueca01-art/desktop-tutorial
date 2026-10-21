@@ -6,6 +6,12 @@
 {%- endcomment -%}
 {%- assign form_id = 'mm-juego-' | append: section.id -%}
 <section class="mm mm-juego" id="{{ form_id }}-zona" data-mm-juego>
+  {%- if request.design_mode and section.settings.recordatorio -%}
+    <div class="mm-juego__aviso" role="note">
+      <b>PENDIENTE: los emails con el código todavía no se envían.</b>
+      <span>1) Crear en Descuentos los códigos de cada mood. 2) En Marketing → Automatizaciones, crear la bienvenida a suscriptores con una condición por etiqueta (mood-focus, mood-calma, mood-energia, mood-antojo) y su email. 3) Poner a la automatización de lista de espera la condición «lista-espera». Este aviso solo lo ves tú en el editor; quítalo en los ajustes de la sección cuando esté hecho.</span>
+    </div>
+  {%- endif -%}
   <div class="mm-juego__head">
     {%- if section.settings.antetitulo != blank -%}<p class="mm-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
     <h2>{{ section.settings.titulo }}</h2>
@@ -55,6 +61,7 @@
     { "type": "text", "id": "boton", "label": "Botón", "default": "Enviarme el código" },
     { "type": "text", "id": "legal", "label": "Texto legal", "default": "Te llega el código al email y te suscribes a la newsletter. Puedes darte de baja cuando quieras." },
     { "type": "text", "id": "gracias", "label": "Mensaje al apuntarse", "default": "Listo. Revisa tu email: tu código va de camino." },
+    { "type": "checkbox", "id": "recordatorio", "label": "Mostrar el aviso rojo de emails pendientes", "info": "Solo se ve en el editor, nunca en la tienda.", "default": true },
     { "type": "paragraph", "content": "Cada suscriptor se guarda con las etiquetas «newsletter», «juego-mood» y su mood (por ejemplo «mood-focus»). Crea en Descuentos un código para cada premio y un email automático en Shopify Messaging que lo envíe según la etiqueta." }
   ],
   "blocks": [
