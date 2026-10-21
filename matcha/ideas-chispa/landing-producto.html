@@ -1,0 +1,406 @@
+<title>Landing de producto Mood Matcha</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  /* Landing de la lata: arriba todo lo necesario para comprar (mood, packs, botón, confianza); debajo, cada bloque responde una duda y vuelve a llevar al botón */
+  :root {
+    --bg: #ffffff; --ink: #1b2a1f; --muted: #66716a; --line: #e4e9df; --soft: #f3f6ef; --deep: #1e3322; --green: #2f6b2a; --lime: #c9dc5c; --gold: #c49a1a;
+    --sans: 'Jost', 'Futura', 'Century Gothic', system-ui, sans-serif;
+    --serif: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+    --ease: cubic-bezier(.2,.8,.2,1);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 300 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+  .pad { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .in { max-width: 1220px; margin: 0 auto; }
+  button, input { font: inherit; }
+  :focus-visible { outline: 1.5px solid var(--deep); outline-offset: 3px; }
+  h1, h2, h3 { font-weight: 300; margin: 0; text-wrap: balance; }
+  .s { font-family: var(--serif); font-style: italic; font-weight: 400; }
+  .eyebrow { margin: 0; font-size: 0.72rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--green); }
+  img, video { display: block; max-width: 100%; }
+  .ex { display: inline-block; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: #9a6a00; background: #fff5d6; border-radius: 6px; padding: 1px 7px; vertical-align: 2px; }
+  .sec { padding-block: clamp(60px, 8vw, 110px); }
+  .sec h2 { font-size: clamp(2rem, 4.4vw, 3.2rem); line-height: 1.05; color: var(--deep); }
+  .head { display: grid; gap: 10px; margin-bottom: clamp(26px, 4vw, 44px); max-width: 62ch; }
+  .head p:not(.eyebrow) { margin: 0; color: var(--muted); }
+  .center { text-align: center; justify-items: center; margin-inline: auto; }
+
+  /* Aviso de arriba y cabecera */
+  .ann { background: var(--deep); color: #eef1e8; text-align: center; font-size: 0.82rem; padding-block: 8px; letter-spacing: 0.04em; }
+  .shop { border-bottom: 1px solid var(--line); }
+  .shop .in { display: flex; justify-content: space-between; align-items: center; padding-block: 16px; font-size: 0.9rem; color: var(--muted); }
+  .shop b { color: var(--deep); font-weight: 400; letter-spacing: 0.12em; }
+
+  /* ===== Bloque de compra ===== */
+  .hero { --a: #5f8f12; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); padding-block: 22px 56px; align-items: start; }
+  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; } }
+  .gal { display: grid; gap: 10px; min-width: 0; }
+  .stage { position: relative; aspect-ratio: 1; border-radius: 26px; overflow: hidden; background: color-mix(in srgb, var(--a) 18%, #fff); transition: background 0.7s; display: grid; place-items: center; isolation: isolate; }
+  .stage::before, .stage::after { content: ""; position: absolute; z-index: -1; width: 60%; aspect-ratio: 1; border-radius: 50%; background: var(--a); filter: blur(70px); opacity: 0.45; transition: background 0.7s; }
+  .stage::before { left: -15%; top: -15%; } .stage::after { right: -15%; bottom: -15%; }
+  .stage img { width: 68%; aspect-ratio: 1; object-fit: cover; border-radius: 50%; box-shadow: 0 30px 60px -30px rgb(15 36 20 / 0.6); transition: opacity 0.3s; }
+  .stage .lbl { position: absolute; left: 16px; top: 16px; background: #fff; border-radius: 999px; padding: 5px 12px; font-size: 0.8rem; }
+  .thumbs { display: flex; gap: 8px; overflow-x: auto; }
+  .thumbs button { flex: none; width: 72px; aspect-ratio: 1; border: 0; padding: 0; border-radius: 14px; overflow: hidden; cursor: pointer; opacity: 0.55; outline: 1.5px solid transparent; outline-offset: 2px; background: var(--soft); }
+  .thumbs button[aria-current="true"] { opacity: 1; outline-color: var(--deep); }
+  .thumbs img { width: 100%; height: 100%; object-fit: cover; }
+
+  .buy { display: grid; gap: 16px; position: sticky; top: 16px; min-width: 0; }
+  @media (max-width: 900px) { .buy { position: static; } }
+  .rating { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: var(--muted); flex-wrap: wrap; }
+  .rating i { font-style: normal; color: var(--gold); letter-spacing: 2px; }
+  .buy h1 { font-size: clamp(2.3rem, 4.2vw, 3.4rem); line-height: 1.02; }
+  .buy h1 .s { color: var(--a); transition: color 0.7s; }
+  .sub { margin: 0; color: var(--muted); font-size: 1.04rem; }
+  .lbl2 { font-size: 0.86rem; font-weight: 400; display: flex; justify-content: space-between; gap: 10px; }
+  .lbl2 small { color: var(--muted); font-weight: 300; }
+  .moods { display: flex; flex-wrap: wrap; gap: 6px; }
+  .moods button { border: 0; border-radius: 999px; padding: 8px 16px; cursor: pointer; background: var(--soft); color: var(--ink); transition: background 0.3s, color 0.3s; }
+  .moods button[aria-pressed="true"] { background: color-mix(in srgb, var(--a) 30%, #1b2a1f); color: #fff; }
+  .recipe { border-radius: 16px; padding: 12px 16px; background: color-mix(in srgb, var(--a) 10%, #fff); transition: background 0.7s; font-size: 0.94rem; }
+  .recipe b { font-weight: 400; }
+  .recipe span { color: var(--muted); }
+
+  .packs { display: grid; gap: 10px; }
+  .pack { position: relative; display: grid; grid-template-columns: auto 1fr auto; gap: 2px 12px; align-items: center; padding: 15px 16px; border-radius: 16px; border: 1px solid var(--line); cursor: pointer; transition: border-color 0.3s, background 0.3s, box-shadow 0.3s; }
+  .pack input { accent-color: var(--deep); width: 18px; height: 18px; margin: 0; grid-row: span 2; }
+  .pack .n { font-weight: 400; }
+  .pack .pr { text-align: end; font-weight: 400; font-size: 1.05rem; }
+  .pack .pr s { color: var(--muted); font-weight: 300; font-size: 0.85rem; margin-left: 6px; }
+  .pack small { color: var(--muted); font-size: 0.82rem; }
+  .pack .save { text-align: end; color: var(--green); font-size: 0.82rem; }
+  .pack:has(input:checked) { border-color: var(--deep); background: var(--soft); box-shadow: inset 0 0 0 1px var(--deep); }
+  .pack .tag { position: absolute; right: 14px; top: -11px; color: #fff; font-size: 0.72rem; padding: 2px 10px; border-radius: 999px; background: var(--deep); }
+  .pack .tag.best { background: var(--gold); }
+
+  .add { width: 100%; border: 0; border-radius: 999px; padding: 17px 22px; background: var(--deep); color: #fff; cursor: pointer; font-size: 1.05rem; display: flex; justify-content: center; gap: 12px; transition: transform 0.3s; }
+  .add:hover { transform: translateY(-1px); }
+  .add span + span { opacity: 0.85; border-left: 1px solid rgb(255 255 255 / 0.3); padding-left: 12px; }
+  .ship { margin: 0; font-size: 0.9rem; text-align: center; }
+  .ship b { font-weight: 400; color: var(--green); }
+  .trust { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0; padding: 0; list-style: none; font-size: 0.78rem; color: var(--muted); text-align: center; }
+  .trust li { padding: 10px 6px; border-radius: 12px; background: var(--soft); }
+  .trust b { display: block; font-weight: 400; color: var(--ink); font-size: 0.86rem; }
+  .pays { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .pays span { font-size: 0.72rem; border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; color: var(--muted); }
+
+  /* Barra de ventajas */
+  .perks { border-block: 1px solid var(--line); }
+  .perks .in { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; padding-block: 26px; }
+  @media (max-width: 760px) { .perks .in { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .perk { display: flex; gap: 12px; align-items: center; }
+  .perk svg { flex: none; width: 34px; height: 34px; stroke: var(--green); fill: none; stroke-width: 1.4; }
+  .perk b { display: block; font-weight: 400; }
+  .perk span { font-size: 0.86rem; color: var(--muted); }
+
+  /* Vídeo de cómo se prepara */
+  .how { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: center; }
+  @media (max-width: 860px) { .how { grid-template-columns: 1fr; } }
+  .how video { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 24px; background: #0f1d12; }
+  .how ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 18px; }
+  .how li { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; }
+  .how li b { grid-row: span 2; font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 2.4rem; line-height: 1; color: var(--green); }
+  .how li h3 { font-size: 1.2rem; font-weight: 400; }
+  .how li p { margin: 0; color: var(--muted); }
+
+  /* Recetas por mood */
+  .grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 860px) { .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .mc { --k: #5f8f12; border-radius: 22px; padding: 24px 18px; background: color-mix(in srgb, var(--k) 14%, #fff); display: grid; gap: 4px; align-content: start; }
+  .mc em { font-family: var(--serif); font-style: italic; font-size: 2rem; line-height: 1; color: var(--k); }
+  .mc b { font-weight: 400; margin-top: 6px; }
+  .mc p { margin: 0; font-size: 0.9rem; color: var(--muted); }
+
+  /* Comparativa */
+  .vs-wrap { overflow-x: auto; border-radius: 20px; border: 1px solid var(--line); }
+  .vs { width: 100%; min-width: 520px; border-collapse: collapse; }
+  .vs th, .vs td { padding: 15px 18px; text-align: start; border-bottom: 1px solid var(--line); }
+  .vs tr:last-child td { border-bottom: 0; }
+  .vs th { font-weight: 400; background: var(--soft); }
+  .vs td:nth-child(2) { color: var(--deep); font-weight: 400; background: #f7fbf2; }
+  .vs td:nth-child(3) { color: var(--muted); }
+
+  /* Vídeos de redes */
+  .ugc { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); gap: 12px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; }
+  .reel { position: relative; aspect-ratio: 9 / 16; border-radius: 20px; overflow: hidden; background: #0f1d12; scroll-snap-align: start; border: 0; padding: 0; cursor: pointer; color: #fff; text-align: start; }
+  .reel img, .reel video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.85; }
+  .reel::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgb(0 0 0 / 0.6)); }
+  .reel .play { position: absolute; z-index: 1; left: 50%; top: 50%; translate: -50% -50%; width: 52px; aspect-ratio: 1; border-radius: 50%; background: rgb(255 255 255 / 0.9); display: grid; place-items: center; color: var(--deep); font-size: 1.1rem; }
+  .reel .who { position: absolute; z-index: 1; left: 14px; right: 14px; bottom: 12px; font-size: 0.82rem; line-height: 1.35; }
+  .reel .who b { display: block; font-weight: 500; }
+  .follow { display: flex; justify-content: center; margin-top: 22px; }
+  .btn-line { border: 1px solid var(--deep); background: none; color: var(--deep); border-radius: 999px; padding: 12px 24px; cursor: pointer; text-decoration: none; }
+
+  /* Reseñas */
+  .rv { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 2fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+  @media (max-width: 860px) { .rv { grid-template-columns: 1fr; } }
+  .sum { border-radius: 22px; background: var(--soft); padding: 26px; display: grid; gap: 10px; }
+  .sum .big { font-family: var(--serif); font-style: italic; font-size: 4rem; line-height: 1; color: var(--deep); }
+  .sum i { font-style: normal; color: var(--gold); letter-spacing: 3px; font-size: 1.1rem; }
+  .bars { display: grid; gap: 6px; font-size: 0.82rem; color: var(--muted); }
+  .bars div { display: grid; grid-template-columns: 1.5em 1fr 2.5em; gap: 8px; align-items: center; }
+  .bars i { display: block; height: 6px; border-radius: 6px; background: #e3e7dd; overflow: hidden; }
+  .bars i span { display: block; height: 100%; background: var(--gold); }
+  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 640px) { .cards { grid-template-columns: 1fr; } }
+  .rc { border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; display: grid; gap: 6px; }
+  .rc i { font-style: normal; color: var(--gold); letter-spacing: 2px; }
+  .rc p { margin: 0; }
+  .rc small { color: var(--muted); }
+  .rc .ok { color: var(--green); font-size: 0.78rem; }
+
+  /* Garantía */
+  .promise { background: var(--deep); color: #eef1e8; border-radius: 28px; padding: clamp(32px, 6vw, 64px); display: grid; grid-template-columns: auto 1fr; gap: 24px 36px; align-items: center; }
+  @media (max-width: 700px) { .promise { grid-template-columns: 1fr; text-align: center; justify-items: center; } }
+  .seal { position: relative; width: 140px; aspect-ratio: 1; border-radius: 50%; background: var(--lime); color: var(--deep); display: grid; place-items: center; }
+  .seal svg { position: absolute; inset: 0; width: 100%; height: 100%; animation: spin 20s linear infinite; }
+  .seal text { font: 400 7px var(--sans); letter-spacing: 1.8px; fill: currentColor; }
+  .seal b { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 2rem; line-height: 0.9; text-align: center; }
+  .seal b small { display: block; font-family: var(--sans); font-style: normal; font-size: 0.55rem; letter-spacing: 0.18em; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .promise h2 { color: #eef1e8; font-size: clamp(1.8rem, 3.6vw, 2.6rem); }
+  .promise p { margin: 8px 0 0; color: rgb(238 241 232 / 0.75); }
+
+  details.acc { border-top: 1px solid var(--line); }
+  details.acc:last-of-type { border-bottom: 1px solid var(--line); }
+  details.acc summary { list-style: none; cursor: pointer; padding: 16px 0; display: flex; justify-content: space-between; gap: 12px; font-weight: 400; }
+  details.acc summary::-webkit-details-marker { display: none; }
+  details.acc summary::after { content: "+"; font-size: 1.2rem; line-height: 1; }
+  details.acc[open] summary::after { content: "–"; }
+  details.acc p { margin: 0 0 16px; color: var(--muted); }
+  .faq { max-width: 820px; margin-inline: auto; }
+
+  .final { text-align: center; display: grid; justify-items: center; gap: 16px; }
+  .final h2 em { color: var(--green); }
+  .final .add { max-width: 420px; }
+
+  /* Barra fija */
+  .sticky { position: fixed; z-index: 25; left: 0; right: 0; bottom: 0; padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); background: rgb(255 255 255 / 0.96); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 -1px 0 var(--line); transform: translateY(110%); transition: transform 0.5s var(--ease); }
+  .sticky.on { transform: none; }
+  .sticky .in { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .sticky .t { font-size: 0.95rem; font-weight: 400; }
+  .sticky .t small { display: block; font-weight: 300; color: var(--muted); font-size: 0.8rem; }
+  .sticky button { border: 0; border-radius: 999px; padding: 12px 22px; background: var(--deep); color: #fff; cursor: pointer; white-space: nowrap; }
+  .toast { position: fixed; z-index: 40; left: 50%; bottom: 90px; translate: -50% 10px; opacity: 0; background: var(--deep); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 0.92rem; transition: opacity 0.3s, translate 0.3s; pointer-events: none; max-width: calc(100vw - 32px); text-align: center; }
+  .toast.on { opacity: 1; translate: -50% 0; }
+  footer.end { padding-block: 40px 120px; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--line); text-align: center; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="ann pad">Envío gratis desde 35 € · Llega en 24–72 h · Lote 001</div>
+<header class="shop pad"><div class="in"><b>MOODMATCHA</b><span>Cesta (<span id="cart-n">0</span>)</span></div></header>
+
+<main>
+  <!-- 1. COMPRA -->
+  <section class="pad"><div class="in hero" id="hero">
+    <div class="gal">
+      <div class="stage"><span class="lbl">Lote 001</span><img id="stage-img" src="img/mm-acuarela-polvo.jpg" alt="Matcha en polvo"></div>
+      <div class="thumbs" role="group" aria-label="Fotos">
+        <button type="button" aria-current="true" data-src="img/mm-acuarela-polvo.jpg"><img src="img/mm-acuarela-polvo.jpg" alt="Polvo"></button>
+        <button type="button" aria-current="false" data-src="img/mm-ceremonia.jpg"><img src="img/mm-ceremonia.jpg" alt="Ritual"></button>
+        <button type="button" aria-current="false" data-src="img/mm-acuarela-latte.jpg"><img src="img/mm-acuarela-latte.jpg" alt="Latte"></button>
+        <button type="button" aria-current="false" data-src="img/mm-acuarela-arco.jpg"><img src="img/mm-acuarela-arco.jpg" alt="Momento"></button>
+      </div>
+    </div>
+
+    <div class="buy">
+      <div class="rating"><i aria-hidden="true">★★★★★</i><span>4,9 · 128 reseñas</span><span class="ex">Ejemplo</span></div>
+      <h1>Un matcha para tu <span class="s" id="h-word">focus</span></h1>
+      <p class="sub">Una sola lata para todos tus momentos del día. Solo, en latte, con hielo o en un postre.</p>
+
+      <div>
+        <div class="lbl2">¿Cuál es tu mood? <small>Te damos su receta</small></div>
+        <div class="moods" role="group" aria-label="Elige tu mood" id="moods">
+          <button type="button" aria-pressed="true" data-a="#5f8f12" data-w="focus" data-r="Solo con agua" data-t="2 g y 70 ml a 80 °C.">Focus</button>
+          <button type="button" aria-pressed="false" data-a="#3f8f86" data-w="calma" data-r="Latte de avena" data-t="Templado, con 200 ml de bebida de avena.">Calma</button>
+          <button type="button" aria-pressed="false" data-a="#b8860b" data-w="energía" data-r="Con hielo y tónica" data-t="El matcha batido en frío por encima.">Energía</button>
+          <button type="button" aria-pressed="false" data-a="#c45577" data-w="antojo" data-r="Affogato" data-t="Sobre una bola de helado de vainilla.">Antojo</button>
+        </div>
+      </div>
+      <div class="recipe" aria-live="polite"><b id="r-name">Solo con agua</b> · <span id="r-text">2 g y 70 ml a 80 °C.</span></div>
+
+      <div class="packs" id="packs" role="radiogroup" aria-label="Elige cuántas latas">
+        <label class="pack"><input type="radio" name="pack" value="1" data-total="2995" data-full="2995"><span class="n">1 lata</span><span class="pr">29,95 €</span><small>15 tazas · 2,00 € por taza</small><span class="save"></span></label>
+        <label class="pack"><span class="tag">El más vendido</span><input type="radio" name="pack" value="2" data-total="5391" data-full="5990" checked><span class="n">2 latas</span><span class="pr">53,91 €<s>59,90 €</s></span><small>30 tazas · 1,80 € por taza · envío gratis</small><span class="save">−10 %</span></label>
+        <label class="pack"><span class="tag best">Mejor precio por taza</span><input type="radio" name="pack" value="3" data-total="7637" data-full="8985"><span class="n">3 latas</span><span class="pr">76,37 €<s>89,85 €</s></span><small>45 tazas · 1,70 € por taza · envío gratis</small><span class="save">−15 %</span></label>
+      </div>
+
+      <button type="button" class="add" id="add"><span>Añadir a la cesta</span><span id="add-price">53,91 €</span></button>
+      <p class="ship" id="ship"></p>
+      <ul class="trust">
+        <li><b>Envío 24–72 h</b>Gratis desde 35 €</li>
+        <li><b>Pago seguro</b>Bizum, tarjeta, PayPal</li>
+        <li><b>14 días</b>para devolverlo</li>
+      </ul>
+      <div class="pays"><span>Visa</span><span>Mastercard</span><span>Bizum</span><span>PayPal</span><span>Apple Pay</span><span>Google Pay</span></div>
+    </div>
+  </div></section>
+
+  <!-- 2. VENTAJAS -->
+  <section class="perks pad"><div class="in">
+    <div class="perk"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12"/><path d="M16 9v7l5 3"/></svg><div><b>Un minuto</b><span>y está listo</span></div></div>
+    <div class="perk"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 12h20l-2 13H8z"/><path d="M11 12a5 5 0 0 1 10 0"/></svg><div><b>Cuatro moods</b><span>una sola lata</span></div></div>
+    <div class="perk"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 14h16v6a8 8 0 0 1-16 0z"/><path d="M23 15h2a3 3 0 0 1 0 6h-2"/></svg><div><b>15 tazas</b><span>por lata de 30 g</span></div></div>
+    <div class="perk"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 10h15v12H4zM19 14h5l4 4v4h-9z"/><circle cx="9" cy="24" r="2"/><circle cx="23" cy="24" r="2"/></svg><div><b>Envío gratis</b><span>desde 35 €</span></div></div>
+  </div></section>
+
+  <!-- 3. CÓMO SE PREPARA (vídeo) -->
+  <section class="sec pad"><div class="in how">
+    <video src="video/mm-ceremonia.mp4" autoplay muted loop playsinline poster="img/mm-ceremonia.jpg" aria-label="Vídeo: cómo se prepara el matcha"></video>
+    <div>
+      <div class="head"><p class="eyebrow">Un minuto, tres gestos</p><h2>Así se <span class="s">prepara</span></h2><p>No necesitas nada raro. Con un espumador de leche también sale.</p></div>
+      <ol>
+        <li><b>1</b><h3>Tamiza 2 g</h3><p>Una cucharadita en el cuenco, sin grumos.</p></li>
+        <li><b>2</b><h3>Añade 70 ml a 80 °C</h3><p>Agua caliente, nunca hirviendo.</p></li>
+        <li><b>3</b><h3>Bate en zigzag</h3><p>Quince segundos, hasta que haga espuma.</p></li>
+      </ol>
+    </div>
+  </div></section>
+
+  <!-- 4. RECETAS POR MOOD -->
+  <section class="sec pad" style="background:var(--soft)"><div class="in">
+    <div class="head center"><p class="eyebrow">Una lata, cuatro moods</p><h2>Tu receta según <span class="s">cómo te sientes</span></h2></div>
+    <div class="grid4">
+      <div class="mc" style="--k:#5f8f12"><em>Focus</em><b>Solo con agua</b><p>2 g y 70 ml a 80 °C. Claro y directo.</p></div>
+      <div class="mc" style="--k:#3f8f86"><em>Calma</em><b>Latte de avena</b><p>Templado, con 200 ml de bebida de avena.</p></div>
+      <div class="mc" style="--k:#b8860b"><em>Energía</em><b>Con hielo y tónica</b><p>El matcha batido en frío por encima.</p></div>
+      <div class="mc" style="--k:#c45577"><em>Antojo</em><b>Affogato</b><p>Sobre una bola de helado de vainilla.</p></div>
+    </div>
+  </div></section>
+
+  <!-- 5. VÍDEOS DE REDES -->
+  <section class="sec pad"><div class="in">
+    <div class="head center"><p class="eyebrow">@bymoodmatcha</p><h2>Así lo toma <span class="s">la gente</span></h2><p>Vídeos de Instagram y TikTok de quienes ya lo prueban.</p></div>
+    <div class="ugc" aria-label="Vídeos de redes sociales">
+      <button type="button" class="reel"><video src="video/mm-ceremonia.mp4" muted loop playsinline preload="metadata"></video><span class="play" aria-hidden="true">▶</span><span class="who"><b>@lucia.mood</b>Mi latte de cada mañana</span></button>
+      <button type="button" class="reel"><img src="img/mm-acuarela-latte.jpg" alt=""><span class="play" aria-hidden="true">▶</span><span class="who"><b>@javi_cafe</b>Matcha con hielo en 30 s</span></button>
+      <button type="button" class="reel"><img src="img/mm-acuarela-arco.jpg" alt=""><span class="play" aria-hidden="true">▶</span><span class="who"><b>@marta.home</b>El affogato de Antojo</span></button>
+      <button type="button" class="reel"><img src="img/mm-acuarela-polvo.jpg" alt=""><span class="play" aria-hidden="true">▶</span><span class="who"><b>@bymoodmatcha</b>Abriendo la primera lata</span></button>
+      <button type="button" class="reel"><img src="img/mm-ceremonia.jpg" alt=""><span class="play" aria-hidden="true">▶</span><span class="who"><b>@ana.focus</b>Mi ritual antes de trabajar</span></button>
+    </div>
+    <div class="follow"><a class="btn-line" href="https://www.instagram.com/bymoodmatcha/" target="_blank" rel="noopener">Seguir a @bymoodmatcha</a></div>
+  </div></section>
+
+  <!-- 6. COMPARATIVA -->
+  <section class="sec pad" style="background:var(--soft)"><div class="in">
+    <div class="head center"><p class="eyebrow">¿Por qué matcha?</p><h2>Matcha frente <span class="s">al café</span></h2></div>
+    <div class="vs-wrap"><table class="vs">
+      <tr><th></th><th>Mood Matcha</th><th>Café de cafetería</th></tr>
+      <tr><td>Cafeína por taza</td><td>Algo menos</td><td>Más</td></tr>
+      <tr><td>Cómo se nota</td><td>Más suave y sostenida</td><td>De golpe</td></tr>
+      <tr><td>Formas de tomarlo</td><td>Solo, latte, con hielo, en postres</td><td>Solo o con leche</td></tr>
+      <tr><td>Precio por taza</td><td>Desde 1,70 €</td><td>2–3 €</td></tr>
+    </table></div>
+  </div></section>
+
+  <!-- 7. RESEÑAS -->
+  <section class="sec pad"><div class="in">
+    <div class="head"><p class="eyebrow">Opiniones <span class="ex">Ejemplo</span></p><h2>Lo que dicen <span class="s">quienes lo toman</span></h2></div>
+    <div class="rv">
+      <div class="sum">
+        <span class="big">4,9</span><i aria-hidden="true">★★★★★</i><span style="color:var(--muted)">128 reseñas</span>
+        <div class="bars">
+          <div><span>5</span><i><span style="width:91%"></span></i><span>117</span></div>
+          <div><span>4</span><i><span style="width:7%"></span></i><span>9</span></div>
+          <div><span>3</span><i><span style="width:2%"></span></i><span>2</span></div>
+          <div><span>2</span><i><span style="width:0%"></span></i><span>0</span></div>
+          <div><span>1</span><i><span style="width:0%"></span></i><span>0</span></div>
+        </div>
+        <button type="button" class="btn-line" style="margin-top:6px">Escribir una reseña</button>
+      </div>
+      <div class="cards">
+        <div class="rc"><i aria-hidden="true">★★★★★</i><p>«Me lo tomo en latte cada mañana y he dejado el café de media mañana.»</p><small>Marta · Valencia</small><span class="ok">✓ Compra verificada · Mood Calma</span></div>
+        <div class="rc"><i aria-hidden="true">★★★★★</i><p>«El color es precioso y no amarga nada. Se prepara en un momento.»</p><small>Javi · Madrid</small><span class="ok">✓ Compra verificada · Mood Focus</span></div>
+        <div class="rc"><i aria-hidden="true">★★★★★</i><p>«El de Antojo con helado es un vicio. Ya voy por la segunda lata.»</p><small>Lucía · Alicante</small><span class="ok">✓ Compra verificada · Mood Antojo</span></div>
+        <div class="rc"><i aria-hidden="true">★★★★☆</i><p>«Con hielo y tónica en verano, buenísimo. Me encantaría una lata más grande.»</p><small>Pablo · Sevilla</small><span class="ok">✓ Compra verificada · Mood Energía</span></div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- 8. GARANTÍA -->
+  <section class="pad" style="padding-block:clamp(20px,4vw,40px)"><div class="in promise">
+    <div class="seal"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><path id="pg" d="M50,50 m-41,0 a41,41 0 1,1 82,0 a41,41 0 1,1 -82,0"/></defs><text><textPath href="#pg">COMPRA TRANQUILA · ENVÍO 24–72 H · PAGO SEGURO · </textPath></text></svg><b>14<small>DÍAS</small></b></div>
+    <div><h2>Compra <span class="s">sin miedo</span></h2><p>Tienes 14 días para devolverlo. Te lo enviamos en 24–72 h y el pago es 100 % seguro. Si tienes cualquier duda, escríbenos y te contestamos el mismo día.</p></div>
+  </div></section>
+
+  <!-- 9. PREGUNTAS -->
+  <section class="sec pad"><div class="in">
+    <div class="head center"><p class="eyebrow">Dudas</p><h2>Preguntas <span class="s">frecuentes</span></h2></div>
+    <div class="faq">
+      <details class="acc" open><summary>¿Cuántas tazas salen de una lata?</summary><p>Unas 15, con 2 g por taza.</p></details>
+      <details class="acc"><summary>¿Necesito un chasen para prepararlo?</summary><p>Es lo ideal para que salga espuma fina, pero un espumador de leche eléctrico también funciona.</p></details>
+      <details class="acc"><summary>¿Tiene cafeína?</summary><p>Sí, algo menos que un café, y se nota de forma más suave.</p></details>
+      <details class="acc"><summary>¿Cuánto tarda en llegar?</summary><p>Entre 24 y 72 h. El envío es gratis a partir de 35 €.</p></details>
+      <details class="acc"><summary>¿Cómo lo conservo?</summary><p>Bien cerrado, lejos de la luz y del calor. Una vez abierto, en la nevera.</p></details>
+    </div>
+  </div></section>
+
+  <!-- 10. ÚLTIMO EMPUJÓN -->
+  <section class="sec pad" style="background:var(--soft)"><div class="in final">
+    <p class="eyebrow">Lote 001</p>
+    <h2>¿Cuál es tu mood <em class="s">de hoy</em>?</h2>
+    <p style="margin:0;color:var(--muted)">Empieza con una lata, o llévate dos y ahorra un 10 %.</p>
+    <button type="button" class="add" data-scroll><span>Elegir mi pack</span></button>
+  </div></section>
+</main>
+
+<footer class="end pad">Pie de la tienda</footer>
+
+<div class="sticky" id="sticky"><div class="in"><span class="t" id="st-t">2 latas<small>53,91 € · envío gratis</small></span><button type="button" id="st-add">Añadir a la cesta</button></div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+  const eur = (c) => (c / 100).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+  const hero = document.getElementById('hero');
+
+  // Galería
+  const img = document.getElementById('stage-img');
+  document.querySelectorAll('.thumbs button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.thumbs button').forEach((o) => o.setAttribute('aria-current', String(o === b)));
+    img.style.opacity = 0; setTimeout(() => { img.src = b.dataset.src; img.style.opacity = 1; }, 200);
+  }));
+
+  // Mood: cambia el color de la foto y del titular, y la receta
+  document.querySelectorAll('#moods button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('#moods button').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+    hero.style.setProperty('--a', b.dataset.a);
+    document.getElementById('h-word').textContent = b.dataset.w;
+    document.getElementById('r-name').textContent = b.dataset.r;
+    document.getElementById('r-text').textContent = b.dataset.t;
+  }));
+
+  // Packs: el precio del botón y de la barra fija siempre dicen cuántas latas son
+  const sync = () => {
+    const p = document.querySelector('#packs input:checked'); const n = Number(p.value), total = Number(p.dataset.total);
+    document.getElementById('add-price').textContent = eur(total);
+    document.getElementById('st-t').innerHTML = `${n} ${n === 1 ? 'lata' : 'latas'}<small>${eur(total)}${total >= 3500 ? ' · envío gratis' : ''}</small>`;
+  };
+  document.querySelectorAll('#packs input').forEach((i) => i.addEventListener('change', sync)); sync();
+
+  // Fecha de entrega
+  const now = new Date(); const work = (k) => { const x = new Date(now); let c = 0; while (c < k) { x.setDate(x.getDate() + 1); if (x.getDay() % 6) c++; } return x; };
+  const fmt = (x) => x.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric' });
+  const early = now.getHours() < 14 && now.getDay() % 6;
+  document.getElementById('ship').innerHTML = `Pide ${early ? 'antes de las 14:00' : 'ahora'} y te llega entre el <b>${fmt(work(early ? 1 : 2))}</b> y el <b>${fmt(work(early ? 3 : 4))}</b>.`;
+
+  // Vídeos de redes: se reproducen al tocarlos
+  document.querySelectorAll('.reel').forEach((r) => r.addEventListener('click', () => {
+    const v = r.querySelector('video'); if (!v) return;
+    if (v.paused) { v.play(); r.querySelector('.play').style.opacity = 0; } else { v.pause(); r.querySelector('.play').style.opacity = 1; }
+  }));
+
+  // Barra fija: solo después de pasar el botón de compra
+  const add = document.getElementById('add'), sticky = document.getElementById('sticky');
+  new IntersectionObserver(([e]) => sticky.classList.toggle('on', !e.isIntersecting && e.boundingClientRect.top < 0)).observe(add);
+  document.querySelector('[data-scroll]').addEventListener('click', () => hero.scrollIntoView({ behavior: 'smooth' }));
+
+  // Añadir
+  const toast = document.getElementById('toast'); let t, cart = 0;
+  const added = () => { cart += Number(document.querySelector('#packs input:checked').value); document.getElementById('cart-n').textContent = cart; toast.textContent = 'Añadido. Buena elección.'; toast.classList.add('on'); clearTimeout(t); t = setTimeout(() => toast.classList.remove('on'), 2200); };
+  add.addEventListener('click', added); document.getElementById('st-add').addEventListener('click', added);
+})();
+</script>
