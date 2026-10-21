@@ -117,7 +117,7 @@ def email_precios(marca, servicio, mensaje_wa, titulo, preheader, pie_nombre):
         <tr><td class="px" align="center" bgcolor="{TINT}" style="background:{TINT};padding:36px 40px;">
           <p style="margin:0;font-family:{SANS};font-size:11px;font-weight:bold;letter-spacing:4px;text-transform:uppercase;color:{ETQ};">Te invitamos a la inauguración</p>
           <p style="margin:10px 0 0;font-family:{SERIF};font-size:21px;line-height:1.4;color:{T};">Espai Pilates Reformer &amp; Chakra Wellness Center<br><strong>Lunes 26 de octubre · 18:00 h</strong></p>
-          <p style="margin:8px 0 18px;font-family:{SANS};font-size:14px;color:{S};">C/ Benidoleig 31 · Benissa</p>
+          <p style="margin:8px 0 18px;font-family:{SANS};font-size:14px;color:{S};">C/ Calpe 5 · Benissa · junto a Espai Vital</p>
           <a href="{WA_RSVP}" style="font-family:{SANS};font-size:13px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:{T};">Confirmar asistencia →</a>
         </td></tr>
 

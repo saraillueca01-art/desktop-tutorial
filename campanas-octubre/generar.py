@@ -110,7 +110,7 @@ def email(tema, titulo, preheader, barra, kicker, h1, intro, cuerpo, pie_nombre,
 CAL = ('https://calendar.google.com/calendar/render?action=TEMPLATE'
        '&text=Inauguraci%C3%B3n%20Espai%20Pilates%20Reformer%20%2B%20Chakra%20Wellness%20Center'
        '&dates=20261026T180000/20261026T210000&ctz=Europe/Madrid'
-       '&location=C%2F%20Benidoleig%2031%2C%20Benissa')
+       '&location=C%2F%20Calpe%205%2C%20Benissa')
 
 
 def cuerpo_inauguracion(t):
@@ -240,29 +240,33 @@ def email_invitacion():
 
         <tr><td align="center" style="padding:0 0 10px;background:#e9e4da;font-family:{sans};font-size:11px;color:{S};">¿No ves bien este email? <a href="*|ARCHIVE|*" style="color:{S};">Ábrelo en el navegador</a></td></tr>
 
-        <tr><td align="center" style="padding:34px 12px 30px;background:#ffffff;">
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr>
-            <td valign="middle" style="padding:0 22px;"><img src="{BASE}/campanas-octubre/media/logo-espai-pilates.png" width="176" height="75" alt="Espai Pilates Reformer" class="logo-p" style="display:block;border:0;width:176px;height:75px;"></td>
-            <td valign="middle" style="border-left:1px solid #e8dfcc;padding:0 22px;"><img src="{BASE}/facial-luminus/media/logo-chakra.png" width="80" height="90" alt="Chakra Wellness Center by Espai Vital" style="display:block;border:0;width:80px;height:90px;"></td>
+        <!-- Cartel -->
+        <tr><td style="padding:0;background:{N};">
+          <a href="{WA_RSVP}" style="text-decoration:none;"><img src="{BASE}/campanas-octubre/media/cartel-inauguracion.jpg" width="600" alt="Inauguración · Lunes 26 de octubre a partir de las 18:00 h · C/ Calpe 5, Benissa, junto a Espai Vital" style="display:block;border:0;width:100%;max-width:600px;height:auto;"></a>
+        </td></tr>
+
+        <!-- Detalles -->
+        <tr><td class="px" align="center" bgcolor="{N}" style="background:{N};padding:44px 48px 48px;">
+          <p style="margin:0;font-family:{sans};font-size:11px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:{GL};">Te esperamos</p>
+          <p style="margin:14px 0 0;font-family:{serif};font-size:26px;line-height:1.4;color:#ffffff;">Una tarde de bienestar, experiencias<br><em style="color:{GL};">y muchas sorpresas</em></p>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:28px auto 0;"><tr><td width="64" style="border-top:1px solid {G};font-size:0;line-height:0;">&nbsp;</td></tr></table>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:26px 0 0;"><tr>
+            <td width="33%" align="center" valign="top" style="padding:0 6px;font-family:{sans};">
+              <p style="margin:0;font-size:10px;font-weight:bold;letter-spacing:4px;text-transform:uppercase;color:{GL};">Cuándo</p>
+              <p style="margin:8px 0 0;font-family:{serif};font-size:18px;line-height:1.3;color:#ffffff;">Lunes 26<br>de octubre</p>
+            </td>
+            <td width="33%" align="center" valign="top" style="padding:0 6px;border-left:1px solid #3a3833;border-right:1px solid #3a3833;font-family:{sans};">
+              <p style="margin:0;font-size:10px;font-weight:bold;letter-spacing:4px;text-transform:uppercase;color:{GL};">Hora</p>
+              <p style="margin:8px 0 0;font-family:{serif};font-size:18px;line-height:1.3;color:#ffffff;">A partir de<br>las 18:00 h</p>
+            </td>
+            <td width="33%" align="center" valign="top" style="padding:0 6px;font-family:{sans};">
+              <p style="margin:0;font-size:10px;font-weight:bold;letter-spacing:4px;text-transform:uppercase;color:{GL};">Dónde</p>
+              <p style="margin:8px 0 0;font-family:{serif};font-size:18px;line-height:1.3;color:#ffffff;">C/ Calpe 5<br>Benissa</p>
+            </td>
           </tr></table>
-        </td></tr>
-
-        <!-- Invitación -->
-        <tr><td class="px" align="center" bgcolor="{N}" style="background:{N};padding:56px 48px 52px;">
-          <p style="margin:0;font-family:{sans};font-size:11px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:{GL};">Te invitamos a la</p>
-          <p class="big" style="margin:18px 0 0;font-family:{serif};font-size:46px;line-height:1.05;letter-spacing:6px;text-transform:uppercase;color:#ffffff;">Inauguración</p>
-          <p style="margin:16px 0 0;font-family:{serif};font-style:italic;font-size:19px;line-height:1.5;color:#d8d2c6;">de nuestro nuevo centro<br>Espai Pilates Reformer &amp; Chakra Wellness Center</p>
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:34px auto 0;"><tr><td width="64" style="border-top:1px solid {G};font-size:0;line-height:0;">&nbsp;</td></tr></table>
-          <p style="margin:30px 0 0;font-family:{sans};font-size:12px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:{GL};">Lunes</p>
-          <p class="day" style="margin:4px 0 0;font-family:{serif};font-size:120px;line-height:1;color:{G};">26</p>
-          <p class="wide" style="margin:6px 0 0;font-family:{sans};font-size:13px;font-weight:bold;letter-spacing:8px;text-transform:uppercase;color:#ffffff;">Octubre · 18:00 h</p>
-          <p style="margin:26px 0 0;font-family:{sans};font-size:15px;line-height:1.6;color:#d8d2c6;">C/ Benidoleig 31 · Benissa<br><span style="color:#9c968b;">junto a Espai Vital</span></p>
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:36px auto 0;"><tr><td>{btn('Confirmar asistencia', WA_RSVP)}</td></tr></table>
+          <p style="margin:18px 0 0;font-family:{sans};font-size:13px;color:#9c968b;">Junto a Espai Vital</p>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:32px auto 0;"><tr><td>{btn('Confirmar asistencia', WA_RSVP)}</td></tr></table>
           <p style="margin:16px 0 0;font-family:{sans};font-size:13px;"><a href="{CAL}" style="color:#d8d2c6;">Añadir a mi calendario</a></p>
-        </td></tr>
-
-        <tr><td class="px" align="center" style="padding:44px 56px 46px;background:#ffffff;">
-          <p style="margin:0;font-family:{serif};font-size:24px;line-height:1.45;color:{T};">Ven a conocer <em>un espacio para volver a ti</em> y comparte con nosotros una tarde llena de experiencias y sorpresas.</p>
         </td></tr>
 
         <!-- LUMINUS -->
@@ -329,6 +333,7 @@ if __name__ == '__main__':
         BASE + '/facial-luminus/media/email-mascarilla.jpg': ('facial-luminus/media/email-mascarilla.jpg', 'image/jpeg'),
         BASE + '/campanas-octubre/media/logo-espai-vital.png': ('campanas-octubre/media/logo-espai-vital.png', 'image/png'),
         BASE + '/campanas-octubre/media/logo-espai-pilates.png': ('campanas-octubre/media/logo-espai-pilates.png', 'image/png'),
+        BASE + '/campanas-octubre/media/cartel-inauguracion.jpg': ('campanas-octubre/media/cartel-inauguracion.jpg', 'image/jpeg'),
     }
     for nombre, html in EMAILS.items():
         open(os.path.join(here, nombre + '.html'), 'w').write(html)
