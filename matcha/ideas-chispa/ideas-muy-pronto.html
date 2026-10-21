@@ -1,0 +1,247 @@
+<title>Muy pronto: cuatro ideas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  /* Cuatro propuestas, cada una en una «pantalla» a tamaño real con su explicación al lado. Arriba, el recordatorio en rojo */
+  :root {
+    --bg: #ffffff; --ink: #1b2a1f; --muted: #5d6b5f; --line: #e2e7dc; --deep: #1e3322; --green: #1f6b2e; --lime: #c9dc5c;
+    --red: #b3261e; --red-bg: #fdecea;
+    --sans: 'Jost', 'Futura', 'Century Gothic', system-ui, sans-serif;
+    --serif: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #111811; --ink: #e9f0e2; --muted: #a2b09f; --line: #2a362a; --green: #7cc56a; --red: #ffb4ab; --red-bg: #3b1513; color-scheme: dark; } }
+  :root[data-theme="dark"] { --bg: #111811; --ink: #e9f0e2; --muted: #a2b09f; --line: #2a362a; --green: #7cc56a; --red: #ffb4ab; --red-bg: #3b1513; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 300 16px/1.6 var(--sans); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 36px 80px; }
+  .wrap { max-width: 1160px; margin: 0 auto; display: grid; gap: 48px; }
+  .todo { border: 2px solid var(--red); background: var(--red-bg); color: var(--red); border-radius: 16px; padding: 16px 20px; display: grid; gap: 6px; }
+  .todo b { font-weight: 600; font-size: 1.1rem; letter-spacing: 0.02em; }
+  .todo ol { margin: 0; padding-left: 1.2em; }
+  header { display: grid; gap: 10px; max-width: 64ch; }
+  .eyebrow { margin: 0; font-size: 0.74rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--green); }
+  h1 { margin: 0; font-weight: 300; font-size: clamp(2.2rem, 5.5vw, 3.8rem); line-height: 1.04; text-wrap: balance; }
+  h1 em, h2 em { font-family: var(--serif); font-style: italic; font-weight: 400; }
+  header p { margin: 0; color: var(--muted); font-size: 1.05rem; }
+  .idea { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: center; }
+  .idea:nth-child(even) .screen { order: 2; }
+  @media (max-width: 860px) { .idea { grid-template-columns: 1fr; } .idea:nth-child(even) .screen { order: 0; } }
+  .txt { display: grid; gap: 10px; min-width: 0; }
+  .txt .n { font-size: 0.74rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--green); }
+  .txt h2 { margin: 0; font-weight: 300; font-size: clamp(1.7rem, 3vw, 2.3rem); line-height: 1.1; }
+  .txt p { margin: 0; color: var(--muted); }
+  .txt ul { margin: 0; padding-left: 1.1em; color: var(--muted); display: grid; gap: 4px; }
+  .pick { color: var(--green) !important; }
+  button { font: inherit; }
+  :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+
+  /* Pantalla de muestra */
+  .screen { position: relative; min-height: 470px; border-radius: 22px; overflow: hidden; box-shadow: 0 0 0 1px var(--line), 0 30px 60px -40px rgb(15 36 20 / 0.5); color: #1b2a1f; display: grid; grid-template-rows: auto 1fr auto; padding: clamp(14px, 2.4vw, 26px); isolation: isolate; min-width: 0; }
+  .logo { justify-self: center; font: 400 0.95rem/1 var(--sans); letter-spacing: 0.08em; color: inherit; }
+  .mid { display: grid; place-content: center; justify-items: center; gap: 12px; text-align: center; }
+  .foot { display: flex; justify-content: space-between; font-size: 0.72rem; opacity: 0.7; }
+  .form { display: flex; gap: 5px; padding: 4px; border-radius: 999px; background: #fff; width: min(100%, 340px); box-shadow: inset 0 0 0 1px rgb(30 51 34 / 0.18); }
+  .form input { flex: 1; min-width: 0; border: 0; background: none; padding: 8px 14px; font: inherit; font-size: 0.9rem; color: #1b2a1f; }
+  .form input:focus { outline: none; }
+  .form button { border: 0; border-radius: 999px; padding: 8px 16px; background: #1e3322; color: #fff; cursor: pointer; font-size: 0.85rem; white-space: nowrap; }
+  .ok { font-family: var(--serif); font-style: italic; font-size: 1.3rem; }
+
+  /* 1. Lote 001 */
+  .s1 { background: #fff; }
+  .s1 .num { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: clamp(5rem, 13vw, 9.5rem); line-height: 0.85; color: #1e3322; letter-spacing: -0.02em; }
+  .s1 .num span { display: inline-block; transition: transform 0.6s cubic-bezier(.2,.8,.2,1), opacity 0.6s; }
+  .s1 .tag { font-size: 0.7rem; letter-spacing: 0.34em; text-transform: uppercase; color: #5d6b5f; }
+  .s1 .strike { position: relative; display: inline-block; }
+  .s1 .strike::after { content: ""; position: absolute; left: -4%; right: -4%; top: 52%; height: 2px; background: #1e3322; transform: scaleX(var(--k, 0)); transform-origin: left; transition: transform 1.2s cubic-bezier(.2,.8,.2,1) 0.4s; }
+  .s1.on .strike { --k: 1; }
+  .s1 p { margin: 0; max-width: 34ch; font-size: 0.95rem; color: #5d6b5f; }
+
+  /* 2. Mood a pantalla completa */
+  .s2 { --a: #5f8f12; background: color-mix(in srgb, var(--a) 16%, #fff); transition: background 0.8s; }
+  .s2 .blob { position: absolute; z-index: -1; width: 60%; aspect-ratio: 1; border-radius: 50%; background: var(--a); filter: blur(70px); opacity: 0.45; transition: background 0.8s; animation: drift 9s ease-in-out infinite alternate; }
+  .s2 .blob.b1 { left: -15%; top: -25%; } .s2 .blob.b2 { right: -15%; bottom: -30%; animation-delay: -4s; }
+  @keyframes drift { to { transform: translate(40px, 30px) scale(1.15); } }
+  .s2 .q { font-weight: 300; font-size: clamp(1.6rem, 3.6vw, 2.6rem); line-height: 1.05; }
+  .s2 .q em { font-family: var(--serif); font-style: italic; color: var(--a); transition: color 0.8s; }
+  .s2 .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+  .s2 .chips button { border: 0; border-radius: 999px; padding: 7px 15px; background: rgb(255 255 255 / 0.75); color: #1b2a1f; cursor: pointer; font-size: 0.9rem; }
+  .s2 .chips button[aria-pressed="true"] { background: color-mix(in srgb, var(--a) 35%, #1b2a1f); color: #fff; }
+  .s2 .line { margin: 0; font-size: 0.92rem; max-width: 40ch; }
+
+  /* 3. Invitación con sello */
+  .s3 { background: #f6f5f1; }
+  .s3 .env { position: relative; width: min(78%, 400px); aspect-ratio: 1.55; background: #fff; border-radius: 6px; box-shadow: 0 20px 40px -26px rgb(15 36 20 / 0.55); overflow: hidden; display: grid; place-items: center; }
+  .s3 .flap { position: absolute; inset: 0 0 auto 0; height: 58%; background: #ecebe5; clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: top; transition: transform 0.9s cubic-bezier(.2,.8,.2,1); z-index: 2; }
+  .s3 .card { position: absolute; inset: 14% 10%; background: #fff; display: grid; place-content: center; gap: 8px; text-align: center; padding: 10px; opacity: 0; transition: opacity 0.6s 0.5s; z-index: 1; }
+  .s3 .card b { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.6rem; line-height: 1; color: #1e3322; }
+  .s3 .card span { font-size: 0.78rem; color: #5d6b5f; }
+  .s3 .seal { position: absolute; z-index: 3; left: 50%; top: 58%; width: 78px; aspect-ratio: 1; translate: -50% -50%; border: 0; border-radius: 50%; background: #1e3322; color: #eef1e8; cursor: pointer; display: grid; place-items: center; transition: transform 0.5s, opacity 0.5s; padding: 0; }
+  .s3 .seal svg { position: absolute; inset: 0; width: 100%; height: 100%; animation: spin 16s linear infinite; }
+  .s3 .seal text { font: 400 9px var(--sans); letter-spacing: 2.4px; fill: currentColor; }
+  .s3 .seal b { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.3rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .s3.open .flap { transform: rotateX(180deg); z-index: 0; }
+  .s3.open .seal { opacity: 0; transform: scale(0.6); pointer-events: none; }
+  .s3.open .card { opacity: 1; }
+  .s3 .below { display: grid; gap: 8px; justify-items: center; opacity: 0; transition: opacity 0.6s 0.9s; }
+  .s3.open .below { opacity: 1; }
+
+  /* 4. Cuenco que se llena */
+  .s4 { background: #fff; }
+  .s4 .bowl { position: relative; width: clamp(130px, 22vw, 190px); aspect-ratio: 1; border-radius: 50%; background: #fff; box-shadow: 0 0 0 8px #f1f3ee, 0 20px 36px -24px rgb(15 36 20 / 0.6); overflow: hidden; }
+  .s4 .tea { position: absolute; inset: auto 0 0 0; height: var(--h, 30%); background: radial-gradient(circle at 50% 0%, #8fbf55, #3f7a24 70%); transition: height 1.4s cubic-bezier(.2,.8,.2,1); }
+  .s4 .tea::before { content: ""; position: absolute; left: -10%; right: -10%; top: -10px; height: 20px; border-radius: 50%; background: #a9cf6a; animation: wave 3.5s ease-in-out infinite; }
+  @keyframes wave { 50% { transform: translateX(8%) scaleY(0.7); } }
+  .s4 .pct { font-family: var(--serif); font-style: italic; font-size: 2rem; line-height: 1; color: #1e3322; }
+  .s4 .lbl { font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: #5d6b5f; }
+  .s4 .steps { display: flex; gap: 6px; font-size: 0.72rem; color: #5d6b5f; flex-wrap: wrap; justify-content: center; }
+  .s4 .steps span { padding: 2px 10px; border-radius: 999px; border: 1px solid #dfe5d8; }
+  .s4 .steps span.done { background: #1e3322; color: #fff; border-color: #1e3322; }
+
+  footer { display: grid; gap: 8px; max-width: 66ch; }
+  footer h2 { margin: 0; font-weight: 400; font-size: 1.4rem; }
+  footer p { margin: 0; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <div class="todo" role="note">
+    <b>PENDIENTE: los emails del juego «Elige tu mood»</b>
+    <ol>
+      <li>Confirmar los premios y crear los 4 códigos de descuento (te los creo yo).</li>
+      <li>Preparar los 4 emails con su código (te los preparo yo).</li>
+      <li>Activar en Marketing → Automatizaciones la bienvenida con una condición por mood (lo haces tú, te guío).</li>
+      <li>Poner a la automatización de lista de espera la condición «lista-espera».</li>
+    </ol>
+  </div>
+
+  <header>
+    <p class="eyebrow">Página de «Muy pronto»</p>
+    <h1>Cuatro ideas para la web <em>cerrada</em></h1>
+    <p>Todas en blanco y verde, sin enseñar la lata y con la casilla del email. Puedes tocarlas: cada una se mueve como lo haría en la web.</p>
+  </header>
+
+  <section class="idea">
+    <div class="screen s1" id="s1">
+      <span class="logo">MOODMATCHA</span>
+      <div class="mid">
+        <span class="tag">Lote</span>
+        <span class="num"><span class="strike" id="s1-num">001</span></span>
+        <p id="s1-txt">Todavía no existe. Y el primero solo será para quien esté en la lista.</p>
+        <form class="form" data-demo><label for="e1" style="position:absolute;left:-9999px">Tu email</label><input id="e1" type="email" placeholder="Tu email" required><button type="submit">Reservar mi lata</button></form>
+      </div>
+      <div class="foot"><span>@bymoodmatcha</span><span>Entrar con contraseña</span></div>
+    </div>
+    <div class="txt">
+      <span class="n">Idea 1</span>
+      <h2>Lote <em>001</em></h2>
+      <p>Lleva al extremo lo de «el número 1 que no existe». Un 001 enorme, que se tacha despacio al cargar, y una promesa clara: el primer lote solo será para la lista.</p>
+      <ul><li>Crea urgencia sin enseñar nada.</li><li>Da contenido para Insta: «Lote 001: quedan X plazas».</li></ul>
+    </div>
+  </section>
+
+  <section class="idea">
+    <div class="screen s2" id="s2">
+      <span class="blob b1"></span><span class="blob b2"></span>
+      <span class="logo">MOODMATCHA</span>
+      <div class="mid">
+        <p class="q">¿Cuál es tu mood <em id="s2-w">de hoy</em>?</p>
+        <div class="chips" role="group" aria-label="Elige tu mood">
+          <button type="button" aria-pressed="false" data-a="#5f8f12" data-w="focus" data-l="Te avisaremos con una receta para concentrarte.">Focus</button>
+          <button type="button" aria-pressed="false" data-a="#3f8f86" data-w="calma" data-l="Te avisaremos con una receta para bajar el ritmo.">Calma</button>
+          <button type="button" aria-pressed="false" data-a="#b8860b" data-w="energía" data-l="Te avisaremos con una receta para arrancar.">Energía</button>
+          <button type="button" aria-pressed="false" data-a="#c45577" data-w="antojo" data-l="Te avisaremos con una receta para darte un capricho.">Antojo</button>
+        </div>
+        <p class="line" id="s2-l">Elige uno. Algo verde se está preparando para ti.</p>
+        <form class="form" data-demo><label for="e2" style="position:absolute;left:-9999px">Tu email</label><input id="e2" type="email" placeholder="Tu email" required><button type="submit">Avisadme</button></form>
+      </div>
+      <div class="foot"><span>@bymoodmatcha</span><span>Entrar con contraseña</span></div>
+    </div>
+    <div class="txt">
+      <span class="n">Idea 2</span>
+      <h2>Tu mood, <em>a pantalla completa</em></h2>
+      <p>La pregunta grande en el centro. Al elegir un mood, toda la página cambia de color y se guarda con su email.</p>
+      <ul><li>Es el recuadro que más te gustó, pero a pantalla completa.</li><li>Conecta con el juego de la web: el día de apertura, cada uno recibe el regalo de su mood.</li></ul>
+      <p class="pick">Mi favorita: es lo más «Mood Matcha».</p>
+    </div>
+  </section>
+
+  <section class="idea">
+    <div class="screen s3" id="s3">
+      <span class="logo">MOODMATCHA</span>
+      <div class="mid">
+        <div class="env">
+          <div class="flap"></div>
+          <div class="card"><b>Tienes una invitación</b><span>Para probar algo que todavía no existe.</span></div>
+          <button type="button" class="seal" id="s3-seal" aria-label="Abrir la invitación">
+            <svg viewBox="0 0 100 100" aria-hidden="true"><defs><path id="ps" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs><text><textPath href="#ps">ÁBREME · ÁBREME · ÁBREME · </textPath></text></svg>
+            <b>MM</b>
+          </button>
+        </div>
+        <div class="below"><form class="form" data-demo><label for="e3" style="position:absolute;left:-9999px">Tu email</label><input id="e3" type="email" placeholder="Tu email" required><button type="submit">Apuntarme</button></form></div>
+      </div>
+      <div class="foot"><span>@bymoodmatcha</span><span>Entrar con contraseña</span></div>
+    </div>
+    <div class="txt">
+      <span class="n">Idea 3</span>
+      <h2>Una <em>invitación</em> cerrada</h2>
+      <p>Un sobre con el sello MM que gira. Al tocarlo se abre y dentro pone «Tienes una invitación para probar algo que todavía no existe». Luego aparece la casilla del email.</p>
+      <ul><li>Muy elegante y con un gesto bonito.</li><li>Usa el sello que gira que te gustó.</li></ul>
+    </div>
+  </section>
+
+  <section class="idea">
+    <div class="screen s4" id="s4">
+      <span class="logo">MOODMATCHA</span>
+      <div class="mid">
+        <span class="lbl">El matcha está reposando</span>
+        <div class="bowl"><div class="tea" id="s4-tea"></div></div>
+        <span class="pct" id="s4-pct">70 %</span>
+        <div class="steps"><span class="done">Cosecha</span><span class="done">Molido</span><span class="done">Lata</span><span>Abrimos</span></div>
+        <form class="form" data-demo><label for="e4" style="position:absolute;left:-9999px">Tu email</label><input id="e4" type="email" placeholder="Tu email" required><button type="submit">Avisadme</button></form>
+      </div>
+      <div class="foot"><span>@bymoodmatcha</span><span>Entrar con contraseña</span></div>
+    </div>
+    <div class="txt">
+      <span class="n">Idea 4</span>
+      <h2>El cuenco <em>se va llenando</em></h2>
+      <p>Un cuenco visto desde arriba que se llena según lo cerca que estáis de abrir, con los pasos marcados: cosecha, molido, lata y apertura. Tú cambias el porcentaje desde el editor.</p>
+      <ul><li>Da sensación de que algo real está pasando.</li><li>Cada vez que subes el porcentaje, es una excusa para publicar en Insta.</li></ul>
+    </div>
+  </section>
+
+  <footer>
+    <h2>¿Cuál te gusta?</h2>
+    <p>Elige una, o mezcla: por ejemplo, la pregunta del mood con el «Lote 001» debajo. Las cuatro guardan el email en Shopify con la etiqueta «lista-espera». La del mood guarda además el mood de cada persona.</p>
+  </footer>
+</div>
+
+<script>
+(() => {
+  // 1. El 001 se tacha al verse
+  const s1 = document.getElementById('s1');
+  new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && s1.classList.add('on')), { threshold: 0.5 }).observe(s1);
+
+  // 2. Mood a pantalla completa
+  const s2 = document.getElementById('s2');
+  s2.querySelectorAll('.chips button').forEach((b) => b.addEventListener('click', () => {
+    s2.querySelectorAll('.chips button').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+    s2.style.setProperty('--a', b.dataset.a);
+    document.getElementById('s2-l').textContent = b.dataset.l;
+  }));
+
+  // 3. Abrir el sobre
+  document.getElementById('s3-seal').addEventListener('click', () => document.getElementById('s3').classList.add('open'));
+
+  // 4. El cuenco se llena al verse
+  const s4 = document.getElementById('s4'), tea = document.getElementById('s4-tea');
+  new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) tea.style.setProperty('--h', '70%'); }), { threshold: 0.4 }).observe(s4);
+
+  // Formularios de muestra
+  document.querySelectorAll('form[data-demo]').forEach((f) => f.addEventListener('submit', (e) => {
+    e.preventDefault();
+    f.outerHTML = '<span class="ok">¡Dentro! Te avisaremos antes que a nadie.</span>';
+  }));
+})();
+</script>
