@@ -1,0 +1,377 @@
+<title>Diario Mood</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  /* Blog «Diario Mood»: portada de revista (destacado enorme, filtros por mood que tiñen la página, rejilla con tamaños distintos) y artículo de lectura con barra de progreso que se llena de matcha, receta integrada y la lata para comprar al lado */
+  :root {
+    --bg: #ffffff; --ink: #1b2a1f; --muted: #66716a; --line: #e4e9df; --soft: #f3f6ef; --deep: #1e3322; --green: #2f6b2a; --lime: #c9dc5c;
+    --a: #2f6b2a;
+    --sans: 'Jost', 'Futura', 'Century Gothic', system-ui, sans-serif;
+    --serif: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+    --ease: cubic-bezier(.2,.8,.2,1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 300 17px/1.65 var(--sans); -webkit-font-smoothing: antialiased; }
+  .pad { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .in { max-width: 1240px; margin: 0 auto; }
+  button, input { font: inherit; }
+  :focus-visible { outline: 1.5px solid var(--deep); outline-offset: 3px; }
+  h1, h2, h3 { font-weight: 300; margin: 0; text-wrap: balance; }
+  .s { font-family: var(--serif); font-style: italic; font-weight: 400; }
+  img { display: block; max-width: 100%; }
+  .tag { display: inline-block; font-size: 0.68rem; letter-spacing: 0.24em; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; background: color-mix(in srgb, var(--k, var(--green)) 14%, #fff); color: color-mix(in srgb, var(--k, var(--green)) 80%, #000); }
+  .meta { font-size: 0.82rem; color: var(--muted); }
+
+  /* Barra de la demo */
+  .demo { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40; background: var(--deep); color: #eef1e8; font-size: 0.85rem; }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 41; background: var(--deep); }
+  .demo .in { display: flex; align-items: center; gap: 8px 12px; padding-block: 9px; flex-wrap: wrap; }
+  .demo span { opacity: 0.8; margin-right: auto; }
+  .demo button { border: 1px solid rgb(255 255 255 / 0.45); background: none; color: #fff; border-radius: 999px; padding: 5px 15px; cursor: pointer; }
+  .demo button[aria-pressed="true"] { background: #fff; color: var(--deep); }
+  .view { display: none; } .view.on { display: block; }
+
+  .shop { border-bottom: 1px solid var(--line); }
+  .shop .in { display: flex; justify-content: space-between; align-items: center; padding-block: 16px; font-size: 0.9rem; color: var(--muted); gap: 16px; }
+  .shop b { color: var(--deep); font-weight: 400; letter-spacing: 0.12em; }
+  .shop nav { display: flex; gap: 22px; }
+  .shop nav a { color: inherit; text-decoration: none; }
+  .shop nav a[aria-current] { color: var(--deep); }
+  @media (max-width: 640px) { .shop nav { display: none; } }
+
+  /* ===== Portada del blog ===== */
+  .mast { padding-block: clamp(40px, 7vw, 80px) 20px; display: grid; gap: 14px; transition: background 0.7s; }
+  .mast .kick { font-size: 0.72rem; letter-spacing: 0.36em; text-transform: uppercase; color: var(--a); transition: color 0.7s; }
+  .mast h1 { font-size: clamp(3.6rem, 13vw, 10rem); line-height: 0.85; letter-spacing: -0.03em; color: var(--deep); }
+  .mast h1 .s { color: var(--a); transition: color 0.7s; }
+  .mast p { margin: 0; max-width: 52ch; color: var(--muted); font-size: 1.08rem; }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; padding-block: 18px 30px; position: sticky; top: 38px; z-index: 5; background: rgb(255 255 255 / 0.94); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+  .filters-wrap { position: sticky; top: 38px; z-index: 5; }
+  @media (max-width: 640px) { .filters-wrap, .filters { position: static; } }
+  .filters button { border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 999px; padding: 8px 16px; cursor: pointer; transition: background 0.3s, color 0.3s, border-color 0.3s; }
+  .filters button[aria-pressed="true"] { background: var(--a); border-color: var(--a); color: #fff; }
+
+  .lead { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(20px, 4vw, 56px); align-items: end; padding-bottom: clamp(40px, 6vw, 70px); border-bottom: 1px solid var(--line); cursor: pointer; }
+  @media (max-width: 860px) { .lead { grid-template-columns: 1fr; } }
+  .lead__img { position: relative; aspect-ratio: 5 / 4; border-radius: 26px; overflow: hidden; }
+  .lead__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+  .lead:hover .lead__img img { transform: scale(1.04); }
+  .lead__num { position: absolute; left: 18px; bottom: 10px; font-family: var(--serif); font-style: italic; font-size: clamp(4rem, 9vw, 7rem); line-height: 1; color: #fff; text-shadow: 0 10px 30px rgb(0 0 0 / 0.35); }
+  .lead__txt { display: grid; gap: 14px; padding-bottom: 10px; }
+  .lead__txt h2 { font-size: clamp(2.2rem, 4.6vw, 3.6rem); line-height: 1.02; color: var(--deep); }
+  .lead__txt p { margin: 0; color: var(--muted); font-size: 1.05rem; }
+  .x { position: relative; display: inline-block; }
+  .x::after { content: ""; position: absolute; left: -3%; right: -3%; top: 55%; height: 2px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform 1s var(--ease) 0.4s; }
+  .on .x::after, .x.on::after { transform: scaleX(1); }
+  .more { display: inline-flex; gap: 8px; align-items: center; font-size: 0.92rem; color: var(--deep); }
+  .more::after { content: "→"; transition: transform 0.3s; }
+  .lead:hover .more::after, .card:hover .more::after { transform: translateX(4px); }
+
+  .grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(18px, 3vw, 32px); padding-block: clamp(40px, 6vw, 70px); }
+  .card { grid-column: span 2; display: grid; gap: 12px; align-content: start; cursor: pointer; transition: opacity 0.4s, transform 0.4s; }
+  .card.big { grid-column: span 3; }
+  .card.dim, .lead.dim { opacity: 0.18; pointer-events: none; transform: scale(0.98); }
+  .lead { transition: opacity 0.4s, transform 0.4s; }
+  .card .tag, .lead .tag { justify-self: start; }
+  @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .card, .card.big { grid-column: span 1; } }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+  .card__img { aspect-ratio: 4 / 3; border-radius: 20px; overflow: hidden; background: var(--soft); }
+  .card.big .card__img { aspect-ratio: 16 / 10; }
+  .card__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease); }
+  .card:hover .card__img img { transform: scale(1.05); }
+  .card h3 { font-size: 1.45rem; line-height: 1.15; color: var(--deep); }
+  .card.big h3 { font-size: clamp(1.7rem, 2.6vw, 2.2rem); }
+  .card p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+  /* Serie Lote 001 */
+  .serie { background: var(--deep); color: #eef1e8; border-radius: 30px; padding: clamp(28px, 5vw, 60px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: clamp(24px, 4vw, 56px); align-items: center; margin-bottom: clamp(40px, 6vw, 70px); }
+  @media (max-width: 860px) { .serie { grid-template-columns: 1fr; } }
+  .serie .kick { font-size: 0.72rem; letter-spacing: 0.34em; text-transform: uppercase; color: var(--lime); }
+  .serie h2 { font-size: clamp(2.4rem, 5vw, 4rem); line-height: 0.95; margin-top: 10px; }
+  .serie h2 .s { color: var(--lime); }
+  .serie p { color: rgb(238 241 232 / 0.75); margin: 12px 0 0; }
+  .serie ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+  .serie li { display: grid; grid-template-columns: 3.5em 1fr auto; gap: 12px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid rgb(255 255 255 / 0.12); cursor: pointer; }
+  .serie li:last-child { border-bottom: 0; }
+  .serie li b { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.6rem; color: var(--lime); }
+  .serie li span { font-size: 1.1rem; }
+  .serie li small { color: rgb(238 241 232 / 0.55); font-size: 0.8rem; }
+  .serie li.done span { text-decoration: line-through; text-decoration-color: var(--lime); text-decoration-thickness: 2px; color: rgb(238 241 232 / 0.6); }
+  .serie li.next span { color: #fff; }
+  .serie li.next small { color: var(--lime); }
+
+  /* Newsletter */
+  .news { border-radius: 30px; background: color-mix(in srgb, var(--a) 12%, #fff); padding: clamp(28px, 5vw, 56px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: center; transition: background 0.7s; margin-bottom: clamp(50px, 7vw, 90px); }
+  @media (max-width: 760px) { .news { grid-template-columns: 1fr; } }
+  .news h2 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.02; color: var(--deep); }
+  .news p { margin: 8px 0 0; color: var(--muted); }
+  .news form { display: flex; gap: 6px; padding: 5px; border-radius: 999px; background: #fff; box-shadow: inset 0 0 0 1px rgb(30 51 34 / 0.18); }
+  .news input { flex: 1; min-width: 0; border: 0; background: none; padding: 12px 16px; font-size: 1rem; }
+  .news input:focus { outline: none; }
+  .news button { border: 0; border-radius: 999px; padding: 12px 20px; background: var(--deep); color: #fff; cursor: pointer; white-space: nowrap; }
+  .done-msg { font-family: var(--serif); font-style: italic; font-size: 1.5rem; color: var(--green); }
+
+  /* ===== Artículo ===== */
+  .progress { position: fixed; z-index: 45; left: 0; right: 0; top: 0; height: 4px; background: transparent; pointer-events: none; }
+  .progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #8fbf55, var(--green)); box-shadow: 0 0 12px rgb(95 143 18 / 0.6); }
+  .art-head { padding-block: clamp(36px, 6vw, 70px) 28px; display: grid; gap: 18px; justify-items: center; text-align: center; }
+  .art-head h1 { font-size: clamp(2.6rem, 7vw, 5.6rem); line-height: 0.98; letter-spacing: -0.02em; color: var(--deep); max-width: 16ch; }
+  .art-head h1 .s { color: var(--green); }
+  .art-head .meta { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; align-items: center; }
+  .art-hero { aspect-ratio: 21 / 9; border-radius: 30px; overflow: hidden; }
+  .art-hero img { width: 100%; height: 100%; object-fit: cover; }
+  @media (max-width: 640px) { .art-hero { aspect-ratio: 4 / 3; } }
+
+  .art { display: grid; grid-template-columns: 220px minmax(0, 680px) 260px; gap: clamp(24px, 4vw, 56px); justify-content: center; padding-block: clamp(40px, 6vw, 70px); }
+  @media (max-width: 1100px) { .art { grid-template-columns: minmax(0, 680px) 260px; } .toc { display: none; } }
+  @media (max-width: 820px) { .art { grid-template-columns: minmax(0, 1fr); } .side { order: 2; } }
+  .toc { position: sticky; top: 70px; align-self: start; font-size: 0.88rem; display: grid; gap: 8px; }
+  .toc b { font-weight: 400; font-size: 0.72rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); }
+  .toc a { color: var(--muted); text-decoration: none; padding-left: 12px; border-left: 2px solid var(--line); transition: color 0.3s, border-color 0.3s; }
+  .toc a.on { color: var(--deep); border-color: var(--green); }
+  .body { min-width: 0; }
+  .body > p { margin: 0 0 1.2em; }
+  .body > p.first::first-letter { float: left; font-family: var(--serif); font-style: italic; font-size: 5.2em; line-height: 0.82; padding: 0.06em 0.12em 0 0; color: var(--green); }
+  .body h2 { font-size: clamp(1.8rem, 3.4vw, 2.4rem); line-height: 1.1; color: var(--deep); margin: 1.8em 0 0.6em; scroll-margin-top: 70px; }
+  .body h2 .s { color: var(--green); }
+  .quote { margin: 1.8em 0; padding: 0; font-family: var(--serif); font-style: italic; font-size: clamp(1.8rem, 3.4vw, 2.5rem); line-height: 1.15; color: var(--deep); position: relative; padding-left: 26px; border-left: 3px solid var(--lime); }
+  .myth { display: grid; gap: 6px; padding: 18px 20px; border-radius: 18px; background: var(--soft); margin: 0 0 14px; }
+  .myth span { font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); }
+  .myth b { font-weight: 300; font-size: 1.25rem; }
+  .myth b .x { color: var(--muted); }
+  .myth em { font-family: var(--serif); font-size: 1.3rem; color: var(--green); }
+
+  .recipe { margin: 2em 0; border-radius: 26px; overflow: hidden; border: 1px solid var(--line); }
+  .recipe__top { --k: #3f8f86; background: color-mix(in srgb, var(--k) 14%, #fff); padding: 22px 24px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .recipe__top h3 { font-size: 1.6rem; color: var(--deep); }
+  .recipe__top .facts { display: flex; gap: 14px; font-size: 0.85rem; color: var(--muted); }
+  .recipe__body { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 24px; padding: 24px; }
+  @media (max-width: 640px) { .recipe__body { grid-template-columns: 1fr; } }
+  .recipe ul, .recipe ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 0.97rem; }
+  .recipe label { display: flex; gap: 10px; align-items: baseline; cursor: pointer; }
+  .recipe input { accent-color: var(--green); }
+  .recipe label:has(input:checked) span { text-decoration: line-through; color: var(--muted); }
+  .recipe ol li { display: grid; grid-template-columns: 1.6em 1fr; gap: 8px; }
+  .recipe ol b { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--green); font-size: 1.3rem; line-height: 1.1; }
+  .recipe h4 { margin: 0 0 10px; font-weight: 400; font-size: 0.75rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); }
+
+  .inline-buy { display: grid; grid-template-columns: 88px 1fr auto; gap: 16px; align-items: center; padding: 14px; border-radius: 20px; background: var(--deep); color: #eef1e8; margin: 2em 0; }
+  .inline-buy img { width: 88px; aspect-ratio: 1; object-fit: cover; border-radius: 14px; }
+  .inline-buy b { display: block; font-weight: 400; font-size: 1.1rem; }
+  .inline-buy small { color: rgb(238 241 232 / 0.7); }
+  .inline-buy button { border: 0; border-radius: 999px; padding: 11px 18px; background: var(--lime); color: var(--deep); cursor: pointer; white-space: nowrap; }
+  @media (max-width: 520px) { .inline-buy { grid-template-columns: 64px 1fr; } .inline-buy img { width: 64px; } .inline-buy button { grid-column: 1 / -1; } }
+
+  .side { position: sticky; top: 70px; align-self: start; display: grid; gap: 14px; }
+  @media (max-width: 820px) { .side { position: static; } }
+  .buycard { border-radius: 24px; overflow: hidden; border: 1px solid var(--line); }
+  .buycard__img { aspect-ratio: 1; background: color-mix(in srgb, #3f8f86 16%, #fff); display: grid; place-items: center; }
+  .buycard__img img { width: 70%; aspect-ratio: 1; object-fit: cover; border-radius: 50%; }
+  .buycard__txt { padding: 16px 18px 18px; display: grid; gap: 8px; }
+  .buycard__txt small { font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); }
+  .buycard__txt b { font-weight: 400; font-size: 1.15rem; }
+  .buycard__txt button { border: 0; border-radius: 999px; padding: 12px; background: var(--deep); color: #fff; cursor: pointer; }
+  .share { display: flex; gap: 8px; flex-wrap: wrap; font-size: 0.85rem; }
+  .share button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 6px 14px; cursor: pointer; color: var(--ink); }
+
+  .related { border-top: 1px solid var(--line); padding-block: clamp(50px, 7vw, 90px); }
+  .related h2 { font-size: clamp(2rem, 4vw, 3rem); color: var(--deep); margin-bottom: 28px; }
+  .related .grid { padding-block: 0; }
+
+  .toast { position: fixed; z-index: 50; left: 50%; bottom: 24px; translate: -50% 10px; opacity: 0; background: var(--deep); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 0.92rem; transition: opacity 0.3s, translate 0.3s; pointer-events: none; max-width: calc(100vw - 32px); text-align: center; }
+  .toast.on { opacity: 1; translate: -50% 0; }
+  footer.end { padding-block: 40px; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--line); text-align: center; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="progress" aria-hidden="true"><i id="bar"></i></div>
+<div class="demo pad"><div class="in">
+  <span>Vista previa del blog</span>
+  <button type="button" data-v="home" aria-pressed="true">Portada del blog</button>
+  <button type="button" data-v="post" aria-pressed="false">Artículo</button>
+</div></div>
+
+<header class="shop pad"><div class="in"><b>MOODMATCHA</b><nav><a href="#">Matcha</a><a href="#">Recetas</a><a href="#" aria-current="page">Diario</a></nav><span>Cesta (0)</span></div></header>
+
+<!-- ======================= PORTADA DEL BLOG ======================= -->
+<div class="view on" id="v-home">
+  <section class="pad"><div class="in mast" id="mast">
+    <span class="kick" id="mast-kick">El blog de Mood Matcha</span>
+    <h1>Diario <span class="s" id="mast-word">mood</span></h1>
+    <p>Recetas para cada momento, trucos para prepararlo sin complicarte y todo lo que pasa mientras creamos el Lote 001.</p>
+  </div></section>
+
+  <div class="pad filters-wrap"><div class="in filters" role="group" aria-label="Filtrar por tema">
+    <button type="button" aria-pressed="true" data-f="todo" data-a="#2f6b2a" data-w="mood">Todo</button>
+    <button type="button" aria-pressed="false" data-f="focus" data-a="#5f8f12" data-w="focus">Focus</button>
+    <button type="button" aria-pressed="false" data-f="calma" data-a="#3f8f86" data-w="calma">Calma</button>
+    <button type="button" aria-pressed="false" data-f="energia" data-a="#b8860b" data-w="energía">Energía</button>
+    <button type="button" aria-pressed="false" data-f="antojo" data-a="#c45577" data-w="antojo">Antojo</button>
+    <button type="button" aria-pressed="false" data-f="lote" data-a="#1e3322" data-w="001">Lote 001</button>
+  </div></div>
+
+  <section class="pad"><div class="in">
+    <article class="lead" data-open data-t="lote">
+      <div class="lead__img"><img src="img/mm-acuarela-molino.jpg" alt=""><span class="lead__num">001</span></div>
+      <div class="lead__txt">
+        <span class="tag" style="--k:#1e3322">Lote 001 · Día 1</span>
+        <h2>Así empieza algo que <span class="x">no existe</span> <span class="s" style="color:var(--green)">todavía</span></h2>
+        <p>Una idea, una lista de tareas y muchas ganas. Te contamos desde el primer día cómo nace Mood Matcha, sin filtros.</p>
+        <span class="meta">4 min de lectura</span>
+        <span class="more">Leer el diario</span>
+      </div>
+    </article>
+
+    <div class="grid" id="grid">
+      <article class="card big" data-open data-t="calma"><div class="card__img"><img src="img/mm-acuarela-latte.jpg" alt=""></div><span class="tag" style="--k:#3f8f86">Calma · Receta</span><h3>Matcha latte de avena: la receta del mood Calma</h3><p>Templado, cremoso y en tres minutos. El que te pide el cuerpo un domingo.</p><span class="meta">3 min</span></article>
+      <article class="card big" data-open data-t="focus"><div class="card__img"><img src="img/mm-ceremonia.jpg" alt=""></div><span class="tag" style="--k:#5f8f12">Focus · Guía</span><h3>Cómo preparar matcha sin chasen (y que salga espuma)</h3><p>Con un espumador, un tarro o una botella. Lo probamos todo.</p><span class="meta">5 min</span></article>
+      <article class="card" data-open data-t="antojo"><div class="card__img"><img src="img/mm-acuarela-bodegon.jpg" alt=""></div><span class="tag" style="--k:#c45577">Antojo · Receta</span><h3>Affogato de matcha en dos minutos</h3><p>Helado de vainilla y matcha recién batido. Fin.</p><span class="meta">2 min</span></article>
+      <article class="card" data-open data-t="energia"><div class="card__img"><img src="img/mm-acuarela-arco.jpg" alt=""></div><span class="tag" style="--k:#b8860b">Energía · Receta</span><h3>Matcha tonic: el que pide el verano</h3><p>Hielo, tónica y matcha por encima. Las capas son la gracia.</p><span class="meta">3 min</span></article>
+      <article class="card" data-open data-t="focus"><div class="card__img"><img src="img/mm-acuarela-polvo.jpg" alt=""></div><span class="tag" style="--k:#5f8f12">Focus · Mitos</span><h3>Cinco cosas que <span class="x on">te han contado</span> del matcha</h3><p>Y lo que de verdad pasa cuando lo preparas bien.</p><span class="meta">6 min</span></article>
+    </div>
+
+    <section class="serie" data-t="lote">
+      <div>
+        <span class="kick">La serie</span>
+        <h2>Diario del <span class="s">Lote 001</span></h2>
+        <p>Cada vez que tachemos algo de nuestra lista, lo contamos aquí. Las catas, las pruebas y también lo que sale mal.</p>
+      </div>
+      <ol>
+        <li class="done" data-open><b>01</b><span>Así empieza todo</span><small>Publicado</small></li>
+        <li class="next"><b>02</b><span>Buscando nuestro matcha</span><small>Próximamente</small></li>
+        <li><b>03</b><span>Darle forma a la lata</span><small>Próximamente</small></li>
+        <li><b>04</b><span>Abrimos las puertas</span><small>Próximamente</small></li>
+      </ol>
+    </section>
+
+    <section class="news">
+      <div><h2>Un mood nuevo <span class="s">cada mes</span></h2><p>Recetas, trucos y cada capítulo del Lote 001 en tu email. Nada más.</p></div>
+      <form data-news><label for="nl" style="position:absolute;left:-9999px">Tu email</label><input id="nl" type="email" placeholder="Tu email" required><button type="submit">Apuntarme</button></form>
+    </section>
+  </div></section>
+</div>
+
+<!-- ======================= ARTÍCULO ======================= -->
+<div class="view" id="v-post">
+  <section class="pad"><div class="in art-head">
+    <span class="tag" style="--k:#3f8f86">Calma · Receta</span>
+    <h1>Matcha latte de avena: <span class="s">la receta del mood Calma</span></h1>
+    <div class="meta"><span>Por el equipo de Mood Matcha</span><span>·</span><span>3 min de lectura</span><span>·</span><span>21 de octubre</span></div>
+  </div></section>
+  <section class="pad"><div class="in art-hero"><img src="img/mm-acuarela-latte.jpg" alt="Matcha latte de avena"></div></section>
+
+  <section class="pad"><div class="in art">
+    <nav class="toc" aria-label="En este artículo">
+      <b>En este artículo</b>
+      <a href="#p1" class="on">Por qué de avena</a>
+      <a href="#p2">La receta</a>
+      <a href="#p3">Tres errores</a>
+      <a href="#p4">Si te gusta, prueba</a>
+    </nav>
+
+    <article class="body" id="body">
+      <p class="first">Hay días que no piden prisa. Piden algo templado entre las manos, una manta y ningún plan. Para esos días existe el mood Calma, y esta es su receta: un latte de matcha con bebida de avena que se hace en tres minutos y sabe a domingo.</p>
+      <h2 id="p1">Por qué <span class="s">de avena</span></h2>
+      <p>La bebida de avena tiene un dulzor suave que encaja muy bien con el punto vegetal del matcha, y hace una espuma cremosa sin necesidad de azúcar. Si prefieres leche de vaca o de almendra, también funciona: la receta es la misma.</p>
+      <blockquote class="quote">El truco no es el matcha. Es no tener prisa mientras lo bates.</blockquote>
+
+      <h2 id="p2">La <span class="s">receta</span></h2>
+      <div class="recipe">
+        <div class="recipe__top"><h3>Latte Calma</h3><div class="facts"><span>3 min</span><span>1 taza</span><span>Templado</span></div></div>
+        <div class="recipe__body">
+          <div><h4>Necesitas</h4><ul>
+            <li><label><input type="checkbox"><span>2 g de matcha (una cucharadita)</span></label></li>
+            <li><label><input type="checkbox"><span>40 ml de agua a 80 °C</span></label></li>
+            <li><label><input type="checkbox"><span>200 ml de bebida de avena</span></label></li>
+            <li><label><input type="checkbox"><span>Un toque de miel, si te gusta</span></label></li>
+          </ul></div>
+          <div><h4>Paso a paso</h4><ol>
+            <li><b>1</b><span>Tamiza el matcha en el cuenco para que no queden grumos.</span></li>
+            <li><b>2</b><span>Añade el agua y bate en zigzag hasta que haga espuma.</span></li>
+            <li><b>3</b><span>Calienta la avena sin que hierva y espúmala.</span></li>
+            <li><b>4</b><span>Vierte la avena en la taza y el matcha por encima, despacio.</span></li>
+          </ol></div>
+        </div>
+      </div>
+
+      <div class="inline-buy"><img src="img/mm-acuarela-polvo.jpg" alt=""><div><b>Mood Matcha · Lote 001</b><small>Una lata para todos tus moods</small></div><button type="button" data-add>Añadir a la cesta</button></div>
+
+      <h2 id="p3">Tres errores <span class="s">que lo estropean</span></h2>
+      <div class="myth"><span>Error 1</span><b><span class="x on">Usar agua hirviendo</span></b><em>A 80 °C sale suave; hirviendo amarga.</em></div>
+      <div class="myth"><span>Error 2</span><b><span class="x on">Echar el matcha sin tamizar</span></b><em>Tamizado, se disuelve sin grumos.</em></div>
+      <div class="myth"><span>Error 3</span><b><span class="x on">Batir en círculos</span></b><em>En zigzag, la espuma sale más fina.</em></div>
+
+      <h2 id="p4">Si te gusta, <span class="s">prueba</span></h2>
+      <p>Si el latte de Calma se te queda corto, prueba el de Antojo: el mismo matcha sobre una bola de helado de vainilla. O, si es verano, el de Energía con hielo y tónica.</p>
+    </article>
+
+    <aside class="side">
+      <div class="buycard">
+        <div class="buycard__img"><img src="img/mm-acuarela-polvo.jpg" alt=""></div>
+        <div class="buycard__txt"><small>Prepáralo con</small><b>Mood Matcha · Lote 001</b><span class="meta">Una lata para todos tus moods</span><button type="button" data-add>Añadir a la cesta</button></div>
+      </div>
+      <div class="share"><button type="button">Copiar enlace</button><button type="button">WhatsApp</button><button type="button">Pinterest</button></div>
+    </aside>
+  </div></section>
+
+  <section class="pad"><div class="in related">
+    <h2>Sigue <span class="s">leyendo</span></h2>
+    <div class="grid">
+      <article class="card" data-open><div class="card__img"><img src="img/mm-acuarela-bodegon.jpg" alt=""></div><span class="tag" style="--k:#c45577">Antojo · Receta</span><h3>Affogato de matcha en dos minutos</h3><span class="meta">2 min</span></article>
+      <article class="card" data-open><div class="card__img"><img src="img/mm-ceremonia.jpg" alt=""></div><span class="tag" style="--k:#5f8f12">Focus · Guía</span><h3>Cómo preparar matcha sin chasen</h3><span class="meta">5 min</span></article>
+      <article class="card" data-open><div class="card__img"><img src="img/mm-acuarela-molino.jpg" alt=""></div><span class="tag" style="--k:#1e3322">Lote 001 · Día 1</span><h3>Así empieza algo que no existe todavía</h3><span class="meta">4 min</span></article>
+    </div>
+  </div></section>
+</div>
+
+<footer class="end pad">Pie de la tienda</footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const views = { home: document.getElementById('v-home'), post: document.getElementById('v-post') };
+  const show = (k) => {
+    Object.entries(views).forEach(([n, v]) => v.classList.toggle('on', n === k));
+    document.querySelectorAll('.demo button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === k)));
+    scrollTo({ top: 0 }); onScroll();
+  };
+  document.querySelectorAll('.demo button').forEach((b) => b.addEventListener('click', () => show(b.dataset.v)));
+  document.querySelectorAll('[data-open]').forEach((c) => c.addEventListener('click', () => show('post')));
+
+  // Filtros por mood: tiñen la portada y apagan lo que no toca
+  const word = document.getElementById('mast-word');
+  document.querySelectorAll('.filters button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.filters button').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+    root.style.setProperty('--a', b.dataset.a); word.textContent = b.dataset.w;
+    const f = b.dataset.f;
+    document.querySelectorAll('#grid .card, .lead').forEach((c) => c.classList.toggle('dim', f !== 'todo' && c.dataset.t !== f));
+  }));
+
+  // La raya del destacado se dibuja al cargar
+  requestAnimationFrame(() => document.querySelector('.lead').classList.add('on'));
+
+  // Barra de lectura que se llena de matcha y sumario que sigue la lectura
+  const bar = document.getElementById('bar'), body = document.getElementById('body');
+  const links = [...document.querySelectorAll('.toc a')];
+  function onScroll() {
+    if (!views.post.classList.contains('on')) { bar.style.width = '0'; return; }
+    const r = body.getBoundingClientRect(); const p = Math.min(1, Math.max(0, (innerHeight * 0.3 - r.top) / (r.height - innerHeight * 0.5)));
+    bar.style.width = (p * 100) + '%';
+    let cur = links[0];
+    links.forEach((a) => { const t = document.querySelector(a.getAttribute('href')); if (t && t.getBoundingClientRect().top < innerHeight * 0.35) cur = a; });
+    links.forEach((a) => a.classList.toggle('on', a === cur));
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+
+  // Newsletter y cesta de muestra
+  document.querySelectorAll('[data-news]').forEach((f) => f.addEventListener('submit', (e) => { e.preventDefault(); f.outerHTML = '<span class="done-msg">¡Dentro! Nos vemos en tu email.</span>'; }));
+  const toast = document.getElementById('toast'); let t;
+  const say = (m) => { toast.textContent = m; toast.classList.add('on'); clearTimeout(t); t = setTimeout(() => toast.classList.remove('on'), 2000); };
+  document.querySelectorAll('[data-add]').forEach((b) => b.addEventListener('click', () => say('Añadido a la cesta.')));
+  document.querySelectorAll('.share button').forEach((b) => b.addEventListener('click', () => say(b.textContent === 'Copiar enlace' ? 'Enlace copiado.' : 'Abriendo ' + b.textContent + '…')));
+})();
+</script>
