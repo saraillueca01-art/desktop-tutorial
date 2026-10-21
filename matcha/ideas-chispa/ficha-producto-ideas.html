@@ -1,0 +1,373 @@
+<title>Ficha de producto Mood Matcha</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  /* Ficha de producto para vender una sola lata. Columna de fotos a la izquierda y compra fija a la derecha; debajo, todo lo que resuelve dudas. Las notas verdes con borde punteado explican cada idea y se pueden ocultar */
+  :root {
+    --bg: #ffffff; --ink: #1b2a1f; --muted: #66716a; --line: #e4e9df; --soft: #f3f6ef; --deep: #1e3322; --green: #2f6b2a; --lime: #c9dc5c;
+    --sans: 'Jost', 'Futura', 'Century Gothic', system-ui, sans-serif;
+    --serif: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+    --ease: cubic-bezier(.2,.8,.2,1);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 300 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+  .pad { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .in { max-width: 1240px; margin: 0 auto; }
+  button, input { font: inherit; }
+  :focus-visible { outline: 1.5px solid var(--deep); outline-offset: 3px; }
+  h1, h2, h3 { font-weight: 300; margin: 0; text-wrap: balance; }
+  em.s { font-family: var(--serif); font-style: italic; font-weight: 400; }
+  .eyebrow { margin: 0; font-size: 0.72rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--green); }
+
+  /* Notas de idea */
+  .note { display: block; margin: 8px 0 0; padding: 7px 12px; border: 1.5px dashed #7fb36a; border-radius: 10px; background: #f4faef; color: #2c5a22; font-size: 0.82rem; line-height: 1.4; }
+  .note b { font-weight: 500; }
+  body.hide-notes .note { display: none; }
+  .bar-notes { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: var(--deep); color: #eef1e8; font-size: 0.85rem; }
+  .bar-notes .in { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding-block: 8px; flex-wrap: wrap; }
+  .bar-notes button { border: 1px solid rgb(255 255 255 / 0.5); background: none; color: #fff; border-radius: 999px; padding: 4px 14px; cursor: pointer; font-size: 0.82rem; }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 31; background: var(--deep); }
+
+  /* Cabecera de la tienda (simulada) */
+  .shop { display: flex; justify-content: space-between; align-items: center; padding-block: 16px; border-bottom: 1px solid var(--line); }
+  .shop .logo { letter-spacing: 0.12em; color: var(--deep); font-weight: 400; }
+  .shop span { font-size: 0.88rem; color: var(--muted); }
+  .crumbs { font-size: 0.8rem; color: var(--muted); padding-block: 14px 0; }
+
+  /* Bloque principal */
+  .main { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); padding-block: 18px 60px; align-items: start; }
+  @media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+  .gal { display: grid; gap: 10px; min-width: 0; }
+  .gal__main { position: relative; aspect-ratio: 1; border-radius: 22px; overflow: hidden; background: var(--soft); }
+  .gal__main img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.4s; }
+  .gal__badge { position: absolute; left: 14px; top: 14px; background: #fff; color: var(--deep); border-radius: 999px; padding: 5px 12px; font-size: 0.8rem; }
+  .gal__thumbs { display: flex; gap: 8px; overflow-x: auto; }
+  .gal__thumbs button { flex: none; width: 76px; aspect-ratio: 1; border: 0; padding: 0; border-radius: 12px; overflow: hidden; cursor: pointer; opacity: 0.55; outline: 1.5px solid transparent; outline-offset: 2px; transition: opacity 0.3s; background: var(--soft); }
+  .gal__thumbs button[aria-current="true"] { opacity: 1; outline-color: var(--deep); }
+  .gal__thumbs img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gal__thumbs .vid { display: grid; place-items: center; font-size: 0.72rem; color: var(--deep); }
+
+  .buy { position: sticky; top: 56px; display: grid; gap: 16px; min-width: 0; }
+  @media (max-width: 900px) { .buy { position: static; } }
+  .stars { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: var(--muted); }
+  .stars i { font-style: normal; color: #c49a1a; letter-spacing: 2px; }
+  .buy h1 { font-size: clamp(2.2rem, 4.4vw, 3.4rem); line-height: 1.02; }
+  .tagline { margin: 0; font-size: 1.08rem; color: var(--muted); }
+  .facts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .facts span { font-size: 0.82rem; padding: 4px 12px; border-radius: 999px; background: var(--soft); }
+
+  .label { font-size: 0.85rem; color: var(--ink); font-weight: 400; display: flex; justify-content: space-between; }
+  .label small { color: var(--muted); font-weight: 300; }
+  .moods { display: flex; flex-wrap: wrap; gap: 6px; }
+  .moods button { border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 999px; padding: 7px 14px; cursor: pointer; font-size: 0.9rem; transition: background 0.3s, border-color 0.3s; }
+  .moods button[aria-pressed="true"] { background: var(--deep); border-color: var(--deep); color: #fff; }
+  .moodtip { margin: 0; font-size: 0.9rem; color: var(--muted); min-height: 1.6em; }
+
+  .packs { display: grid; gap: 8px; }
+  .pack { position: relative; display: grid; grid-template-columns: auto 1fr auto; gap: 2px 12px; align-items: center; padding: 14px 16px; border-radius: 16px; border: 1px solid var(--line); cursor: pointer; transition: border-color 0.3s, background 0.3s; }
+  .pack input { accent-color: var(--deep); width: 18px; height: 18px; margin: 0; grid-row: span 2; }
+  .pack b { font-weight: 400; }
+  .pack .pr { text-align: end; font-weight: 400; }
+  .pack .pr s { color: var(--muted); font-weight: 300; font-size: 0.85rem; margin-left: 6px; }
+  .pack small { color: var(--muted); font-size: 0.82rem; }
+  .pack .save { text-align: end; color: var(--green); font-size: 0.82rem; }
+  .pack:has(input:checked) { border-color: var(--deep); background: var(--soft); }
+  .pack .tag { position: absolute; right: 14px; top: -10px; background: var(--deep); color: #fff; font-size: 0.72rem; padding: 2px 10px; border-radius: 999px; }
+
+  .plan { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .plan label { display: grid; gap: 2px; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); cursor: pointer; font-size: 0.9rem; }
+  .plan label:has(input:checked) { border-color: var(--deep); background: var(--soft); }
+  .plan input { position: absolute; opacity: 0; pointer-events: none; }
+  .plan b { font-weight: 400; }
+  .plan small { color: var(--muted); font-size: 0.8rem; }
+  .plan .off { color: var(--green); }
+
+  .cta { display: grid; gap: 8px; }
+  .add { border: 0; border-radius: 999px; padding: 16px 22px; background: var(--deep); color: #fff; cursor: pointer; font-size: 1.02rem; display: flex; justify-content: center; gap: 12px; transition: transform 0.3s; }
+  .add:hover { transform: translateY(-1px); }
+  .add span + span { opacity: 0.85; border-left: 1px solid rgb(255 255 255 / 0.3); padding-left: 12px; }
+  .express { border: 0; border-radius: 999px; padding: 13px; background: #5a31f4; color: #fff; font-weight: 500; cursor: pointer; font-size: 0.95rem; }
+  .ship { margin: 0; font-size: 0.9rem; color: var(--ink); }
+  .ship b { font-weight: 400; color: var(--green); }
+  .free { display: grid; gap: 6px; font-size: 0.85rem; color: var(--muted); }
+  .free i { display: block; height: 4px; border-radius: 4px; background: var(--line); overflow: hidden; }
+  .free i span { display: block; height: 100%; background: var(--green); transition: width 0.6s var(--ease); }
+  .trust { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0; padding: 0; list-style: none; font-size: 0.8rem; color: var(--muted); text-align: center; }
+  .trust li { padding: 10px 6px; border-radius: 12px; background: var(--soft); }
+  .trust b { display: block; font-weight: 400; color: var(--ink); font-size: 0.86rem; }
+  .pays { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pays span { font-size: 0.72rem; border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; color: var(--muted); }
+
+  details.acc { border-top: 1px solid var(--line); }
+  details.acc:last-of-type { border-bottom: 1px solid var(--line); }
+  details.acc summary { list-style: none; cursor: pointer; padding: 14px 0; display: flex; justify-content: space-between; font-weight: 400; }
+  details.acc summary::-webkit-details-marker { display: none; }
+  details.acc summary::after { content: "+"; font-weight: 300; font-size: 1.2rem; line-height: 1; }
+  details.acc[open] summary::after { content: "–"; }
+  details.acc p { margin: 0 0 14px; color: var(--muted); font-size: 0.95rem; }
+
+  /* Secciones de abajo */
+  .sec { padding-block: clamp(56px, 8vw, 100px); border-top: 1px solid var(--line); }
+  .sec h2 { font-size: clamp(2rem, 4.4vw, 3.2rem); line-height: 1.05; color: var(--deep); }
+  .head { display: grid; gap: 10px; margin-bottom: clamp(26px, 4vw, 44px); max-width: 60ch; }
+  .head p { margin: 0; color: var(--muted); }
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
+  .step { border-radius: 20px; background: var(--soft); padding: 22px; display: grid; gap: 6px; }
+  .step b { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 2.2rem; line-height: 1; color: var(--green); }
+  .step h3 { font-size: 1.25rem; font-weight: 400; }
+  .step p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+  .vs { width: 100%; border-collapse: collapse; font-size: 0.98rem; }
+  .vs-wrap { overflow-x: auto; border-radius: 18px; border: 1px solid var(--line); }
+  .vs th, .vs td { padding: 14px 16px; text-align: start; border-bottom: 1px solid var(--line); }
+  .vs tr:last-child td { border-bottom: 0; }
+  .vs th { font-weight: 400; background: var(--soft); }
+  .vs td:nth-child(2) { color: var(--deep); font-weight: 400; background: #f8fbf4; }
+  .vs td:nth-child(3) { color: var(--muted); }
+
+  .moodgrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 860px) { .moodgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .mc { --k: #5f8f12; border-radius: 20px; padding: 22px 18px; background: color-mix(in srgb, var(--k) 14%, #fff); display: grid; gap: 6px; align-content: start; }
+  .mc em { font-family: var(--serif); font-style: italic; font-size: 1.9rem; line-height: 1; color: var(--k); }
+  .mc b { font-weight: 400; }
+  .mc p { margin: 0; font-size: 0.9rem; color: var(--muted); }
+
+  .kit { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: center; }
+  @media (max-width: 760px) { .kit { grid-template-columns: 1fr; } }
+  .kit__img { aspect-ratio: 4/3; border-radius: 22px; overflow: hidden; background: var(--soft); }
+  .kit__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .kit ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+  .kit li { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .kit .total { display: flex; align-items: baseline; gap: 10px; margin-top: 10px; font-size: 1.3rem; }
+  .kit .total s { color: var(--muted); font-size: 1rem; }
+  .kit button { margin-top: 14px; border: 1px solid var(--deep); background: none; color: var(--deep); border-radius: 999px; padding: 12px 24px; cursor: pointer; }
+
+  .revs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 860px) { .revs { grid-template-columns: 1fr; } }
+  .rev { border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: grid; gap: 8px; }
+  .rev i { font-style: normal; color: #c49a1a; letter-spacing: 2px; }
+  .rev p { margin: 0; }
+  .rev small { color: var(--muted); }
+  .ex { display: inline-block; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: #9a6a00; background: #fff5d6; border-radius: 6px; padding: 2px 8px; }
+
+  .faq { max-width: 820px; }
+
+  /* Barra fija */
+  .sticky { position: fixed; z-index: 25; left: 0; right: 0; bottom: 0; padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); background: rgb(255 255 255 / 0.95); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 -1px 0 var(--line); transform: translateY(110%); transition: transform 0.5s var(--ease); }
+  .sticky.on { transform: none; }
+  .sticky .in { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .sticky span { font-size: 0.92rem; }
+  .sticky span small { color: var(--muted); display: block; font-size: 0.78rem; }
+  .sticky button { border: 0; border-radius: 999px; padding: 12px 22px; background: var(--deep); color: #fff; cursor: pointer; white-space: nowrap; }
+
+  .toast { position: fixed; z-index: 40; left: 50%; bottom: 90px; translate: -50% 10px; opacity: 0; background: var(--deep); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 0.92rem; transition: opacity 0.3s, translate 0.3s; pointer-events: none; max-width: calc(100vw - 32px); text-align: center; }
+  .toast.on { opacity: 1; translate: -50% 0; }
+  footer.end { padding-block: 40px 120px; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--line); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="bar-notes pad"><div class="in"><span>Vista previa de la ficha de producto. Las notas con borde punteado explican cada idea.</span><button type="button" id="toggle-notes">Ocultar notas</button></div></div>
+
+<header class="shop pad"><div class="in" style="display:flex;justify-content:space-between;width:100%"><span class="logo">MOODMATCHA</span><span>Cesta (0)</span></div></header>
+
+<main>
+  <div class="pad"><div class="in crumbs">Inicio / Matcha</div></div>
+
+  <section class="pad"><div class="in main">
+    <div class="gal">
+      <div class="gal__main"><img id="gal-img" src="img/mm-ceremonia.jpg" alt="Preparando matcha con el chasen"><span class="gal__badge">Lote 001</span></div>
+      <div class="gal__thumbs" role="group" aria-label="Fotos del producto">
+        <button type="button" aria-current="true" data-src="img/mm-ceremonia.jpg"><img src="img/mm-ceremonia.jpg" alt="Ritual"></button>
+        <button type="button" aria-current="false" data-src="img/mm-acuarela-latte.jpg"><img src="img/mm-acuarela-latte.jpg" alt="Latte"></button>
+        <button type="button" aria-current="false" data-src="img/mm-acuarela-polvo.jpg"><img src="img/mm-acuarela-polvo.jpg" alt="Polvo de matcha"></button>
+        <button type="button" aria-current="false" data-src="img/mm-acuarela-arco.jpg"><img src="img/mm-acuarela-arco.jpg" alt="Momento"></button>
+        <button type="button" aria-current="false" class="vid" data-src="img/mm-ceremonia.jpg">▶ Vídeo</button>
+      </div>
+      <span class="note"><b>Galería que vende:</b> 1) la lata, 2) el polvo de cerca para ver el color, 3) un latte, 4) una mano con el chasen, 5) un vídeo corto de 10 s preparándolo. Lo que mejor convierte es ver el producto en uso. Ahora son imágenes de muestra.</span>
+    </div>
+
+    <div class="buy">
+      <div class="stars"><i aria-hidden="true">★★★★★</i><span>4,9 · 128 reseñas</span><span class="ex">Ejemplo</span></div>
+      <h1>Matcha <em class="s">para cada mood</em></h1>
+      <p class="tagline">Una lata, cuatro momentos del día. Solo, en latte, con hielo o en un postre.</p>
+      <div class="facts"><span>30 g</span><span>≈ 15 tazas</span><span>Origen: por definir</span><span>Cosecha: por definir</span></div>
+      <span class="note"><b>Datos en pastillas:</b> como Ippodo y Jade Leaf, lo esencial se ve de un vistazo. Rellénalo cuando tengáis el matcha elegido; no pongas nada que no esté comprobado.</span>
+
+      <div>
+        <div class="label">¿Para qué mood lo quieres? <small>Te damos la receta</small></div>
+        <div class="moods" role="group" aria-label="Elige tu mood" id="moods">
+          <button type="button" aria-pressed="true" data-t="Focus: solo con agua, 2 g a 80 °C. Claro y directo.">Focus</button>
+          <button type="button" aria-pressed="false" data-t="Calma: latte templado con bebida de avena.">Calma</button>
+          <button type="button" aria-pressed="false" data-t="Energía: con hielo y tónica, el matcha por encima.">Energía</button>
+          <button type="button" aria-pressed="false" data-t="Antojo: affogato con una bola de helado de vainilla.">Antojo</button>
+        </div>
+        <p class="moodtip" id="moodtip" aria-live="polite">Focus: solo con agua, 2 g a 80 °C. Claro y directo.</p>
+        <span class="note"><b>Lo que nadie tiene:</b> elegir tu mood no cambia el producto, pero te da su receta y se guarda en el pedido. Así luego le mandas emails con recetas de su mood.</span>
+      </div>
+
+      <div>
+        <div class="label">Elige tu pack <small id="percup">2,00 € por taza</small></div>
+        <div class="packs" id="packs">
+          <label class="pack"><input type="radio" name="pack" value="1" data-total="2995" data-full="2995"><b>1 lata</b><span class="pr">29,95 €</span><small>15 tazas</small><span class="save"></span></label>
+          <label class="pack"><span class="tag">El más elegido</span><input type="radio" name="pack" value="2" data-total="5391" data-full="5990" checked><b>2 latas</b><span class="pr">53,91 €<s>59,90 €</s></span><small>30 tazas · envío gratis</small><span class="save">Ahorras 5,99 €</span></label>
+          <label class="pack"><input type="radio" name="pack" value="3" data-total="7637" data-full="8985"><b>3 latas</b><span class="pr">76,37 €<s>89,85 €</s></span><small>45 tazas · envío gratis</small><span class="save">Ahorras 13,48 €</span></label>
+        </div>
+        <span class="note"><b>Precio por taza:</b> «2,00 € por taza» hace que el precio se compare con un café de cafetería, no con otro paquete de té. Lo usan casi todas las marcas.</span>
+      </div>
+
+      <div>
+        <div class="label">¿Cada cuánto?</div>
+        <div class="plan" id="plan">
+          <label><input type="radio" name="plan" value="0" checked><b>Compra única</b><small>Sin compromiso</small></label>
+          <label><input type="radio" name="plan" value="10"><b>Suscripción <span class="off">−10 %</span></b><small>Cada mes · cancela cuando quieras</small></label>
+        </div>
+        <span class="note"><b>Suscripción:</b> el matcha se acaba y se repite. Grind y Jade Leaf la ofrecen. Se activa con la app gratuita Shopify Subscriptions. Es la forma más fácil de tener ventas cada mes.</span>
+      </div>
+
+      <div class="cta">
+        <button type="button" class="add" id="add"><span>Lo quiero</span><span id="addprice">53,91 €</span></button>
+        <button type="button" class="express">Comprar con Shop Pay</button>
+        <p class="ship" id="ship">Pide antes de las 14:00 y sale <b>hoy</b>. Llega entre el <b>jueves y el viernes</b>.</p>
+        <div class="free"><span id="freetxt">Tu envío es gratis</span><i><span id="freebar" style="width:100%"></span></i></div>
+      </div>
+      <ul class="trust">
+        <li><b>Envío 24–72 h</b>Gratis desde 35 €</li>
+        <li><b>Pago seguro</b>Tarjeta, Bizum, PayPal</li>
+        <li><b>14 días</b>para devolverlo</li>
+      </ul>
+      <div class="pays"><span>Visa</span><span>Mastercard</span><span>Bizum</span><span>PayPal</span><span>Apple Pay</span></div>
+      <span class="note"><b>Quitar dudas junto al botón:</b> fecha de llegada, envío gratis y devolución. Es lo que más frena una primera compra.</span>
+
+      <div>
+        <details class="acc" open><summary>Qué hay en la lata</summary><p>30 g de matcha en polvo. Origen, cultivar y cosecha: lo completamos cuando tengamos el matcha elegido.</p></details>
+        <details class="acc"><summary>Cómo conservarlo</summary><p>Bien cerrado, lejos de la luz y del calor. Una vez abierto, en la nevera, y mejor tomarlo en uno o dos meses.</p></details>
+        <details class="acc"><summary>Envíos y devoluciones</summary><p>Envío en 24–72 h a toda la península. Gratis a partir de 35 €. Tienes 14 días para devolverlo.</p></details>
+      </div>
+      <span class="note"><b>Cambiar los textos de Shopify:</b> la plantilla trae «Made with care», «Great value», «Details» y «Shipping & Returns» en inglés. Fuera.</span>
+    </div>
+  </div></section>
+
+  <section class="sec pad"><div class="in">
+    <div class="head"><p class="eyebrow">Un minuto</p><h2>Cómo se <em class="s">prepara</em></h2><p>No necesitas nada raro. Con un espumador de leche también sale.</p></div>
+    <div class="steps">
+      <div class="step"><b>1</b><h3>Tamiza 2 g</h3><p>Una cucharadita en el cuenco, sin grumos.</p></div>
+      <div class="step"><b>2</b><h3>70 ml a 80 °C</h3><p>Agua caliente, nunca hirviendo.</p></div>
+      <div class="step"><b>3</b><h3>Bate en zigzag</h3><p>Quince segundos, hasta que haga espuma.</p></div>
+    </div>
+    <span class="note"><b>Para quien nunca lo ha probado:</b> Jade Leaf abre con «¿Nuevo en el matcha? Empieza aquí». Tres pasos cortos le quitan el miedo a quien no sabe prepararlo.</span>
+  </div></section>
+
+  <section class="sec pad"><div class="in">
+    <div class="head"><p class="eyebrow">¿Por qué matcha?</p><h2>Matcha frente <em class="s">al café</em></h2></div>
+    <div class="vs-wrap"><table class="vs">
+      <tr><th></th><th>Matcha</th><th>Café</th></tr>
+      <tr><td>Cafeína por taza</td><td>Algo menos</td><td>Más</td></tr>
+      <tr><td>Cómo se nota</td><td>Más suave y sostenida</td><td>De golpe</td></tr>
+      <tr><td>Formas de tomarlo</td><td>Solo, latte, con hielo, en postres</td><td>Solo o con leche</td></tr>
+      <tr><td>Precio por taza</td><td>≈ 2,00 €</td><td>2–3 € en cafetería</td></tr>
+    </table></div>
+    <span class="note"><b>Comparativa:</b> casi todas las marcas la ponen porque su cliente viene del café. Cuidado con prometer efectos sobre la salud: en la UE hay que poder demostrarlos. Aquí solo hay comparaciones generales.</span>
+  </div></section>
+
+  <section class="sec pad"><div class="in">
+    <div class="head"><p class="eyebrow">Una lata, cuatro moods</p><h2>Tu receta según <em class="s">cómo te sientes</em></h2></div>
+    <div class="moodgrid">
+      <div class="mc" style="--k:#5f8f12"><em>Focus</em><b>Solo con agua</b><p>2 g y 70 ml a 80 °C.</p></div>
+      <div class="mc" style="--k:#3f8f86"><em>Calma</em><b>Latte de avena</b><p>Templado, con 200 ml de bebida de avena.</p></div>
+      <div class="mc" style="--k:#b8860b"><em>Energía</em><b>Con hielo y tónica</b><p>El matcha batido en frío por encima.</p></div>
+      <div class="mc" style="--k:#c45577"><em>Antojo</em><b>Affogato</b><p>Sobre una bola de helado de vainilla.</p></div>
+    </div>
+    <span class="note"><b>Tu diferencia:</b> los demás venden «matcha ceremonial»; vosotros vendéis un matcha para cada momento. Esta sección lo cuenta y se conecta con el juego de la portada.</span>
+  </div></section>
+
+  <section class="sec pad"><div class="in kit">
+    <div class="kit__img"><img src="img/mm-acuarela-polvo.jpg" alt="Kit para preparar matcha"></div>
+    <div>
+      <p class="eyebrow">Completa tu ritual</p>
+      <h2 style="font-size:clamp(1.9rem,4vw,2.8rem);line-height:1.05;color:var(--deep)">El kit de <em class="s">inicio</em></h2>
+      <ul><li><span>Lata de matcha</span><span>29,95 €</span></li><li><span>Chasen de bambú</span><span>—</span></li><li><span>Cuenco</span><span>—</span></li></ul>
+      <div class="total">Precio del kit <s>—</s></div>
+      <button type="button">Añadir el kit</button>
+      <span class="note"><b>Solo si vendéis accesorios:</b> Grind y Jade Leaf venden «sets de inicio». Sube el ticket medio y es un regalo perfecto. Si no, se quita la sección.</span>
+    </div>
+  </div></section>
+
+  <section class="sec pad"><div class="in">
+    <div class="head"><p class="eyebrow">Opiniones</p><h2>Lo que dicen <em class="s">quienes lo toman</em></h2></div>
+    <div class="revs">
+      <div class="rev"><i aria-hidden="true">★★★★★</i><p>«Me lo tomo en latte cada mañana y he dejado el café de media mañana.»</p><small>Marta · Valencia</small><span class="ex">Ejemplo</span></div>
+      <div class="rev"><i aria-hidden="true">★★★★★</i><p>«El color es precioso y no amarga nada.»</p><small>Javi · Madrid</small><span class="ex">Ejemplo</span></div>
+      <div class="rev"><i aria-hidden="true">★★★★★</i><p>«El de Antojo con helado es un vicio.»</p><small>Lucía · Alicante</small><span class="ex">Ejemplo</span></div>
+    </div>
+    <span class="note"><b>Reseñas reales:</b> con la app gratuita Judge.me, que pide la opinión por email unos días después de la compra. Al principio no saldrán estrellas; nunca te inventes reseñas, es ilegal.</span>
+  </div></section>
+
+  <section class="sec pad"><div class="in faq">
+    <div class="head"><p class="eyebrow">Dudas</p><h2>Preguntas <em class="s">frecuentes</em></h2></div>
+    <details class="acc"><summary>¿Cuántas tazas salen de una lata?</summary><p>Unas 15, con 2 g por taza.</p></details>
+    <details class="acc"><summary>¿Necesito un chasen?</summary><p>Es lo ideal, pero un espumador de leche eléctrico también funciona.</p></details>
+    <details class="acc"><summary>¿Tiene cafeína?</summary><p>Sí, algo menos que un café, y se nota de forma más suave.</p></details>
+    <details class="acc"><summary>¿Puedo cancelar la suscripción?</summary><p>Sí, cuando quieras, desde tu cuenta y sin permanencia.</p></details>
+    <span class="note"><b>FAQ al final:</b> responde las objeciones que quedan. Ya la tenéis como sección; aquí va la misma.</span>
+  </div></section>
+</main>
+
+<footer class="end pad"><div class="in">Pie de la tienda · Fuera: «Shop the full collection», que trae la plantilla y no tiene sentido con un solo producto.</div></footer>
+
+<div class="sticky pad" id="sticky"><div class="in"><span>Matcha · <b id="st-pack">2 latas</b><small id="st-price">53,91 €</small></span><button type="button" id="st-add">Lo quiero</button></div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+  const eur = (c) => (c / 100).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+  document.getElementById('toggle-notes').addEventListener('click', (e) => {
+    const h = document.body.classList.toggle('hide-notes');
+    e.target.textContent = h ? 'Mostrar notas' : 'Ocultar notas';
+  });
+
+  // Galería
+  const img = document.getElementById('gal-img');
+  document.querySelectorAll('.gal__thumbs button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.gal__thumbs button').forEach((o) => o.setAttribute('aria-current', String(o === b)));
+    img.style.opacity = 0; setTimeout(() => { img.src = b.dataset.src; img.style.opacity = 1; }, 200);
+  }));
+
+  // Mood
+  const tip = document.getElementById('moodtip');
+  document.querySelectorAll('#moods button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('#moods button').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+    tip.textContent = b.dataset.t;
+  }));
+
+  // Precio
+  const update = () => {
+    const p = document.querySelector('#packs input:checked'); const off = Number(document.querySelector('#plan input:checked').value);
+    const n = Number(p.value); const total = Math.round(Number(p.dataset.total) * (100 - off) / 100);
+    document.getElementById('addprice').textContent = eur(total);
+    document.getElementById('st-price').textContent = eur(total) + (off ? ' al mes' : '');
+    document.getElementById('st-pack').textContent = n + (n === 1 ? ' lata' : ' latas');
+    document.getElementById('percup').textContent = eur(Math.round(total / (n * 15))) + ' por taza';
+    const left = 3500 - total; const bar = document.getElementById('freebar');
+    bar.style.width = Math.min(100, (total / 3500) * 100) + '%';
+    document.getElementById('freetxt').textContent = left > 0 ? `Te faltan ${eur(left)} para el envío gratis` : 'Tu envío es gratis';
+  };
+  document.querySelectorAll('#packs input, #plan input').forEach((i) => i.addEventListener('change', update));
+  update();
+
+  // Envío: fecha estimada
+  const d = new Date(); const add = (k) => { const x = new Date(d); let c = 0; while (c < k) { x.setDate(x.getDate() + 1); if (x.getDay() % 6) c++; } return x; };
+  const fmt = (x) => x.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric' });
+  const before = d.getHours() < 14 && d.getDay() % 6;
+  document.getElementById('ship').innerHTML = `Pide ${before ? 'antes de las 14:00' : 'ahora'} y sale <b>${before ? 'hoy' : 'el próximo día laborable'}</b>. Llega entre el <b>${fmt(add(1 + (before ? 0 : 1)))}</b> y el <b>${fmt(add(3 + (before ? 0 : 1)))}</b>.`;
+
+  // Barra fija y aviso
+  const addBtn = document.getElementById('add'), sticky = document.getElementById('sticky');
+  new IntersectionObserver(([e]) => sticky.classList.toggle('on', !e.isIntersecting && e.boundingClientRect.top < 0)).observe(addBtn);
+  const toast = document.getElementById('toast'); let t;
+  const added = () => { toast.textContent = 'Buena elección. Tu yo de mañana te lo agradece.'; toast.classList.add('on'); clearTimeout(t); t = setTimeout(() => toast.classList.remove('on'), 2400); };
+  addBtn.addEventListener('click', added); document.getElementById('st-add').addEventListener('click', added);
+})();
+</script>
