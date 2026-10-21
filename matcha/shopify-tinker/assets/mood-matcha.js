@@ -495,7 +495,7 @@ function forms(root) {
     const updPacks = () => {
       if (!packBox) return;
       const unit = unitCents(), goal = parseInt(packBox.dataset.goal || '0', 10);
-      let chosen = 0;
+      let chosen = 0, chosenN = 0;
       packBox.querySelectorAll('input[type="radio"]').forEach((r) => {
         const n = parseInt(r.dataset.n, 10), pct = parseInt(r.dataset.pct, 10) || 0;
         const full = unit * n, total = Math.floor((full * (100 - pct)) / 100);
@@ -504,8 +504,11 @@ function forms(root) {
         set('[data-mm-pack-total]', total); set('[data-mm-pack-full]', full);
         set('[data-mm-pack-unit]', Math.floor(total / n)); set('[data-mm-pack-save]', full - total);
         card.querySelector('[data-mm-pack-free]')?.toggleAttribute('hidden', !goal || total < goal);
-        if (r.checked) chosen = total;
+        if (r.checked) { chosen = total; chosenN = n; }
       });
+      // En la barra fija se dice siempre cuántas latas son, para que el precio no se lea como el de una sola
+      const qtyEl = sticky?.querySelector('[data-mm-sticky-qty]');
+      if (qtyEl && chosenN) qtyEl.textContent = `${chosenN} ${chosenN === 1 ? 'lata' : 'latas'}`;
       document.querySelectorAll(`[data-mm-btn-total]`).forEach((el) => {
         if (form.contains(el) || sticky?.contains(el)) el.textContent = money(chosen);
       });
@@ -523,14 +526,15 @@ function forms(root) {
     // Barra de compra fija: aparece cuando el botón principal ya no se ve
     if (sticky) {
       const mainBtn = form.querySelector('[type="submit"]');
-      let btnVisible = true;
+      // Solo aparece cuando ya has pasado el botón de compra (está por encima), nunca antes de llegar a la lata
+      let btnPassed = false;
       const show = () => {
-        const on = !btnVisible && pageY() > innerHeight * 0.6;
+        const on = btnPassed;
         sticky.classList.toggle('is-on', on);
         sticky.querySelector('button')?.setAttribute('tabindex', on ? '0' : '-1');
         sticky.setAttribute('aria-hidden', String(!on));
       };
-      new IntersectionObserver(([e]) => { btnVisible = e.isIntersecting; show(); }).observe(mainBtn);
+      new IntersectionObserver(([e]) => { btnPassed = !e.isIntersecting && e.boundingClientRect.top < 0; show(); }).observe(mainBtn);
       scrollFns.add(show);
     }
 

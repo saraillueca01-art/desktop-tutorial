@@ -320,7 +320,8 @@
 .mm-sticky__name .mm-logo { font-size: 1rem; }
 .mm-sticky__name small { font-size: 0.8rem; color: var(--mm-muted); }
 .mm-sticky .mm-btn { padding: 13px 22px; white-space: nowrap; }
-@media (max-width: 480px) { .mm-sticky__name small { display: none; } .mm-sticky__name .mm-logo { font-size: 0.85rem; } .mm-sticky__in { padding-inline-start: 16px; } }
+.mm-sticky__name small { white-space: nowrap; color: var(--mm-ink, #1b2a1f); font-weight: 400; }
+@media (max-width: 480px) { .mm-sticky__name .mm-logo { display: none; } .mm-sticky__name small { font-size: 0.9rem; } .mm-sticky__in { padding-inline-start: 18px; } }
 
 /* Preguntas frecuentes */
 .mm-faq { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(32px, 6vw, 110px); padding: clamp(80px, 11vw, 150px) var(--mm-gutter); border-block-start: 1px solid var(--mm-line); }

@@ -195,7 +195,15 @@
 {%- if p != blank and section.settings.barra_fija and v.available -%}
   <div class="mm mm-sticky" data-mm-sticky>
     <div class="mm-sticky__in">
-      <span class="mm-sticky__name">{% render 'mm-logo' %}<small>{{ section.settings.gramos | downcase }}</small></span>
+      {%- liquid
+        assign latas_sel = 1
+        for pack in packs
+          if forloop.index == elegido
+            assign latas_sel = pack.settings.cantidad
+          endif
+        endfor
+      -%}
+      <span class="mm-sticky__name">{% render 'mm-logo' %}<small data-mm-sticky-qty>{% if packs.size > 0 %}{{ latas_sel }} {% if latas_sel == 1 %}lata{% else %}latas{% endif %}{% else %}{{ section.settings.gramos | downcase }}{% endif %}</small></span>
       <button type="submit" form="{{ form_id }}" class="mm-btn" tabindex="-1">
         <span>{{ section.settings.boton }}</span><span class="mm-btn__total" data-mm-btn-total>{{ precio_inicial | money }}</span>
       </button>
