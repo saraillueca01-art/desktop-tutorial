@@ -1,0 +1,171 @@
+{% render 'mm-recursos' %}
+{%- comment -%}
+  Página cerrada «Lote 001» en una sola pantalla (plantilla de contraseña).
+  El número y «no existe» se tachan al cargar. Recoge emails como clientes suscritos.
+{%- endcomment -%}
+{%- liquid
+  assign insta = section.settings.instagram | default: 'https://www.instagram.com/bymoodmatcha/'
+  assign tiktok = section.settings.tiktok | default: 'https://www.tiktok.com/@bymoodmatcha'
+-%}
+<div class="mm-lote" id="mm-lote-{{ section.id }}">
+  <header class="mm-lote__top">{% render 'mm-logo' %}</header>
+
+  <main class="mm-lote__hero">
+    {%- if section.settings.antetitulo != blank -%}<span class="mm-lote__kicker">{{ section.settings.antetitulo }}</span>{%- endif -%}
+    <span class="mm-lote__num mm-lote__x">{{ section.settings.numero }}</span>
+    <h1>
+      {{- section.settings.frase -}}
+      {%- if section.settings.tachado != blank %} <span class="mm-lote__x">{{ section.settings.tachado }}</span>{% endif -%}
+      {%- if section.settings.correccion != blank %} <span class="mm-lote__fix">{{ section.settings.correccion }}</span>{% endif -%}.
+    </h1>
+    {%- if section.settings.texto != blank -%}<p class="mm-lote__lead">{{ section.settings.texto }}</p>{%- endif -%}
+
+    {%- form 'customer', id: 'mm-lote-form', class: 'mm-lote__form-wrap' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="mm-lote__done" role="status">{{ section.settings.gracias }}</p>
+      {%- else -%}
+        <input type="hidden" name="contact[tags]" value="{{ section.settings.etiquetas | escape }}">
+        <div class="mm-lote__form">
+          <label for="mm-lote-email" class="visually-hidden">Tu email</label>
+          <input id="mm-lote-email" type="email" name="contact[email]" placeholder="Tu email" autocomplete="email" required>
+          <button type="submit">{{ section.settings.boton }}</button>
+        </div>
+        {%- if form.errors -%}<p class="mm-lote__err" role="alert">Revisa el email e inténtalo otra vez.</p>{%- endif -%}
+      {%- endif -%}
+    {%- endform -%}
+    {%- if section.settings.legal != blank -%}<p class="mm-lote__legal">{{ section.settings.legal }}</p>{%- endif -%}
+
+    {%- if section.settings.reto_titulo != blank -%}
+      <a class="mm-lote__reto" href="{{ insta }}" target="_blank" rel="noopener">
+        <span><b>{{ section.settings.reto_titulo }}</b><small>{{ section.settings.reto_texto }}</small></span>
+        {%- if section.settings.reto_boton != blank -%}<em>{{ section.settings.reto_boton }}</em>{%- endif -%}
+      </a>
+    {%- endif -%}
+  </main>
+
+  <footer class="mm-lote__foot">
+    <nav>
+      {%- if insta != blank -%}<a href="{{ insta }}" target="_blank" rel="noopener">Instagram</a>{%- endif -%}
+      {%- if tiktok != blank -%}<a href="{{ tiktok }}" target="_blank" rel="noopener">TikTok</a>{%- endif -%}
+    </nav>
+    <details class="mm-lote__pass">
+      <summary>Entrar con contraseña</summary>
+      {%- form 'storefront_password', class: 'mm-lote__passform' -%}
+        <label for="mm-lote-pass" class="visually-hidden">Contraseña</label>
+        <input id="mm-lote-pass" type="password" name="password" placeholder="Contraseña" autocomplete="current-password">
+        <button type="submit">Entrar</button>
+        {%- if form.errors -%}<p class="mm-lote__err" role="alert">Contraseña incorrecta.</p>{%- endif -%}
+      {%- endform -%}
+    </details>
+  </footer>
+</div>
+
+<style>
+  .mm-lote {
+    --ink: #1b2a1f; --muted: #6a756b; --deep: #1e3322; --green: #2f6b2a; --lime: {{ section.settings.lima }}; --line: #e4e9df;
+    --serif: 'Cormorant Garamond', 'Cormorant', Garamond, 'Times New Roman', serif; --ease: cubic-bezier(.2,.8,.2,1);
+    min-height: 100svh; display: grid; grid-template-rows: auto 1fr auto; background: #fff; color: var(--ink);
+    padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
+    font-family: var(--mm-logo-font); font-weight: 300; font-size: 16px; line-height: 1.55;
+  }
+  .mm-lote .visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .mm-lote :focus-visible { outline: 1.5px solid var(--deep); outline-offset: 4px; }
+  .mm-lote__x { position: relative; display: inline-block; }
+  .mm-lote__x::after { content: ""; position: absolute; left: -3%; right: -3%; top: 54%; height: var(--t, 2px); background: var(--deep); transform: scaleX(0); transform-origin: left; transition: transform 1.1s var(--ease); transition-delay: var(--d, 1.6s); }
+  .mm-lote.is-in .mm-lote__x::after { transform: scaleX(1); }
+  .mm-lote__fix { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--green); opacity: 0; transform: translateY(6px); display: inline-block; transition: opacity 0.7s var(--ease) 2.4s, transform 0.7s var(--ease) 2.4s; }
+  .mm-lote.is-in .mm-lote__fix { opacity: 1; transform: none; }
+
+  .mm-lote__top { display: flex; justify-content: center; padding-block: clamp(14px, 3vh, 26px) 0; }
+  .mm-lote__top .mm-logo { color: var(--deep); font-size: 1.15rem; }
+  .mm-lote__hero { display: grid; place-content: center; justify-items: center; text-align: center; gap: clamp(8px, 1.6vh, 16px); padding-block: clamp(10px, 2vh, 20px); }
+  .mm-lote__kicker { font-size: 0.72rem; letter-spacing: 0.42em; text-transform: uppercase; color: var(--muted); }
+  .mm-lote__num { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: min(24vw, 27vh); line-height: 0.8; color: var(--deep); letter-spacing: -0.03em; --t: clamp(3px, 0.45vw, 6px); --d: 0.5s; }
+  .mm-lote__num::after { top: 52%; transition-duration: 1.6s; }
+  .mm-lote h1 { margin: 0; font-family: var(--mm-logo-font); font-weight: 300; font-size: clamp(1.4rem, min(3.4vw, 4vh), 2.2rem); line-height: 1.2; letter-spacing: 0; text-wrap: balance; color: var(--ink); }
+  .mm-lote__lead { margin: 0; color: var(--muted); max-width: 42ch; }
+  .mm-lote__form-wrap { display: grid; justify-items: center; width: min(100%, 440px); }
+  .mm-lote__form { display: flex; gap: 6px; padding: 5px; width: 100%; border-radius: 999px; background: #fff; box-shadow: inset 0 0 0 1px rgb(30 51 34 / 0.22); }
+  .mm-lote__form:focus-within { box-shadow: inset 0 0 0 1.5px var(--deep); }
+  .mm-lote__form input { flex: 1; min-width: 0; border: 0; background: none; padding: 11px 18px; font: inherit; font-size: 1rem; color: var(--ink); box-shadow: none; }
+  .mm-lote__form input:focus { outline: none; }
+  .mm-lote__form button, .mm-lote__passform button { border: 0; border-radius: 999px; padding: 11px 22px; background: var(--deep); color: #fff; cursor: pointer; font: inherit; font-size: 0.95rem; white-space: nowrap; transition: transform 0.3s; }
+  .mm-lote__form button:hover { transform: translateY(-1px); }
+  .mm-lote__legal { margin: 0; font-size: 0.75rem; color: var(--muted); }
+  .mm-lote__done { margin: 0; font-family: var(--serif); font-style: italic; font-size: 1.5rem; color: var(--green); }
+  .mm-lote__err { margin: 6px 0 0; font-size: 0.85rem; color: #a33; }
+
+  .mm-lote__reto { display: flex; align-items: center; gap: 14px 18px; margin-top: clamp(4px, 1vh, 10px); padding: 12px 14px 12px 18px; border-radius: 18px; background: color-mix(in srgb, var(--lime) 18%, #fff); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lime) 55%, transparent); text-align: start; max-width: 560px; text-decoration: none; color: inherit; transition: transform 0.4s var(--ease); }
+  .mm-lote__reto:hover { transform: translateY(-2px); }
+  .mm-lote__reto b { display: block; font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.45rem; line-height: 1.05; color: var(--deep); }
+  .mm-lote__reto small { display: block; font-size: 0.88rem; color: var(--muted); line-height: 1.4; }
+  .mm-lote__reto em { flex: none; font-style: normal; font-size: 0.85rem; color: #fff; background: var(--green); padding: 8px 14px; border-radius: 999px; white-space: nowrap; }
+
+  .mm-lote__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 24px; padding-block: 0 clamp(14px, 3vh, 24px); font-size: 0.82rem; color: var(--muted); }
+  .mm-lote__foot nav { display: flex; gap: 18px; }
+  .mm-lote__foot a { color: var(--deep); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+  .mm-lote__pass { position: relative; }
+  .mm-lote__pass summary { cursor: pointer; list-style: none; padding: 0; }
+  .mm-lote__pass summary::-webkit-details-marker { display: none; }
+  .mm-lote__passform { position: absolute; right: 0; bottom: calc(100% + 8px); display: flex; flex-wrap: wrap; gap: 6px; padding: 8px; background: #fff; border-radius: 22px; box-shadow: 0 10px 30px -14px rgb(15 36 20 / 0.45), inset 0 0 0 1px var(--line); width: max-content; max-width: calc(100vw - 32px); }
+  .mm-lote__passform input { width: 160px; border: 0; padding: 6px 12px; font: inherit; font-size: 0.9rem; background: none; box-shadow: none; }
+  .mm-lote__passform input:focus { outline: none; }
+  .mm-lote__passform button { padding: 6px 14px; font-size: 0.85rem; }
+  .mm-lote__pass[open] .mm-lote__passform:has(.mm-lote__err) { border-radius: 16px; }
+
+  @media (max-width: 560px) {
+    .mm-lote__num { font-size: min(34vw, 22vh); }
+    .mm-lote__form { flex-wrap: wrap; border-radius: 22px; }
+    .mm-lote__form input { padding: 10px 14px; }
+    .mm-lote__form button { flex: 1 1 100%; padding: 10px; }
+    .mm-lote__reto { padding: 10px 12px; gap: 10px; }
+    .mm-lote__reto b { font-size: 1.2rem; }
+    .mm-lote__reto small { font-size: 0.78rem; }
+    .mm-lote__reto em { padding: 7px 11px; font-size: 0.78rem; }
+    .mm-lote__lead { font-size: 0.92rem; }
+    .mm-lote__foot { justify-content: center; }
+    .mm-lote__passform { right: auto; left: 50%; transform: translateX(-50%); }
+  }
+  @media (max-height: 700px) { .mm-lote__num { font-size: min(30vw, 19vh); } .mm-lote__hero { gap: 7px; } .mm-lote__reto { margin-top: 0; } }
+  @media (prefers-reduced-motion: reduce) { .mm-lote__x::after, .mm-lote__fix { transition: none; } }
+</style>
+
+<script>
+  (() => {
+    const el = document.getElementById('mm-lote-{{ section.id }}');
+    if (!el) return;
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('is-in')));
+    // Si hay un error de contraseña, deja abierto el recuadro para que se vea
+    if (el.querySelector('.mm-lote__passform .mm-lote__err')) el.querySelector('.mm-lote__pass').open = true;
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "MM · Lote 001",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "text", "id": "antetitulo", "label": "Encima del número", "default": "Lote" },
+    { "type": "text", "id": "numero", "label": "Número", "default": "001" },
+    { "type": "text", "id": "frase", "label": "Frase", "default": "Todavía" },
+    { "type": "text", "id": "tachado", "label": "Parte tachada", "default": "no existe" },
+    { "type": "text", "id": "correccion", "label": "Corrección en verde", "default": "se está preparando" },
+    { "type": "text", "id": "texto", "label": "Texto", "default": "Déjanos tu email y te contamos todas las novedades de Mood Matcha antes que a nadie." },
+    { "type": "header", "content": "Email" },
+    { "type": "text", "id": "boton", "label": "Botón", "default": "Quiero enterarme" },
+    { "type": "text", "id": "gracias", "label": "Mensaje al apuntarse", "default": "¡Dentro! Te contaremos todo antes que a nadie." },
+    { "type": "text", "id": "legal", "label": "Texto legal", "default": "Solo te escribiremos para contarte novedades. Puedes darte de baja cuando quieras." },
+    { "type": "text", "id": "etiquetas", "label": "Etiquetas del cliente", "info": "Separadas por comas. Sirven para el email de bienvenida.", "default": "lista-espera, lote-001" },
+    { "type": "header", "content": "El reto" },
+    { "type": "text", "id": "reto_titulo", "label": "Titular", "info": "Vacío oculta el recuadro.", "default": "1 seguidor = 1 céntimo" },
+    { "type": "text", "id": "reto_texto", "label": "Texto", "default": "Por cada persona que nos siga en Instagram, invertimos 1 céntimo en Mood Matcha. Ayúdanos a que exista." },
+    { "type": "text", "id": "reto_boton", "label": "Botón", "default": "Seguir" },
+    { "type": "header", "content": "Redes y color" },
+    { "type": "url", "id": "instagram", "label": "Instagram", "info": "Vacío: @bymoodmatcha." },
+    { "type": "url", "id": "tiktok", "label": "TikTok", "info": "Vacío: @bymoodmatcha." },
+    { "type": "color", "id": "lima", "label": "Color del reto", "default": "#c9dc5c" }
+  ],
+  "presets": [{ "name": "MM · Lote 001", "category": "Mood Matcha" }]
+}
+{% endschema %}
