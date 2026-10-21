@@ -1,0 +1,46 @@
+{% render 'mm-recursos' %}
+<section class="mm mm-recetas">
+  <div class="mm-recetas__head">
+    {%- if section.settings.antetitulo != blank -%}<p class="mm-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+    <h2>{{ section.settings.titulo }}</h2>
+  </div>
+  <div class="mm-recetas__grid">
+    {%- for block in section.blocks -%}
+      <div class="mm-receta" style="--k: {{ block.settings.color }};" {{ block.shopify_attributes }}>
+        <em>{{ block.settings.mood }}</em><b>{{ block.settings.receta }}</b><p>{{ block.settings.texto }}</p>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "MM · Recetas por mood",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "Una lata, cuatro moods" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Tu receta según cómo te sientes" }
+  ],
+  "blocks": [
+    { "type": "receta", "name": "Receta", "limit": 6, "settings": [
+      { "type": "text", "id": "mood", "label": "Mood", "default": "Focus" },
+      { "type": "color", "id": "color", "label": "Color", "default": "#5f8f12" },
+      { "type": "text", "id": "receta", "label": "Receta", "default": "Solo con agua" },
+      { "type": "text", "id": "texto", "label": "Cómo se hace", "default": "2 g y 70 ml a 80 °C." }
+    ] }
+  ],
+  "presets": [
+    {
+      "name": "MM · Recetas por mood",
+      "category": "Mood Matcha",
+      "blocks": [
+        { "type": "receta", "settings": { "mood": "Focus", "color": "#5f8f12", "receta": "Solo con agua", "texto": "2 g y 70 ml a 80 °C. Claro y directo." } },
+        { "type": "receta", "settings": { "mood": "Calma", "color": "#3f8f86", "receta": "Latte de avena", "texto": "Templado, con 200 ml de bebida de avena." } },
+        { "type": "receta", "settings": { "mood": "Energía", "color": "#b8860b", "receta": "Con hielo y tónica", "texto": "El matcha batido en frío por encima." } },
+        { "type": "receta", "settings": { "mood": "Antojo", "color": "#c45577", "receta": "Affogato", "texto": "Sobre una bola de helado de vainilla." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

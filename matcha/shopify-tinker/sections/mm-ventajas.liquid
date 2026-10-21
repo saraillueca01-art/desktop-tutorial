@@ -1,0 +1,50 @@
+{% render 'mm-recursos' %}
+<section class="mm mm-ventajas">
+  {%- for block in section.blocks -%}
+    <div class="mm-ventaja" {{ block.shopify_attributes }}>
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        {%- case block.settings.icono -%}
+          {%- when 'reloj' -%}<circle cx="16" cy="16" r="12"/><path d="M16 9v7l5 3"/>
+          {%- when 'cuenco' -%}<path d="M6 12h20l-2 13H8z"/><path d="M11 12a5 5 0 0 1 10 0"/>
+          {%- when 'taza' -%}<path d="M7 14h16v6a8 8 0 0 1-16 0z"/><path d="M23 15h2a3 3 0 0 1 0 6h-2"/>
+          {%- when 'envio' -%}<path d="M4 10h15v12H4zM19 14h5l4 4v4h-9z"/><circle cx="9" cy="24" r="2"/><circle cx="23" cy="24" r="2"/>
+          {%- when 'hoja' -%}<path d="M6 26C6 14 14 6 26 6c0 12-8 20-20 20z"/><path d="M6 26 18 14"/>
+          {%- else -%}<path d="M16 4l3.5 7.5L28 13l-6 6 1.5 8.5L16 23.5 8.5 27.5 10 19l-6-6 8.5-1.5z"/>
+        {%- endcase -%}
+      </svg>
+      <div><b>{{ block.settings.titulo }}</b><span>{{ block.settings.texto }}</span></div>
+    </div>
+  {%- endfor -%}
+</section>
+
+{% schema %}
+{
+  "name": "MM · Ventajas",
+  "tag": "div",
+  "class": "mm-section",
+  "blocks": [
+    {
+      "type": "ventaja",
+      "name": "Ventaja",
+      "limit": 6,
+      "settings": [
+        { "type": "select", "id": "icono", "label": "Icono", "options": [{ "value": "reloj", "label": "Reloj" }, { "value": "cuenco", "label": "Cuenco" }, { "value": "taza", "label": "Taza" }, { "value": "envio", "label": "Envío" }, { "value": "hoja", "label": "Hoja" }, { "value": "estrella", "label": "Estrella" }], "default": "reloj" },
+        { "type": "text", "id": "titulo", "label": "Titular", "default": "Un minuto" },
+        { "type": "text", "id": "texto", "label": "Texto", "default": "y está listo" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "MM · Ventajas",
+      "category": "Mood Matcha",
+      "blocks": [
+        { "type": "ventaja", "settings": { "icono": "reloj", "titulo": "Un minuto", "texto": "y está listo" } },
+        { "type": "ventaja", "settings": { "icono": "cuenco", "titulo": "Cuatro moods", "texto": "una sola lata" } },
+        { "type": "ventaja", "settings": { "icono": "taza", "titulo": "Como más te guste", "texto": "solo, latte o con hielo" } },
+        { "type": "ventaja", "settings": { "icono": "envio", "titulo": "Envío gratis", "texto": "desde 35 €" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -687,11 +687,38 @@ function juego(root) {
   });
 }
 
+/* ---------- Página de producto: moods que tiñen la compra ---------- */
+function productoMoods(root) {
+  $$('[data-mm-producto]', root).forEach((sec) => {
+    const box = sec.querySelector('[data-mm-pmoods]');
+    if (!box || box.dataset.mmBound) return; box.dataset.mmBound = '1';
+    const word = sec.querySelector('[data-mm-pmood-word]');
+    $$('button[data-a]', box).forEach((b) => b.addEventListener('click', () => {
+      $$('button[data-a]', box).forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+      sec.style.setProperty('--a', b.dataset.a);
+      if (word) { word.textContent = b.dataset.word; word.classList.remove('is-new'); void word.offsetWidth; word.classList.add('is-new'); }
+      box.querySelector('[data-mm-pmood-receta]').textContent = b.dataset.receta;
+      box.querySelector('[data-mm-pmood-texto]').textContent = b.dataset.texto;
+    }));
+  });
+}
+
+/* ---------- Vídeos de redes: se reproducen al tocarlos ---------- */
+function reels(root) {
+  $$('[data-mm-reel]', root).forEach((r) => {
+    if (r.dataset.mmBound) return; r.dataset.mmBound = '1';
+    r.addEventListener('click', () => {
+      const v = r.querySelector('video'); if (!v) return;
+      if (v.paused) { v.play(); r.classList.add('is-playing'); } else { v.pause(); r.classList.remove('is-playing'); }
+    });
+  });
+}
+
 /* ---------- Arranque ---------- */
 function init(root = document) {
   intro(root); roll(root); videos(root); moods(root); carousel(root); tins(root); galeria(root);
   momentos(root); counters(root); preparacion(root); ship(root); freeBars(root); forms(root);
-  cintas(root); manifiesto(root); moodbox(root); juego(root);
+  cintas(root); manifiesto(root); moodbox(root); juego(root); productoMoods(root); reels(root);
   runScroll();
 }
 init();

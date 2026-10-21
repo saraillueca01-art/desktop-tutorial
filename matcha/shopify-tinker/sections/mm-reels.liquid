@@ -1,0 +1,61 @@
+{% render 'mm-recursos' %}
+{%- assign insta = section.settings.enlace | default: 'https://www.instagram.com/bymoodmatcha/' -%}
+<section class="mm mm-reels">
+  <div class="mm-reels__head">
+    {%- if section.settings.antetitulo != blank -%}<p class="mm-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+    <h2>{{ section.settings.titulo }}</h2>
+    {%- if section.settings.texto != blank -%}<p>{{ section.settings.texto }}</p>{%- endif -%}
+  </div>
+  <div class="mm-reels__row">
+    {%- for block in section.blocks -%}
+      <button type="button" class="mm-reel" data-mm-reel {{ block.shopify_attributes }}>
+        {%- if block.settings.video != blank -%}
+          {{ block.settings.video | video_tag: muted: true, loop: true, playsinline: true, preload: 'metadata', image_size: '540x' }}
+        {%- elsif block.settings.imagen != blank -%}
+          {{ block.settings.imagen | image_url: width: 540 | image_tag: loading: 'lazy', alt: block.settings.texto }}
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'mm-reel__ph' }}
+        {%- endif -%}
+        {%- if block.settings.video != blank -%}<span class="mm-reel__play" aria-hidden="true">▶</span>{%- endif -%}
+        <span class="mm-reel__who"><b>{{ block.settings.usuario }}</b>{{ block.settings.texto }}</span>
+      </button>
+    {%- endfor -%}
+  </div>
+  {%- if section.settings.boton != blank -%}<div class="mm-reels__cta"><a class="mm-btn-line" href="{{ insta }}" target="_blank" rel="noopener">{{ section.settings.boton }}</a></div>{%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "MM · Vídeos de redes",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "@bymoodmatcha" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Así lo toma la gente" },
+    { "type": "text", "id": "texto", "label": "Texto", "default": "Vídeos de Instagram y TikTok de quienes ya lo prueban." },
+    { "type": "text", "id": "boton", "label": "Botón", "default": "Seguir a @bymoodmatcha" },
+    { "type": "url", "id": "enlace", "label": "Enlace del botón", "info": "Vacío: tu Instagram." },
+    { "type": "paragraph", "content": "Descarga los vídeos de tu Instagram o TikTok y súbelos aquí (formato vertical). También puedes usar una app de Instagram si lo prefieres." }
+  ],
+  "blocks": [
+    { "type": "reel", "name": "Vídeo", "limit": 12, "settings": [
+      { "type": "video", "id": "video", "label": "Vídeo" },
+      { "type": "image_picker", "id": "imagen", "label": "Imagen", "info": "Si no hay vídeo." },
+      { "type": "text", "id": "usuario", "label": "Usuario", "default": "@bymoodmatcha" },
+      { "type": "text", "id": "texto", "label": "Texto", "default": "Mi latte de cada mañana" }
+    ] }
+  ],
+  "presets": [
+    {
+      "name": "MM · Vídeos de redes",
+      "category": "Mood Matcha",
+      "blocks": [
+        { "type": "reel", "settings": { "usuario": "@bymoodmatcha", "texto": "Mi latte de cada mañana" } },
+        { "type": "reel", "settings": { "usuario": "@bymoodmatcha", "texto": "Matcha con hielo en 30 s" } },
+        { "type": "reel", "settings": { "usuario": "@bymoodmatcha", "texto": "El affogato de Antojo" } },
+        { "type": "reel", "settings": { "usuario": "@bymoodmatcha", "texto": "Mi ritual antes de trabajar" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

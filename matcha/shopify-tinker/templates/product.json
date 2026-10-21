@@ -1,0 +1,405 @@
+{
+  "sections": {
+    "mm_producto": {
+      "type": "mm-producto",
+      "blocks": {
+        "mood_1": {
+          "type": "mood",
+          "settings": {
+            "mood": "Focus",
+            "color": "#5f8f12",
+            "receta": "Solo con agua",
+            "texto": "2 g y 70 ml a 80 °C."
+          }
+        },
+        "mood_2": {
+          "type": "mood",
+          "settings": {
+            "mood": "Calma",
+            "color": "#3f8f86",
+            "receta": "Latte de avena",
+            "texto": "Templado, con 200 ml de bebida de avena."
+          }
+        },
+        "mood_3": {
+          "type": "mood",
+          "settings": {
+            "mood": "Energía",
+            "color": "#b8860b",
+            "receta": "Con hielo y tónica",
+            "texto": "El matcha batido en frío por encima."
+          }
+        },
+        "mood_4": {
+          "type": "mood",
+          "settings": {
+            "mood": "Antojo",
+            "color": "#c45577",
+            "receta": "Affogato",
+            "texto": "Sobre una bola de helado de vainilla."
+          }
+        },
+        "pack_1": {
+          "type": "pack",
+          "settings": {
+            "cantidad": 1,
+            "descuento": 0,
+            "etiqueta": "",
+            "destacado": false
+          }
+        },
+        "pack_2": {
+          "type": "pack",
+          "settings": {
+            "cantidad": 2,
+            "descuento": 10,
+            "etiqueta": "El más elegido",
+            "destacado": true
+          }
+        },
+        "pack_3": {
+          "type": "pack",
+          "settings": {
+            "cantidad": 3,
+            "descuento": 15,
+            "etiqueta": "Mejor precio por lata",
+            "destacado": false
+          }
+        }
+      },
+      "block_order": [
+        "mood_1",
+        "mood_2",
+        "mood_3",
+        "mood_4",
+        "pack_1",
+        "pack_2",
+        "pack_3"
+      ],
+      "settings": {
+        "producto": "",
+        "galeria_producto": true,
+        "antetitulo": "Lote 001",
+        "titulo_mood": "Un matcha para tu",
+        "titulo": "",
+        "texto": "<p>Una sola lata para todos tus momentos del día. Solo, en latte, con hielo o en un postre.</p>",
+        "moods_titulo": "¿Cuál es tu mood?",
+        "boton": "Añadir a la cesta",
+        "cantidad": true,
+        "pago_rapido": true,
+        "stock": true,
+        "stock_pocas": 50,
+        "stock_aviso": 20,
+        "garantias": "Envío en 24–72 h\nPago seguro\n14 días para devolverlo",
+        "barra_fija": true,
+        "packs_titulo": "¿Cuántas latas?",
+        "packs_nota": "El descuento se aplica solo en la cesta.",
+        "envio": true,
+        "hora_corte": 24,
+        "dias_min": 1,
+        "dias_max": 3,
+        "envio_gratis": 35
+      }
+    },
+    "mm_ventajas": {
+      "type": "mm-ventajas",
+      "blocks": {
+        "v1": {
+          "type": "ventaja",
+          "settings": {
+            "icono": "reloj",
+            "titulo": "Un minuto",
+            "texto": "y está listo"
+          }
+        },
+        "v2": {
+          "type": "ventaja",
+          "settings": {
+            "icono": "cuenco",
+            "titulo": "Cuatro moods",
+            "texto": "una sola lata"
+          }
+        },
+        "v3": {
+          "type": "ventaja",
+          "settings": {
+            "icono": "taza",
+            "titulo": "Como más te guste",
+            "texto": "solo, latte o con hielo"
+          }
+        },
+        "v4": {
+          "type": "ventaja",
+          "settings": {
+            "icono": "envio",
+            "titulo": "Envío gratis",
+            "texto": "desde 35 €"
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4"
+      ],
+      "settings": {}
+    },
+    "mm_como": {
+      "type": "mm-como",
+      "blocks": {
+        "p1": {
+          "type": "paso",
+          "settings": {
+            "titulo": "Tamiza 2 g",
+            "texto": "Una cucharadita en el cuenco, sin grumos."
+          }
+        },
+        "p2": {
+          "type": "paso",
+          "settings": {
+            "titulo": "Añade 70 ml a 80 °C",
+            "texto": "Agua caliente, nunca hirviendo."
+          }
+        },
+        "p3": {
+          "type": "paso",
+          "settings": {
+            "titulo": "Bate en zigzag",
+            "texto": "Quince segundos, hasta que haga espuma."
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "settings": {
+        "antetitulo": "Un minuto, tres gestos",
+        "titulo": "Así se prepara",
+        "texto": "No necesitas nada raro. Con un espumador de leche también sale."
+      }
+    },
+    "mm_recetas": {
+      "type": "mm-recetas",
+      "blocks": {
+        "r1": {
+          "type": "receta",
+          "settings": {
+            "mood": "Focus",
+            "color": "#5f8f12",
+            "receta": "Solo con agua",
+            "texto": "2 g y 70 ml a 80 °C. Claro y directo."
+          }
+        },
+        "r2": {
+          "type": "receta",
+          "settings": {
+            "mood": "Calma",
+            "color": "#3f8f86",
+            "receta": "Latte de avena",
+            "texto": "Templado, con 200 ml de bebida de avena."
+          }
+        },
+        "r3": {
+          "type": "receta",
+          "settings": {
+            "mood": "Energía",
+            "color": "#b8860b",
+            "receta": "Con hielo y tónica",
+            "texto": "El matcha batido en frío por encima."
+          }
+        },
+        "r4": {
+          "type": "receta",
+          "settings": {
+            "mood": "Antojo",
+            "color": "#c45577",
+            "receta": "Affogato",
+            "texto": "Sobre una bola de helado de vainilla."
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4"
+      ],
+      "settings": {
+        "antetitulo": "Una lata, cuatro moods",
+        "titulo": "Tu receta según cómo te sientes"
+      }
+    },
+    "mm_reels": {
+      "type": "mm-reels",
+      "blocks": {
+        "reel_1": {
+          "type": "reel",
+          "settings": {
+            "usuario": "@bymoodmatcha",
+            "texto": "Mi latte de cada mañana"
+          }
+        },
+        "reel_2": {
+          "type": "reel",
+          "settings": {
+            "usuario": "@bymoodmatcha",
+            "texto": "Matcha con hielo en 30 s"
+          }
+        },
+        "reel_3": {
+          "type": "reel",
+          "settings": {
+            "usuario": "@bymoodmatcha",
+            "texto": "El affogato de Antojo"
+          }
+        },
+        "reel_4": {
+          "type": "reel",
+          "settings": {
+            "usuario": "@bymoodmatcha",
+            "texto": "Mi ritual antes de trabajar"
+          }
+        }
+      },
+      "block_order": [
+        "reel_1",
+        "reel_2",
+        "reel_3",
+        "reel_4"
+      ],
+      "settings": {
+        "antetitulo": "@bymoodmatcha",
+        "titulo": "Así lo toma la gente",
+        "texto": "Vídeos de Instagram y TikTok de quienes ya lo prueban.",
+        "boton": "Seguir a @bymoodmatcha",
+        "enlace": ""
+      }
+    },
+    "mm_comparativa": {
+      "type": "mm-comparativa",
+      "blocks": {
+        "f1": {
+          "type": "fila",
+          "settings": {
+            "concepto": "Cafeína por taza",
+            "a": "Algo menos",
+            "b": "Más"
+          }
+        },
+        "f2": {
+          "type": "fila",
+          "settings": {
+            "concepto": "Cómo se nota",
+            "a": "Más suave y sostenida",
+            "b": "De golpe"
+          }
+        },
+        "f3": {
+          "type": "fila",
+          "settings": {
+            "concepto": "Formas de tomarlo",
+            "a": "Solo, latte, con hielo, en postres",
+            "b": "Solo o con leche"
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3"
+      ],
+      "settings": {
+        "antetitulo": "¿Por qué matcha?",
+        "titulo": "Matcha frente al café",
+        "col_a": "Mood Matcha",
+        "col_b": "Café de cafetería"
+      }
+    },
+    "mm_garantia": {
+      "type": "mm-garantia",
+      "settings": {
+        "centro": "14",
+        "pie": "días",
+        "aro": "Compra tranquila · Envío 24–72 h · Pago seguro",
+        "titulo": "Compra sin miedo",
+        "texto": "Tienes 14 días para devolverlo. Te lo enviamos en 24–72 h y el pago es 100 % seguro. Si tienes cualquier duda, escríbenos y te contestamos el mismo día."
+      }
+    },
+    "mm_preguntas": {
+      "type": "mm-preguntas",
+      "blocks": {
+        "pregunta_2": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Qué significa de primera cosecha?",
+            "respuesta": "<p>Son las primeras hojas del año, las más tiernas. Dan un verde más intenso y un sabor más dulce y menos amargo.</p>"
+          }
+        },
+        "pregunta_3": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Necesito un chasen para prepararlo?",
+            "respuesta": "<p>Es lo ideal para que salga espuma fina, pero un espumador de leche eléctrico también funciona.</p>"
+          }
+        },
+        "pregunta_4": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cuánto tarda en llegar?",
+            "respuesta": "<p>Si pides antes de medianoche, sale al día siguiente laborable y te llega en 24–72 h. El envío es gratis a partir de 35 €.</p>"
+          }
+        },
+        "pregunta_5": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cómo lo conservo?",
+            "respuesta": "<p>Bien cerrado, lejos de la luz y del calor. Una vez abierto, guárdalo en la nevera y tómalo en uno o dos meses para que no pierda color ni aroma.</p>"
+          }
+        },
+        "pregunta_6": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Tiene cafeína?",
+            "respuesta": "<p>Sí, algo menos que un café. Se nota de forma más suave y sostenida.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "pregunta_2",
+        "pregunta_3",
+        "pregunta_4",
+        "pregunta_5",
+        "pregunta_6"
+      ],
+      "settings": {
+        "titulo": "Preguntas frecuentes",
+        "texto": "<p>¿Te queda alguna duda? Escríbenos y te contestamos el mismo día.</p>",
+        "abrir_primera": true,
+        "datos_google": true
+      }
+    },
+    "mm_final": {
+      "type": "mm-final",
+      "settings": {
+        "antetitulo": "Lote 001",
+        "titulo": "¿Cuál es tu mood de hoy?",
+        "texto": "Empieza con una lata, o llévate dos y ahorra un 10 %.",
+        "boton": "Elegir mi pack"
+      }
+    }
+  },
+  "order": [
+    "mm_producto",
+    "mm_ventajas",
+    "mm_como",
+    "mm_recetas",
+    "mm_reels",
+    "mm_comparativa",
+    "mm_garantia",
+    "mm_preguntas",
+    "mm_final"
+  ]
+}

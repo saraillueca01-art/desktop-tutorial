@@ -1,0 +1,22 @@
+{% render 'mm-recursos' %}
+<section class="mm mm-final">
+  {%- if section.settings.antetitulo != blank -%}<p class="mm-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+  <h2>{{ section.settings.titulo }}</h2>
+  {%- if section.settings.texto != blank -%}<p>{{ section.settings.texto }}</p>{%- endif -%}
+  <a class="mm-btn" href="#mm-lata">{{ section.settings.boton }}</a>
+</section>
+
+{% schema %}
+{
+  "name": "MM · Último empujón",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "Lote 001" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "¿Cuál es tu mood de hoy?" },
+    { "type": "text", "id": "texto", "label": "Texto", "default": "Empieza con una lata, o llévate dos y ahorra un 10 %." },
+    { "type": "text", "id": "boton", "label": "Botón", "info": "Sube a la compra de esta misma página.", "default": "Elegir mi pack" }
+  ],
+  "presets": [{ "name": "MM · Último empujón", "category": "Mood Matcha" }]
+}
+{% endschema %}

@@ -1,0 +1,48 @@
+{% render 'mm-recursos' %}
+<section class="mm mm-como">
+  <div class="mm-como__media">
+    {% render 'mm-media', video: section.settings.video, image: section.settings.imagen, fallback: 'mm-ceremonia', sizes: '(min-width: 860px) 50vw, 100vw' %}
+  </div>
+  <div class="mm-como__txt">
+    {%- if section.settings.antetitulo != blank -%}<p class="mm-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+    <h2>{{ section.settings.titulo }}</h2>
+    {%- if section.settings.texto != blank -%}<p class="mm-como__lead">{{ section.settings.texto }}</p>{%- endif -%}
+    <ol>
+      {%- for block in section.blocks -%}
+        <li {{ block.shopify_attributes }}><b>{{ forloop.index }}</b><h3>{{ block.settings.titulo }}</h3><p>{{ block.settings.texto }}</p></li>
+      {%- endfor -%}
+    </ol>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "MM · Preparación (vídeo)",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "video", "id": "video", "label": "Vídeo", "info": "Vacío: el vídeo de la ceremonia con el chasen." },
+    { "type": "image_picker", "id": "imagen", "label": "Imagen", "info": "Se usa si no hay vídeo." },
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "Un minuto, tres gestos" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Así se prepara" },
+    { "type": "text", "id": "texto", "label": "Texto", "default": "No necesitas nada raro. Con un espumador de leche también sale." }
+  ],
+  "blocks": [
+    { "type": "paso", "name": "Paso", "limit": 5, "settings": [
+      { "type": "text", "id": "titulo", "label": "Titular", "default": "Tamiza 2 g" },
+      { "type": "text", "id": "texto", "label": "Texto", "default": "Una cucharadita en el cuenco, sin grumos." }
+    ] }
+  ],
+  "presets": [
+    {
+      "name": "MM · Preparación (vídeo)",
+      "category": "Mood Matcha",
+      "blocks": [
+        { "type": "paso", "settings": { "titulo": "Tamiza 2 g", "texto": "Una cucharadita en el cuenco, sin grumos." } },
+        { "type": "paso", "settings": { "titulo": "Añade 70 ml a 80 °C", "texto": "Agua caliente, nunca hirviendo." } },
+        { "type": "paso", "settings": { "titulo": "Bate en zigzag", "texto": "Quince segundos, hasta que haga espuma." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

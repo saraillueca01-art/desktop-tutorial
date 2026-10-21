@@ -531,3 +531,92 @@ body:has([data-mm-flotante]) #header-component .header__row--bottom { margin-blo
 @media (prefers-reduced-motion: reduce) {
   .mm-sello svg, .mm-moodbox__blob, .mm-moodbox__big span.is-new { animation: none !important; }
 }
+
+/* ======================================================================
+   Página de producto: compra con moods y secciones de venta
+   ====================================================================== */
+.mm-producto { --a: #5f8f12; align-items: start; padding-block: clamp(28px, 5vw, 64px) clamp(60px, 9vw, 110px); }
+.mm-producto .mm-lata__buy { position: sticky; top: 20px; }
+@media (max-width: 900px) { .mm-producto .mm-lata__buy { position: static; } }
+.mm-producto__stage { position: relative; isolation: isolate; border-radius: 28px; padding: 14px; background: color-mix(in srgb, var(--a) 16%, #fff); transition: background 0.7s; overflow: hidden; }
+.mm-producto__stage::before, .mm-producto__stage::after { content: ""; display: block; position: absolute; z-index: -1; inline-size: 60%; aspect-ratio: 1; border-radius: 50%; background: var(--a); filter: blur(70px); opacity: 0.4; transition: background 0.7s; }
+.mm-producto__stage::before { inset-inline-start: -15%; inset-block-start: -15%; }
+.mm-producto__stage::after { inset-inline-end: -15%; inset-block-end: -15%; }
+.mm-producto__title { font-size: clamp(2.3rem, 4.2vw, 3.4rem); line-height: 1.02; margin: 6px 0 0; }
+.mm-producto__title span { font-family: var(--mm-serif); font-style: italic; font-weight: 400; color: var(--a); transition: color 0.7s; display: inline-block; }
+.mm-producto__title span.is-new { animation: mm-moodin 0.6s var(--mm-out); }
+.mm-producto__moods { display: grid; gap: 10px; margin-block: 18px 6px; }
+.mm-producto__label { margin: 0; font-size: 0.9rem; font-weight: 400; }
+.mm-producto__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.mm-producto__chips button { border: 0; border-radius: 999px; padding: 8px 16px; font: inherit; cursor: pointer; background: var(--mm-soft); color: inherit; transition: background 0.3s, color 0.3s; }
+.mm-producto__chips button[aria-pressed="true"] { background: color-mix(in srgb, var(--a) 30%, #1b2a1f); color: #fff; }
+.mm-producto__recipe { margin: 0; padding: 12px 16px; border-radius: 16px; background: color-mix(in srgb, var(--a) 10%, #fff); font-size: 0.95rem; transition: background 0.7s; }
+.mm-producto__recipe b { font-weight: 500; }
+.mm-producto__recipe span { color: var(--mm-muted); }
+
+.mm-ventajas { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; padding: 26px var(--mm-gutter); border-block: 1px solid var(--mm-line); }
+.mm-ventaja { display: flex; gap: 12px; align-items: center; }
+.mm-ventaja svg { flex: none; inline-size: 34px; block-size: 34px; stroke: var(--mm-green); fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.mm-ventaja b { display: block; font-weight: 500; }
+.mm-ventaja span { font-size: 0.88rem; color: var(--mm-muted); }
+
+.mm-como { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: center; padding: clamp(60px, 8vw, 110px) var(--mm-gutter); }
+@media (max-width: 860px) { .mm-como { grid-template-columns: 1fr; } }
+.mm-como__media { position: relative; aspect-ratio: 4 / 5; border-radius: 24px; overflow: hidden; }
+.mm-como__media .mm-media { position: absolute; inset: 0; }
+.mm-como__txt { display: grid; gap: 12px; }
+.mm-como h2, .mm-recetas h2, .mm-reels h2, .mm-comparativa h2, .mm-final h2 { font-size: clamp(2rem, 4.4vw, 3.2rem); line-height: 1.05; color: var(--mm-deep); }
+.mm-como__lead { margin: 0; color: var(--mm-muted); }
+.mm-como ol { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 18px; }
+.mm-como li { display: grid; grid-template-columns: auto 1fr; gap: 2px 16px; }
+.mm-como li b { grid-row: span 2; font-family: var(--mm-serif); font-style: italic; font-weight: 400; font-size: 2.4rem; line-height: 1; color: var(--mm-green); }
+.mm-como li h3 { font-size: 1.2rem; font-weight: 400; margin: 0; }
+.mm-como li p { margin: 0; color: var(--mm-muted); }
+
+.mm-recetas { padding: clamp(60px, 8vw, 110px) var(--mm-gutter); background: var(--mm-soft); }
+.mm-recetas__head, .mm-reels__head, .mm-comparativa__head { display: grid; gap: 10px; justify-items: center; text-align: center; margin-bottom: clamp(26px, 4vw, 44px); }
+.mm-recetas__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.mm-receta { --k: #5f8f12; border-radius: 22px; padding: 24px 18px; background: color-mix(in srgb, var(--k) 14%, #fff); display: grid; gap: 4px; align-content: start; }
+.mm-receta em { font-family: var(--mm-serif); font-style: italic; font-size: 2rem; line-height: 1; color: var(--k); }
+.mm-receta b { font-weight: 500; margin-top: 6px; }
+.mm-receta p { margin: 0; font-size: 0.92rem; color: var(--mm-muted); }
+
+.mm-reels { padding: clamp(60px, 8vw, 110px) var(--mm-gutter); }
+.mm-reels__head p:last-child { margin: 0; color: var(--mm-muted); }
+.mm-reels__row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 260px); gap: 12px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; justify-content: start; }
+@media (min-width: 1100px) { .mm-reels__row { justify-content: center; } }
+.mm-reel { position: relative; aspect-ratio: 9 / 16; border: 0; padding: 0; border-radius: 20px; overflow: hidden; background: #0f1d12; scroll-snap-align: start; cursor: pointer; color: #fff; text-align: start; font: inherit; }
+.mm-reel video, .mm-reel img, .mm-reel svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+.mm-reel svg { background: #dfe5d8; }
+.mm-reel::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgb(0 0 0 / 0.6)); pointer-events: none; }
+.mm-reel__play { position: absolute; z-index: 1; left: 50%; top: 50%; translate: -50% -50%; inline-size: 52px; aspect-ratio: 1; border-radius: 50%; background: rgb(255 255 255 / 0.9); display: grid; place-items: center; color: var(--mm-deep); transition: opacity 0.3s; }
+.mm-reel.is-playing .mm-reel__play { opacity: 0; }
+.mm-reel__who { position: absolute; z-index: 1; inset-inline: 14px; inset-block-end: 12px; font-size: 0.84rem; line-height: 1.35; }
+.mm-reel__who b { display: block; font-weight: 500; }
+.mm-reels__cta { display: flex; justify-content: center; margin-top: 22px; }
+.mm-btn-line { display: inline-block; border: 1px solid var(--mm-deep); color: var(--mm-deep); border-radius: 999px; padding: 12px 24px; text-decoration: none; }
+
+.mm-comparativa { padding: clamp(60px, 8vw, 110px) var(--mm-gutter); background: var(--mm-soft); }
+.mm-comparativa__wrap { overflow-x: auto; border-radius: 20px; border: 1px solid var(--mm-line); background: #fff; max-inline-size: 1000px; margin: 0 auto; }
+.mm-comparativa table { inline-size: 100%; min-inline-size: 520px; border-collapse: collapse; }
+.mm-comparativa th, .mm-comparativa td { padding: 15px 18px; text-align: start; border-bottom: 1px solid var(--mm-line); }
+.mm-comparativa tr:last-child td { border-bottom: 0; }
+.mm-comparativa th { font-weight: 500; background: var(--mm-soft); }
+.mm-comparativa td:nth-child(2) { color: var(--mm-deep); font-weight: 500; background: #f7fbf2; }
+.mm-comparativa td:nth-child(3) { color: var(--mm-muted); }
+
+.mm-garantia-wrap { display: block; padding: clamp(20px, 4vw, 40px) var(--mm-gutter); }
+.mm-garantia { background: var(--mm-deep); color: #eef1e8; border-radius: 28px; padding: clamp(32px, 6vw, 64px); display: grid; grid-template-columns: auto 1fr; gap: 24px 36px; align-items: center; max-inline-size: 1200px; margin: 0 auto; }
+@media (max-width: 700px) { .mm-garantia { grid-template-columns: 1fr; text-align: center; justify-items: center; } }
+.mm-garantia__seal { position: relative; inline-size: 140px; aspect-ratio: 1; border-radius: 50%; background: var(--mm-lime); color: var(--mm-deep); display: grid; place-items: center; }
+.mm-garantia__seal svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; animation: mm-spin 20s linear infinite; }
+.mm-garantia__seal text { font: 400 7px var(--mm-logo-font); letter-spacing: 1.6px; fill: currentColor; }
+.mm-garantia__seal b { font-family: var(--mm-serif); font-style: italic; font-weight: 400; font-size: 2rem; line-height: 0.9; text-align: center; }
+.mm-garantia__seal small { display: block; font-family: var(--mm-logo-font); font-style: normal; font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; }
+.mm-garantia h2 { color: #eef1e8; font-size: clamp(1.8rem, 3.6vw, 2.6rem); }
+.mm-garantia p { margin: 8px 0 0; color: rgb(238 241 232 / 0.75); }
+
+.mm-final { display: grid; justify-items: center; text-align: center; gap: 16px; padding: clamp(60px, 8vw, 110px) var(--mm-gutter); background: var(--mm-soft); }
+.mm-final p:not(.mm-eyebrow) { margin: 0; color: var(--mm-muted); }
+.mm-final .mm-btn { text-decoration: none; }
+@media (prefers-reduced-motion: reduce) { .mm-garantia__seal svg, .mm-producto__title span.is-new { animation: none !important; } }

@@ -1,0 +1,50 @@
+{% render 'mm-recursos' %}
+<section class="mm mm-comparativa">
+  <div class="mm-comparativa__head">
+    {%- if section.settings.antetitulo != blank -%}<p class="mm-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+    <h2>{{ section.settings.titulo }}</h2>
+  </div>
+  <div class="mm-comparativa__wrap">
+    <table>
+      <thead><tr><th></th><th>{{ section.settings.col_a }}</th><th>{{ section.settings.col_b }}</th></tr></thead>
+      <tbody>
+        {%- for block in section.blocks -%}
+          <tr {{ block.shopify_attributes }}><td>{{ block.settings.concepto }}</td><td>{{ block.settings.a }}</td><td>{{ block.settings.b }}</td></tr>
+        {%- endfor -%}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "MM · Comparativa",
+  "tag": "div",
+  "class": "mm-section",
+  "settings": [
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "¿Por qué matcha?" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Matcha frente al café" },
+    { "type": "text", "id": "col_a", "label": "Columna 1", "default": "Mood Matcha" },
+    { "type": "text", "id": "col_b", "label": "Columna 2", "default": "Café de cafetería" },
+    { "type": "paragraph", "content": "No prometas efectos sobre la salud que no puedas demostrar: en la UE están regulados." }
+  ],
+  "blocks": [
+    { "type": "fila", "name": "Fila", "limit": 8, "settings": [
+      { "type": "text", "id": "concepto", "label": "Concepto", "default": "Cafeína por taza" },
+      { "type": "text", "id": "a", "label": "Matcha", "default": "Algo menos" },
+      { "type": "text", "id": "b", "label": "Café", "default": "Más" }
+    ] }
+  ],
+  "presets": [
+    {
+      "name": "MM · Comparativa",
+      "category": "Mood Matcha",
+      "blocks": [
+        { "type": "fila", "settings": { "concepto": "Cafeína por taza", "a": "Algo menos", "b": "Más" } },
+        { "type": "fila", "settings": { "concepto": "Cómo se nota", "a": "Más suave y sostenida", "b": "De golpe" } },
+        { "type": "fila", "settings": { "concepto": "Formas de tomarlo", "a": "Solo, latte, con hielo, en postres", "b": "Solo o con leche" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
