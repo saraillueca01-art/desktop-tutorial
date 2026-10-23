@@ -331,7 +331,7 @@ def email_nueva_fecha():
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="x-apple-disable-message-reformatting">
-  <title>Nos vemos el 2 de noviembre</title>
+  <title>Cambio de fecha: la inauguración pasa al 2 de noviembre</title>
   <style>
     body {{ margin: 0; padding: 0; background: #e9e4da; }}
     @media (max-width: 620px) {{
@@ -344,7 +344,7 @@ def email_nueva_fecha():
   </style>
 </head>
 <body style="margin:0;padding:0;background:#e9e4da;">
-  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">Nos tomamos una semana más para preparar una experiencia especial para ti. Nos vemos el lunes 2 de noviembre.&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;</div>
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">La inauguración pasa del lunes 26 de octubre al lunes 2 de noviembre. Te contamos por qué.&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;</div>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#e9e4da;">
     <tr><td align="center" style="padding:24px 12px;">
       <table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;background:#ffffff;">
@@ -358,9 +358,22 @@ def email_nueva_fecha():
           </tr></table>
         </td></tr>
 
+        <!-- Cambio de fecha -->
+        <tr><td class="px" align="center" bgcolor="{G}" style="background:{G};padding:16px 24px;">
+          <p style="margin:0;font-family:{sans};font-size:14px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:{N};">⚠&nbsp; Cambio de fecha &nbsp;⚠</p>
+        </td></tr>
+        <tr><td class="px" align="center" bgcolor="{C}" style="background:{C};padding:40px 40px 44px;">
+          <p style="margin:0;font-family:{sans};font-size:12px;font-weight:bold;letter-spacing:5px;text-transform:uppercase;color:{S};">La inauguración ya no es el</p>
+          <p style="margin:10px 0 0;font-family:{serif};font-size:30px;line-height:1.2;color:#a39d92;text-decoration:line-through;">Lunes 26 de octubre</p>
+          <p style="margin:14px 0 0;font-family:{sans};font-size:30px;line-height:1;color:{G};">&darr;</p>
+          <p style="margin:14px 0 0;font-family:{sans};font-size:12px;font-weight:bold;letter-spacing:5px;text-transform:uppercase;color:#8f6d14;">Nueva fecha</p>
+          <p class="big" style="margin:10px 0 0;font-family:{serif};font-size:44px;line-height:1.15;color:{T};"><strong>Lunes 2 de noviembre</strong></p>
+          <p style="margin:12px 0 0;font-family:{sans};font-size:16px;color:{T};">A partir de las <strong>18:00 h</strong> · C/ Calpe 5, Benissa</p>
+        </td></tr>
+
         <!-- Mensaje -->
         <tr><td class="px" align="center" bgcolor="{N}" style="background:{N};padding:58px 52px 50px;">
-          <p style="margin:0;font-family:{sans};font-size:11px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:{GL};">Nueva fecha de inauguración</p>
+          <p style="margin:0;font-family:{sans};font-size:11px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:{GL};">¿Por qué este cambio?</p>
           <p class="big" style="margin:20px 0 0;font-family:{serif};font-size:40px;line-height:1.2;color:#ffffff;">Porque queremos que<br><em style="color:{GL};">vivas algo único…</em></p>
           <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:32px auto 0;"><tr><td width="64" style="border-top:1px solid {G};font-size:0;line-height:0;">&nbsp;</td></tr></table>
           <p style="margin:30px 0 0;font-family:{sans};font-size:17px;line-height:1.75;color:#d8d2c6;">Hemos decidido tomarnos <strong style="color:#ffffff;">una semana más</strong> para cuidar cada detalle y preparar una experiencia especial para ti.</p>
