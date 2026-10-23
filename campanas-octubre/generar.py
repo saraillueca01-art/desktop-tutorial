@@ -310,7 +310,108 @@ def email_invitacion():
 """
 
 
+# ---------- Cambio de fecha de la inauguración ----------
+CAL_2NOV = ('https://calendar.google.com/calendar/render?action=TEMPLATE'
+            '&text=Inauguraci%C3%B3n%20Espai%20Pilates%20Reformer%20%2B%20Chakra%20Wellness%20Center'
+            '&dates=20261102T180000/20261102T210000&ctz=Europe/Madrid'
+            '&location=C%2F%20Calpe%205%2C%20Benissa')
+WA_RSVP_2NOV = wa('Hola, vengo del email y confirmo mi asistencia a la inauguración del lunes 2 de noviembre 😊')
+
+
+def email_nueva_fecha():
+    """Aviso del cambio de fecha: la inauguración pasa al lunes 2 de noviembre."""
+    G = '#c9a43a'; GL = '#e2be4a'; N = '#141413'; C = '#f7f2e8'; T = '#1d1d1b'; S = '#6b6760'
+    serif = "Georgia,'Times New Roman',serif"
+    sans = "'Helvetica Neue',Helvetica,Arial,sans-serif"
+    def btn(texto, url, fondo=G, color=N):
+        return f'<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr><td align="center" bgcolor="{fondo}" style="background:{fondo};"><a href="{url}" style="display:inline-block;padding:17px 36px;font-family:{sans};font-size:12px;font-weight:bold;letter-spacing:4px;text-transform:uppercase;color:{color};text-decoration:none;">{texto}</a></td></tr></table>'
+    return f"""<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="x-apple-disable-message-reformatting">
+  <title>Nos vemos el 2 de noviembre</title>
+  <style>
+    body {{ margin: 0; padding: 0; background: #e9e4da; }}
+    @media (max-width: 620px) {{
+      .container {{ width: 100% !important; }}
+      .px {{ padding-left: 28px !important; padding-right: 28px !important; }}
+      .big {{ font-size: 34px !important; }}
+      .day {{ font-size: 100px !important; }}
+      .logo-p {{ width: 130px !important; height: auto !important; }}
+    }}
+  </style>
+</head>
+<body style="margin:0;padding:0;background:#e9e4da;">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">Nos tomamos una semana más para preparar una experiencia especial para ti. Nos vemos el lunes 2 de noviembre.&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#e9e4da;">
+    <tr><td align="center" style="padding:24px 12px;">
+      <table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;background:#ffffff;">
+
+        <tr><td align="center" style="padding:0 0 10px;background:#e9e4da;font-family:{sans};font-size:11px;color:{S};">¿No ves bien este email? <a href="*|ARCHIVE|*" style="color:{S};">Ábrelo en el navegador</a></td></tr>
+
+        <tr><td align="center" style="padding:34px 12px 30px;background:#ffffff;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr>
+            <td valign="middle" style="padding:0 22px;"><img src="{BASE}/campanas-octubre/media/logo-espai-pilates.png" width="176" height="75" alt="Espai Pilates Reformer" class="logo-p" style="display:block;border:0;width:176px;height:75px;"></td>
+            <td valign="middle" style="border-left:1px solid #e8dfcc;padding:0 22px;"><img src="{BASE}/facial-luminus/media/logo-chakra.png" width="80" height="90" alt="Chakra Wellness Center by Espai Vital" style="display:block;border:0;width:80px;height:90px;"></td>
+          </tr></table>
+        </td></tr>
+
+        <!-- Mensaje -->
+        <tr><td class="px" align="center" bgcolor="{N}" style="background:{N};padding:58px 52px 50px;">
+          <p style="margin:0;font-family:{sans};font-size:11px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:{GL};">Nueva fecha de inauguración</p>
+          <p class="big" style="margin:20px 0 0;font-family:{serif};font-size:40px;line-height:1.2;color:#ffffff;">Porque queremos que<br><em style="color:{GL};">vivas algo único…</em></p>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:32px auto 0;"><tr><td width="64" style="border-top:1px solid {G};font-size:0;line-height:0;">&nbsp;</td></tr></table>
+          <p style="margin:30px 0 0;font-family:{sans};font-size:17px;line-height:1.75;color:#d8d2c6;">Hemos decidido tomarnos <strong style="color:#ffffff;">una semana más</strong> para cuidar cada detalle y preparar una experiencia especial para ti.</p>
+          <p style="margin:18px 0 0;font-family:{serif};font-style:italic;font-size:20px;line-height:1.6;color:#ffffff;">Porque no se trata solo de abrir nuestras puertas, sino de recibirte como mereces.</p>
+        </td></tr>
+
+        <!-- Fecha -->
+        <tr><td class="px" align="center" bgcolor="{C}" style="background:{C};padding:50px 48px 50px;">
+          <p style="margin:0;font-family:{sans};font-size:12px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:#8f6d14;">Nos vemos el</p>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:22px auto 0;"><tr><td align="center" style="border:1px solid {G};padding:20px 46px 22px;background:#ffffff;">
+            <p style="margin:0;font-family:{sans};font-size:12px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:#8f6d14;">Lunes</p>
+            <p class="day" style="margin:4px 0 0;font-family:{serif};font-size:120px;line-height:1;color:{G};">2</p>
+            <p style="margin:6px 0 0;font-family:{sans};font-size:13px;font-weight:bold;letter-spacing:7px;text-transform:uppercase;color:{T};">Noviembre</p>
+          </td></tr></table>
+          <p style="margin:26px 0 0;font-family:{sans};font-size:16px;line-height:1.6;color:{T};">A partir de las <strong>18:00 h</strong><br>C/ Calpe 5 · Benissa · <span style="color:{S};">junto a Espai Vital</span></p>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:30px auto 0;"><tr><td>{btn('Confirmar asistencia', WA_RSVP_2NOV, N, GL)}</td></tr></table>
+          <p style="margin:16px 0 0;font-family:{sans};font-size:13px;"><a href="{CAL_2NOV}" style="color:{T};">Añadir la nueva fecha a mi calendario</a></p>
+        </td></tr>
+
+        <!-- Cierre -->
+        <tr><td class="px" align="center" style="padding:46px 56px 44px;background:#ffffff;">
+          <p style="margin:0;font-family:{serif};font-size:22px;line-height:1.55;color:{T};">Gracias por acompañarnos en este comienzo.</p>
+          <p style="margin:10px 0 0;font-family:{serif};font-style:italic;font-size:19px;line-height:1.55;color:{S};">Estamos preparando algo con mucho amor para ti.</p>
+          <p style="margin:22px 0 0;font-size:22px;color:{G};">♡</p>
+        </td></tr>
+
+        <!-- LUMINUS -->
+        <tr><td class="px" align="center" bgcolor="{N}" style="background:{N};padding:34px 44px 38px;">
+          <p style="margin:0;font-family:{sans};font-size:11px;font-weight:bold;letter-spacing:5px;text-transform:uppercase;color:{GL};">Mientras tanto</p>
+          <p style="margin:12px 0 0;font-family:{serif};font-size:22px;line-height:1.45;color:#ffffff;">Reserva ya tu facial <strong style="letter-spacing:3px;">LUMINUS</strong> por <span style="color:{GL};">59&nbsp;€</span></p>
+          <p style="margin:8px 0 22px;font-family:{sans};font-size:14px;color:#9c968b;">Precio especial de inauguración · plazas limitadas</p>
+          {btn('Reservar mi cita', LANDING + '?utm_source=email-nueva-fecha')}
+        </td></tr>
+
+        <tr><td align="center" style="padding:28px 24px 32px;font-family:{sans};font-size:12px;line-height:1.7;color:{S};">
+          <strong style="color:{T};">Chakra Wellness Center by Espai Vital · Espai Pilates Reformer</strong><br>
+          C/ Benidoleig 31, bajo · 03720 Benissa (Alicante)<br>
+          <a href="tel:+34633388152" style="color:{S};">+34 633 38 81 52</a> · <a href="mailto:info@chakracenterbenissa.com" style="color:{S};">info@chakracenterbenissa.com</a><br><br>
+          Recibes este email porque eres cliente o aceptaste recibir novedades de nuestro centro.<br>
+          <a href="*|UPDATE_PROFILE|*" style="color:{S};">Actualizar mis datos</a> · <a href="*|UNSUB|*" style="color:{S};">Darme de baja</a>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
+"""
+
+
 EMAILS = {
+    'email-nueva-fecha': email_nueva_fecha(),
     'email-inauguracion': email_invitacion(),
     'email-pilates-precios': email_precios(
         'pilates', 'tu plan de Pilates', 'Hola, vengo del email y quiero mantener mi tarifa actual de Pilates 😊',
