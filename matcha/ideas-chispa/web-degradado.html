@@ -105,7 +105,8 @@ nav a{color:#fff;text-decoration:none;opacity:.9}
 .pack s{display:block;color:var(--suave);font-weight:300;font-size:13px}
 
 /* ---------- manifiesto ---------- */
-.manifiesto p{font-size:clamp(34px,5.2vw,68px);line-height:1.12;max-width:16ch;text-wrap:balance}
+.manifiesto{padding-block:clamp(48px,6vw,80px)}
+.manifiesto p{font-size:clamp(26px,3.3vw,46px);line-height:1.18;max-width:none;text-wrap:balance}
 .manifiesto .t{background:linear-gradient(100deg,var(--hoja),var(--verde) 35%,#9cc93a 60%,#e2b45a 85%,#d98a5c);background-size:100vw 100%;background-attachment:fixed;
   -webkit-background-clip:text;background-clip:text;color:rgba(31,58,40,.14);transition:color .5s}
 .manifiesto .t.on{color:transparent}
@@ -314,6 +315,34 @@ nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:6px;t
 }
 @media (max-width:560px){.comentarios{grid-template-columns:1fr}.pasos__cuerpo .paso{grid-template-columns:80px 1fr}.pasos__cuerpo .paso__ico svg{height:56px}}
 
+
+/* ---------- cambios v4 ---------- */
+.orbes.cerrado .orbe:hover{transform:none}
+.orbe.bloqueado{opacity:.32;filter:grayscale(.6);cursor:not-allowed}
+.orbe:disabled{cursor:not-allowed}
+.aviso-elegido{margin-top:56px;text-align:center;font-size:15px;color:var(--hoja)}
+.reiniciar{margin-top:12px;border:0;background:none;padding:0;color:var(--suave);font-size:12px;text-decoration:underline;cursor:pointer}
+.pasos__cab{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 32px;flex-wrap:wrap}
+.pasos__cab > p{color:#46594b;font-size:15px;max-width:34ch}
+.pfila{list-style:none;margin:40px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.pcard{display:grid;gap:14px;align-content:start}
+.pcard__media{position:relative;margin:0;aspect-ratio:4/5;max-width:100%;border-radius:20px;overflow:hidden;display:grid;place-items:center;
+  background:radial-gradient(120% 80% at 50% 100%,rgba(255,255,255,.95) 0%,rgba(255,255,255,.6) 55%,rgba(255,255,255,.35) 100%)}
+.pcard__ico{position:relative}
+.pcard__ico svg{height:clamp(64px,7vw,96px);width:auto;stroke:var(--verde);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pcard__ico .hw{position:absolute;right:-30px;top:-22px;font:500 18px/.85 var(--mano);color:var(--verde);transform:rotate(-8deg);text-transform:uppercase}
+.pcard__dato{position:absolute;left:12px;top:12px;padding:5px 12px;border-radius:99px;background:#fff;color:var(--verde);font-size:14px}
+.pcard__video{position:absolute;left:12px;right:12px;bottom:12px;text-align:center;font-size:12px;color:var(--suave);border:1px dashed rgba(29,158,85,.4);border-radius:99px;padding:5px 8px}
+.pcard__txt{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;align-items:baseline}
+.pcard__num{grid-row:span 2;width:28px;height:28px;border-radius:50%;background:var(--verde);color:#fff;display:grid;place-items:center;font-size:13px;align-self:start;margin-top:2px}
+.pcard h3{font-size:19px;font-weight:400}
+.pcard p{font-size:14px;color:#46594b}
+@media (max-width:900px){
+  .pfila{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:min(70vw,260px);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:6px}
+  .pfila::-webkit-scrollbar{display:none}
+  .pcard{scroll-snap-align:start}
+}
+
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 
@@ -355,6 +384,7 @@ nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:6px;t
       <p>Toca el círculo que más va contigo hoy. Cada uno esconde una sorpresa.</p>
     </div>
     <div class="orbes" id="orbes"></div>
+    <p class="aviso-elegido" id="aviso-elegido" hidden>Ya has elegido tu mood. Solo hay una sorpresa por persona.</p>
     <div class="premio" id="premio" hidden>
       <div>
         <p class="eyebrow" id="pr-ey">Tu mood: Focus · ¡Sorpresa!</p>
@@ -370,6 +400,7 @@ nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:6px;t
           <button class="btn btn--verde" type="submit">Recibir mi sorpresa</button>
         </form>
         <small id="pr-ok">Te llega el código al momento. Puedes darte de baja cuando quieras.</small>
+        <button type="button" class="reiniciar" id="reiniciar">Volver a probar (solo en esta vista previa)</button>
       </div>
     </div>
   </div>
@@ -449,18 +480,29 @@ nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:6px;t
 
 <section class="pasos" id="pasos">
   <div class="wrap">
-    <p class="eyebrow">Pasos para tu matcha</p>
-    <h2>Un minuto, <em>cinco gestos</em></h2>
-    <div class="pasos__cuerpo">
-    <figure class="pasos__video"><video autoplay muted loop playsinline poster="mm-ceremonia.jpg"><source src="mm-ceremonia.mp4" type="video/mp4"></video><figcaption>Aquí irá vuestro vídeo</figcaption></figure>
-    <div class="pasos__fila">
-      <div class="paso"><div class="paso__ico"><svg viewBox="0 0 100 90"><ellipse cx="42" cy="38" rx="26" ry="9"/><path d="M16 38v22c0 5 12 9 26 9s26-4 26-9V38"/><path d="M62 30l26-14"/><ellipse cx="90" cy="15" rx="5" ry="3"/></svg></div><h3>Abre la lata</h3><p>Una cucharadita de bambú.</p></div>
-      <div class="paso"><div class="paso__ico"><svg viewBox="0 0 100 90"><rect x="18" y="40" width="64" height="38" rx="6"/><rect x="30" y="56" width="22" height="12" rx="2"/><path d="M30 40c0-12 40-12 40 0"/><path d="M42 28c2-8 14-8 16 0"/></svg></div><h3>Pesa 2 g</h3><p>Tamízalo en el cuenco, sin grumos.</p></div>
-      <div class="paso"><div class="paso__ico"><span class="hw">hot<br>water</span><svg viewBox="0 0 100 90"><path d="M20 20h30l-4 14H24z"/><path d="M48 24c10 0 14 6 10 12"/><path d="M36 38v12M40 52v10"/><path d="M22 62h40c0 14-8 22-20 22s-20-8-20-22z"/></svg></div><h3>Agua a 80 °C</h3><p>70 ml, nunca hirviendo.</p></div>
-      <div class="paso"><div class="paso__ico"><svg viewBox="0 0 100 90"><path d="M18 50h56c0 18-12 30-28 30S18 68 18 50z"/><path d="M46 46V16M40 46l-2-24M52 46l2-24"/><path d="M78 26c6 4 6 12 0 16M14 26c-6 4-6 12 0 16"/></svg></div><h3>Bate en zigzag</h3><p>Quince segundos, hasta que haga espuma.</p></div>
-      <div class="paso"><div class="paso__ico"><svg viewBox="0 0 100 90"><path d="M24 40h52l-6 40H30z"/><path d="M50 40c-8-10-2-24 12-28-2 12-4 20-12 28z"/><path d="M50 40c4-8 14-10 22-6-6 6-12 8-22 6z"/><path d="M34 56h32"/></svg></div><h3>Elige tu mood</h3><p>Solo, con leche, con hielo o con tónica.</p></div>
-    </div>
-    </div>
+    <div class="pasos__cab"><div><p class="eyebrow">Pasos para tu matcha</p><h2>Un minuto, <em>cinco gestos</em></h2></div><p>Cuenco, colador fino y chasen (o espumador de leche).</p></div>
+    <ol class="pfila">
+      <li class="pcard">
+        <figure class="pcard__media"><div class="pcard__ico"><svg viewBox="0 0 100 90"><ellipse cx="42" cy="38" rx="26" ry="9"/><path d="M16 38v22c0 5 12 9 26 9s26-4 26-9V38"/><path d="M62 30l26-14"/><ellipse cx="90" cy="15" rx="5" ry="3"/></svg></div><figcaption class="pcard__dato">1 cdta</figcaption><span class="pcard__video">▶ vídeo del paso 1</span></figure>
+        <div class="pcard__txt"><span class="pcard__num">1</span><h3>Abre la lata</h3><p>Una cucharadita de bambú.</p></div>
+      </li>
+      <li class="pcard">
+        <figure class="pcard__media"><div class="pcard__ico"><svg viewBox="0 0 100 90"><rect x="18" y="40" width="64" height="38" rx="6"/><rect x="30" y="56" width="22" height="12" rx="2"/><path d="M30 40c0-12 40-12 40 0"/><path d="M42 28c2-8 14-8 16 0"/></svg></div><figcaption class="pcard__dato">2 g</figcaption><span class="pcard__video">▶ vídeo del paso 2</span></figure>
+        <div class="pcard__txt"><span class="pcard__num">2</span><h3>Pesa y tamiza</h3><p>En el cuenco, sin grumos.</p></div>
+      </li>
+      <li class="pcard">
+        <figure class="pcard__media"><div class="pcard__ico"><span class="hw">hot<br>water</span><svg viewBox="0 0 100 90"><path d="M20 20h30l-4 14H24z"/><path d="M48 24c10 0 14 6 10 12"/><path d="M36 38v12M40 52v10"/><path d="M22 62h40c0 14-8 22-20 22s-20-8-20-22z"/></svg></div><figcaption class="pcard__dato">80 °C</figcaption><span class="pcard__video">▶ vídeo del paso 3</span></figure>
+        <div class="pcard__txt"><span class="pcard__num">3</span><h3>Añade el agua</h3><p>70 ml, nunca hirviendo.</p></div>
+      </li>
+      <li class="pcard">
+        <figure class="pcard__media"><div class="pcard__ico"><svg viewBox="0 0 100 90"><path d="M18 50h56c0 18-12 30-28 30S18 68 18 50z"/><path d="M46 46V16M40 46l-2-24M52 46l2-24"/><path d="M78 26c6 4 6 12 0 16M14 26c-6 4-6 12 0 16"/></svg></div><figcaption class="pcard__dato">15 s</figcaption><span class="pcard__video">▶ vídeo del paso 4</span></figure>
+        <div class="pcard__txt"><span class="pcard__num">4</span><h3>Bate en zigzag</h3><p>Hasta que haga espuma.</p></div>
+      </li>
+      <li class="pcard">
+        <figure class="pcard__media"><div class="pcard__ico"><svg viewBox="0 0 100 90"><path d="M24 40h52l-6 40H30z"/><path d="M50 40c-8-10-2-24 12-28-2 12-4 20-12 28z"/><path d="M50 40c4-8 14-10 22-6-6 6-12 8-22 6z"/><path d="M34 56h32"/></svg></div><figcaption class="pcard__dato">Tu mood</figcaption><span class="pcard__video">▶ vídeo del paso 5</span></figure>
+        <div class="pcard__txt"><span class="pcard__num">5</span><h3>Disfrútalo</h3><p>Solo, con leche, con hielo o con tónica.</p></div>
+      </li>
+    </ol>
   </div>
 </section>
 
@@ -668,15 +710,25 @@ setInterval(()=>{const g=$('#giro');g.style.opacity=0;setTimeout(()=>{gi=(gi+1)%
 
 /* juego */
 const orbes=$('#orbes'),premio=$('#premio');
-MOODS.forEach((m,i)=>{
-  const b=document.createElement('button');b.className='orbe';b.style.setProperty('--c',m.c);b.setAttribute('aria-pressed','false');
+let elegido=null;
+function mostrarPremio(m,anim){
+  elegido=m.id;
+  orbes.classList.remove('esperando');orbes.classList.add('cerrado');
+  orbes.querySelectorAll('.orbe').forEach(o=>{const yo=o.dataset.m===m.id;o.setAttribute('aria-pressed',yo);o.disabled=!yo;o.classList.toggle('bloqueado',!yo)});
+  premio.style.setProperty('--c',m.c);premio.hidden=false;$('#aviso-elegido').hidden=false;
+  if(anim){premio.classList.remove('sale');void premio.offsetWidth;premio.classList.add('sale');premio.scrollIntoView({behavior:'smooth',block:'center'})}
+  $('#pr-ey').textContent='Tu mood: '+m.n+' · ¡Sorpresa!';$('#pr-t').textContent=m.t;$('#pr-d').textContent=m.dto;
+}
+MOODS.forEach(m=>{
+  const b=document.createElement('button');b.className='orbe';b.dataset.m=m.id;b.style.setProperty('--c',m.c);b.setAttribute('aria-pressed','false');
   b.innerHTML=oo+`<b>${m.n.toUpperCase()}</b>`;b.setAttribute('aria-label','Mood '+m.n);
-  b.onclick=()=>{orbes.querySelectorAll('.orbe').forEach(o=>o.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
-    premio.style.setProperty('--c',m.c);const nuevo=premio.hidden;premio.hidden=false;premio.classList.remove('sale');void premio.offsetWidth;premio.classList.add('sale');if(nuevo)premio.scrollIntoView({behavior:'smooth',block:'center'});$('#pr-ey').textContent='Tu mood: '+m.n+' · ¡Sorpresa!';$('#pr-t').textContent=m.t;$('#pr-d').textContent=m.dto};
+  b.onclick=()=>{if(elegido)return;try{localStorage.setItem('mm-mood',m.id)}catch(e){}mostrarPremio(m,true)};
   orbes.appendChild(b);
 });
-premio.style.setProperty('--c','var(--focus)');
 orbes.classList.add('esperando');
+try{const g=localStorage.getItem('mm-mood');const m=MOODS.find(x=>x.id===g);if(m)mostrarPremio(m,false)}catch(e){}
+$('#reiniciar').onclick=()=>{try{localStorage.removeItem('mm-mood')}catch(e){}elegido=null;premio.hidden=true;$('#aviso-elegido').hidden=true;orbes.classList.remove('cerrado');orbes.classList.add('esperando');
+  orbes.querySelectorAll('.orbe').forEach(o=>{o.disabled=false;o.classList.remove('bloqueado');o.setAttribute('aria-pressed','false')})};
 $('#pr-f').addEventListener('submit',e=>{e.preventDefault();$('#pr-ok').textContent='Hecho. En la web real aquí te llegaría el email con tu código.'});
 
 /* packs */
