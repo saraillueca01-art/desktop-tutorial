@@ -1,0 +1,367 @@
+<meta charset="utf-8">
+<title>Mood Matcha Degradado</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,300;1,400&family=Caveat:wght@500&display=swap">
+<style>
+/* Layout: la home actual (blanca) con el degradado de la etiqueta como hilo conductor: cinta, juego, compra, recuadro de mood y pie */
+:root{
+  --blanco:#ffffff; --tinta:#1f3a28; --suave:#5d6f61;
+  --verde:#1d9e55;      /* verde del logo en la etiqueta */
+  --hoja:#28602f;       /* principal 01, el más oscuro */
+  --menta:#add9af; --vainilla:#fbf8d1; --melocoton:#f3e5cd; --pistacho:#c9e2af; --crema:#fffef1;
+  --etiqueta:linear-gradient(100deg,var(--menta) 0%,var(--vainilla) 36%,var(--melocoton) 68%,var(--pistacho) 100%);
+  --good:#f4e278; --chill:#89b3d8; --focus:#72927f; --monday:#d8d8c8; --social:#edab57; --slow:#beadd4;
+  --sans:"Jost",system-ui,sans-serif; --serif:"Cormorant Garamond",Georgia,serif; --mano:"Caveat","Comic Sans MS",cursive;
+  --r:28px;
+}
+*{box-sizing:border-box}
+html,body{overflow-x:clip}
+body{background:var(--blanco);color:var(--tinta);font:300 17px/1.6 var(--sans)}
+h1,h2,h3{font-weight:300;line-height:1.05;text-wrap:balance;margin:0}
+em{font-family:var(--serif);font-style:italic;font-weight:400}
+p{margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--verde);font-weight:400}
+section{padding-block:clamp(64px,9vw,120px)}
+button,input{font:inherit}
+:focus-visible{outline:2px solid var(--verde);outline-offset:3px}
+.oo{display:inline-block;height:.72em;width:auto;vertical-align:-.02em;margin:0 .02em}
+
+/* ---------- cabecera ---------- */
+header{position:absolute;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:5}
+header .wrap{display:flex;align-items:center;justify-content:space-between;padding-block:22px}
+.logo{font:300 21px/1 var(--sans);letter-spacing:.06em;color:#fff;text-decoration:none;white-space:nowrap}
+nav{display:flex;gap:28px;font-size:15px}
+nav a{color:#fff;text-decoration:none;opacity:.9}
+.cesta{border:1px solid rgba(255,255,255,.7);border-radius:99px;padding:8px 16px;color:#fff;font-size:14px}
+
+/* ---------- portada ---------- */
+.portada{position:relative;min-height:min(92vh,820px);display:flex;align-items:flex-end;color:#fff;overflow:hidden;padding-block:0}
+.portada video,.portada .velo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.portada .velo{background:var(--etiqueta);mix-blend-mode:soft-light;opacity:.85}
+.portada::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,40,25,.35),rgba(20,40,25,0) 30%,rgba(20,40,25,.55))}
+.portada .wrap{position:relative;z-index:2;width:100%;display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;padding-block:0 92px}
+.portada h1{font-size:clamp(52px,8.4vw,116px)}
+.giro{display:inline-block;font-family:var(--serif);font-style:italic;font-weight:300;padding-right:.08em;
+  background:linear-gradient(100deg,#fff 10%,var(--c,#fff) 95%);-webkit-background-clip:text;background-clip:text;color:transparent;transition:opacity .4s}
+.portada__lado{max-width:340px;display:grid;gap:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;border:0;border-radius:99px;padding:15px 28px;cursor:pointer;text-decoration:none;font-size:16px;font-weight:400}
+.btn--claro{background:#fff;color:var(--hoja)}
+.btn--verde{background:var(--hoja);color:#fff}
+
+/* ---------- cinta etiqueta ---------- */
+.cinta{background:var(--etiqueta);overflow:hidden;padding-block:14px;border-block:1px solid rgba(29,158,85,.15)}
+.cinta__pista{display:flex;gap:44px;width:max-content;animation:cinta 38s linear infinite;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--verde)}
+.cinta__pista span{display:flex;align-items:center;gap:44px;white-space:nowrap}
+.cinta__pista svg{height:9px;width:auto}
+@keyframes cinta{to{transform:translateX(-50%)}}
+
+/* ---------- juego ---------- */
+.juego__cab{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:48px}
+.juego h2{font-size:clamp(40px,5.6vw,72px)}
+.juego__cab p{max-width:380px;color:var(--suave)}
+.orbes{display:grid;grid-template-columns:repeat(6,1fr);gap:18px}
+.orbe{aspect-ratio:1;max-width:100%;border-radius:50%;border:0;cursor:pointer;position:relative;display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 50%,var(--c) 0%,color-mix(in srgb,var(--c) 55%,var(--crema)) 38%,var(--crema) 74%);
+  transition:transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .5s;color:var(--tinta)}
+.orbe:nth-child(even){background:radial-gradient(circle at 50% 50%,var(--crema) 0%,color-mix(in srgb,var(--c) 45%,var(--crema)) 55%,var(--c) 100%)}
+.orbe svg{width:38%;transition:transform .6s}
+.orbe:hover{transform:translateY(-6px) rotate(-4deg)}
+.orbe:hover svg{transform:rotate(90deg)}
+.orbe b{position:absolute;bottom:-34px;left:0;right:0;font-weight:400;font-size:13px;letter-spacing:.2em}
+.orbe[aria-pressed="true"]{box-shadow:0 0 0 2px var(--blanco),0 0 0 3px var(--tinta)}
+.premio{margin-top:72px;border-radius:var(--r);padding:clamp(28px,4vw,48px);display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:center;
+  background:linear-gradient(110deg,color-mix(in srgb,var(--c) 70%,var(--crema)) 0%,var(--crema) 55%,var(--melocoton) 100%);transition:background .6s}
+.premio h3{font-size:clamp(30px,3.6vw,46px)}
+.premio .dto{font:400 clamp(44px,5vw,64px)/1 var(--serif);font-style:italic;color:var(--hoja)}
+.premio form{display:flex;gap:8px;background:#fff;border-radius:99px;padding:6px;flex-wrap:wrap}
+.premio input{flex:1;min-width:0;border:0;padding:12px 16px;border-radius:99px;background:transparent;color:var(--tinta)}
+.premio small{display:block;margin-top:10px;color:var(--suave);font-size:13px}
+.nota{display:inline-block;margin-top:14px;font-size:12px;letter-spacing:.06em;color:#b23b2e}
+
+/* ---------- compra ---------- */
+.compra{padding-top:0}
+.compra__caja{border-radius:calc(var(--r) + 8px);background:var(--etiqueta);display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
+.compra__arte{position:relative;min-height:460px;display:grid;place-items:center}
+.compra__arte .burbuja{width:min(78%,380px);aspect-ratio:1;border-radius:50%;max-width:100%;
+  background:radial-gradient(circle,var(--blanco) 0%,var(--vainilla) 40%,var(--menta) 100%);display:grid;place-items:center;animation:respira 7s ease-in-out infinite}
+.compra__arte .burbuja svg{width:34%}
+.compra__arte .mano{position:absolute;top:28px;left:32px;font:500 26px/1 var(--mano);color:var(--verde);transform:rotate(-6deg)}
+@keyframes respira{50%{transform:scale(1.04)}}
+.compra__info{background:rgba(255,255,255,.72);padding:clamp(28px,4vw,56px);display:grid;gap:22px;align-content:center}
+.compra h2{font-size:clamp(34px,4vw,52px)}
+.datos{display:flex;gap:10px;flex-wrap:wrap}
+.datos span{border:1px solid rgba(29,158,85,.35);color:var(--verde);border-radius:99px;padding:5px 12px;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.stock{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:#2f7d3e}
+.stock::before{content:"";width:8px;height:8px;border-radius:50%;background:#3aa34f;box-shadow:0 0 0 4px rgba(58,163,79,.18)}
+.packs{display:grid;gap:10px;border:0;padding:0;margin:0}
+.pack{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:14px 18px;border-radius:18px;background:#fff;border:1px solid transparent;cursor:pointer;transition:border-color .3s,background .3s}
+.pack input{accent-color:var(--hoja);width:18px;height:18px}
+.pack:has(input:checked){border-color:var(--hoja);background:linear-gradient(100deg,#fff 40%,var(--vainilla))}
+.pack small{display:block;color:var(--suave);font-size:13px}
+.pack .etq{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--verde);margin-left:6px}
+.pack .pr{text-align:right;font-variant-numeric:tabular-nums;font-weight:400}
+.pack s{display:block;color:var(--suave);font-weight:300;font-size:13px}
+
+/* ---------- manifiesto ---------- */
+.manifiesto p{font-size:clamp(34px,5.2vw,68px);line-height:1.12;max-width:16ch;text-wrap:balance}
+.manifiesto .t{background:linear-gradient(100deg,var(--hoja),var(--verde) 35%,#9cc93a 60%,#e2b45a 85%,#d98a5c);background-size:100vw 100%;background-attachment:fixed;
+  -webkit-background-clip:text;background-clip:text;color:rgba(31,58,40,.14);transition:color .5s}
+.manifiesto .t.on{color:transparent}
+
+/* ---------- mood box ---------- */
+.modo__caja{position:relative;border-radius:calc(var(--r) + 8px);overflow:hidden;min-height:520px;display:grid;grid-template-columns:1fr 1fr;isolation:isolate;background:var(--crema)}
+.modo__caja .blob{position:absolute;border-radius:50%;filter:blur(60px);z-index:-1;transition:background 1s}
+.b1{width:70%;aspect-ratio:1;left:-15%;top:-30%;background:var(--c);animation:flota 14s ease-in-out infinite}
+.b2{width:55%;aspect-ratio:1;right:-10%;bottom:-30%;background:color-mix(in srgb,var(--c) 60%,var(--melocoton));animation:flota 18s ease-in-out infinite reverse}
+.b3{width:40%;aspect-ratio:1;right:25%;top:10%;background:var(--vainilla);animation:flota 11s ease-in-out infinite}
+@keyframes flota{50%{transform:translate(8%,10%) scale(1.1)}}
+.modo__txt{padding:clamp(28px,5vw,64px);display:grid;align-content:space-between;gap:32px}
+.modo__txt h2{font-size:clamp(28px,3vw,38px)}
+.modo__palabra{font:300 clamp(72px,11vw,150px)/.9 var(--serif);font-style:italic;color:var(--tinta)}
+.modo__receta h3{font-size:24px;font-weight:400;margin-bottom:6px}
+.modo__receta p{color:#3d5245;max-width:38ch}
+.modo__tabs{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-end;justify-content:flex-end;padding:clamp(28px,5vw,64px)}
+.modo__tabs button{border:1px solid rgba(31,58,40,.25);background:rgba(255,255,255,.55);border-radius:99px;padding:9px 18px;cursor:pointer;color:var(--tinta);display:flex;align-items:center;gap:8px;backdrop-filter:blur(6px)}
+.modo__tabs button i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.modo__tabs button[aria-pressed="true"]{background:var(--tinta);color:#fff;border-color:var(--tinta)}
+
+/* ---------- sellos ---------- */
+.sellos__fila{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,4vw,56px);margin-top:48px}
+.sello{display:grid;justify-items:center;gap:16px;text-align:center}
+.sello__disco{position:relative;width:min(100%,280px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;max-width:100%}
+.sello:nth-child(1) .sello__disco{background:radial-gradient(circle,var(--melocoton) 30%,var(--menta) 100%)}
+.sello:nth-child(2) .sello__disco{background:radial-gradient(circle,var(--verde) 0%,var(--pistacho) 45%,var(--crema) 75%)}
+.sello:nth-child(3) .sello__disco{background:radial-gradient(circle,var(--vainilla) 40%,#e9f0c2 100%)}
+.sello__aro{position:absolute;inset:0;animation:gira 26s linear infinite}
+.sello__aro text{font:400 9.5px var(--sans);letter-spacing:.24em;text-transform:uppercase;fill:var(--hoja)}
+@keyframes gira{to{transform:rotate(360deg)}}
+.sello__centro{font:300 clamp(46px,5vw,64px)/1 var(--serif);font-style:italic;color:var(--hoja)}
+.sello:nth-child(2) .sello__centro{color:#fff}
+.sello p{max-width:26ch;color:var(--suave);font-size:15px}
+
+/* ---------- pasos ---------- */
+.pasos{background:var(--etiqueta)}
+.pasos__fila{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;margin-top:44px;counter-reset:p}
+.paso{display:grid;gap:12px;align-content:start;counter-increment:p}
+.paso__ico{position:relative;height:110px;display:grid;place-items:center}
+.paso__ico svg{height:92px;width:auto;stroke:var(--verde);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.paso__ico::before{content:counter(p);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--verde);color:var(--verde);display:grid;place-items:center;font-size:13px}
+.paso__ico .hw{position:absolute;right:4px;top:-4px;font:500 22px/0.85 var(--mano);color:var(--verde);transform:rotate(-8deg);text-transform:uppercase}
+.paso h3{font-size:20px;font-weight:400}
+.paso p{font-size:15px;color:#46594b}
+.pasos h2{font-size:clamp(36px,4.6vw,58px)}
+
+/* ---------- pie ---------- */
+.pie{padding-block:clamp(48px,7vw,96px) 0}
+.pie__caja{border-radius:calc(var(--r) + 8px) calc(var(--r) + 8px) 0 0;background:var(--etiqueta);padding-block:clamp(56px,8vw,100px) 40px;text-align:center;display:grid;gap:22px;justify-items:center}
+.pie__logo{font:300 clamp(44px,10vw,140px)/1 var(--sans);letter-spacing:.04em;color:var(--verde);white-space:nowrap}
+.pie p{color:#46594b}
+.pie__pequeno{display:flex;gap:24px;flex-wrap:wrap;justify-content:center;font-size:13px;color:var(--suave);margin-top:28px}
+
+/* ---------- móvil ---------- */
+@media (max-width:900px){
+  nav{display:none}
+  .orbes{grid-template-columns:repeat(3,1fr);row-gap:56px}
+  .premio,.compra__caja,.modo__caja{grid-template-columns:1fr}
+  .compra__arte{min-height:320px}
+  .modo__tabs{justify-content:flex-start;padding-top:0;order:2}
+  .modo__caja{min-height:0}
+  .pasos__fila{grid-template-columns:repeat(2,1fr);row-gap:36px}
+  .sellos__fila{grid-template-columns:1fr;gap:48px}
+}
+@media (max-width:480px){.logo{font-size:18px}.pasos__fila{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="oo" viewBox="0 0 38 22"><path d="M19 5A10 10 0 1 0 19 17A10 10 0 1 0 19 5Z" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+</svg>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="#">M<svg class="oo" viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</a>
+    <nav><a href="#compra">Comprar</a><a href="#pasos">Cómo se prepara</a><a href="#juego">Elige tu mood</a></nav>
+    <span class="cesta">Cesta 0</span>
+  </div>
+</header>
+
+<section class="portada">
+  <video autoplay muted loop playsinline poster="mm-ceremonia.jpg"><source src="mm-ceremonia.mp4" type="video/mp4"></video>
+  <div class="velo"></div>
+  <div class="wrap">
+    <h1>Un matcha<br>para tu <span class="giro" id="giro" style="--c:var(--focus)">focus.</span></h1>
+    <div class="portada__lado">
+      <p>Matcha Uji de primera cosecha, grado ceremonial. Una lata para todos tus moods.</p>
+      <a class="btn btn--claro" href="#compra">Comprar, 24,90 €</a>
+    </div>
+  </div>
+</section>
+
+<div class="cinta" aria-hidden="true"><div class="cinta__pista" id="cinta"></div></div>
+
+<section class="juego" id="juego">
+  <div class="wrap">
+    <div class="juego__cab">
+      <div>
+        <p class="eyebrow">El juego</p>
+        <h2>Elige tu <em>mood</em></h2>
+      </div>
+      <p>Toca el círculo que más va contigo hoy. Cada mood esconde un regalo distinto que te enviamos por email.</p>
+    </div>
+    <div class="orbes" id="orbes"></div>
+    <div class="premio" id="premio">
+      <div>
+        <p class="eyebrow" id="pr-ey">Tu mood: Focus</p>
+        <h3 id="pr-t">Para cuando necesitas cabeza clara.</h3>
+        <span class="nota">Premios de ejemplo, pendientes de confirmar</span>
+      </div>
+      <div>
+        <p class="dto" id="pr-d">−10 %</p>
+        <form id="pr-f" style="margin-top:16px">
+          <label for="pr-email" class="eyebrow" style="position:absolute;left:-9999px">Tu email</label>
+          <input id="pr-email" type="email" placeholder="tu@email.com" required>
+          <button class="btn btn--verde" type="submit">Quiero mi regalo</button>
+        </form>
+        <small id="pr-ok">Te llega el código al momento. Puedes darte de baja cuando quieras.</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="compra" id="compra">
+  <div class="wrap">
+    <div class="compra__caja">
+      <div class="compra__arte">
+        <span class="mano">tu lata aquí</span>
+        <div class="burbuja"><svg viewBox="0 0 38 22" style="color:var(--verde)"><use href="#oo"/></svg></div>
+      </div>
+      <div class="compra__info">
+        <div class="datos"><span>Grado ceremonial</span><span>De primera cosecha</span><span>30 g</span></div>
+        <h2>Una sola lata,<br><em>de primera cosecha</em></h2>
+        <span class="stock">En stock</span>
+        <fieldset class="packs">
+          <label class="pack"><input type="radio" name="pack" id="pk1"><span>1 lata<small>24,90 € cada lata</small></span><span class="pr">24,90 €</span></label>
+          <label class="pack"><input type="radio" name="pack" id="pk2" checked><span>2 latas <span class="etq">El más elegido</span><small>22,41 € cada lata</small></span><span class="pr">44,82 €<s>49,80 €</s></span></label>
+          <label class="pack"><input type="radio" name="pack" id="pk3"><span>3 latas <span class="etq">Más ahorro</span><small>21,16 € cada lata</small></span><span class="pr">63,49 €<s>74,70 €</s></span></label>
+        </fieldset>
+        <button class="btn btn--verde" type="button">Añadir a la cesta · 44,82 €</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="manifiesto">
+  <div class="wrap"><p id="manif">Hojas nuevas de primavera. Veinte días a la sombra. Nada de amargor. Un matcha que se adapta a tu mood.</p></div>
+</section>
+
+<section class="modo">
+  <div class="wrap">
+    <div class="modo__caja" id="modo" style="--c:var(--focus)">
+      <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+      <div class="modo__txt">
+        <h2>Hoy estoy en modo</h2>
+        <div class="modo__palabra" id="mo-p">focus</div>
+        <div class="modo__receta"><h3 id="mo-r">Solo con agua</h3><p id="mo-t">2 g de matcha y 70 ml de agua a 80 °C. Bate en zigzag quince segundos y bébelo tranquilo.</p></div>
+      </div>
+      <div class="modo__tabs" id="mo-tabs"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sellos">
+  <div class="wrap">
+    <p class="eyebrow">Lo que hay detrás de cada taza</p>
+    <div class="sellos__fila">
+      <div class="sello"><div class="sello__disco">
+        <svg class="sello__aro" viewBox="0 0 200 200"><defs><path id="a1" d="M100 100m-82 0a82 82 0 1 1 164 0a82 82 0 1 1-164 0"/></defs><text><textPath href="#a1">Hojas nuevas de primavera · molido en piedra ·</textPath></text></svg>
+        <span class="sello__centro">1ª</span></div>
+        <p>Primera cosecha, de las hojas nuevas de esta primavera.</p></div>
+      <div class="sello"><div class="sello__disco">
+        <svg class="sello__aro" viewBox="0 0 200 200"><defs><path id="a2" d="M100 100m-82 0a82 82 0 1 1 164 0a82 82 0 1 1-164 0"/></defs><text><textPath href="#a2">Sin nada de amargor · cultivado a la sombra ·</textPath></text></svg>
+        <span class="sello__centro">20</span></div>
+        <p>Al menos 20 días a la sombra, para que no amargue.</p></div>
+      <div class="sello"><div class="sello__disco">
+        <svg class="sello__aro" viewBox="0 0 200 200"><defs><path id="a3" d="M100 100m-82 0a82 82 0 1 1 164 0a82 82 0 1 1-164 0"/></defs><text><textPath href="#a3">Color intenso · textura cremosa · final dulce ·</textPath></text></svg>
+        <span class="sello__centro">Verde</span></div>
+        <p>Verde intenso, textura cremosa y final dulce.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pasos" id="pasos">
+  <div class="wrap">
+    <p class="eyebrow">Pasos para tu matcha</p>
+    <h2>Un minuto, <em>cinco gestos</em></h2>
+    <div class="pasos__fila">
+      <div class="paso"><div class="paso__ico"><svg viewBox="0 0 100 90"><ellipse cx="42" cy="38" rx="26" ry="9"/><path d="M16 38v22c0 5 12 9 26 9s26-4 26-9V38"/><path d="M62 30l26-14"/><ellipse cx="90" cy="15" rx="5" ry="3"/></svg></div><h3>Abre la lata</h3><p>Una cucharadita de bambú.</p></div>
+      <div class="paso"><div class="paso__ico"><svg viewBox="0 0 100 90"><rect x="18" y="40" width="64" height="38" rx="6"/><rect x="30" y="56" width="22" height="12" rx="2"/><path d="M30 40c0-12 40-12 40 0"/><path d="M42 28c2-8 14-8 16 0"/></svg></div><h3>Pesa 2 g</h3><p>Tamízalo en el cuenco, sin grumos.</p></div>
+      <div class="paso"><div class="paso__ico"><span class="hw">hot<br>water</span><svg viewBox="0 0 100 90"><path d="M20 20h30l-4 14H24z"/><path d="M48 24c10 0 14 6 10 12"/><path d="M36 38v12M40 52v10"/><path d="M22 62h40c0 14-8 22-20 22s-20-8-20-22z"/></svg></div><h3>Agua a 80 °C</h3><p>70 ml, nunca hirviendo.</p></div>
+      <div class="paso"><div class="paso__ico"><svg viewBox="0 0 100 90"><path d="M18 50h56c0 18-12 30-28 30S18 68 18 50z"/><path d="M46 46V16M40 46l-2-24M52 46l2-24"/><path d="M78 26c6 4 6 12 0 16M14 26c-6 4-6 12 0 16"/></svg></div><h3>Bate en zigzag</h3><p>Quince segundos, hasta que haga espuma.</p></div>
+      <div class="paso"><div class="paso__ico"><svg viewBox="0 0 100 90"><path d="M24 40h52l-6 40H30z"/><path d="M50 40c-8-10-2-24 12-28-2 12-4 20-12 28z"/><path d="M50 40c4-8 14-10 22-6-6 6-12 8-22 6z"/><path d="M34 56h32"/></svg></div><h3>Elige tu mood</h3><p>Solo, con leche, con hielo o con tónica.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pie">
+  <div class="pie__caja">
+    <div class="wrap" style="display:grid;gap:22px;justify-items:center">
+      <div class="pie__logo">M<svg class="oo" viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
+      <p>Matcha Uji de primera cosecha, envasado a mano en Benissa.</p>
+      <div class="pie__pequeno"><span>Envío en 24–72 h</span><span>Pago seguro</span><span>14 días para devolverlo</span><span>@moodmatcha</span></div>
+    </div>
+  </div>
+</section>
+
+<script>
+const MOODS=[
+  {id:'good',n:'Good',c:'var(--good)',dto:'−10 %',t:'Para los días que ya vienen bonitos.',r:'Matcha affogato',x:'Una bola de helado de vainilla y el matcha recién batido por encima.'},
+  {id:'chill',n:'Chill',c:'var(--chill)',dto:'Envío gratis',t:'Para bajar revoluciones sin prisa.',r:'Latte frío de avena',x:'Bate 2 g con un poco de agua y viértelo sobre hielo y 200 ml de bebida de avena.'},
+  {id:'focus',n:'Focus',c:'var(--focus)',dto:'−10 %',t:'Para cuando necesitas cabeza clara.',r:'Solo con agua',x:'2 g de matcha y 70 ml de agua a 80 °C. Bate en zigzag quince segundos y bébelo tranquilo.'},
+  {id:'monday',n:'Monday',c:'var(--monday)',dto:'−12 %',t:'Para empezar la semana con otra cara.',r:'Con hielo y tónica',x:'Hielo, 150 ml de tónica y el matcha batido en agua fría por encima.'},
+  {id:'social',n:'Social',c:'var(--social)',dto:'−15 % en 2 latas',t:'Para compartir con tu gente.',r:'Matcha lemonade',x:'Limón, agua con gas y matcha. Para compartir en la terraza.'},
+  {id:'slow',n:'Slow',c:'var(--slow)',dto:'−10 %',t:'Para los ratos lentos y tuyos.',r:'Latte templado de avena',x:'Bate 2 g con un poco de agua y añade 200 ml de bebida de avena espumada.'}
+];
+const $=s=>document.querySelector(s);
+const oo='<svg viewBox="0 0 38 22"><use href="#oo"/></svg>';
+
+/* cinta con el texto de la etiqueta */
+const frase=['Grado ceremonial','De primera cosecha','30 g','Matcha Uji','Good · Chill · Focus · Monday · Social · Slow','Envasado a mano en Benissa'];
+const trozo=frase.map(f=>`<span>${f}<svg viewBox="0 0 38 22" style="color:var(--verde)"><use href="#oo"/></svg></span>`).join('');
+$('#cinta').innerHTML=trozo+trozo;
+
+/* palabra que gira en la portada */
+let gi=2;
+setInterval(()=>{const g=$('#giro');g.style.opacity=0;setTimeout(()=>{gi=(gi+1)%MOODS.length;g.textContent=MOODS[gi].n.toLowerCase()+'.';g.style.setProperty('--c',MOODS[gi].c);g.style.opacity=1},400)},2600);
+
+/* juego */
+const orbes=$('#orbes'),premio=$('#premio');
+MOODS.forEach((m,i)=>{
+  const b=document.createElement('button');b.className='orbe';b.style.setProperty('--c',m.c);b.setAttribute('aria-pressed',i===2);
+  b.innerHTML=oo+`<b>${m.n.toUpperCase()}</b>`;b.setAttribute('aria-label','Mood '+m.n);
+  b.onclick=()=>{orbes.querySelectorAll('.orbe').forEach(o=>o.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
+    premio.style.setProperty('--c',m.c);$('#pr-ey').textContent='Tu mood: '+m.n;$('#pr-t').textContent=m.t;$('#pr-d').textContent=m.dto};
+  orbes.appendChild(b);
+});
+premio.style.setProperty('--c','var(--focus)');
+$('#pr-f').addEventListener('submit',e=>{e.preventDefault();$('#pr-ok').textContent='Hecho. En la web real aquí te llegaría el email con tu código.'});
+
+/* packs */
+const btn=document.querySelector('.compra__info .btn');
+const tot={pk1:'24,90 €',pk2:'44,82 €',pk3:'63,49 €'};
+document.querySelectorAll('.pack input').forEach(r=>r.addEventListener('change',()=>btn.textContent='Añadir a la cesta · '+tot[r.id]));
+
+/* texto que se tiñe con el degradado */
+const mp=$('#manif');mp.innerHTML=mp.textContent.split(' ').map(w=>`<span class="t">${w}</span>`).join(' ');
+const ts=[...mp.querySelectorAll('.t')];
+function tinta(){const r=mp.getBoundingClientRect(),vh=innerHeight;const p=Math.min(1,Math.max(0,(vh*.85-r.top)/(r.height+vh*.35)));const n=Math.round(p*ts.length);ts.forEach((t,i)=>t.classList.toggle('on',i<n))}
+addEventListener('scroll',tinta,{passive:true});tinta();
+
+/* recuadro de mood */
+const modo=$('#modo'),tabs=$('#mo-tabs');
+MOODS.forEach((m,i)=>{const b=document.createElement('button');b.style.setProperty('--c',m.c);b.innerHTML=`<i></i>${m.n}`;b.setAttribute('aria-pressed',i===2);
+  b.onclick=()=>{tabs.querySelectorAll('button').forEach(o=>o.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
+    modo.style.setProperty('--c',m.c);$('#mo-p').textContent=m.n.toLowerCase();$('#mo-r').textContent=m.r;$('#mo-t').textContent=m.x};
+  tabs.appendChild(b)});
+</script>
