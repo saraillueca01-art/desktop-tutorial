@@ -260,6 +260,60 @@ nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:6px;t
 }
 @media (max-width:560px){.rejilla{grid-template-columns:1fr}.valores__fila{grid-template-columns:1fr}}
 
+
+/* ---------- cambios v3 ---------- */
+.suscribe{background:var(--crema);border:1px solid rgba(29,158,85,.18)}
+.orbes.esperando .orbe{animation:late 3.2s ease-in-out infinite}
+.orbes.esperando .orbe:nth-child(2){animation-delay:.25s}.orbes.esperando .orbe:nth-child(3){animation-delay:.5s}
+.orbes.esperando .orbe:nth-child(4){animation-delay:.75s}.orbes.esperando .orbe:nth-child(5){animation-delay:1s}.orbes.esperando .orbe:nth-child(6){animation-delay:1.25s}
+@keyframes late{0%,100%{transform:none}50%{transform:translateY(-6px)}}
+.premio.sale{animation:sale .7s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes sale{from{opacity:0;transform:scale(.94) translateY(16px)}}
+.pasos__cuerpo{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(28px,4vw,64px);align-items:center;margin-top:44px}
+.pasos__video{margin:0;position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:4/5;max-width:100%;background:var(--crema)}
+.pasos__video video{width:100%;height:100%;object-fit:cover;display:block}
+.pasos__video figcaption{position:absolute;left:16px;bottom:16px;background:rgba(255,255,255,.88);border-radius:99px;padding:7px 14px;font-size:13px;color:var(--hoja)}
+.pasos__cuerpo .pasos__fila{margin-top:0;grid-template-columns:1fr;gap:6px}
+.pasos__cuerpo .paso{grid-template-columns:110px 1fr;column-gap:20px;align-items:center;row-gap:2px}
+.pasos__cuerpo .paso__ico{grid-row:span 2;height:84px}
+.pasos__cuerpo .paso__ico svg{height:70px}
+.pasos__cuerpo .paso__ico .hw{font-size:15px;right:-10px;top:-8px}
+.pasos__cuerpo .paso h3,.pasos__cuerpo .paso p{grid-column:2}
+.pasos__cuerpo .paso h3{align-self:end}.pasos__cuerpo .paso p{align-self:start}
+.momentos__cab{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:36px}
+.momentos h2{font-size:clamp(36px,4.6vw,58px)}
+.muro{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
+.muro__col{display:grid;gap:14px}
+.muro__col:nth-child(even){margin-top:48px}
+.muro img,.muro__oo{width:100%;max-width:100%;object-fit:cover;border-radius:20px;display:block}
+.muro .alta{aspect-ratio:4/5}.muro .muy-alta{aspect-ratio:3/5}.muro .cuadrada{aspect-ratio:1}
+.muro__oo{background:var(--etiqueta);display:grid;place-items:center;align-content:center;gap:10px;color:var(--verde)}
+.muro__oo svg{width:34%}.muro__oo span{font-size:13px;letter-spacing:.12em}
+.reto{padding-top:clamp(48px,6vw,80px)}
+.reto__caja{border-radius:calc(var(--r) + 8px);padding:clamp(28px,5vw,64px);display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,56px);align-items:center;
+  background:radial-gradient(circle at 15% 30%,var(--vainilla) 0%,transparent 55%),radial-gradient(circle at 85% 80%,var(--melocoton) 0%,transparent 60%),var(--menta)}
+.reto h2{font-size:clamp(46px,6.6vw,92px);margin-top:12px}
+.reto__txt{display:grid;gap:14px;color:#2f4636}
+.hucha{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:baseline;background:rgba(255,255,255,.7);border-radius:20px;padding:16px 20px;margin-top:6px}
+.hucha b{font:400 clamp(26px,2.6vw,34px)/1 var(--serif);font-style:italic;color:var(--hoja);font-variant-numeric:tabular-nums}
+.comentarios{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:28px}
+.coment{margin:0;border-radius:22px 22px 22px 6px;padding:22px;display:grid;gap:14px;align-content:space-between;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--c) 45%,var(--crema)) 0%,var(--crema) 80%)}
+.coment blockquote{margin:0;font-size:16px;line-height:1.5}
+.coment figcaption{font-size:13px;color:var(--suave)}
+.dibujo{display:grid;grid-template-columns:auto 1fr;gap:clamp(28px,5vw,72px);align-items:center}
+.polaroid{margin:0;background:#fff;padding:14px 14px 18px;border-radius:6px;box-shadow:0 18px 40px -18px rgba(31,58,40,.35),0 0 0 1px rgba(31,58,40,.06);transform:rotate(-3deg);width:min(300px,100%);display:grid;gap:12px}
+.polaroid__hueco{aspect-ratio:1;background:var(--etiqueta);display:grid;place-items:center;border-radius:2px}
+.polaroid__hueco span{font:500 28px/1 var(--mano);color:var(--verde);text-align:center;transform:rotate(-6deg)}
+.polaroid figcaption{font:500 20px/1.1 var(--mano);color:var(--tinta);text-align:center}
+@media (max-width:900px){
+  .pasos__cuerpo,.reto__caja,.dibujo{grid-template-columns:1fr}
+  .pasos__video{aspect-ratio:4/3}
+  .muro{grid-template-columns:1fr 1fr}.muro__col:nth-child(n+3){display:none}
+  .comentarios{grid-template-columns:1fr 1fr}
+}
+@media (max-width:560px){.comentarios{grid-template-columns:1fr}.pasos__cuerpo .paso{grid-template-columns:80px 1fr}.pasos__cuerpo .paso__ico svg{height:56px}}
+
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 
@@ -298,21 +352,22 @@ nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:6px;t
         <p class="eyebrow">El juego</p>
         <h2>Elige tu <em>mood</em></h2>
       </div>
-      <p>Toca el círculo que más va contigo hoy. Cada mood esconde un regalo distinto que te enviamos por email.</p>
+      <p>Toca el círculo que más va contigo hoy. Cada uno esconde una sorpresa.</p>
     </div>
     <div class="orbes" id="orbes"></div>
-    <div class="premio" id="premio">
+    <div class="premio" id="premio" hidden>
       <div>
-        <p class="eyebrow" id="pr-ey">Tu mood: Focus</p>
+        <p class="eyebrow" id="pr-ey">Tu mood: Focus · ¡Sorpresa!</p>
         <h3 id="pr-t">Para cuando necesitas cabeza clara.</h3>
         <span class="nota">Premios de ejemplo, pendientes de confirmar</span>
       </div>
       <div>
         <p class="dto" id="pr-d">−10 %</p>
-        <form id="pr-f" style="margin-top:16px">
+        <p style="margin-top:10px;color:#3d5245">Para recibir tu sorpresa, déjanos tu email.</p>
+        <form id="pr-f" style="margin-top:12px">
           <label for="pr-email" class="eyebrow" style="position:absolute;left:-9999px">Tu email</label>
           <input id="pr-email" type="email" placeholder="tu@email.com" required>
-          <button class="btn btn--verde" type="submit">Quiero mi regalo</button>
+          <button class="btn btn--verde" type="submit">Recibir mi sorpresa</button>
         </form>
         <small id="pr-ok">Te llega el código al momento. Puedes darte de baja cuando quieras.</small>
       </div>
@@ -385,9 +440,9 @@ nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:6px;t
     <div class="retrato"><span>foto<br>de Sara</span></div>
     <div>
       <p class="eyebrow">Quiénes somos</p>
-      <p class="cita" style="margin-top:14px">Una bebida para acompañar tus diferentes estados de ánimo.</p>
-      <p class="firma">Sara Illueca · fundadora · Benissa, Alicante</p>
-      <a class="enlace" href="#nosotros">Conoce Mood Matcha →</a>
+      <p class="cita" style="margin-top:14px">1 seguidor = 1 céntimo. Así estamos construyendo Mood Matcha, contigo.</p>
+      <p class="firma">Sara Illueca · fundadora</p>
+      <a class="enlace" href="#nosotros">Conoce nuestra historia →</a>
     </div>
   </div>
 </section>
@@ -396,12 +451,15 @@ nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:6px;t
   <div class="wrap">
     <p class="eyebrow">Pasos para tu matcha</p>
     <h2>Un minuto, <em>cinco gestos</em></h2>
+    <div class="pasos__cuerpo">
+    <figure class="pasos__video"><video autoplay muted loop playsinline poster="mm-ceremonia.jpg"><source src="mm-ceremonia.mp4" type="video/mp4"></video><figcaption>Aquí irá vuestro vídeo</figcaption></figure>
     <div class="pasos__fila">
       <div class="paso"><div class="paso__ico"><svg viewBox="0 0 100 90"><ellipse cx="42" cy="38" rx="26" ry="9"/><path d="M16 38v22c0 5 12 9 26 9s26-4 26-9V38"/><path d="M62 30l26-14"/><ellipse cx="90" cy="15" rx="5" ry="3"/></svg></div><h3>Abre la lata</h3><p>Una cucharadita de bambú.</p></div>
       <div class="paso"><div class="paso__ico"><svg viewBox="0 0 100 90"><rect x="18" y="40" width="64" height="38" rx="6"/><rect x="30" y="56" width="22" height="12" rx="2"/><path d="M30 40c0-12 40-12 40 0"/><path d="M42 28c2-8 14-8 16 0"/></svg></div><h3>Pesa 2 g</h3><p>Tamízalo en el cuenco, sin grumos.</p></div>
       <div class="paso"><div class="paso__ico"><span class="hw">hot<br>water</span><svg viewBox="0 0 100 90"><path d="M20 20h30l-4 14H24z"/><path d="M48 24c10 0 14 6 10 12"/><path d="M36 38v12M40 52v10"/><path d="M22 62h40c0 14-8 22-20 22s-20-8-20-22z"/></svg></div><h3>Agua a 80 °C</h3><p>70 ml, nunca hirviendo.</p></div>
       <div class="paso"><div class="paso__ico"><svg viewBox="0 0 100 90"><path d="M18 50h56c0 18-12 30-28 30S18 68 18 50z"/><path d="M46 46V16M40 46l-2-24M52 46l2-24"/><path d="M78 26c6 4 6 12 0 16M14 26c-6 4-6 12 0 16"/></svg></div><h3>Bate en zigzag</h3><p>Quince segundos, hasta que haga espuma.</p></div>
       <div class="paso"><div class="paso__ico"><svg viewBox="0 0 100 90"><path d="M24 40h52l-6 40H30z"/><path d="M50 40c-8-10-2-24 12-28-2 12-4 20-12 28z"/><path d="M50 40c4-8 14-10 22-6-6 6-12 8-22 6z"/><path d="M34 56h32"/></svg></div><h3>Elige tu mood</h3><p>Solo, con leche, con hielo o con tónica.</p></div>
+    </div>
     </div>
   </div>
 </section>
@@ -413,14 +471,25 @@ nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:6px;t
   </div>
 </section>
 
-</main>
+<section class="momentos">
+  <div class="wrap">
+    <div class="momentos__cab"><h2>Momentos <em>en calma</em></h2><a class="enlace" href="https://www.instagram.com/moodmatcha/" target="_blank" rel="noopener" style="margin:0">Síguenos en Instagram @moodmatcha →</a></div>
+    <div class="muro">
+      <div class="muro__col"><img class="alta" src="mm-acuarela-arco.jpg" alt=""><img class="cuadrada" src="mm-acuarela-molino.jpg" alt=""></div>
+      <div class="muro__col"><img class="muy-alta" src="mm-acuarela-latte.jpg" alt=""><div class="cuadrada muro__oo"><svg viewBox="0 0 38 22"><use href="#oo"/></svg><span>@moodmatcha</span></div></div>
+      <div class="muro__col"><img class="cuadrada" src="mm-ceremonia.jpg" alt=""><img class="alta" src="mm-acuarela-bodegon.jpg" alt=""></div>
+      <div class="muro__col"><img class="alta" src="mm-acuarela-polvo.jpg" alt=""><img class="cuadrada" src="mm-acuarela-latte.jpg" alt=""></div>
+    </div>
+  </div>
+</section>
 
+</main>
 <main class="vista" id="v-nosotros" hidden>
   <section class="cabeza">
     <div class="wrap">
       <p class="eyebrow">Nosotros</p>
       <h1>Hola, somos<br><em>Mood Matcha</em></h1>
-      <p class="intro">Mood Matcha, fundado por Sara Illueca, nace en Benissa, Alicante, de la ilusión de promover el bienestar y la alimentación consciente a través de té matcha de primera cosecha y calidad ceremonial. Se envasa artesanalmente, cuidando cada detalle para ofrecer una experiencia auténtica, cercana y de calidad.</p>
+      <p class="intro">Una marca española de matcha Uji de primera cosecha y grado ceremonial, fundada por Sara Illueca en Benissa, Alicante. Y la estamos construyendo poco a poco, con vosotros.</p>
     </div>
   </section>
 
@@ -435,10 +504,45 @@ nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:6px;t
     </div>
   </section>
 
+  <section class="reto">
+    <div class="wrap">
+      <div class="reto__caja">
+        <div>
+          <p class="eyebrow">El reto de Instagram</p>
+          <h2>1 seguidor<br>= <em>1 céntimo</em></h2>
+        </div>
+        <div class="reto__txt">
+          <p>Empezamos sin nada. Así que nos propusimos un reto en Instagram: por cada persona que nos siguiera, pondríamos un céntimo en el proyecto.</p>
+          <p>Con esos céntimos hemos ido comprando, poco a poco, todo lo que hacía falta para que Mood Matcha existiera. Cada seguidor ha puesto su granito.</p>
+          <div class="hucha"><span>Llevamos</span><b data-editar>0000 seguidores</b><span>=</span><b data-editar>00,00 €</b></div>
+          <span class="nota">Cifras de ejemplo, las cambias tú</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section style="padding-top:0">
-    <div class="wrap mision">
-      <div><p class="eyebrow">Misión</p><h2>Matcha para <em>todos los días</em></h2><p>Hacer llegar el matcha a un público más amplio mediante un producto de calidad y accesible, convirtiéndolo en una opción cotidiana, cercana y divertida.</p></div>
-      <div><p class="eyebrow">Visión</p><h2>Una alternativa <em>al café</em></h2><p>Convertirnos en una marca referente del matcha, acercando un producto de calidad ceremonial a cada vez más personas e integrándolo en el día a día como parte de un estilo de vida más consciente y saludable.</p></div>
+    <div class="wrap">
+      <p class="eyebrow">Lo que nos decís</p>
+      <h2 style="font-size:clamp(36px,4.6vw,58px)">Vuestros <em>comentarios</em></h2>
+      <span class="nota">Comentarios de ejemplo: aquí pondremos los reales de Instagram</span>
+      <div class="comentarios">
+        <figure class="coment" style="--c:var(--good)"><blockquote>¡Qué ilusión ver cómo va creciendo! Yo ya he puesto mi céntimo 💚</blockquote><figcaption>@usuario_1</figcaption></figure>
+        <figure class="coment" style="--c:var(--chill)"><blockquote>Me encanta la idea del reto. Tengo muchas ganas de probarlo.</blockquote><figcaption>@usuario_2</figcaption></figure>
+        <figure class="coment" style="--c:var(--social)"><blockquote>Os sigo desde el primer céntimo. ¡A por el lanzamiento!</blockquote><figcaption>@usuario_3</figcaption></figure>
+        <figure class="coment" style="--c:var(--slow)"><blockquote>Qué bonito todo lo que estáis haciendo. Ya he avisado a mis amigas.</blockquote><figcaption>@usuario_4</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap dibujo">
+      <figure class="polaroid"><div class="polaroid__hueco"><span>aquí va<br>el dibujo</span></div><figcaption>El dibujo que nos hizo un seguidor</figcaption></figure>
+      <div>
+        <p class="eyebrow">Un regalo inesperado</p>
+        <h2 style="font-size:clamp(32px,4vw,52px);margin-top:10px">Un seguidor <em>nos hizo un dibujo</em></h2>
+        <p style="margin-top:16px;max-width:46ch;color:#3d5245">Cosas así son las que hacen que esto valga la pena. Gracias por estar desde el principio.</p>
+      </div>
     </div>
   </section>
 
@@ -489,14 +593,6 @@ nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:6px;t
       <div class="rejilla" id="rejilla"></div>
     </div>
   </section>
-  <section style="padding-top:0">
-    <div class="wrap">
-      <div class="suscribe">
-        <div><p class="eyebrow">Newsletter</p><h2>Una receta nueva <em>cada semana</em></h2></div>
-        <form id="sus-f"><label for="sus-email" style="position:absolute;left:-9999px">Tu email</label><input id="sus-email" type="email" placeholder="tu@email.com" required><button class="btn btn--verde" type="submit">Apuntarme</button></form>
-      </div>
-    </div>
-  </section>
 </main>
 
 <main class="vista" id="v-articulo" hidden>
@@ -523,10 +619,16 @@ nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:6px;t
 </main>
 
 <section class="pie">
+  <div class="wrap" style="margin-bottom:clamp(32px,4vw,48px)">
+    <div class="suscribe">
+      <div><p class="eyebrow">Newsletter</p><h2>Entérate <em>de todo</em></h2><p style="margin-top:10px;color:#3d5245">Novedades, recetas y el día del lanzamiento, antes que nadie.</p></div>
+      <form id="sus-f"><label for="sus-email" style="position:absolute;left:-9999px">Tu email</label><input id="sus-email" type="email" placeholder="tu@email.com" required><button class="btn btn--verde" type="submit">Apuntarme</button></form>
+    </div>
+  </div>
   <div class="pie__caja">
     <div class="wrap" style="display:grid;gap:22px;justify-items:center">
       <div class="pie__logo">M<svg class="oo" viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
-      <p>Matcha Uji de primera cosecha, envasado a mano en Benissa.</p>
+      <p>Matcha Uji de primera cosecha y grado ceremonial. Una marca española.</p>
       <div class="pie__pequeno"><span>Envío en 24–72 h</span><span>Pago seguro</span><span>14 días para devolverlo</span><span>@moodmatcha</span></div>
     </div>
   </div>
@@ -556,7 +658,7 @@ const $=s=>document.querySelector(s);
 const oo='<svg viewBox="0 0 38 22"><use href="#oo"/></svg>';
 
 /* cinta con el texto de la etiqueta */
-const frase=['Grado ceremonial','De primera cosecha','30 g','Matcha Uji','Good · Chill · Focus · Monday · Social · Slow','Envasado a mano en Benissa'];
+const frase=['Marca española','Grado ceremonial','De primera cosecha','30 g','Matcha Uji'];
 const trozo=frase.map(f=>`<span>${f}<svg viewBox="0 0 38 22" style="color:var(--verde)"><use href="#oo"/></svg></span>`).join('');
 $('#cinta').innerHTML=trozo+trozo;
 
@@ -567,13 +669,14 @@ setInterval(()=>{const g=$('#giro');g.style.opacity=0;setTimeout(()=>{gi=(gi+1)%
 /* juego */
 const orbes=$('#orbes'),premio=$('#premio');
 MOODS.forEach((m,i)=>{
-  const b=document.createElement('button');b.className='orbe';b.style.setProperty('--c',m.c);b.setAttribute('aria-pressed',i===2);
+  const b=document.createElement('button');b.className='orbe';b.style.setProperty('--c',m.c);b.setAttribute('aria-pressed','false');
   b.innerHTML=oo+`<b>${m.n.toUpperCase()}</b>`;b.setAttribute('aria-label','Mood '+m.n);
   b.onclick=()=>{orbes.querySelectorAll('.orbe').forEach(o=>o.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
-    premio.style.setProperty('--c',m.c);$('#pr-ey').textContent='Tu mood: '+m.n;$('#pr-t').textContent=m.t;$('#pr-d').textContent=m.dto};
+    premio.style.setProperty('--c',m.c);const nuevo=premio.hidden;premio.hidden=false;premio.classList.remove('sale');void premio.offsetWidth;premio.classList.add('sale');if(nuevo)premio.scrollIntoView({behavior:'smooth',block:'center'});$('#pr-ey').textContent='Tu mood: '+m.n+' · ¡Sorpresa!';$('#pr-t').textContent=m.t;$('#pr-d').textContent=m.dto};
   orbes.appendChild(b);
 });
 premio.style.setProperty('--c','var(--focus)');
+orbes.classList.add('esperando');
 $('#pr-f').addEventListener('submit',e=>{e.preventDefault();$('#pr-ok').textContent='Hecho. En la web real aquí te llegaría el email con tu código.'});
 
 /* packs */
