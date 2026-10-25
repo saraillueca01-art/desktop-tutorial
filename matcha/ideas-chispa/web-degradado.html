@@ -162,7 +162,9 @@ nav a{color:#fff;text-decoration:none;opacity:.9}
 
 /* ---------- móvil ---------- */
 @media (max-width:900px){
-  nav{display:none}
+  header .wrap{flex-wrap:wrap;row-gap:10px}
+  nav{order:3;width:100%;gap:18px;font-size:14px;overflow-x:auto}
+  nav a{white-space:nowrap}
   .orbes{grid-template-columns:repeat(3,1fr);row-gap:56px}
   .premio,.compra__caja,.modo__caja{grid-template-columns:1fr}
   .compra__arte{min-height:320px}
@@ -172,6 +174,92 @@ nav a{color:#fff;text-decoration:none;opacity:.9}
   .sellos__fila{grid-template-columns:1fr;gap:48px}
 }
 @media (max-width:480px){.logo{font-size:18px}.pasos__fila{grid-template-columns:1fr}}
+
+/* ---------- vistas: nosotros y diario ---------- */
+.vista[hidden]{display:none!important}
+body.claro .logo,body.claro nav a{color:var(--tinta)}
+body.claro .cesta{color:var(--tinta);border-color:rgba(31,58,40,.35)}
+nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:1px}
+.cabeza{background:var(--etiqueta);padding-block:clamp(130px,14vw,180px) clamp(56px,7vw,90px)}
+.cabeza h1{font-size:clamp(48px,7.4vw,104px);color:var(--tinta)}
+.cabeza p.intro{max-width:56ch;margin-top:24px;font-size:clamp(17px,1.4vw,20px);color:#3d5245}
+
+/* teaser nosotros en la home */
+.mini-nos .wrap{display:grid;grid-template-columns:auto 1fr;gap:clamp(28px,5vw,72px);align-items:center}
+.retrato{width:clamp(180px,22vw,280px);aspect-ratio:1;border-radius:50%;max-width:100%;position:relative;display:grid;place-items:center;
+  background:radial-gradient(circle,var(--vainilla) 0%,var(--melocoton) 45%,var(--menta) 100%)}
+.retrato span{font:500 26px/1 var(--mano);color:var(--verde);transform:rotate(-8deg);text-align:center}
+.cita{font:300 clamp(30px,3.6vw,48px)/1.15 var(--serif);font-style:italic;color:var(--tinta);max-width:22ch;text-wrap:balance}
+.firma{margin-top:18px;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--verde)}
+.enlace{display:inline-flex;gap:10px;align-items:center;margin-top:22px;color:var(--hoja);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:3px;font-weight:400}
+
+/* nosotros */
+.mision{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,64px)}
+.mision > div{border-top:1px solid rgba(31,58,40,.2);padding-top:22px;display:grid;gap:12px}
+.mision h2{font-size:clamp(30px,3.4vw,44px)}
+.mision p{color:#3d5245;max-width:46ch}
+.valores__fila{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:40px}
+.valor{border-radius:var(--r);padding:26px 22px 28px;display:grid;gap:12px;align-content:start;
+  background:linear-gradient(170deg,color-mix(in srgb,var(--c) 55%,var(--crema)) 0%,var(--crema) 70%)}
+.valor svg{width:44px;color:var(--hoja)}
+.valor h3{font-size:22px;font-weight:400}
+.valor p{font-size:15px;color:#46594b}
+.palabras{background:var(--etiqueta);padding-block:clamp(48px,6vw,80px);text-align:center}
+.palabras p{font:300 clamp(28px,4.4vw,60px)/1.3 var(--serif);font-style:italic;color:var(--hoja);text-wrap:balance}
+.palabras p span{white-space:nowrap}
+.palabras p b{font-weight:300;color:var(--verde);opacity:.5;margin:0 .3em;font-style:normal}
+
+/* diario */
+.destacado{display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(24px,4vw,56px);align-items:center;cursor:pointer}
+.destacado img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--r);max-width:100%}
+.destacado h2{font-size:clamp(34px,4.2vw,56px)}
+.meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--suave)}
+.chip{display:inline-flex;align-items:center;gap:7px;border-radius:99px;padding:4px 12px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;background:color-mix(in srgb,var(--c) 35%,#fff);color:var(--tinta)}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.filtros{display:flex;gap:8px;flex-wrap:wrap;margin-block:56px 32px}
+.filtros button{border:1px solid rgba(31,58,40,.22);background:#fff;border-radius:99px;padding:8px 16px;cursor:pointer;color:var(--tinta);display:flex;gap:8px;align-items:center}
+.filtros button i{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.filtros button[aria-pressed="true"]{background:var(--tinta);color:#fff;border-color:var(--tinta)}
+.rejilla{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.4vw,32px)}
+.post{text-decoration:none;display:grid;gap:14px;align-content:start;cursor:pointer;text-align:left;border:0;background:none;padding:0;color:inherit}
+.portadilla{aspect-ratio:4/3;border-radius:var(--r);display:grid;place-items:center;position:relative;overflow:hidden;max-width:100%;
+  background:radial-gradient(circle at 35% 40%,var(--c) 0%,color-mix(in srgb,var(--c) 45%,var(--crema)) 40%,var(--crema) 75%),var(--crema)}
+.portadilla::after{content:"";position:absolute;width:60%;aspect-ratio:1;right:-12%;bottom:-25%;border-radius:50%;background:radial-gradient(circle,var(--vainilla),transparent 70%)}
+.portadilla svg{width:22%;color:var(--tinta);opacity:.75;transition:transform .6s;position:relative;z-index:1}
+.post:hover .portadilla svg{transform:rotate(90deg) scale(1.1)}
+.post h3{font-size:clamp(21px,1.8vw,25px);font-weight:400;line-height:1.2}
+.post p{font-size:15px;color:var(--suave)}
+.vacio{grid-column:1/-1;color:var(--suave)}
+.suscribe{border-radius:calc(var(--r) + 8px);background:var(--etiqueta);padding:clamp(32px,5vw,64px);display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+.suscribe h2{font-size:clamp(30px,3.6vw,46px)}
+.suscribe form{display:flex;gap:8px;background:#fff;border-radius:99px;padding:6px;flex-wrap:wrap}
+.suscribe input{flex:1;min-width:0;border:0;padding:12px 16px;border-radius:99px;background:transparent;color:var(--tinta)}
+
+/* artículo */
+.art__cab{padding-block:clamp(130px,14vw,170px) clamp(48px,6vw,72px);background:linear-gradient(110deg,color-mix(in srgb,var(--c) 65%,var(--crema)) 0%,var(--vainilla) 50%,var(--melocoton) 100%)}
+.art__cab .wrap{max-width:860px}
+.art__cab h1{font-size:clamp(40px,5.6vw,74px);margin-block:18px}
+.volver{border:0;background:none;color:var(--hoja);cursor:pointer;padding:0;font-size:15px}
+.art__cuerpo{max-width:860px}
+.art__cuerpo > *{max-width:64ch}
+.art__cuerpo p{margin-bottom:1.2em;font-size:18px;line-height:1.75}
+.art__cuerpo h2{font-size:clamp(26px,2.6vw,34px);margin:1.6em 0 .6em}
+.receta{max-width:none!important;border-radius:var(--r);background:var(--crema);border:1px solid rgba(29,158,85,.2);padding:clamp(24px,3vw,36px);display:grid;grid-template-columns:auto 1fr;gap:28px;margin-block:36px}
+.receta dl{display:grid;grid-template-columns:auto auto;gap:6px 18px;margin:0;font-variant-numeric:tabular-nums}
+.receta dt{color:var(--suave)}.receta dd{margin:0;font-weight:400}
+.receta ol{margin:0;padding-left:1.2em;display:grid;gap:6px}
+
+/* teaser diario en la home */
+.mini-diario .cab{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:36px}
+.mini-diario h2{font-size:clamp(36px,4.6vw,58px)}
+
+@media (max-width:900px){
+  .mini-nos .wrap,.mision,.destacado,.suscribe,.receta{grid-template-columns:1fr}
+  .valores__fila{grid-template-columns:repeat(2,1fr)}
+  .rejilla{grid-template-columns:1fr 1fr}
+}
+@media (max-width:560px){.rejilla{grid-template-columns:1fr}.valores__fila{grid-template-columns:1fr}}
+
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 
@@ -181,11 +269,13 @@ nav a{color:#fff;text-decoration:none;opacity:.9}
 
 <header>
   <div class="wrap">
-    <a class="logo" href="#">M<svg class="oo" viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</a>
-    <nav><a href="#compra">Comprar</a><a href="#pasos">Cómo se prepara</a><a href="#juego">Elige tu mood</a></nav>
+    <a class="logo" href="#inicio">M<svg class="oo" viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</a>
+    <nav><a href="#compra">Comprar</a><a href="#juego">Elige tu mood</a><a href="#nosotros" data-v="nosotros">Nosotros</a><a href="#diario" data-v="diario">Diario</a></nav>
     <span class="cesta">Cesta 0</span>
   </div>
 </header>
+
+<main class="vista" id="v-inicio">
 
 <section class="portada">
   <video autoplay muted loop playsinline poster="mm-ceremonia.jpg"><source src="mm-ceremonia.mp4" type="video/mp4"></video>
@@ -290,6 +380,18 @@ nav a{color:#fff;text-decoration:none;opacity:.9}
   </div>
 </section>
 
+<section class="mini-nos">
+  <div class="wrap">
+    <div class="retrato"><span>foto<br>de Sara</span></div>
+    <div>
+      <p class="eyebrow">Quiénes somos</p>
+      <p class="cita" style="margin-top:14px">Una bebida para acompañar tus diferentes estados de ánimo.</p>
+      <p class="firma">Sara Illueca · fundadora · Benissa, Alicante</p>
+      <a class="enlace" href="#nosotros">Conoce Mood Matcha →</a>
+    </div>
+  </div>
+</section>
+
 <section class="pasos" id="pasos">
   <div class="wrap">
     <p class="eyebrow">Pasos para tu matcha</p>
@@ -304,6 +406,122 @@ nav a{color:#fff;text-decoration:none;opacity:.9}
   </div>
 </section>
 
+<section class="mini-diario">
+  <div class="wrap">
+    <div class="cab"><div><p class="eyebrow">Diario Mood</p><h2>Recetas para <em>cada mood</em></h2></div><a class="enlace" href="#diario" style="margin:0">Ver el diario →</a></div>
+    <div class="rejilla" data-posts="3"></div>
+  </div>
+</section>
+
+</main>
+
+<main class="vista" id="v-nosotros" hidden>
+  <section class="cabeza">
+    <div class="wrap">
+      <p class="eyebrow">Nosotros</p>
+      <h1>Hola, somos<br><em>Mood Matcha</em></h1>
+      <p class="intro">Mood Matcha, fundado por Sara Illueca, nace en Benissa, Alicante, de la ilusión de promover el bienestar y la alimentación consciente a través de té matcha de primera cosecha y calidad ceremonial. Se envasa artesanalmente, cuidando cada detalle para ofrecer una experiencia auténtica, cercana y de calidad.</p>
+    </div>
+  </section>
+
+  <section class="mini-nos">
+    <div class="wrap">
+      <div class="retrato"><span>foto<br>de Sara</span></div>
+      <div>
+        <p class="cita">Una marca con alma y cercanía local, pero con espíritu global.</p>
+        <p style="margin-top:18px;max-width:52ch;color:#3d5245">Mood Matcha nace de la idea de crear una bebida para acompañar diferentes estados de ánimo. Surge del amor por el bienestar de las personas y de la búsqueda de una alternativa natural al café.</p>
+        <p class="firma">Sara Illueca · fundadora</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap mision">
+      <div><p class="eyebrow">Misión</p><h2>Matcha para <em>todos los días</em></h2><p>Hacer llegar el matcha a un público más amplio mediante un producto de calidad y accesible, convirtiéndolo en una opción cotidiana, cercana y divertida.</p></div>
+      <div><p class="eyebrow">Visión</p><h2>Una alternativa <em>al café</em></h2><p>Convertirnos en una marca referente del matcha, acercando un producto de calidad ceremonial a cada vez más personas e integrándolo en el día a día como parte de un estilo de vida más consciente y saludable.</p></div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <p class="eyebrow">Valores</p>
+      <h2 style="font-size:clamp(36px,4.6vw,58px)">Lo que nos <em>mueve</em></h2>
+      <div class="valores__fila">
+        <div class="valor" style="--c:var(--focus)"><svg viewBox="0 0 38 22"><use href="#oo"/></svg><h3>Bienestar</h3><p>Pequeños hábitos que cuidan el cuerpo y la mente, con momentos de cuidado y equilibrio.</p></div>
+        <div class="valor" style="--c:var(--good)"><svg viewBox="0 0 38 22"><use href="#oo"/></svg><h3>Autenticidad</h3><p>Un producto honesto y de calidad, que respeta el origen y las propiedades del matcha.</p></div>
+        <div class="valor" style="--c:var(--social)"><svg viewBox="0 0 38 22"><use href="#oo"/></svg><h3>Comunidad</h3><p>Compartir conocimientos, experiencias y formas de disfrutar el matcha. Algo que conecta a las personas.</p></div>
+        <div class="valor" style="--c:var(--chill)"><svg viewBox="0 0 38 22"><use href="#oo"/></svg><h3>Sostenibilidad</h3><p>Materiales, procesos y decisiones que reduzcan nuestro impacto y animen a un consumo más consciente.</p></div>
+        <div class="valor" style="--c:var(--slow)"><svg viewBox="0 0 38 22"><use href="#oo"/></svg><h3>Cercanía y diversión</h3><p>El matcha no tiene por qué ser exclusivo ni difícil. Lo adaptamos a personas, momentos y estados de ánimo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="palabras"><div class="wrap"><p><span>ligereza</span> <b>·</b> <span>desconexión</span> <b>·</b> <span>calma</span> <b>·</b> <span>respirar</span> <b>·</b> <span>conexión de calidad</span> <b>·</b> <span>selfcare</span></p></div></div>
+
+  <section>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap">
+      <h2 style="font-size:clamp(32px,4vw,52px)">¿Cuál es tu <em>mood</em> de hoy?</h2>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn--verde" href="#juego">Elige tu mood</a><a class="btn" style="border:1px solid var(--hoja);color:var(--hoja)" href="#compra">Comprar</a></div>
+    </div>
+  </section>
+</main>
+
+<main class="vista" id="v-diario" hidden>
+  <section class="cabeza">
+    <div class="wrap">
+      <p class="eyebrow">El blog de Mood Matcha</p>
+      <h1>Diario <em>Mood</em></h1>
+      <p class="intro">Recetas, guías y pequeños rituales para cada estado de ánimo. Un mood, una taza.</p>
+    </div>
+  </section>
+  <section style="padding-top:clamp(48px,6vw,80px)">
+    <div class="wrap">
+      <div class="destacado" id="destacado" role="link" tabindex="0">
+        <img src="mm-ceremonia.jpg" alt="Preparando matcha con chasen y cuenco">
+        <div style="display:grid;gap:16px">
+          <div class="meta"><span class="chip" style="--c:var(--pistacho)"><i></i>Guía</span><span>5 min de lectura</span></div>
+          <h2>Cómo preparar matcha <em>sin chasen</em> y que salga espuma</h2>
+          <p style="color:var(--suave);max-width:46ch">No hace falta tener todo el kit para empezar. Con un espumador de leche o un bote con tapa también sale una espuma fina.</p>
+          <span class="enlace" style="margin-top:4px;width:max-content">Leer artículo →</span>
+        </div>
+      </div>
+      <div class="filtros" id="filtros"></div>
+      <div class="rejilla" id="rejilla"></div>
+    </div>
+  </section>
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="suscribe">
+        <div><p class="eyebrow">Newsletter</p><h2>Una receta nueva <em>cada semana</em></h2></div>
+        <form id="sus-f"><label for="sus-email" style="position:absolute;left:-9999px">Tu email</label><input id="sus-email" type="email" placeholder="tu@email.com" required><button class="btn btn--verde" type="submit">Apuntarme</button></form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<main class="vista" id="v-articulo" hidden>
+  <div class="art__cab" style="--c:var(--slow)">
+    <div class="wrap">
+      <a class="volver" href="#diario">← Volver al diario</a>
+      <h1>Latte templado de avena, <em>la receta del mood Slow</em></h1>
+      <div class="meta"><span class="chip" style="--c:var(--slow)"><i></i>Slow</span><span>Receta</span><span>· 3 min de lectura</span><span>· Por Sara Illueca</span></div>
+    </div>
+  </div>
+  <section>
+    <div class="wrap art__cuerpo">
+      <p>Hay tardes que piden ir despacio. Una manta, un libro a medias y algo caliente entre las manos. Para esos ratos hicimos esta receta: suave, cremosa y sin prisas.</p>
+      <div class="receta">
+        <dl><dt>Matcha</dt><dd>2 g</dd><dt>Agua a 80 °C</dt><dd>40 ml</dd><dt>Bebida de avena</dt><dd>200 ml</dd><dt>Tiempo</dt><dd>3 min</dd></dl>
+        <ol><li>Tamiza el matcha en el cuenco para que no queden grumos.</li><li>Añade el agua y bate en zigzag hasta que haga espuma.</li><li>Calienta la bebida de avena sin que llegue a hervir y espúmala.</li><li>Vierte la avena sobre el matcha, despacio.</li></ol>
+      </div>
+      <h2>Por qué agua a 80 °C</h2>
+      <p>Con agua hirviendo el matcha se quema y amarga. A unos 80 °C conserva su sabor dulce y su color verde intenso. Si no tienes termómetro, deja reposar el agua un par de minutos después de hervir.</p>
+      <h2>Si te gusta, prueba también</h2>
+      <p>El latte frío del mood Chill, con la misma base pero sobre hielo. O el affogato del mood Good, para los días que ya vienen bonitos.</p>
+    </div>
+  </section>
+</main>
+
 <section class="pie">
   <div class="pie__caja">
     <div class="wrap" style="display:grid;gap:22px;justify-items:center">
@@ -315,6 +533,17 @@ nav a{color:#fff;text-decoration:none;opacity:.9}
 </section>
 
 <script>
+const POSTS=[
+  {m:'slow',t:'Latte templado de avena, la receta del mood Slow',x:'Suave, cremoso y sin prisas. Para las tardes de manta y libro.',min:3,tipo:'Receta'},
+  {m:'monday',t:'Matcha tonic para empezar la semana',x:'Hielo, tónica y matcha batido en frío. El lunes, con otra cara.',min:2,tipo:'Receta'},
+  {m:'social',t:'Matcha lemonade para compartir en la terraza',x:'Limón, agua con gas y matcha. Una jarra y tu gente.',min:3,tipo:'Receta'},
+  {m:'good',t:'Affogato de matcha en dos minutos',x:'Una bola de helado de vainilla y el matcha recién batido por encima.',min:2,tipo:'Receta'},
+  {m:'chill',t:'Latte frío de avena para bajar revoluciones',x:'La versión fresquita del latte, sobre mucho hielo.',min:3,tipo:'Receta'},
+  {m:'focus',t:'Solo con agua: el matcha del mood Focus',x:'2 g, 70 ml y quince segundos de batido. Nada más.',min:4,tipo:'Guía'},
+  {m:'focus',t:'Qué significa primera cosecha',x:'Las hojas nuevas de primavera y por qué se notan en la taza.',min:5,tipo:'Guía'},
+  {m:'chill',t:'Cómo conservar tu matcha para que no pierda color',x:'Cerrado, en un lugar fresco, seco y protegido de la luz.',min:3,tipo:'Guía'},
+  {m:'social',t:'Tres formas de servir matcha cuando vienen amigos',x:'Ideas fáciles para una merienda con mucho mood.',min:4,tipo:'Ideas'}
+];
 const MOODS=[
   {id:'good',n:'Good',c:'var(--good)',dto:'−10 %',t:'Para los días que ya vienen bonitos.',r:'Matcha affogato',x:'Una bola de helado de vainilla y el matcha recién batido por encima.'},
   {id:'chill',n:'Chill',c:'var(--chill)',dto:'Envío gratis',t:'Para bajar revoluciones sin prisa.',r:'Latte frío de avena',x:'Bate 2 g con un poco de agua y viértelo sobre hielo y 200 ml de bebida de avena.'},
@@ -364,4 +593,34 @@ MOODS.forEach((m,i)=>{const b=document.createElement('button');b.style.setProper
   b.onclick=()=>{tabs.querySelectorAll('button').forEach(o=>o.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
     modo.style.setProperty('--c',m.c);$('#mo-p').textContent=m.n.toLowerCase();$('#mo-r').textContent=m.r;$('#mo-t').textContent=m.x};
   tabs.appendChild(b)});
+
+/* ---------- diario: tarjetas y filtros ---------- */
+const colorDe=id=>(MOODS.find(m=>m.id===id)||{}).c||'var(--pistacho)';
+const nombreDe=id=>(MOODS.find(m=>m.id===id)||{}).n||id;
+const tarjeta=p=>`<a class="post" href="#articulo" style="--c:${colorDe(p.m)}"><div class="portadilla">${oo}</div><div class="meta"><span class="chip"><i></i>${nombreDe(p.m)}</span><span>${p.tipo} · ${p.min} min</span></div><h3>${p.t}</h3><p>${p.x}</p></a>`;
+document.querySelectorAll('[data-posts]').forEach(el=>el.innerHTML=POSTS.slice(0,+el.dataset.posts).map(tarjeta).join(''));
+const rej=$('#rejilla'),fil=$('#filtros');
+function pintar(f){const l=POSTS.filter(p=>f==='todo'||p.m===f||p.tipo===f);rej.innerHTML=l.length?l.map(tarjeta).join(''):'<p class="vacio">Pronto habrá artículos de este mood.</p>'}
+[{id:'todo',n:'Todo',c:'var(--hoja)'},{id:'Receta',n:'Recetas',c:'var(--pistacho)'},{id:'Guía',n:'Guías',c:'var(--menta)'},...MOODS].forEach((f,i)=>{
+  const b=document.createElement('button');b.style.setProperty('--c',f.c);b.innerHTML=`<i></i>${f.n}`;b.setAttribute('aria-pressed',i===0);
+  b.onclick=()=>{fil.querySelectorAll('button').forEach(o=>o.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');pintar(f.id)};
+  fil.appendChild(b)});
+pintar('todo');
+$('#destacado').onclick=()=>{location.hash='articulo'};
+$('#sus-f').addEventListener('submit',e=>{e.preventDefault();e.target.innerHTML='<p style="padding:12px 16px">¡Hecho! En la web real te llegaría el email de bienvenida.</p>'});
+
+/* ---------- navegación entre páginas ---------- */
+const VISTAS=['inicio','nosotros','diario','articulo'];
+function ir(){
+  const h=(location.hash||'#inicio').slice(1);
+  const v=VISTAS.includes(h)?h:'inicio';
+  VISTAS.forEach(n=>document.getElementById('v-'+n).hidden=n!==v);
+  document.body.classList.toggle('claro',v!=='inicio');
+  document.querySelectorAll('nav a[data-v]').forEach(a=>a.toggleAttribute('aria-current',a.dataset.v===v||(v==='articulo'&&a.dataset.v==='diario')));
+  document.querySelectorAll('nav a[aria-current]').forEach(a=>a.setAttribute('aria-current','page'));
+  if(VISTAS.includes(h)) scrollTo(0,0);
+  else {const el=document.getElementById(h);if(el) requestAnimationFrame(()=>el.scrollIntoView())}
+  tinta();
+}
+addEventListener('hashchange',ir);ir();
 </script>
