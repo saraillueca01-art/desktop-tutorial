@@ -1,0 +1,53 @@
+<meta charset="utf-8">
+<title>Mood Matcha en el móvil</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400&family=Cormorant+Garamond:ital,wght@1,400&display=swap">
+<style>
+/* Layout: un teléfono centrado con la web real dentro; a los lados, accesos a cada página */
+:root{--fondo:#f4f1e4;--tinta:#1f3a28;--verde:#1d9e55;--hoja:#28602f;--marco:#14241a;
+  --etiqueta:linear-gradient(100deg,#add9af 0%,#fbf8d1 36%,#f3e5cd 68%,#c9e2af 100%)}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--etiqueta);color:var(--tinta);font:300 16px/1.5 "Jost",system-ui,sans-serif;
+  display:grid;place-items:center;padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow-x:hidden}
+.escena{width:100%;display:flex;gap:48px;align-items:center;justify-content:center;flex-wrap:wrap}
+.lado{max-width:260px;display:grid;gap:18px}
+.lado h1{margin:0;font-weight:300;font-size:34px;line-height:1.05}
+.lado h1 em{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:400}
+.lado p{margin:0;color:#3d5245;font-size:15px}
+.ir{display:grid;gap:8px}
+.ir button{border:1px solid rgba(31,58,40,.25);background:rgba(255,255,255,.7);border-radius:99px;padding:10px 18px;text-align:left;cursor:pointer;font:inherit;color:var(--tinta)}
+.ir button[aria-pressed="true"]{background:var(--tinta);color:#fff;border-color:var(--tinta)}
+.ir button:focus-visible{outline:2px solid var(--verde);outline-offset:3px}
+.tel{position:relative;flex:0 0 auto;width:min(412px,calc((100vh - 48px) * 0.4757));max-width:100%;aspect-ratio:412/866;border-radius:56px;background:var(--marco);padding:11px;
+  box-shadow:0 40px 80px -30px rgba(20,36,26,.55),inset 0 0 0 2px #2c3f32}
+.tel::before{content:"";position:absolute;top:22px;left:50%;transform:translateX(-50%);width:110px;height:30px;border-radius:20px;background:#000;z-index:2}
+.pantalla{width:100%;height:100%;border-radius:46px;overflow:hidden;background:#fff;display:grid;grid-template-rows:44px 1fr}
+.estado{display:flex;justify-content:space-between;align-items:center;padding:4px 30px 0;font-size:14px;font-weight:400;color:var(--tinta)}
+.estado span:last-child{letter-spacing:2px;font-size:11px}
+.pantalla iframe{width:100%;height:100%;border:0;display:block}
+.pista{font-size:13px;color:#46594b}
+@media (max-width:760px){.lado{max-width:412px;text-align:center}.ir{grid-template-columns:repeat(3,1fr)}.ir button{text-align:center;padding:9px 6px}}
+</style>
+
+<div class="escena">
+  <div class="lado">
+    <h1>Mood Matcha <em>en el móvil</em></h1>
+    <p>Así se verá la web en un teléfono. Baja con la rueda del ratón o arrastrando dentro de la pantalla, y toca todo como si fuera tu móvil.</p>
+    <div class="ir" id="ir">
+      <button type="button" data-h="inicio" aria-pressed="true">Inicio</button>
+      <button type="button" data-h="nosotros" aria-pressed="false">Nosotros</button>
+      <button type="button" data-h="diario" aria-pressed="false">Diario</button>
+    </div>
+    <p class="pista">Vista previa. Aún no está en tu tienda.</p>
+  </div>
+  <div class="tel"><div class="pantalla"><div class="estado" aria-hidden="true"><span>9:41</span><span>●●● ▮</span></div><iframe id="web" src="web.html#inicio" title="Web de Mood Matcha en móvil"></iframe></div></div>
+</div>
+
+<script>
+const web=document.getElementById('web');
+document.querySelectorAll('#ir button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#ir button').forEach(o=>o.setAttribute('aria-pressed',o===b));
+  try{web.contentWindow.location.hash=b.dataset.h}catch(e){web.src='web.html#'+b.dataset.h}
+});
+</script>
