@@ -1,0 +1,38 @@
+{% render 'dg-recursos' %}
+{%- liquid
+  assign seg = section.settings.seguidores | default: 0
+  assign euros = seg | times: 1
+-%}
+<section class="dg dg-reto">
+  <div class="dg-wrap">
+    <div class="dg-reto__caja">
+      <div>
+        {%- if section.settings.antetitulo != blank -%}<p class="dg-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+        <h2>{{ section.settings.titulo }}<br><em>{{ section.settings.titulo_cursiva }}</em></h2>
+      </div>
+      <div class="dg-reto__txt">
+        {{ section.settings.texto }}
+        {%- if section.settings.contador and seg > 0 -%}
+          <div class="dg-hucha"><span>Llevamos</span><b>{{ seg }} seguidores</b><span>=</span><b>{{ euros | money_without_currency }} €</b></div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "DG · El reto",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "El reto de Instagram" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "1 seguidor" },
+    { "type": "text", "id": "titulo_cursiva", "label": "Titular en cursiva", "default": "= 1 céntimo" },
+    { "type": "richtext", "id": "texto", "label": "Texto", "default": "<p>Empezamos sin nada. Así que nos propusimos un reto en Instagram: por cada persona que nos siguiera, pondríamos un céntimo en el proyecto.</p><p>Con esos céntimos hemos ido comprando, poco a poco, todo lo que hacía falta para que Mood Matcha existiera. Cada seguidor ha puesto su granito.</p>" },
+    { "type": "checkbox", "id": "contador", "label": "Mostrar el contador", "default": true },
+    { "type": "number", "id": "seguidores", "label": "Seguidores", "info": "Los euros se calculan solos (1 céntimo por seguidor). Si lo dejas vacío, no se ve el contador." }
+  ],
+  "presets": [{ "name": "DG · El reto", "category": "Mood Matcha Degradado" }]
+}
+{% endschema %}

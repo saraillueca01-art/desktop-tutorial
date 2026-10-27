@@ -1,0 +1,13 @@
+{
+  "type": "footer",
+  "name": "t:names.footer",
+  "sections": {
+    "dg_pie": {
+      "type": "dg-pie",
+      "settings": {}
+    }
+  },
+  "order": [
+    "dg_pie"
+  ]
+}

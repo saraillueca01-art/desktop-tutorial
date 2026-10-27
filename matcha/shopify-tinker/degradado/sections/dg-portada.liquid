@@ -1,0 +1,52 @@
+{% render 'dg-recursos' %}
+{%- liquid
+  assign p = section.settings.producto
+  assign palabras = section.settings.palabras | split: ','
+  assign primera = palabras.first | strip | append: '.'
+-%}
+<section class="dg dg-portada">
+  <div class="dg-portada__fondo">
+    {%- if section.settings.video != blank -%}
+      {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, preload: 'metadata', image_size: '1800x' }}
+    {%- elsif section.settings.imagen != blank -%}
+      {{ section.settings.imagen | image_url: width: 2400 | image_tag: loading: 'eager', sizes: '100vw', widths: '800, 1200, 1800, 2400' }}
+    {%- else -%}
+      <video autoplay muted loop playsinline preload="metadata" poster="{{ 'mm-ceremonia.jpg' | asset_url }}">
+        <source src="{{ 'mm-ceremonia.webm' | asset_url }}" type="video/webm">
+        <source src="{{ 'mm-ceremonia.mp4' | asset_url }}" type="video/mp4">
+      </video>
+    {%- endif -%}
+  </div>
+  {%- if section.settings.velo -%}<div class="dg-portada__velo"></div>{%- endif -%}
+  <div class="dg-wrap">
+    <h1>{{ section.settings.titulo }}<br>{{ section.settings.titulo_2 }} <span class="dg-giro" data-dg-giro data-palabras="{{ section.settings.palabras | escape }}">{{ primera }}</span></h1>
+    <div class="dg-portada__lado">
+      {%- if section.settings.texto != blank -%}<p>{{ section.settings.texto }}</p>{%- endif -%}
+      {%- if section.settings.boton != blank -%}
+        <a class="dg-btn dg-btn--claro" href="{{ section.settings.enlace | default: '#dg-compra' }}">{{ section.settings.boton }}{% if p != blank and section.settings.precio %}, {{ p.price | money }}{% endif %}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "DG · Portada",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [
+    { "type": "video", "id": "video", "label": "Vídeo", "info": "Vacío: el vídeo de la ceremonia que ya tiene el tema." },
+    { "type": "image_picker", "id": "imagen", "label": "Foto (si no hay vídeo)" },
+    { "type": "checkbox", "id": "velo", "label": "Velo con el degradado de la etiqueta", "default": true },
+    { "type": "text", "id": "titulo", "label": "Titular, línea 1", "default": "Un matcha" },
+    { "type": "text", "id": "titulo_2", "label": "Titular, línea 2", "default": "para tu" },
+    { "type": "text", "id": "palabras", "label": "Palabras que van cambiando", "info": "Separadas por comas. Cada mood sale con su color.", "default": "focus, good, chill, monday, social, slow" },
+    { "type": "text", "id": "texto", "label": "Texto", "default": "Matcha Uji de primera cosecha, grado ceremonial. Una lata para todos tus moods." },
+    { "type": "text", "id": "boton", "label": "Botón", "default": "Comprar" },
+    { "type": "url", "id": "enlace", "label": "Enlace del botón", "info": "Vacío: baja a la sección de compra." },
+    { "type": "product", "id": "producto", "label": "Producto (para el precio del botón)" },
+    { "type": "checkbox", "id": "precio", "label": "Mostrar el precio en el botón", "default": true }
+  ],
+  "presets": [{ "name": "DG · Portada", "category": "Mood Matcha Degradado" }]
+}
+{% endschema %}

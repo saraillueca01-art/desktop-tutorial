@@ -1,0 +1,23 @@
+{% render 'dg-recursos' %}
+<section class="dg dg-cabeza">
+  <div class="dg-wrap">
+    {%- if section.settings.antetitulo != blank -%}<p class="dg-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+    <h1>{{ section.settings.titulo }}<br><em>{{ section.settings.titulo_cursiva }}</em></h1>
+    {%- if section.settings.texto != blank -%}<p class="intro">{{ section.settings.texto }}</p>{%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "DG · Cabecera de página",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "Nosotros" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Hola, somos" },
+    { "type": "text", "id": "titulo_cursiva", "label": "Titular en cursiva", "default": "Mood Matcha" },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Una marca española de matcha Uji de primera cosecha y grado ceremonial, fundada por Sara Illueca en Benissa, Alicante. Y la estamos construyendo poco a poco, con vosotros." }
+  ],
+  "presets": [{ "name": "DG · Cabecera de página", "category": "Mood Matcha Degradado" }]
+}
+{% endschema %}

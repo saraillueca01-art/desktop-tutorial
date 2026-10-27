@@ -1,0 +1,77 @@
+{% render 'dg-recursos' %}
+{%- paginate blog.articles by 12 -%}
+<section class="dg dg-cabeza">
+  <div class="dg-wrap">
+    {%- if section.settings.antetitulo != blank -%}<p class="dg-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+    <h1>{{ section.settings.titulo }} <em>{{ section.settings.titulo_cursiva }}</em></h1>
+    {%- if section.settings.texto != blank -%}<p class="intro">{{ section.settings.texto }}</p>{%- endif -%}
+  </div>
+</section>
+<section class="dg dg-blog" style="padding-top:clamp(48px,6vw,80px)">
+  <div class="dg-wrap">
+    {%- if blog.articles_count == 0 -%}
+      <p class="dg-vacio">Pronto, las primeras recetas.</p>
+    {%- else -%}
+      {%- assign destacado = blog.articles.first -%}
+      {%- if paginate.current_page == 1 -%}
+        {%- liquid
+          assign mood = ''
+          for t in destacado.tags
+            assign tl = t | downcase
+            if tl == 'good' or tl == 'chill' or tl == 'focus' or tl == 'monday' or tl == 'social' or tl == 'slow'
+              assign mood = tl
+              break
+            endif
+          endfor
+        -%}
+        {%- capture c -%}{% render 'dg-color', mood: mood %}{%- endcapture -%}
+        <a class="dg-destacado" href="{{ destacado.url }}" style="--c:{{ c | strip }}">
+          <div class="dg-portadilla">
+            {%- if destacado.image -%}{{ destacado.image | image_url: width: 1400 | image_tag: loading: 'eager', sizes: '(min-width: 900px) 55vw, 90vw', widths: '700, 1000, 1400' }}{%- else -%}{% render 'dg-oo' %}{%- endif -%}
+          </div>
+          <div style="display:grid;gap:16px">
+            <div class="dg-meta">{%- if mood != '' -%}<span class="dg-chip"><i></i>{{ mood | capitalize }}</span>{%- endif -%}<span>{{ destacado.published_at | date: '%d/%m/%Y' }}</span></div>
+            <h2>{{ destacado.title }}</h2>
+            <p style="color:var(--dg-suave);max-width:46ch">{{ destacado.excerpt_or_content | strip_html | truncatewords: 30 }}</p>
+            <span class="dg-enlace" style="width:max-content">Leer artículo →</span>
+          </div>
+        </a>
+      {%- endif -%}
+      <div class="dg-filtros">
+        <button type="button" data-f="todo" aria-pressed="true" style="--c:var(--dg-hoja)"><i></i>Todo</button>
+        <button type="button" data-f="receta" aria-pressed="false" style="--c:var(--dg-pistacho)"><i></i>Recetas</button>
+        <button type="button" data-f="guía" aria-pressed="false" style="--c:var(--dg-menta)"><i></i>Guías</button>
+        {%- assign ms = 'good,chill,focus,monday,social,slow' | split: ',' -%}
+        {%- for m in ms -%}{%- capture c -%}{% render 'dg-color', mood: m %}{%- endcapture -%}<button type="button" data-f="{{ m }}" aria-pressed="false" style="--c:{{ c | strip }}"><i></i>{{ m | capitalize }}</button>{%- endfor -%}
+      </div>
+      <div class="dg-rejilla">
+        {%- for article in blog.articles -%}
+          {%- if paginate.current_page == 1 and forloop.first -%}{%- continue -%}{%- endif -%}
+          {% render 'dg-tarjeta', article: article %}
+        {%- endfor -%}
+        <p class="dg-vacio" data-dg-vacio hidden>Pronto habrá artículos de este mood.</p>
+      </div>
+      {%- if paginate.pages > 1 -%}
+        <nav class="dg-paginas" aria-label="Páginas">
+          {%- if paginate.previous -%}<a class="dg-enlace" href="{{ paginate.previous.url }}">← Anteriores</a>{%- endif -%}
+          {%- if paginate.next -%}<a class="dg-enlace" href="{{ paginate.next.url }}">Más artículos →</a>{%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "DG · Diario (blog)",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "El blog de Mood Matcha" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Diario" },
+    { "type": "text", "id": "titulo_cursiva", "label": "Titular en cursiva", "default": "Mood" },
+    { "type": "text", "id": "texto", "label": "Texto", "default": "Recetas, guías y pequeños rituales para cada estado de ánimo. Un mood, una taza." }
+  ]
+}
+{% endschema %}

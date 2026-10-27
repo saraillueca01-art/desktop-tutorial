@@ -1,0 +1,16 @@
+{% render 'dg-recursos' %}
+<section class="dg dg-frase">
+  <div class="dg-wrap"><p>{{ section.settings.texto }}</p></div>
+</section>
+
+{% schema %}
+{
+  "name": "DG · Frase que se tiñe",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [
+    { "type": "textarea", "id": "texto", "label": "Frase", "default": "Hojas nuevas de primavera. Veinte días a la sombra. Nada de amargor. Un matcha que se adapta a tu mood." }
+  ],
+  "presets": [{ "name": "DG · Frase que se tiñe", "category": "Mood Matcha Degradado" }]
+}
+{% endschema %}

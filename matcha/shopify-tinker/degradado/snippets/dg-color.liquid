@@ -1,0 +1,23 @@
+{%- comment -%}
+  Devuelve el color de un mood por su nombre (good, chill, focus, monday, social, slow).
+  Uso: {%- capture c -%}{% render 'dg-color', mood: 'focus' %}{%- endcapture -%}
+{%- endcomment -%}
+{%- liquid
+  assign m = mood | downcase | strip
+  case m
+    when 'good'
+      echo '#f4e278'
+    when 'chill'
+      echo '#89b3d8'
+    when 'focus'
+      echo '#72927f'
+    when 'monday'
+      echo '#d8d8c8'
+    when 'social'
+      echo '#edab57'
+    when 'slow'
+      echo '#beadd4'
+    else
+      echo '#c9e2af'
+  endcase
+-%}

@@ -1,0 +1,58 @@
+{% render 'dg-recursos' %}
+{%- liquid
+  assign fotos = section.blocks
+  assign defecto = 'mm-acuarela-arco.jpg,mm-acuarela-molino.jpg,mm-acuarela-latte.jpg,,mm-ceremonia.jpg,mm-acuarela-bodegon.jpg,mm-acuarela-polvo.jpg,mm-acuarela-latte.jpg' | split: ','
+  assign formas = 'alta,cuadrada,muy-alta,cuadrada,cuadrada,alta,alta,cuadrada' | split: ','
+-%}
+<section class="dg dg-momentos">
+  <div class="dg-wrap">
+    <div class="dg-cab" style="margin-bottom:36px">
+      <h2>{{ section.settings.titulo }} <em>{{ section.settings.titulo_cursiva }}</em></h2>
+      {%- if section.settings.instagram != blank -%}<a class="dg-enlace" href="{{ section.settings.instagram }}" target="_blank" rel="noopener">{{ section.settings.enlace_texto }} →</a>{%- endif -%}
+    </div>
+    <div class="dg-muro">
+      {%- for i in (0..3) -%}
+        <div class="dg-muro__col">
+          {%- for j in (0..1) -%}
+            {%- assign n = i | times: 2 | plus: j -%}
+            {%- assign block = fotos[n] -%}
+            {%- assign forma = formas[n] -%}
+            {%- if block and block.settings.forma != blank -%}{%- assign forma = block.settings.forma -%}{%- endif -%}
+            {%- if block and block.settings.imagen != blank -%}
+              {{ block.settings.imagen | image_url: width: 800 | image_tag: loading: 'lazy', class: forma, sizes: '(min-width: 900px) 25vw, 50vw', widths: '400, 800', alt: '' }}
+            {%- elsif n == 3 -%}
+              <div class="dg-muro__oo cuadrada">{% render 'dg-oo' %}<span>{{ section.settings.usuario }}</span></div>
+            {%- elsif defecto[n] != blank -%}
+              <img class="{{ forma }}" src="{{ defecto[n] | asset_url }}" alt="" loading="lazy" width="800" height="1000">
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "DG · Momentos (feed)",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Momentos" },
+    { "type": "text", "id": "titulo_cursiva", "label": "Titular en cursiva", "default": "en calma" },
+    { "type": "url", "id": "instagram", "label": "Enlace a Instagram", "default": "https://www.instagram.com/moodmatcha/" },
+    { "type": "text", "id": "enlace_texto", "label": "Texto del enlace", "default": "Síguenos en Instagram @moodmatcha" },
+    { "type": "text", "id": "usuario", "label": "Usuario en el cuadro del símbolo", "default": "@moodmatcha" }
+  ],
+  "blocks": [
+    {
+      "type": "foto", "name": "Foto", "limit": 8,
+      "settings": [
+        { "type": "image_picker", "id": "imagen", "label": "Foto", "info": "Vacío: la acuarela que trae el tema. El cuarto hueco es el cuadro con el símbolo." },
+        { "type": "select", "id": "forma", "label": "Forma", "default": "alta", "options": [ { "value": "alta", "label": "Alta" }, { "value": "muy-alta", "label": "Muy alta" }, { "value": "cuadrada", "label": "Cuadrada" } ] }
+      ]
+    }
+  ],
+  "presets": [{ "name": "DG · Momentos (feed)", "category": "Mood Matcha Degradado" }]
+}
+{% endschema %}

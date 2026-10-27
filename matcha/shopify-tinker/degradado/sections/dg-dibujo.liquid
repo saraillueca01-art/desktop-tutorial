@@ -1,0 +1,33 @@
+{% render 'dg-recursos' %}
+<section class="dg dg-dibujo dg-sin-arriba">
+  <div class="dg-wrap">
+    <figure class="dg-polaroid">
+      <div class="dg-polaroid__hueco">
+        {%- if section.settings.imagen != blank -%}{{ section.settings.imagen | image_url: width: 700 | image_tag: loading: 'lazy', sizes: '300px', widths: '350, 700' }}{%- else -%}{% render 'dg-oo' %}{%- endif -%}
+      </div>
+      {%- if section.settings.pie != blank -%}<figcaption>{{ section.settings.pie }}</figcaption>{%- endif -%}
+    </figure>
+    <div>
+      {%- if section.settings.antetitulo != blank -%}<p class="dg-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+      <h2 style="font-size:clamp(32px,4vw,52px);margin-top:10px">{{ section.settings.titulo }} <em>{{ section.settings.titulo_cursiva }}</em></h2>
+      {%- if section.settings.texto != blank -%}<p style="margin-top:16px;max-width:46ch;color:#3d5245">{{ section.settings.texto }}</p>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "DG · El dibujo",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [
+    { "type": "image_picker", "id": "imagen", "label": "Foto del dibujo" },
+    { "type": "text", "id": "pie", "label": "Pie de la polaroid", "default": "El dibujo que nos hizo un seguidor" },
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "Un regalo inesperado" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Un seguidor" },
+    { "type": "text", "id": "titulo_cursiva", "label": "Titular en cursiva", "default": "nos hizo un dibujo" },
+    { "type": "textarea", "id": "texto", "label": "Texto", "default": "Cosas así son las que hacen que esto valga la pena. Gracias por estar desde el principio." }
+  ],
+  "presets": [{ "name": "DG · El dibujo", "category": "Mood Matcha Degradado" }]
+}
+{% endschema %}

@@ -1,0 +1,57 @@
+{% render 'dg-recursos' %}
+{%- liquid
+  assign primero = section.blocks.first
+  assign k0 = primero.settings.mood | handleize
+-%}
+{%- capture c0 -%}{% if primero.settings.color != blank %}{{ primero.settings.color }}{% else %}{% render 'dg-color', mood: k0 %}{% endif %}{%- endcapture -%}
+<section class="dg dg-modo">
+  <div class="dg-wrap">
+    <div class="dg-modo__caja" style="--c:{{ c0 | strip }}">
+      <div class="dg-blob dg-b1"></div><div class="dg-blob dg-b2"></div><div class="dg-blob dg-b3"></div>
+      <div class="dg-modo__txt">
+        <h2>{{ section.settings.titulo }}</h2>
+        <div class="dg-modo__palabra" data-dg-p>{{ primero.settings.mood }}</div>
+        <div class="dg-modo__receta"><h3 data-dg-r>{{ primero.settings.receta }}</h3><p data-dg-x>{{ primero.settings.texto }}</p></div>
+      </div>
+      <div class="dg-tabs">
+        {%- for block in section.blocks -%}
+          {%- assign k = block.settings.mood | handleize -%}
+          {%- capture c -%}{% if block.settings.color != blank %}{{ block.settings.color }}{% else %}{% render 'dg-color', mood: k %}{% endif %}{%- endcapture -%}
+          <button type="button" style="--c:{{ c | strip }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+            data-nombre="{{ block.settings.mood | escape }}" data-receta="{{ block.settings.receta | escape }}" data-texto="{{ block.settings.texto | escape }}" {{ block.shopify_attributes }}><i></i>{{ block.settings.mood }}</button>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "DG · Hoy estoy en modo",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [ { "type": "text", "id": "titulo", "label": "Titular", "default": "Hoy estoy en modo" } ],
+  "blocks": [
+    {
+      "type": "mood", "name": "Mood", "limit": 8,
+      "settings": [
+        { "type": "text", "id": "mood", "label": "Mood", "default": "Focus" },
+        { "type": "color", "id": "color", "label": "Color", "info": "Vacío: el color oficial del mood." },
+        { "type": "text", "id": "receta", "label": "Receta", "default": "Solo con agua" },
+        { "type": "textarea", "id": "texto", "label": "Cómo se hace", "default": "2 g de matcha y 70 ml de agua a 80 °C. Bate en zigzag quince segundos y bébelo tranquilo." }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "DG · Hoy estoy en modo", "category": "Mood Matcha Degradado",
+    "blocks": [
+      { "type": "mood", "settings": { "mood": "Focus", "receta": "Solo con agua", "texto": "2 g de matcha y 70 ml de agua a 80 °C. Bate en zigzag quince segundos y bébelo tranquilo." } },
+      { "type": "mood", "settings": { "mood": "Good", "receta": "Matcha affogato", "texto": "Una bola de helado de vainilla y el matcha recién batido por encima." } },
+      { "type": "mood", "settings": { "mood": "Chill", "receta": "Latte frío de avena", "texto": "Bate 2 g con un poco de agua y viértelo sobre hielo y 200 ml de bebida de avena." } },
+      { "type": "mood", "settings": { "mood": "Monday", "receta": "Con hielo y tónica", "texto": "Hielo, 150 ml de tónica y el matcha batido en agua fría por encima." } },
+      { "type": "mood", "settings": { "mood": "Social", "receta": "Matcha lemonade", "texto": "Limón, agua con gas y matcha. Para compartir en la terraza." } },
+      { "type": "mood", "settings": { "mood": "Slow", "receta": "Latte templado de avena", "texto": "Bate 2 g con un poco de agua y añade 200 ml de bebida de avena espumada." } }
+    ]
+  }]
+}
+{% endschema %}

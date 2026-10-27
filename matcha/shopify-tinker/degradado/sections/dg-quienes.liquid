@@ -1,0 +1,36 @@
+{% render 'dg-recursos' %}
+<section class="dg dg-quienes{% if section.settings.sin_arriba %} dg-sin-arriba{% endif %}">
+  <div class="dg-wrap">
+    <div class="dg-retrato">
+      {%- if section.settings.foto != blank -%}
+        {{ section.settings.foto | image_url: width: 700 | image_tag: loading: 'lazy', sizes: '280px', widths: '350, 560, 700' }}
+      {%- else -%}{% render 'dg-oo' %}{%- endif -%}
+    </div>
+    <div>
+      {%- if section.settings.antetitulo != blank -%}<p class="dg-eyebrow" style="margin-bottom:14px">{{ section.settings.antetitulo }}</p>{%- endif -%}
+      <p class="dg-cita">{{ section.settings.cita }}</p>
+      {%- if section.settings.texto != blank -%}<p class="dg-quienes__texto">{{ section.settings.texto }}</p>{%- endif -%}
+      {%- if section.settings.firma != blank -%}<p class="dg-firma">{{ section.settings.firma }}</p>{%- endif -%}
+      {%- if section.settings.enlace_texto != blank -%}<a class="dg-enlace" style="margin-top:22px" href="{{ section.settings.enlace | default: '/pages/nosotros' }}">{{ section.settings.enlace_texto }} →</a>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "DG · Quiénes somos",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [
+    { "type": "image_picker", "id": "foto", "label": "Tu foto", "info": "Se ve en un círculo." },
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "Quiénes somos" },
+    { "type": "textarea", "id": "cita", "label": "Frase", "default": "1 seguidor = 1 céntimo. Así estamos construyendo Mood Matcha, contigo." },
+    { "type": "textarea", "id": "texto", "label": "Texto (opcional)" },
+    { "type": "text", "id": "firma", "label": "Firma", "default": "Sara Illueca · fundadora" },
+    { "type": "text", "id": "enlace_texto", "label": "Texto del enlace", "default": "Conoce nuestra historia" },
+    { "type": "url", "id": "enlace", "label": "Enlace", "info": "Vacío: la página Nosotros." },
+    { "type": "checkbox", "id": "sin_arriba", "label": "Sin espacio arriba", "default": false }
+  ],
+  "presets": [{ "name": "DG · Quiénes somos", "category": "Mood Matcha Degradado" }]
+}
+{% endschema %}

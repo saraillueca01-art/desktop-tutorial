@@ -1,0 +1,37 @@
+{%- comment -%}
+  Tarjeta de un artículo del Diario. El mood sale de las etiquetas del artículo (good, chill, focus, monday, social, slow)
+  y el tipo de las etiquetas Receta, Guía o Ideas. Uso: {% render 'dg-tarjeta', article: article %}
+{%- endcomment -%}
+{%- liquid
+  assign mood = ''
+  assign tipo = ''
+  assign filtros = ''
+  for t in article.tags
+    assign tl = t | downcase | strip
+    if tl == 'good' or tl == 'chill' or tl == 'focus' or tl == 'monday' or tl == 'social' or tl == 'slow'
+      if mood == ''
+        assign mood = tl
+      endif
+    endif
+    if tl == 'receta' or tl == 'guía' or tl == 'guia' or tl == 'ideas'
+      if tipo == ''
+        assign tipo = t
+      endif
+    endif
+    assign filtros = filtros | append: tl | append: '|'
+  endfor
+  assign palabras = article.content | strip_html | split: ' ' | size
+  assign minutos = palabras | divided_by: 200 | at_least: 1
+-%}
+{%- capture c -%}{% render 'dg-color', mood: mood %}{%- endcapture -%}
+<a class="dg-post" href="{{ article.url }}" style="--c:{{ c | strip }}" data-dg-tags="{{ filtros | escape }}">
+  <div class="dg-portadilla">
+    {%- if article.image -%}{{ article.image | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 900px) 33vw, 90vw', widths: '450, 900' }}{%- else -%}{% render 'dg-oo' %}{%- endif -%}
+  </div>
+  <div class="dg-meta">
+    {%- if mood != '' -%}<span class="dg-chip"><i></i>{{ mood | capitalize }}</span>{%- endif -%}
+    <span>{% if tipo != '' %}{{ tipo | capitalize }} · {% endif %}{{ minutos }} min</span>
+  </div>
+  <h3>{{ article.title }}</h3>
+  <p>{{ article.excerpt_or_content | strip_html | truncatewords: 18 }}</p>
+</a>

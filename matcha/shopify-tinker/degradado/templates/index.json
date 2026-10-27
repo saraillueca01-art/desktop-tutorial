@@ -1,0 +1,338 @@
+{
+  "sections": {
+    "portada": {
+      "type": "dg-portada",
+      "settings": {
+        "producto": "matcha-uji"
+      }
+    },
+    "cinta": {
+      "type": "dg-cinta",
+      "settings": {},
+      "blocks": {
+        "b1": {
+          "type": "texto",
+          "settings": {
+            "texto": "Marca española"
+          }
+        },
+        "b2": {
+          "type": "texto",
+          "settings": {
+            "texto": "Grado ceremonial"
+          }
+        },
+        "b3": {
+          "type": "texto",
+          "settings": {
+            "texto": "De primera cosecha"
+          }
+        },
+        "b4": {
+          "type": "texto",
+          "settings": {
+            "texto": "30 g"
+          }
+        },
+        "b5": {
+          "type": "texto",
+          "settings": {
+            "texto": "Matcha Uji"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5"
+      ]
+    },
+    "juego": {
+      "type": "dg-juego",
+      "settings": {},
+      "blocks": {
+        "b1": {
+          "type": "premio",
+          "settings": {
+            "mood": "Good",
+            "frase": "Para los días que ya vienen bonitos.",
+            "premio": "−10 %"
+          }
+        },
+        "b2": {
+          "type": "premio",
+          "settings": {
+            "mood": "Chill",
+            "frase": "Para bajar revoluciones sin prisa.",
+            "premio": "Envío gratis"
+          }
+        },
+        "b3": {
+          "type": "premio",
+          "settings": {
+            "mood": "Focus",
+            "frase": "Para cuando necesitas cabeza clara.",
+            "premio": "−10 %"
+          }
+        },
+        "b4": {
+          "type": "premio",
+          "settings": {
+            "mood": "Monday",
+            "frase": "Para empezar la semana con otra cara.",
+            "premio": "−12 %"
+          }
+        },
+        "b5": {
+          "type": "premio",
+          "settings": {
+            "mood": "Social",
+            "frase": "Para compartir con tu gente.",
+            "premio": "−15 % en 2 latas"
+          }
+        },
+        "b6": {
+          "type": "premio",
+          "settings": {
+            "mood": "Slow",
+            "frase": "Para los ratos lentos y tuyos.",
+            "premio": "−10 %"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6"
+      ]
+    },
+    "compra": {
+      "type": "dg-compra",
+      "settings": {
+        "producto": "matcha-uji"
+      },
+      "blocks": {
+        "b1": {
+          "type": "pack",
+          "settings": {
+            "cantidad": 1,
+            "descuento": 0
+          }
+        },
+        "b2": {
+          "type": "pack",
+          "settings": {
+            "cantidad": 2,
+            "descuento": 10,
+            "etiqueta": "El más elegido",
+            "destacado": true
+          }
+        },
+        "b3": {
+          "type": "pack",
+          "settings": {
+            "cantidad": 3,
+            "descuento": 15,
+            "etiqueta": "Más ahorro"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3"
+      ]
+    },
+    "frase": {
+      "type": "dg-frase",
+      "settings": {}
+    },
+    "modo": {
+      "type": "dg-modo",
+      "settings": {},
+      "blocks": {
+        "b1": {
+          "type": "mood",
+          "settings": {
+            "mood": "Focus",
+            "receta": "Solo con agua",
+            "texto": "2 g de matcha y 70 ml de agua a 80 °C. Bate en zigzag quince segundos y bébelo tranquilo."
+          }
+        },
+        "b2": {
+          "type": "mood",
+          "settings": {
+            "mood": "Good",
+            "receta": "Matcha affogato",
+            "texto": "Una bola de helado de vainilla y el matcha recién batido por encima."
+          }
+        },
+        "b3": {
+          "type": "mood",
+          "settings": {
+            "mood": "Chill",
+            "receta": "Latte frío de avena",
+            "texto": "Bate 2 g con un poco de agua y viértelo sobre hielo y 200 ml de bebida de avena."
+          }
+        },
+        "b4": {
+          "type": "mood",
+          "settings": {
+            "mood": "Monday",
+            "receta": "Con hielo y tónica",
+            "texto": "Hielo, 150 ml de tónica y el matcha batido en agua fría por encima."
+          }
+        },
+        "b5": {
+          "type": "mood",
+          "settings": {
+            "mood": "Social",
+            "receta": "Matcha lemonade",
+            "texto": "Limón, agua con gas y matcha. Para compartir en la terraza."
+          }
+        },
+        "b6": {
+          "type": "mood",
+          "settings": {
+            "mood": "Slow",
+            "receta": "Latte templado de avena",
+            "texto": "Bate 2 g con un poco de agua y añade 200 ml de bebida de avena espumada."
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6"
+      ]
+    },
+    "sellos": {
+      "type": "dg-sellos",
+      "settings": {},
+      "blocks": {
+        "b1": {
+          "type": "sello",
+          "settings": {
+            "centro": "1ª",
+            "aro": "Hojas nuevas de primavera · molido en piedra",
+            "texto": "Primera cosecha, de las hojas nuevas de esta primavera."
+          }
+        },
+        "b2": {
+          "type": "sello",
+          "settings": {
+            "centro": "20",
+            "aro": "Sin nada de amargor · cultivado a la sombra",
+            "texto": "Al menos 20 días a la sombra, para que no amargue."
+          }
+        },
+        "b3": {
+          "type": "sello",
+          "settings": {
+            "centro": "Verde",
+            "aro": "Color intenso · textura cremosa · final dulce",
+            "texto": "Verde intenso, textura cremosa y final dulce."
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3"
+      ]
+    },
+    "quienes": {
+      "type": "dg-quienes",
+      "settings": {}
+    },
+    "pasos": {
+      "type": "dg-pasos",
+      "settings": {},
+      "blocks": {
+        "b1": {
+          "type": "paso",
+          "settings": {
+            "dibujo": "lata",
+            "dato": "1 cdta",
+            "titulo": "Abre la lata",
+            "texto": "Una cucharadita de bambú."
+          }
+        },
+        "b2": {
+          "type": "paso",
+          "settings": {
+            "dibujo": "bascula",
+            "dato": "2 g",
+            "titulo": "Pesa y tamiza",
+            "texto": "En el cuenco, sin grumos."
+          }
+        },
+        "b3": {
+          "type": "paso",
+          "settings": {
+            "dibujo": "agua",
+            "dato": "80 °C",
+            "titulo": "Añade el agua",
+            "texto": "70 ml, nunca hirviendo."
+          }
+        },
+        "b4": {
+          "type": "paso",
+          "settings": {
+            "dibujo": "batir",
+            "dato": "15 s",
+            "titulo": "Bate en zigzag",
+            "texto": "Hasta que haga espuma."
+          }
+        },
+        "b5": {
+          "type": "paso",
+          "settings": {
+            "dibujo": "taza",
+            "dato": "Tu mood",
+            "titulo": "Disfrútalo",
+            "texto": "Solo, con leche, con hielo o con tónica."
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5"
+      ]
+    },
+    "recetas": {
+      "type": "dg-recetas",
+      "settings": {
+        "blog": "diario"
+      }
+    },
+    "momentos": {
+      "type": "dg-momentos",
+      "settings": {}
+    }
+  },
+  "order": [
+    "portada",
+    "cinta",
+    "juego",
+    "compra",
+    "frase",
+    "modo",
+    "sellos",
+    "quienes",
+    "pasos",
+    "recetas",
+    "momentos"
+  ]
+}

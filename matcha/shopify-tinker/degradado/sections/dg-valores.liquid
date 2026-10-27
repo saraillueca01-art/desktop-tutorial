@@ -1,0 +1,33 @@
+{% render 'dg-recursos' %}
+<section class="dg dg-valores dg-sin-arriba">
+  <div class="dg-wrap">
+    {%- if section.settings.antetitulo != blank -%}<p class="dg-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+    <h2 class="dg-titulo-sec">{{ section.settings.titulo }} <em>{{ section.settings.titulo_cursiva }}</em></h2>
+    <div class="dg-valores__fila">
+      {%- assign cols = 'focus,good,social,chill,slow,monday' | split: ',' -%}
+      {%- for block in section.blocks -%}
+        {%- assign i = forloop.index0 | modulo: 6 -%}
+        {%- capture c -%}{% render 'dg-color', mood: cols[i] %}{%- endcapture -%}
+        <div class="dg-valor" style="--c:{{ c | strip }}" {{ block.shopify_attributes }}>{% render 'dg-oo' %}<h3>{{ block.settings.titulo }}</h3><p>{{ block.settings.texto }}</p></div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "DG · Valores",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "Valores" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Lo que nos" },
+    { "type": "text", "id": "titulo_cursiva", "label": "Titular en cursiva", "default": "mueve" }
+  ],
+  "blocks": [
+    { "type": "valor", "name": "Valor", "limit": 6,
+      "settings": [ { "type": "text", "id": "titulo", "label": "Valor", "default": "Bienestar" }, { "type": "textarea", "id": "texto", "label": "Texto", "default": "Pequeños hábitos que cuidan el cuerpo y la mente." } ] }
+  ],
+  "presets": [{ "name": "DG · Valores", "category": "Mood Matcha Degradado" }]
+}
+{% endschema %}

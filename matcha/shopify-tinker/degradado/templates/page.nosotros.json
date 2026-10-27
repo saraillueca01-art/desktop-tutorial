@@ -1,0 +1,132 @@
+{
+  "sections": {
+    "cabeza": {
+      "type": "dg-cabeza",
+      "settings": {}
+    },
+    "sara": {
+      "type": "dg-quienes",
+      "settings": {
+        "antetitulo": "",
+        "cita": "Una marca con alma y cercanía local, pero con espíritu global.",
+        "texto": "Mood Matcha nace de la idea de crear una bebida para acompañar diferentes estados de ánimo. Surge del amor por el bienestar de las personas y de la búsqueda de una alternativa natural al café.",
+        "firma": "Sara Illueca · fundadora",
+        "enlace_texto": ""
+      }
+    },
+    "reto": {
+      "type": "dg-reto",
+      "settings": {}
+    },
+    "comentarios": {
+      "type": "dg-comentarios",
+      "settings": {},
+      "blocks": {
+        "b1": {
+          "type": "comentario",
+          "settings": {
+            "texto": "Escribe aquí un comentario real de Instagram.",
+            "usuario": "@usuario"
+          }
+        },
+        "b2": {
+          "type": "comentario",
+          "settings": {
+            "texto": "Escribe aquí un comentario real de Instagram.",
+            "usuario": "@usuario"
+          }
+        },
+        "b3": {
+          "type": "comentario",
+          "settings": {
+            "texto": "Escribe aquí un comentario real de Instagram.",
+            "usuario": "@usuario"
+          }
+        },
+        "b4": {
+          "type": "comentario",
+          "settings": {
+            "texto": "Escribe aquí un comentario real de Instagram.",
+            "usuario": "@usuario"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4"
+      ]
+    },
+    "dibujo": {
+      "type": "dg-dibujo",
+      "settings": {}
+    },
+    "valores": {
+      "type": "dg-valores",
+      "settings": {},
+      "blocks": {
+        "b1": {
+          "type": "valor",
+          "settings": {
+            "titulo": "Bienestar",
+            "texto": "Pequeños hábitos que cuidan el cuerpo y la mente, con momentos de cuidado y equilibrio."
+          }
+        },
+        "b2": {
+          "type": "valor",
+          "settings": {
+            "titulo": "Autenticidad",
+            "texto": "Un producto honesto y de calidad, que respeta el origen y las propiedades del matcha."
+          }
+        },
+        "b3": {
+          "type": "valor",
+          "settings": {
+            "titulo": "Comunidad",
+            "texto": "Compartir conocimientos, experiencias y formas de disfrutar el matcha. Algo que conecta a las personas."
+          }
+        },
+        "b4": {
+          "type": "valor",
+          "settings": {
+            "titulo": "Sostenibilidad",
+            "texto": "Materiales, procesos y decisiones que reduzcan nuestro impacto y animen a un consumo más consciente."
+          }
+        },
+        "b5": {
+          "type": "valor",
+          "settings": {
+            "titulo": "Cercanía y diversión",
+            "texto": "El matcha no tiene por qué ser exclusivo ni difícil. Lo adaptamos a personas, momentos y estados de ánimo."
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5"
+      ]
+    },
+    "palabras": {
+      "type": "dg-palabras",
+      "settings": {}
+    },
+    "cta": {
+      "type": "dg-cta",
+      "settings": {}
+    }
+  },
+  "order": [
+    "cabeza",
+    "sara",
+    "reto",
+    "comentarios",
+    "dibujo",
+    "valores",
+    "palabras",
+    "cta"
+  ]
+}

@@ -1,0 +1,47 @@
+{% render 'dg-recursos' %}
+{%- liquid
+  assign mood = ''
+  assign tipo = ''
+  for t in article.tags
+    assign tl = t | downcase
+    if tl == 'good' or tl == 'chill' or tl == 'focus' or tl == 'monday' or tl == 'social' or tl == 'slow'
+      if mood == ''
+        assign mood = tl
+      endif
+    elsif tl == 'receta' or tl == 'guía' or tl == 'guia' or tl == 'ideas'
+      assign tipo = t
+    endif
+  endfor
+  assign palabras = article.content | strip_html | split: ' ' | size
+  assign minutos = palabras | divided_by: 200 | at_least: 1
+-%}
+{%- capture c -%}{% render 'dg-color', mood: mood %}{%- endcapture -%}
+<article>
+  <header class="dg dg-art__cab" style="--c:{{ c | strip }}">
+    <div class="dg-wrap">
+      <a class="dg-enlace" href="{{ blog.url }}" style="border:0">← Volver al diario</a>
+      <h1>{{ article.title }}</h1>
+      <div class="dg-meta">
+        {%- if mood != '' -%}<span class="dg-chip"><i></i>{{ mood | capitalize }}</span>{%- endif -%}
+        {%- if tipo != '' -%}<span>{{ tipo | capitalize }}</span>{%- endif -%}
+        <span>· {{ minutos }} min de lectura</span>
+        {%- if section.settings.autor -%}<span>· Por {{ article.author }}</span>{%- endif -%}
+      </div>
+    </div>
+  </header>
+  <section class="dg">
+    <div class="dg-wrap dg-art__cuerpo">
+      {%- if article.image -%}{{ article.image | image_url: width: 1600 | image_tag: loading: 'eager', sizes: '(min-width: 900px) 860px, 100vw', widths: '800, 1200, 1600', style: 'margin-bottom:32px' }}{%- endif -%}
+      {{ article.content }}
+    </div>
+  </section>
+</article>
+
+{% schema %}
+{
+  "name": "DG · Artículo",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [ { "type": "checkbox", "id": "autor", "label": "Mostrar el autor", "default": false } ]
+}
+{% endschema %}

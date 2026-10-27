@@ -1,0 +1,15 @@
+{% render 'dg-recursos' %}
+{%- assign ps = section.settings.palabras | split: ',' -%}
+<div class="dg dg-palabras">
+  <div class="dg-wrap"><p>{%- for w in ps -%}<span>{{ w | strip }}</span>{% unless forloop.last %} <b>·</b> {% endunless %}{%- endfor -%}</p></div>
+</div>
+
+{% schema %}
+{
+  "name": "DG · Palabras clave",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [ { "type": "text", "id": "palabras", "label": "Palabras", "info": "Separadas por comas.", "default": "ligereza, desconexión, calma, respirar, conexión de calidad, selfcare" } ],
+  "presets": [{ "name": "DG · Palabras clave", "category": "Mood Matcha Degradado" }]
+}
+{% endschema %}

@@ -1,0 +1,28 @@
+{% render 'dg-recursos' %}
+<section class="dg dg-cta">
+  <div class="dg-wrap">
+    <h2>{{ section.settings.titulo }} <em>{{ section.settings.titulo_cursiva }}</em> {{ section.settings.titulo_fin }}</h2>
+    <div class="dg-cta__btns">
+      {%- if section.settings.boton_1 != blank -%}<a class="dg-btn dg-btn--verde" href="{{ section.settings.enlace_1 | default: '/#juego' }}">{{ section.settings.boton_1 }}</a>{%- endif -%}
+      {%- if section.settings.boton_2 != blank -%}<a class="dg-btn dg-btn--borde" href="{{ section.settings.enlace_2 | default: '/#dg-compra' }}">{{ section.settings.boton_2 }}</a>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "DG · Llamada final",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "¿Cuál es tu" },
+    { "type": "text", "id": "titulo_cursiva", "label": "En cursiva", "default": "mood" },
+    { "type": "text", "id": "titulo_fin", "label": "Final del titular", "default": "de hoy?" },
+    { "type": "text", "id": "boton_1", "label": "Botón 1", "default": "Elige tu mood" },
+    { "type": "url", "id": "enlace_1", "label": "Enlace 1" },
+    { "type": "text", "id": "boton_2", "label": "Botón 2", "default": "Comprar" },
+    { "type": "url", "id": "enlace_2", "label": "Enlace 2" }
+  ],
+  "presets": [{ "name": "DG · Llamada final", "category": "Mood Matcha Degradado" }]
+}
+{% endschema %}

@@ -1,0 +1,75 @@
+{% render 'dg-recursos' %}
+<section class="dg dg-pasos" id="pasos">
+  <div class="dg-wrap">
+    <div class="dg-cab">
+      <div>
+        {%- if section.settings.antetitulo != blank -%}<p class="dg-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+        <h2>{{ section.settings.titulo }} <em>{{ section.settings.titulo_cursiva }}</em></h2>
+      </div>
+      {%- if section.settings.utensilios != blank -%}<p>{{ section.settings.utensilios }}</p>{%- endif -%}
+    </div>
+    <ol class="dg-pfila">
+      {%- for block in section.blocks -%}
+        <li class="dg-pcard" {{ block.shopify_attributes }}>
+          <figure class="dg-pcard__media">
+            {%- if block.settings.video != blank -%}
+              {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, preload: 'metadata', image_size: '800x' }}
+            {%- elsif block.settings.imagen != blank -%}
+              {{ block.settings.imagen | image_url: width: 800 | image_tag: loading: 'lazy', sizes: '(min-width: 900px) 20vw, 88px', widths: '200, 400, 800' }}
+            {%- else -%}
+              <div class="dg-pcard__ico">
+                {%- case block.settings.dibujo -%}
+                  {%- when 'lata' -%}<svg viewBox="0 0 100 90" aria-hidden="true"><ellipse cx="42" cy="38" rx="26" ry="9"/><path d="M16 38v22c0 5 12 9 26 9s26-4 26-9V38"/><path d="M62 30l26-14"/><ellipse cx="90" cy="15" rx="5" ry="3"/></svg>
+                  {%- when 'bascula' -%}<svg viewBox="0 0 100 90" aria-hidden="true"><rect x="18" y="40" width="64" height="38" rx="6"/><rect x="30" y="56" width="22" height="12" rx="2"/><path d="M30 40c0-12 40-12 40 0"/><path d="M42 28c2-8 14-8 16 0"/></svg>
+                  {%- when 'agua' -%}<span class="hw">hot<br>water</span><svg viewBox="0 0 100 90" aria-hidden="true"><path d="M20 20h30l-4 14H24z"/><path d="M48 24c10 0 14 6 10 12"/><path d="M36 38v12M40 52v10"/><path d="M22 62h40c0 14-8 22-20 22s-20-8-20-22z"/></svg>
+                  {%- when 'batir' -%}<svg viewBox="0 0 100 90" aria-hidden="true"><path d="M18 50h56c0 18-12 30-28 30S18 68 18 50z"/><path d="M46 46V16M40 46l-2-24M52 46l2-24"/><path d="M78 26c6 4 6 12 0 16M14 26c-6 4-6 12 0 16"/></svg>
+                  {%- else -%}<svg viewBox="0 0 100 90" aria-hidden="true"><path d="M24 40h52l-6 40H30z"/><path d="M50 40c-8-10-2-24 12-28-2 12-4 20-12 28z"/><path d="M50 40c4-8 14-10 22-6-6 6-12 8-22 6z"/><path d="M34 56h32"/></svg>
+                {%- endcase -%}
+              </div>
+            {%- endif -%}
+            {%- if block.settings.dato != blank -%}<figcaption class="dg-pcard__dato">{{ block.settings.dato }}</figcaption>{%- endif -%}
+          </figure>
+          <div class="dg-pcard__txt"><span class="dg-pcard__num">{{ forloop.index }}</span><h3>{{ block.settings.titulo }}</h3><p>{{ block.settings.texto }}</p></div>
+        </li>
+      {%- endfor -%}
+    </ol>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "DG · Pasos con vídeo",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "Pasos para tu matcha" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Un minuto," },
+    { "type": "text", "id": "titulo_cursiva", "label": "Titular en cursiva", "default": "cinco gestos" },
+    { "type": "text", "id": "utensilios", "label": "Lo que necesitas", "default": "Cuenco, colador fino y chasen (o espumador de leche)." }
+  ],
+  "blocks": [
+    {
+      "type": "paso", "name": "Paso", "limit": 6,
+      "settings": [
+        { "type": "video", "id": "video", "label": "Vídeo del paso", "info": "Vertical, corto y sin sonido. Se repite en bucle." },
+        { "type": "image_picker", "id": "imagen", "label": "Foto (si no hay vídeo)" },
+        { "type": "select", "id": "dibujo", "label": "Dibujo (si no hay vídeo ni foto)", "default": "lata",
+          "options": [ { "value": "lata", "label": "Lata" }, { "value": "bascula", "label": "Báscula" }, { "value": "agua", "label": "Agua caliente" }, { "value": "batir", "label": "Batir" }, { "value": "taza", "label": "Taza" } ] },
+        { "type": "text", "id": "dato", "label": "Dato", "default": "2 g" },
+        { "type": "text", "id": "titulo", "label": "Título", "default": "Pesa y tamiza" },
+        { "type": "text", "id": "texto", "label": "Texto", "default": "En el cuenco, sin grumos." }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "DG · Pasos con vídeo", "category": "Mood Matcha Degradado",
+    "blocks": [
+      { "type": "paso", "settings": { "dibujo": "lata", "dato": "1 cdta", "titulo": "Abre la lata", "texto": "Una cucharadita de bambú." } },
+      { "type": "paso", "settings": { "dibujo": "bascula", "dato": "2 g", "titulo": "Pesa y tamiza", "texto": "En el cuenco, sin grumos." } },
+      { "type": "paso", "settings": { "dibujo": "agua", "dato": "80 °C", "titulo": "Añade el agua", "texto": "70 ml, nunca hirviendo." } },
+      { "type": "paso", "settings": { "dibujo": "batir", "dato": "15 s", "titulo": "Bate en zigzag", "texto": "Hasta que haga espuma." } },
+      { "type": "paso", "settings": { "dibujo": "taza", "dato": "Tu mood", "titulo": "Disfrútalo", "texto": "Solo, con leche, con hielo o con tónica." } }
+    ]
+  }]
+}
+{% endschema %}

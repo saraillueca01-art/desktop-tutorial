@@ -1,0 +1,128 @@
+{% render 'dg-recursos' %}
+{%- liquid
+  assign p = section.settings.producto
+  if p == blank
+    assign p = closest.product
+  endif
+  assign v = p.selected_or_first_available_variant
+  assign packs = section.blocks | where: 'type', 'pack'
+  assign elegido = 0
+  for pack in packs
+    if pack.settings.destacado and elegido == 0
+      assign elegido = forloop.index
+    endif
+  endfor
+  if elegido == 0
+    assign elegido = 1
+  endif
+  assign total_inicial = v.price
+  for pack in packs
+    if forloop.index == elegido
+      assign completo = v.price | times: pack.settings.cantidad
+      assign total_inicial = 100 | minus: pack.settings.descuento | times: completo | divided_by: 100
+    endif
+  endfor
+  assign chips = section.settings.chips | split: ','
+-%}
+<section class="dg dg-compra" id="dg-compra">
+  <div class="dg-wrap">
+    <div class="dg-compra__caja">
+      <div class="dg-compra__arte">
+        {%- if section.settings.foto != blank -%}
+          {{ section.settings.foto | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: '(min-width: 900px) 40vw, 90vw', widths: '600, 900, 1200' }}
+        {%- else -%}
+          <div class="dg-burbuja">{% render 'dg-oo' %}</div>
+        {%- endif -%}
+      </div>
+      <div class="dg-compra__info">
+        {%- if chips.size > 0 -%}<div class="dg-chips">{%- for ch in chips -%}{%- assign ch = ch | strip -%}{%- if ch != blank -%}<span>{{ ch }}</span>{%- endif -%}{%- endfor -%}</div>{%- endif -%}
+        <h2>{{ section.settings.titulo }}<br><em>{{ section.settings.titulo_cursiva }}</em></h2>
+        {%- if p != blank -%}
+          {%- liquid
+            assign nivel = 'ok'
+            assign texto_stock = 'En stock'
+            if v.available == false
+              assign nivel = 'out'
+              assign texto_stock = 'Sin stock'
+            elsif v.inventory_management == 'shopify' and v.inventory_quantity > 0
+              if v.inventory_quantity < 20
+                assign nivel = 'last'
+                assign texto_stock = 'Unidades muy limitadas'
+              elsif v.inventory_quantity <= 50
+                assign nivel = 'low'
+                assign texto_stock = 'Pocas unidades'
+              endif
+            endif
+          -%}
+          <span class="dg-stock is-{{ nivel }}">{{ texto_stock }}</span>
+          {%- form 'product', p, data-dg-form: '', data-price: v.price, data-formato: shop.money_format, class: 'dg-compra__form' -%}
+            <input type="hidden" name="id" value="{{ v.id }}">
+            {%- if packs.size > 0 -%}
+              <fieldset class="dg-packs">
+                <legend class="dg-vh">Elige tu pack</legend>
+                {%- for pack in packs -%}
+                  {%- liquid
+                    assign n = pack.settings.cantidad
+                    assign d = pack.settings.descuento
+                    assign completo = v.price | times: n
+                    assign total = 100 | minus: d | times: completo | divided_by: 100
+                    assign unidad = total | divided_by: n
+                  -%}
+                  <label class="dg-pack" {{ pack.shopify_attributes }}>
+                    <input type="radio" name="quantity" value="{{ n }}" data-pct="{{ d }}"{% if forloop.index == elegido %} checked{% endif %}>
+                    <span>{{ n }} {% if n == 1 %}lata{% else %}latas{% endif %}{% if pack.settings.etiqueta != blank %} <span class="dg-pack__etq">{{ pack.settings.etiqueta }}</span>{% endif %}<small>{{ unidad | money }} cada lata</small></span>
+                    <span class="dg-pack__pr">{{ total | money }}{% if d > 0 %}<s>{{ completo | money }}</s>{% endif %}</span>
+                  </label>
+                {%- endfor -%}
+              </fieldset>
+              {%- if section.settings.nota != blank -%}<p class="dg-compra__nota">{{ section.settings.nota }}</p>{%- endif -%}
+            {%- else -%}
+              <input type="hidden" name="quantity" value="1">
+            {%- endif -%}
+            <button type="submit" name="add" class="dg-btn dg-btn--verde"{% unless v.available %} disabled{% endunless %}>
+              {%- if v.available -%}{{ section.settings.boton }} · <span data-dg-total>{{ total_inicial | money }}</span>{%- else -%}Agotado{%- endif -%}
+            </button>
+          {%- endform -%}
+        {%- elsif request.design_mode -%}
+          <p>Elige el producto en los ajustes de esta sección.</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "DG · Compra",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [
+    { "type": "product", "id": "producto", "label": "Producto" },
+    { "type": "image_picker", "id": "foto", "label": "Foto de la lata", "info": "Vacío: un círculo con el degradado y el símbolo." },
+    { "type": "text", "id": "chips", "label": "Etiquetas de arriba", "info": "Separadas por comas.", "default": "Grado ceremonial, De primera cosecha, 30 g" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Una sola lata," },
+    { "type": "text", "id": "titulo_cursiva", "label": "Titular en cursiva", "default": "de primera cosecha" },
+    { "type": "text", "id": "boton", "label": "Botón", "default": "Añadir a la cesta" },
+    { "type": "text", "id": "nota", "label": "Nota de los packs", "default": "El descuento se aplica en la cesta." }
+  ],
+  "blocks": [
+    {
+      "type": "pack", "name": "Pack", "limit": 4,
+      "settings": [
+        { "type": "number", "id": "cantidad", "label": "Latas", "default": 1 },
+        { "type": "number", "id": "descuento", "label": "Descuento (%)", "info": "Debe coincidir con el descuento automático de Shopify.", "default": 0 },
+        { "type": "text", "id": "etiqueta", "label": "Etiqueta" },
+        { "type": "checkbox", "id": "destacado", "label": "Elegido por defecto", "default": false }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "DG · Compra", "category": "Mood Matcha Degradado",
+    "blocks": [
+      { "type": "pack", "settings": { "cantidad": 1, "descuento": 0 } },
+      { "type": "pack", "settings": { "cantidad": 2, "descuento": 10, "etiqueta": "El más elegido", "destacado": true } },
+      { "type": "pack", "settings": { "cantidad": 3, "descuento": 15, "etiqueta": "Más ahorro" } }
+    ]
+  }]
+}
+{% endschema %}

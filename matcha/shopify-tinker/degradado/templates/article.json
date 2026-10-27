@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "dg-articulo",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,104 @@
+{% render 'dg-recursos' %}
+{%- comment -%}
+  «Elige tu mood»: solo se ven los círculos. Al tocar uno sale su sorpresa y, para recibirla, hay que dejar el email.
+  Una vez elegido no se puede cambiar (se recuerda en el navegador). El email se guarda como cliente suscrito
+  con las etiquetas «newsletter, juego-mood, mood-…» y el código lo envía una automatización de Shopify Messaging.
+{%- endcomment -%}
+{%- assign form_id = 'dg-juego-' | append: section.id -%}
+<section class="dg dg-juego" id="juego" data-clave="{{ section.settings.clave | handleize }}">
+  <div class="dg-wrap">
+    {%- if request.design_mode and section.settings.recordatorio -%}
+      <div class="dg-aviso-editor" role="note">
+        <b>PENDIENTE: los emails con el código todavía no se envían.</b>
+        <span>1) Crear en Descuentos un código por mood. 2) En Marketing → Automatizaciones, crear la bienvenida a suscriptores con una condición por etiqueta (mood-good, mood-chill, mood-focus, mood-monday, mood-social, mood-slow) y su email. 3) Que cada email reciba un solo código. Este aviso solo lo ves tú en el editor; quítalo en los ajustes de la sección cuando esté hecho.</span>
+      </div>
+    {%- endif -%}
+    <div class="dg-cab">
+      <div>
+        {%- if section.settings.antetitulo != blank -%}<p class="dg-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+        <h2>{{ section.settings.titulo }} <em>{{ section.settings.titulo_cursiva }}</em></h2>
+      </div>
+      {%- if section.settings.texto != blank -%}<p>{{ section.settings.texto }}</p>{%- endif -%}
+    </div>
+
+    {%- form 'customer', id: form_id -%}
+      {%- if form.posted_successfully? -%}
+        <p class="dg-hecho" role="status">{{ section.settings.gracias }}</p>
+      {%- else -%}
+        <div class="dg-orbes">
+          {%- for block in section.blocks -%}
+            {%- assign k = block.settings.mood | handleize -%}
+            {%- capture c -%}{% if block.settings.color != blank %}{{ block.settings.color }}{% else %}{% render 'dg-color', mood: k %}{% endif %}{%- endcapture -%}
+            <button type="button" class="dg-orbe" style="--c:{{ c | strip }}" aria-pressed="false" aria-label="Mood {{ block.settings.mood | escape }}"
+              data-mood="{{ k }}" data-nombre="{{ block.settings.mood | escape }}" data-frase="{{ block.settings.frase | escape }}" data-premio="{{ block.settings.premio | escape }}" {{ block.shopify_attributes }}>
+              {% render 'dg-oo' %}<b>{{ block.settings.mood }}</b>
+            </button>
+          {%- endfor -%}
+        </div>
+        <p class="dg-aviso" data-dg-aviso hidden>{{ section.settings.aviso }}</p>
+        <div class="dg-premio" data-dg-premio data-ey="{{ section.settings.premio_ey | escape }}" hidden>
+          <div>
+            <p class="dg-eyebrow" data-dg-ey></p>
+            <h3 data-dg-t></h3>
+          </div>
+          <div>
+            <p class="dg-premio__dto" data-dg-d></p>
+            <p style="margin-top:10px;color:#3d5245">{{ section.settings.pide_email }}</p>
+            <input type="hidden" name="contact[tags]" value="newsletter, juego-mood" data-dg-tags>
+            <div class="dg-form" style="margin-top:12px">
+              <label for="{{ form_id }}-email" class="dg-vh">Tu email</label>
+              <input id="{{ form_id }}-email" type="email" name="contact[email]" placeholder="tu@email.com" autocomplete="email" required>
+              <button type="submit" class="dg-btn dg-btn--verde">{{ section.settings.boton }}</button>
+            </div>
+            {%- if section.settings.legal != blank -%}<small>{{ section.settings.legal }}</small>{%- endif -%}
+          </div>
+        </div>
+        {%- if form.errors -%}<p class="dg-aviso" role="alert">Revisa el email e inténtalo otra vez.</p>{%- endif -%}
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "DG · Elige tu mood",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [
+    { "type": "checkbox", "id": "recordatorio", "label": "Mostrar el aviso rojo en el editor", "default": true },
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "El juego" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Elige tu" },
+    { "type": "text", "id": "titulo_cursiva", "label": "Titular en cursiva", "default": "mood" },
+    { "type": "text", "id": "texto", "label": "Texto", "default": "Toca el círculo que más va contigo hoy. Cada uno esconde una sorpresa." },
+    { "type": "text", "id": "premio_ey", "label": "Encima de la sorpresa", "info": "[mood] se cambia por el mood elegido.", "default": "Tu mood: [mood] · ¡Sorpresa!" },
+    { "type": "text", "id": "pide_email", "label": "Texto para pedir el email", "default": "Para recibir tu sorpresa, déjanos tu email." },
+    { "type": "text", "id": "boton", "label": "Botón", "default": "Recibir mi sorpresa" },
+    { "type": "text", "id": "legal", "label": "Texto pequeño", "default": "Te llega el código al momento. Puedes darte de baja cuando quieras." },
+    { "type": "text", "id": "aviso", "label": "Aviso cuando ya ha elegido", "default": "Ya has elegido tu mood. Solo hay una sorpresa por persona." },
+    { "type": "text", "id": "gracias", "label": "Mensaje al enviar el email", "default": "¡Hecho! Revisa tu email: tu sorpresa ya va de camino." },
+    { "type": "text", "id": "clave", "label": "Nombre interno del juego", "info": "Cámbialo si haces un juego nuevo y quieres que todos puedan volver a elegir.", "default": "juego-1" }
+  ],
+  "blocks": [
+    {
+      "type": "premio", "name": "Mood", "limit": 6,
+      "settings": [
+        { "type": "text", "id": "mood", "label": "Mood", "default": "Focus" },
+        { "type": "color", "id": "color", "label": "Color", "info": "Vacío: el color oficial del mood." },
+        { "type": "text", "id": "frase", "label": "Frase", "default": "Para cuando necesitas cabeza clara." },
+        { "type": "text", "id": "premio", "label": "Sorpresa", "default": "−10 %" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "DG · Elige tu mood", "category": "Mood Matcha Degradado",
+    "blocks": [
+      { "type": "premio", "settings": { "mood": "Good", "frase": "Para los días que ya vienen bonitos.", "premio": "−10 %" } },
+      { "type": "premio", "settings": { "mood": "Chill", "frase": "Para bajar revoluciones sin prisa.", "premio": "Envío gratis" } },
+      { "type": "premio", "settings": { "mood": "Focus", "frase": "Para cuando necesitas cabeza clara.", "premio": "−10 %" } },
+      { "type": "premio", "settings": { "mood": "Monday", "frase": "Para empezar la semana con otra cara.", "premio": "−12 %" } },
+      { "type": "premio", "settings": { "mood": "Social", "frase": "Para compartir con tu gente.", "premio": "−15 % en 2 latas" } },
+      { "type": "premio", "settings": { "mood": "Slow", "frase": "Para los ratos lentos y tuyos.", "premio": "−10 %" } }
+    ]
+  }]
+}
+{% endschema %}

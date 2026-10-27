@@ -1,0 +1,45 @@
+{% render 'dg-recursos' %}
+<section class="dg dg-sellos">
+  <div class="dg-wrap">
+    {%- if section.settings.antetitulo != blank -%}<p class="dg-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+    <div class="dg-sellos__fila">
+      {%- for block in section.blocks -%}
+        {%- assign estilo = forloop.index0 | modulo: 3 | plus: 1 -%}
+        <div class="dg-sello dg-sello--{{ estilo }}" {{ block.shopify_attributes }}>
+          <div class="dg-sello__disco">
+            <svg class="dg-sello__aro" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="dg-aro-{{ block.id }}" d="M100 100m-82 0a82 82 0 1 1 164 0a82 82 0 1 1-164 0"/></defs><text><textPath href="#dg-aro-{{ block.id }}">{{ block.settings.aro }} ·</textPath></text></svg>
+            <span class="dg-sello__centro">{{ block.settings.centro }}</span>
+          </div>
+          <p>{{ block.settings.texto }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "DG · Sellos que giran",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [ { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "Lo que hay detrás de cada taza" } ],
+  "blocks": [
+    {
+      "type": "sello", "name": "Sello", "limit": 6,
+      "settings": [
+        { "type": "text", "id": "centro", "label": "Centro", "default": "1ª" },
+        { "type": "text", "id": "aro", "label": "Texto del aro", "default": "Hojas nuevas de primavera · molido en piedra" },
+        { "type": "text", "id": "texto", "label": "Texto de debajo", "default": "Primera cosecha, de las hojas nuevas de esta primavera." }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "DG · Sellos que giran", "category": "Mood Matcha Degradado",
+    "blocks": [
+      { "type": "sello", "settings": { "centro": "1ª", "aro": "Hojas nuevas de primavera · molido en piedra", "texto": "Primera cosecha, de las hojas nuevas de esta primavera." } },
+      { "type": "sello", "settings": { "centro": "20", "aro": "Sin nada de amargor · cultivado a la sombra", "texto": "Al menos 20 días a la sombra, para que no amargue." } },
+      { "type": "sello", "settings": { "centro": "Verde", "aro": "Color intenso · textura cremosa · final dulce", "texto": "Verde intenso, textura cremosa y final dulce." } }
+    ]
+  }]
+}
+{% endschema %}

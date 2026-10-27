@@ -1,0 +1,39 @@
+{% render 'dg-recursos' %}
+<section class="dg dg-comentarios-sec dg-sin-arriba">
+  <div class="dg-wrap">
+    {%- if section.settings.antetitulo != blank -%}<p class="dg-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+    <h2 class="dg-titulo-sec">{{ section.settings.titulo }} <em>{{ section.settings.titulo_cursiva }}</em></h2>
+    <div class="dg-comentarios">
+      {%- assign cols = 'good,chill,social,slow,focus,monday' | split: ',' -%}
+      {%- for block in section.blocks -%}
+        {%- assign i = forloop.index0 | modulo: 6 -%}
+        {%- capture c -%}{% render 'dg-color', mood: cols[i] %}{%- endcapture -%}
+        <figure class="dg-coment" style="--c:{{ c | strip }}" {{ block.shopify_attributes }}>
+          <blockquote>{{ block.settings.texto }}</blockquote>
+          <figcaption>{{ block.settings.usuario }}</figcaption>
+        </figure>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "DG · Comentarios",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "Lo que nos decís" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Vuestros" },
+    { "type": "text", "id": "titulo_cursiva", "label": "Titular en cursiva", "default": "comentarios" }
+  ],
+  "blocks": [
+    { "type": "comentario", "name": "Comentario", "limit": 12,
+      "settings": [
+        { "type": "textarea", "id": "texto", "label": "Comentario", "default": "Escribe aquí un comentario real de Instagram." },
+        { "type": "text", "id": "usuario", "label": "Usuario", "default": "@usuario" }
+      ] }
+  ],
+  "presets": [{ "name": "DG · Comentarios", "category": "Mood Matcha Degradado" }]
+}
+{% endschema %}

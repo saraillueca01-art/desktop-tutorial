@@ -1,0 +1,37 @@
+{% render 'dg-recursos' %}
+{%- assign b = blogs[section.settings.blog] -%}
+<section class="dg dg-recetas">
+  <div class="dg-wrap">
+    <div class="dg-cab" style="margin-bottom:36px">
+      <div>
+        {%- if section.settings.antetitulo != blank -%}<p class="dg-eyebrow">{{ section.settings.antetitulo }}</p>{%- endif -%}
+        <h2>{{ section.settings.titulo }} <em>{{ section.settings.titulo_cursiva }}</em></h2>
+      </div>
+      {%- if b != blank -%}<a class="dg-enlace" href="{{ b.url }}">{{ section.settings.enlace_texto }} →</a>{%- endif -%}
+    </div>
+    <div class="dg-rejilla">
+      {%- if b != blank and b.articles_count > 0 -%}
+        {%- for article in b.articles limit: section.settings.cantidad -%}{% render 'dg-tarjeta', article: article %}{%- endfor -%}
+      {%- else -%}
+        <p class="dg-vacio">{% if request.design_mode %}Elige el blog «Diario Mood» en los ajustes de esta sección y publica alguna receta.{% else %}Pronto, nuevas recetas.{% endif %}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "DG · Recetas del diario",
+  "tag": "div",
+  "class": "dg-section",
+  "settings": [
+    { "type": "blog", "id": "blog", "label": "Blog" },
+    { "type": "range", "id": "cantidad", "label": "Artículos", "min": 3, "max": 6, "step": 3, "default": 3 },
+    { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "Diario Mood" },
+    { "type": "text", "id": "titulo", "label": "Titular", "default": "Recetas para" },
+    { "type": "text", "id": "titulo_cursiva", "label": "Titular en cursiva", "default": "cada mood" },
+    { "type": "text", "id": "enlace_texto", "label": "Enlace", "default": "Ver el diario" }
+  ],
+  "presets": [{ "name": "DG · Recetas del diario", "category": "Mood Matcha Degradado" }]
+}
+{% endschema %}

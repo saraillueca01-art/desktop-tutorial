@@ -1,0 +1,27 @@
+{% render 'dg-recursos' %}
+<div class="dg dg-cinta" aria-hidden="true" style="padding-block:14px">
+  <div class="dg-cinta__pista"><span>
+    {%- for block in section.blocks -%}{{ block.settings.texto }}{% render 'dg-oo' %}{%- endfor -%}
+  </span></div>
+</div>
+
+{% schema %}
+{
+  "name": "DG · Cinta",
+  "tag": "div",
+  "class": "dg-section",
+  "blocks": [
+    { "type": "texto", "name": "Texto", "settings": [ { "type": "text", "id": "texto", "label": "Texto", "default": "Grado ceremonial" } ] }
+  ],
+  "presets": [{
+    "name": "DG · Cinta", "category": "Mood Matcha Degradado",
+    "blocks": [
+      { "type": "texto", "settings": { "texto": "Marca española" } },
+      { "type": "texto", "settings": { "texto": "Grado ceremonial" } },
+      { "type": "texto", "settings": { "texto": "De primera cosecha" } },
+      { "type": "texto", "settings": { "texto": "30 g" } },
+      { "type": "texto", "settings": { "texto": "Matcha Uji" } }
+    ]
+  }]
+}
+{% endschema %}
