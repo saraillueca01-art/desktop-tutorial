@@ -11,7 +11,7 @@
     </div>
     <div class="dg-rejilla">
       {%- if b != blank and b.articles_count > 0 -%}
-        {%- for article in b.articles limit: section.settings.cantidad -%}{% render 'dg-tarjeta', article: article %}{%- endfor -%}
+        {%- assign lim = section.settings.cantidad | plus: 0 -%}{%- for article in b.articles limit: lim -%}{% render 'dg-tarjeta', article: article %}{%- endfor -%}
       {%- else -%}
         <p class="dg-vacio">{% if request.design_mode %}Elige el blog «Diario Mood» en los ajustes de esta sección y publica alguna receta.{% else %}Pronto, nuevas recetas.{% endif %}</p>
       {%- endif -%}
@@ -26,7 +26,7 @@
   "class": "dg-section",
   "settings": [
     { "type": "blog", "id": "blog", "label": "Blog" },
-    { "type": "range", "id": "cantidad", "label": "Artículos", "min": 3, "max": 6, "step": 3, "default": 3 },
+    { "type": "select", "id": "cantidad", "label": "Artículos", "default": "3", "options": [ { "value": "3", "label": "3" }, { "value": "6", "label": "6" } ] },
     { "type": "text", "id": "antetitulo", "label": "Antetítulo", "default": "Diario Mood" },
     { "type": "text", "id": "titulo", "label": "Titular", "default": "Recetas para" },
     { "type": "text", "id": "titulo_cursiva", "label": "Titular en cursiva", "default": "cada mood" },
