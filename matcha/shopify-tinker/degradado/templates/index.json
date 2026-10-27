@@ -319,7 +319,126 @@
     },
     "momentos": {
       "type": "dg-momentos",
-      "settings": {}
+      "settings": {
+        "instagram": "https://www.instagram.com/bymoodmatcha/?hl=fr"
+      }
+    },
+    "mm_preguntas": {
+      "type": "mm-preguntas",
+      "blocks": {
+        "pregunta_1": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cuántas tazas salen de una lata?",
+            "respuesta": "<p>Unas 15 tazas, usando 2 g (una cucharadita de bambú) por taza.</p>"
+          }
+        },
+        "pregunta_2": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Qué significa de primera cosecha?",
+            "respuesta": "<p>Son las primeras hojas del año, las más tiernas. Dan un verde más intenso y un sabor más dulce y menos amargo.</p>"
+          }
+        },
+        "pregunta_3": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Necesito un chasen para prepararlo?",
+            "respuesta": "<p>Es lo ideal para que salga espuma fina, pero un espumador de leche eléctrico también funciona.</p>"
+          }
+        },
+        "pregunta_4": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cuánto tarda en llegar?",
+            "respuesta": "<p>Si pides antes de medianoche, sale al día siguiente laborable y te llega en 24–72 h. El envío es gratis a partir de 35 €.</p>"
+          }
+        },
+        "pregunta_5": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Cómo lo conservo?",
+            "respuesta": "<p>Bien cerrado, lejos de la luz y del calor. Una vez abierto, guárdalo en la nevera y tómalo en uno o dos meses para que no pierda color ni aroma.</p>"
+          }
+        },
+        "pregunta_6": {
+          "type": "pregunta",
+          "settings": {
+            "pregunta": "¿Tiene cafeína?",
+            "respuesta": "<p>Sí, algo menos que un café. Se nota de forma más suave y sostenida.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "pregunta_1",
+        "pregunta_2",
+        "pregunta_3",
+        "pregunta_4",
+        "pregunta_5",
+        "pregunta_6"
+      ],
+      "settings": {
+        "titulo": "Preguntas frecuentes",
+        "texto": "<p>¿Te queda alguna duda? Escríbenos y te contestamos el mismo día.</p>",
+        "abrir_primera": true,
+        "datos_google": true
+      }
+    },
+    "mm_confian": {
+      "type": "mm-confian",
+      "blocks": {
+        "sitio_1": {
+          "type": "sitio",
+          "settings": {
+            "logo": "shopify://shop_images/Fachada_medica_ilustrada_verde_salvia.png",
+            "nombre": "Centro médico dr Illueca",
+            "ciudad": "Benissa (Alicante)",
+            "enlace": "https://www.google.com/maps/place//data=!4m2!3m1!1s0x129e011b2f02f1d5:0x3922c4e0c7050e78?sa=X&ved=1t:8290&ictx=111"
+          }
+        },
+        "sitio_2": {
+          "type": "sitio",
+          "disabled": true,
+          "settings": {
+            "nombre": "Tienda 2",
+            "ciudad": "Ciudad",
+            "enlace": ""
+          }
+        },
+        "sitio_3": {
+          "type": "sitio",
+          "disabled": true,
+          "settings": {
+            "nombre": "Cafetería 3",
+            "ciudad": "Ciudad",
+            "enlace": ""
+          }
+        },
+        "sitio_4": {
+          "type": "sitio",
+          "disabled": true,
+          "settings": {
+            "nombre": "Tienda 4",
+            "ciudad": "Ciudad",
+            "enlace": ""
+          }
+        }
+      },
+      "block_order": [
+        "sitio_1",
+        "sitio_2",
+        "sitio_3",
+        "sitio_4"
+      ],
+      "settings": {
+        "titulo": "Nos encontrarás en",
+        "texto": "Cafeterías y tiendas que ya sirven Mood Matcha.",
+        "movimiento": true,
+        "velocidad": 40,
+        "cta_texto": "¿Quieres vender Mood Matcha o ponerlo en tu cafetería?",
+        "cta_boton": "Escríbenos",
+        "cta_enlace": ""
+      }
     }
   },
   "order": [
@@ -332,7 +451,9 @@
     "sellos",
     "quienes",
     "pasos",
+    "mm_preguntas",
     "recetas",
+    "mm_confian",
     "momentos"
   ]
 }

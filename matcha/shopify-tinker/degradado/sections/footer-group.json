@@ -4,7 +4,11 @@
   "sections": {
     "dg_pie": {
       "type": "dg-pie",
-      "settings": {}
+      "settings": {
+        "instagram": "https://www.instagram.com/bymoodmatcha/?hl=fr",
+        "tiktok": "https://www.tiktok.com/@bymoodmatcha",
+        "firma": "BY BENISSALUD"
+      }
     }
   },
   "order": [

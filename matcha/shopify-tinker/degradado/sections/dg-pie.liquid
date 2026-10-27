@@ -32,8 +32,11 @@
     <div class="dg-wrap">
       <div class="dg-pie__logo">M{%- render 'dg-oo', class: 'dg-oo' -%}DMATCHA</div>
       {%- if section.settings.texto != blank -%}<p>{{ section.settings.texto }}</p>{%- endif -%}
+      {%- if section.settings.firma != blank -%}<p class="dg-eyebrow">{{ section.settings.firma }}</p>{%- endif -%}
       <div class="dg-pie__pequeno">
         {%- if section.settings.garantias != blank -%}{%- assign gs = section.settings.garantias | split: ',' -%}{%- for g in gs -%}<span>{{ g | strip }}</span>{%- endfor -%}{%- endif -%}
+        {%- if section.settings.instagram != blank -%}<a href="{{ section.settings.instagram }}" target="_blank" rel="noopener">Instagram</a>{%- endif -%}
+        {%- if section.settings.tiktok != blank -%}<a href="{{ section.settings.tiktok }}" target="_blank" rel="noopener">TikTok</a>{%- endif -%}
         {%- for link in section.settings.menu.links -%}<a href="{{ link.url }}">{{ link.title }}</a>{%- endfor -%}
         <span>© {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
       </div>
@@ -56,7 +59,10 @@
     { "type": "text", "id": "news_legal", "label": "Texto pequeño", "default": "Al apuntarte aceptas recibir emails de Mood Matcha. Puedes darte de baja cuando quieras." },
     { "type": "text", "id": "news_gracias", "label": "Mensaje al apuntarse", "default": "¡Ya estás dentro! Te escribiremos pronto." },
     { "type": "text", "id": "texto", "label": "Frase bajo el logo", "default": "Matcha Uji de primera cosecha y grado ceremonial. Una marca española." },
-    { "type": "text", "id": "garantias", "label": "Datos pequeños", "info": "Separados por comas.", "default": "Envío en 24–72 h, Pago seguro, 14 días para devolverlo, @moodmatcha" },
+    { "type": "text", "id": "firma", "label": "Firma", "default": "BY BENISSALUD" },
+    { "type": "text", "id": "garantias", "label": "Datos pequeños", "info": "Separados por comas.", "default": "Envío en 24–72 h, Pago seguro, 14 días para devolverlo" },
+    { "type": "url", "id": "instagram", "label": "Instagram", "default": "https://www.instagram.com/bymoodmatcha/" },
+    { "type": "url", "id": "tiktok", "label": "TikTok", "default": "https://www.tiktok.com/@bymoodmatcha" },
     { "type": "link_list", "id": "menu", "label": "Menú de enlaces (opcional)" }
   ],
   "presets": [{ "name": "DG · Pie y newsletter", "category": "Mood Matcha Degradado" }]
