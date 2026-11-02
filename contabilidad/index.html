@@ -217,6 +217,15 @@
         <option value="4">4T (oct–dic)</option>
       </select>
     </label>
+    <label>Mes
+      <select id="fMes">
+        <option value="0">Todos los meses</option>
+        <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
+        <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+        <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+        <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+      </select>
+    </label>
   </div>
 
   <!-- RESUMEN -->
@@ -676,8 +685,8 @@ const NEGOCIOS = {
     $('#fAnio').innerHTML = [...ys].sort((a, b) => b - a).map(y => `<option ${y == cur ? 'selected' : ''}>${y}</option>`).join('');
   };
   const filtered = () => {
-    const y = $('#fAnio').value, t = +$('#fTri').value;
-    return todos().filter(m => m.fecha.startsWith(y) && (!t || tri(m.fecha) === t));
+    const y = $('#fAnio').value, t = +$('#fTri').value, mes = +$('#fMes').value;
+    return todos().filter(m => m.fecha.startsWith(y) && (!t || tri(m.fecha) === t) && (!mes || +m.fecha.slice(5, 7) === mes));
   };
 
   // ---------- Resumen ----------
@@ -2148,7 +2157,10 @@ const NEGOCIOS = {
     $('#formTitle').textContent = `Nuevo ${b.dataset.nuevo} · ${CFG().nombre}`;
     F.concepto.focus();
   });
-  ['#fAnio', '#fTri', '#fTipo'].forEach(s => $(s).addEventListener('change', render));
+  ['#fAnio', '#fTri', '#fMes', '#fTipo'].forEach(s => $(s).addEventListener('change', render));
+  // Mes y trimestre van a juego: elegir un mes pone su trimestre; cambiar de trimestre quita un mes de otro trimestre
+  $('#fMes').addEventListener('change', () => { const mes = +$('#fMes').value; if (mes) $('#fTri').value = String(Math.floor((mes - 1) / 3) + 1); }, true);
+  $('#fTri').addEventListener('change', () => { const mes = +$('#fMes').value, t = +$('#fTri').value; if (mes && t && Math.floor((mes - 1) / 3) + 1 !== t) $('#fMes').value = '0'; if (!t) $('#fMes').value = '0'; }, true);
   $('#fTxt').addEventListener('input', render);
   $('#tMovs').addEventListener('change', e => {
     const id = e.target.dataset.adjuntar, archivo = e.target.files?.[0], m = id && db().movs.find(x => x.id === id);
