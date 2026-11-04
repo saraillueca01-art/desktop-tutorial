@@ -525,6 +525,7 @@ def email_recordatorio():
 
 
 # ---------- Gracias por venir a la inauguración ----------
+REEL_INAUGURACION = 'https://www.instagram.com/reel/DfSOF3PoZwF/'
 WA_CITA_CHAKRA = wa('Hola, vengo del email y quiero reservar una cita en Chakra Wellness Center 😊')
 WA_CLASE_PILATES = wa('Hola, vengo del email y quiero reservar una clase en Espai Pilates Reformer 😊')
 
@@ -577,6 +578,14 @@ def email_gracias():
           <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:30px auto 0;"><tr><td width="64" style="border-top:1px solid {G};font-size:0;line-height:0;">&nbsp;</td></tr></table>
           <p style="margin:28px 0 0;font-family:{sans};font-size:17px;line-height:1.75;color:#d8d2c6;">Fue una tarde muy especial y tenerte con nosotros la hizo todavía mejor. Gracias por cada sonrisa, cada abrazo y cada palabra bonita.</p>
           <p style="margin:18px 0 0;font-family:{serif};font-style:italic;font-size:20px;line-height:1.6;color:#ffffff;">Esto solo acaba de empezar.</p>
+        </td></tr>
+
+        <!-- Vídeo -->
+        <tr><td style="padding:0;background:{N};">
+          <a href="{REEL_INAUGURACION}" style="text-decoration:none;"><img src="{BASE}/campanas-octubre/media/video-inauguracion.jpg" width="600" alt="Ver el vídeo de nuestra inauguración" style="display:block;border:0;width:100%;max-width:600px;height:auto;"></a>
+        </td></tr>
+        <tr><td align="center" bgcolor="{N}" style="background:{N};padding:26px 24px 44px;">
+          {btn('Ver el vídeo', REEL_INAUGURACION)}
         </td></tr>
 
         <!-- Bienvenida -->
@@ -664,6 +673,7 @@ if __name__ == '__main__':
         BASE + '/campanas-octubre/media/logo-espai-pilates.png': ('campanas-octubre/media/logo-espai-pilates.png', 'image/png'),
         BASE + '/campanas-octubre/media/cartel-inauguracion.jpg': ('campanas-octubre/media/cartel-inauguracion.jpg', 'image/jpeg'),
         BASE + '/campanas-octubre/media/inauguracion-foto.jpg': ('campanas-octubre/media/inauguracion-foto.jpg', 'image/jpeg'),
+        BASE + '/campanas-octubre/media/video-inauguracion.jpg': ('campanas-octubre/media/video-inauguracion.jpg', 'image/jpeg'),
     }
     for nombre, html in EMAILS.items():
         open(os.path.join(here, nombre + '.html'), 'w').write(html)
