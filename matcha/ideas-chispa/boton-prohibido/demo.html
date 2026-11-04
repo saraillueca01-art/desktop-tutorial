@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap">
 <style>html,body{margin:0;background:#fff}:root{--mm-logo-font:'Jost',sans-serif}</style><script>
 /* Solo en la vista previa: el voto no se envía a ningún sitio. */
-const _f = window.fetch; window.fetch = (u, o) => String(u).includes('vista-previa.invalid') ? new Promise(r => setTimeout(() => r(new Response('{"ok":true}', { headers: { 'content-type': 'application/json' } })), 500)) : _f(u, o);
+const _f = window.fetch; window.fetch = (u, o) => (String(u).includes('vista-previa.invalid') || String(u).includes('/contact')) ? new Promise(r => setTimeout(() => r(new Response('{"ok":true}', { headers: { 'content-type': 'application/json' } })), 500)) : _f(u, o);
 </script>
 <style>.vp-aviso{position:fixed;left:50%;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:10000;background:#1e3322;color:#fff;font:400 11px/1 'Jost',system-ui,sans-serif;letter-spacing:.08em;padding:7px 12px;border-radius:99px;opacity:.85;pointer-events:none;white-space:nowrap}</style></head><body><main><link rel="stylesheet" href="assets/mood-matcha.css">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -153,6 +153,22 @@ const _f = window.fetch; window.fetch = (u, o) => String(u).includes('vista-prev
     <p class="mms__msg" data-mms-estado aria-live="polite"></p>
   </section>
 
+  <!-- 3b · email para que el voto cuente -->
+  <section class="mms__paso" data-paso="email" hidden>
+    <p class="mms__votar">Último paso</p>
+    <h2 class="mms__titulo">Para que tu voto cuente, déjanos tu email</h2>
+    <div class="mms__elegida" data-mms-elegida></div>
+    <form class="mms__form" data-mms-form novalidate>
+      <label for="mms-email-mm_secreto" class="mms__vh">Tu email</label>
+      <input id="mms-email-mm_secreto" type="email" name="email" placeholder="tu@email.com" autocomplete="email" inputmode="email" required>
+      <label class="mms__check"><input type="checkbox" name="novedades"> <span>Quiero recibir las novedades de Mood Matcha (opcional)</span></label>
+      <p class="mms__legal">Solo vale un voto por email. Si no marcas la casilla, usamos tu email únicamente para contar tu voto.</p>
+      <p class="mms__msg" data-mms-error aria-live="polite"></p>
+      <button type="submit" class="mms__btn">Enviar mi voto</button>
+    </form>
+    <button type="button" class="mms__enlace" data-mms-ir="sala">← Cambiar de etiqueta</button>
+  </section>
+
   <!-- 4 · final -->
   <section class="mms__paso" data-paso="final" hidden>
     <p class="mms__alerta mms__alerta--grande">Misión completada 🍵🔓</p>
@@ -205,16 +221,17 @@ const _f = window.fetch; window.fetch = (u, o) => String(u).includes('vista-prev
       <circle cx="60" cy="102" r="11" fill="none" stroke="#1f3a28" stroke-width="2"/>
       <path d="M50 102c2-4 4 4 6 0s4 4 6 0 4 4 6 0" fill="none" stroke="#1f3a28" stroke-width="1.6"/>
       <path d="M40 104c-3 2-4 6-2 9M80 104c3 2 4 6 2 9" fill="none" stroke="#8fb04a" stroke-width="1.6" stroke-linecap="round"/></svg>
-</button><button type="button" class="mms__obj" data-tipo="espumadera" aria-label="Objeto 6"><svg viewBox="0 0 120 120" role="img" aria-label="Utensilio" focusable="false"><path d="M62 52L106 12" stroke="#1f3a28" stroke-width="7" stroke-linecap="round"/>
-      <path d="M62 52L106 12" stroke="#c9cfc8" stroke-width="4" stroke-linecap="round"/>
-      <circle cx="104" cy="14" r="2.4" fill="#1f3a28"/>
-      <circle cx="44" cy="74" r="30" fill="#c9cfc8" stroke="#1f3a28" stroke-width="2"/>
-      <circle cx="44" cy="74" r="25" fill="none" stroke="#e3e7e1" stroke-width="1.5"/>
-      <g fill="#7d867f">
-        <circle cx="44" cy="74" r="3"/><circle cx="34" cy="74" r="3"/><circle cx="54" cy="74" r="3"/><circle cx="44" cy="64" r="3"/><circle cx="44" cy="84" r="3"/>
-        <circle cx="36" cy="66" r="2.4"/><circle cx="52" cy="66" r="2.4"/><circle cx="36" cy="82" r="2.4"/><circle cx="52" cy="82" r="2.4"/>
-        <circle cx="27" cy="68" r="2"/><circle cx="27" cy="80" r="2"/><circle cx="61" cy="68" r="2"/><circle cx="61" cy="80" r="2"/><circle cx="44" cy="55" r="2"/><circle cx="44" cy="93" r="2"/>
-      </g></svg>
+</button><button type="button" class="mms__obj" data-tipo="cafetera" aria-label="Objeto 6"><svg viewBox="0 0 120 120" role="img" aria-label="Utensilio" focusable="false"><path d="M78 40c20 0 20 24 1 24" fill="none" stroke="#1f3a28" stroke-width="7" stroke-linecap="round"/>
+      <path d="M45 40L30 33l3 10 12 3z" fill="#c9cfc8" stroke="#1f3a28" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M44 66h32l-4-30H48z" fill="#d5dad3" stroke="#1f3a28" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M53 36l-1 30M60 36v30M67 36l1 30" stroke="#9aa39b" stroke-width="1.3"/>
+      <path d="M46 36h28l-6-9H52z" fill="#c9cfc8" stroke="#1f3a28" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="60" cy="23" r="4.5" fill="#1f3a28"/>
+      <rect x="44" y="66" width="32" height="7" fill="#9aa39b" stroke="#1f3a28" stroke-width="2"/>
+      <path d="M38 108h44l-6-35H44z" fill="#d5dad3" stroke="#1f3a28" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M51 73l-2 35M60 73v35M69 73l2 35" stroke="#9aa39b" stroke-width="1.3"/>
+      <circle cx="47" cy="90" r="2.4" fill="#9aa39b"/>
+      <path d="M24 26c-3-4 3-6 0-10M30 22c-3-4 3-6 0-10" fill="none" stroke="#8a6a4a" stroke-width="1.6" stroke-linecap="round" opacity=".7"/></svg>
 </button></template>
 
 <template id="mms-etiquetas-mm_secreto"><div class="mms__eti" data-codigo="A" >
@@ -311,6 +328,17 @@ const _f = window.fetch; window.fetch = (u, o) => String(u).includes('vista-prev
   .mms__eti-check { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; }
   .mms__eti-elegir[aria-pressed="true"] { background: var(--deep); color: #fff; }
   .mms__eti-elegir[aria-pressed="true"] .mms__eti-check::before { content: "✓ "; }
+  .mms__vh { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .mms__elegida { display: flex; align-items: center; gap: 14px; width: min(100%, 420px); background: rgb(255 255 255 / 0.8); border-radius: 20px; padding: 10px 14px; text-align: left; }
+  .mms__elegida img { width: 96px; height: 72px; object-fit: contain; border-radius: 10px; background: #fff; flex: none; }
+  .mms__elegida b { font-weight: 400; }
+  .mms__form { display: grid; gap: 12px; width: min(100%, 420px); text-align: left; }
+  .mms__form input[type=email] { width: 100%; border: 0; border-radius: 999px; padding: 14px 18px; min-height: 50px; font: 300 1rem var(--sans); color: var(--ink); background: #fff; box-shadow: inset 0 0 0 1px rgb(30 51 34 / 0.22); }
+  .mms__form input[type=email]:focus { outline: none; box-shadow: inset 0 0 0 1.5px var(--deep); }
+  .mms__check { display: flex; gap: 10px; align-items: flex-start; font-size: 0.88rem; color: var(--muted); line-height: 1.4; cursor: pointer; }
+  .mms__check input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--deep); flex: none; }
+  .mms__legal { margin: 0; font-size: 0.75rem; color: var(--muted); }
+  .mms__form .mms__btn { justify-self: center; }
   .mms__paso--sala [data-mms-votar] { position: sticky; bottom: max(14px, env(safe-area-inset-bottom, 0px)); z-index: 2; box-shadow: 0 10px 30px -10px rgb(30 51 34 / 0.55); }
   .mms__votar { margin: 8px 0 0; font: 500 0.95rem/1 var(--sans); letter-spacing: 0.24em; text-transform: uppercase; color: var(--deep); }
 
@@ -361,7 +389,7 @@ const _f = window.fetch; window.fetch = (u, o) => String(u).includes('vista-prev
   /* navegación entre pasos */
   function paso(nombre){
     $$('.mms__paso').forEach(p => p.hidden = p.dataset.paso !== nombre);
-    capa.classList.toggle('is-sala', nombre === 'sala' || nombre === 'final');
+    capa.classList.toggle('is-sala', ['sala','email','final'].includes(nombre));
     capa.scrollTop = 0;
     if (nombre === 'juego') empiezaJuego();
     if (nombre === 'sala') abreSala();
@@ -400,14 +428,14 @@ const _f = window.fetch; window.fetch = (u, o) => String(u).includes('vista-prev
   function elige(b){
     const caja = $('[data-mms-objetos]'), msg = $('[data-mms-msg]');
     if (caja.classList.contains('is-resuelto')) return;
-    if (b.dataset.tipo === 'espumadera'){
+    if (b.dataset.tipo === 'cafetera'){
       b.classList.add('is-bien'); caja.classList.add('is-resuelto'); msg.textContent = ''; vibra([30, 60, 30, 60, 140]); confeti();
       guarda.set('mms-resuelto', '1'); setTimeout(() => { $('[data-mms-exito]').hidden = false; $('[data-mms-exito] .mms__btn').focus({ preventScroll: true }); }, 450);
       return;
     }
     fallos++; vibra(70); b.classList.remove('is-mal'); void b.offsetWidth; b.classList.add('is-mal'); setTimeout(() => b.classList.remove('is-mal'), 600);
     msg.classList.add('is-mal'); msg.textContent = MAL.length ? MAL[(fallos - 1) % MAL.length] : 'Uy… creo que necesitas otro matcha 😂';
-    if (fallos >= 3) msg.textContent += ' Pista: busca lo que verías en una cocina, no en una ceremonia.';
+    if (fallos >= 3) msg.textContent += ' Pista: uno de ellos es de otra bebida ☕';
   }
   function confeti(){
     if (reducido) return; const c = $('[data-mms-confeti]'), cols = ['#9cc14a', '#c9dc5c', '#1e3322', '#f4e278', '#add9af', '#f3e5cd'];
@@ -438,23 +466,41 @@ const _f = window.fetch; window.fetch = (u, o) => String(u).includes('vista-prev
   $('[data-mms-lupa-cerrar]').addEventListener('click', () => $('[data-mms-lupa]').hidden = true);
   $('[data-mms-lupa-img]').addEventListener('click', () => $('[data-mms-lupa]').classList.toggle('is-zoom'));
 
-  $('[data-mms-votar]').addEventListener('click', async () => {
-    const boton = $('[data-mms-votar]'), estado = $('[data-mms-estado]');
+  $('[data-mms-votar]').addEventListener('click', () => {
     if (guarda.get('mms-voto')) return paso('final');
     if (!elegida) return;
-    estado.classList.remove('is-mal');
-    if (!ENDPOINT){ estado.classList.add('is-mal'); estado.textContent = 'La votación se abre muy pronto. Vuelve en un rato 🍵'; return; }
-    boton.disabled = true; estado.textContent = 'Guardando tu voto…';
+    const eti = $(`.mms__eti[data-codigo="${elegida}"]`), img = eti && $('img', eti);
+    $('[data-mms-elegida]').innerHTML = (img ? `<img src="${img.currentSrc || img.src}" alt="">` : '') + `<span>Has elegido la <b>${$('.mms__eti-nombre', eti).textContent}</b></span>`;
+    $('[data-mms-error]').textContent = ''; paso('email');
+  });
+
+  /* 3b · el voto solo cuenta con email (uno por email) */
+  $('[data-mms-form]').addEventListener('submit', async e => {
+    e.preventDefault();
+    const f = e.target, error = $('[data-mms-error]'), boton = $('button[type=submit]', f);
+    const email = f.email.value.trim().toLowerCase(), novedades = f.novedades.checked;
+    error.classList.add('is-mal');
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email)){ error.textContent = 'Revisa el email: parece que falta algo.'; f.email.focus(); return; }
+    if (!ENDPOINT){ error.textContent = 'La votación se abre muy pronto. Vuelve en un rato 🍵'; return; }
+    boton.disabled = true; error.classList.remove('is-mal'); error.textContent = 'Guardando tu voto…';
     try {
-      const r = await fetch(ENDPOINT, { method: 'POST', body: JSON.stringify({ voto: elegida, votante: votante(), huella: huella(), origen: location.host }) });
+      const r = await fetch(ENDPOINT, { method: 'POST', body: JSON.stringify({ voto: elegida, email, novedades, votante: votante(), huella: huella(), origen: location.host }) });
       const d = await r.json();
       if (d.ok || d.error === 'duplicado'){
-        guarda.set('mms-voto', JSON.stringify({ codigo: elegida, fecha: Date.now() })); vibra([30, 60, 120]); confeti(); paso('final');
+        guarda.set('mms-voto', JSON.stringify({ codigo: elegida, fecha: Date.now() }));
+        if (novedades) suscribe(email);
+        vibra([30, 60, 120]); confeti(); paso('final');
+        if (d.error === 'duplicado') $('[data-mms-compartido]').textContent = 'Este email ya había votado, así que contamos tu primer voto. ¡Gracias!';
       } else { throw new Error(d.error || 'error'); }
-    } catch(e){
-      boton.disabled = false; estado.classList.add('is-mal'); estado.textContent = 'No hemos podido guardar tu voto. Revisa tu conexión e inténtalo otra vez.';
+    } catch(err){
+      boton.disabled = false; error.classList.add('is-mal'); error.textContent = 'No hemos podido guardar tu voto. Revisa tu conexión e inténtalo otra vez.';
     }
   });
+  /* si acepta novedades, también la apuntamos a la newsletter de Shopify (sin recargar la página) */
+  function suscribe(email){
+    try { const fd = new FormData(); fd.append('form_type', 'customer'); fd.append('utf8', '✓'); fd.append('contact[email]', email); fd.append('contact[tags]', "newsletter, lista-espera, reto-dia-13");
+      fetch('/contact', { method: 'POST', body: fd, credentials: 'same-origin' }).catch(() => {}); } catch(e){}
+  }
 
   /* 4 · compartir */
   $('[data-mms-compartir]').addEventListener('click', async () => {
