@@ -1,0 +1,470 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prueba</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap">
+<style>html,body{margin:0;background:#fff}:root{--mm-logo-font:'Jost',sans-serif}</style><script>
+/* Solo en la vista previa: el voto no se envía a ningún sitio. */
+const _f = window.fetch; window.fetch = (u, o) => String(u).includes('vista-previa.invalid') ? new Promise(r => setTimeout(() => r(new Response('{"ok":true}', { headers: { 'content-type': 'application/json' } })), 500)) : _f(u, o);
+</script>
+<style>.vp-aviso{position:fixed;left:50%;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:10000;background:#1e3322;color:#fff;font:400 11px/1 'Jost',system-ui,sans-serif;letter-spacing:.08em;padding:7px 12px;border-radius:99px;opacity:.85;pointer-events:none;white-space:nowrap}</style></head><body><main><link rel="stylesheet" href="assets/mood-matcha.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap">
+
+<div class="mm-lote" id="mm-lote-mm_lote">
+  <header class="mm-lote__top"><span class="mm-logo " role="img" aria-label="Mood Matcha">M<svg class="mm-logo__oo" viewBox="0 0 122 72" aria-hidden="true" focusable="false"><circle cx="36" cy="36" r="32"/><circle cx="86" cy="36" r="32"/></svg><span aria-hidden="true">DMATCHA</span></span>
+</header>
+
+  <main class="mm-lote__hero"><span class="mm-lote__kicker">Lote</span><span class="mm-lote__num mm-lote__x">001</span>
+    <h1>Todavía <span class="mm-lote__x">no existe</span> <span class="mm-lote__fix">se está preparando</span>.
+    </h1><p class="mm-lote__lead">Déjanos tu email y te contamos todas las novedades de Mood Matcha antes que a nadie.</p><form method="post" action="#" class="mm-lote__form-wrap" onsubmit="return false"><input type="hidden" name="contact[tags]" value="lista-espera, lote-001">
+        <div class="mm-lote__form">
+          <label for="mm-lote-email" class="visually-hidden">Tu email</label>
+          <input id="mm-lote-email" type="email" name="contact[email]" placeholder="Tu email" autocomplete="email" required>
+          <button type="submit">Quiero enterarme</button>
+        </div></form><p class="mm-lote__legal">Solo te escribiremos para contarte novedades. Puedes darte de baja cuando quieras.</p><a class="mm-lote__reto" href="https://www.instagram.com/bymoodmatcha/" target="_blank" rel="noopener">
+        <span><b>1 seguidor = 1 céntimo</b><small>Por cada persona que nos siga en Instagram, invertimos 1 céntimo en Mood Matcha. Ayúdanos a que exista.</small></span><em>Seguir</em></a></main>
+
+  <footer class="mm-lote__foot">
+    <nav><a href="https://www.instagram.com/bymoodmatcha/" target="_blank" rel="noopener">Instagram</a><a href="https://www.tiktok.com/@bymoodmatcha" target="_blank" rel="noopener">TikTok</a></nav>
+    <details class="mm-lote__pass">
+      <summary>Entrar con contraseña</summary><form method="post" action="#" class="mm-lote__passform" onsubmit="return false"><label for="mm-lote-pass" class="visually-hidden">Contraseña</label>
+        <input id="mm-lote-pass" type="password" name="password" placeholder="Contraseña" autocomplete="current-password">
+        <button type="submit">Entrar</button></form></details>
+  </footer>
+</div>
+
+<style>
+  .mm-lote {
+    --ink: #1b2a1f; --muted: #6a756b; --deep: #1e3322; --green: #2f6b2a; --lime: #c9dc5c; --line: #e4e9df;
+    --serif: 'Cormorant Garamond', 'Cormorant', Garamond, 'Times New Roman', serif; --ease: cubic-bezier(.2,.8,.2,1);
+    min-height: 100svh; display: grid; grid-template-rows: auto 1fr auto; background: #fff; color: var(--ink);
+    padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
+    font-family: var(--mm-logo-font); font-weight: 300; font-size: 16px; line-height: 1.55;
+  }
+  .mm-lote .visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .mm-lote :focus-visible { outline: 1.5px solid var(--deep); outline-offset: 4px; }
+  .mm-lote__x { position: relative; display: inline-block; }
+  .mm-lote__x::after { content: ""; position: absolute; left: -3%; right: -3%; top: 54%; height: var(--t, 2px); background: var(--deep); transform: scaleX(0); transform-origin: left; transition: transform 1.1s var(--ease); transition-delay: var(--d, 1.6s); }
+  .mm-lote.is-in .mm-lote__x::after { transform: scaleX(1); }
+  .mm-lote__fix { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--green); opacity: 0; transform: translateY(6px); display: inline-block; transition: opacity 0.7s var(--ease) 2.4s, transform 0.7s var(--ease) 2.4s; }
+  .mm-lote.is-in .mm-lote__fix { opacity: 1; transform: none; }
+
+  .mm-lote__top { display: flex; justify-content: center; padding-block: clamp(14px, 3vh, 26px) 0; }
+  .mm-lote__top .mm-logo { color: var(--deep); font-size: 1.15rem; }
+  .mm-lote__hero { display: grid; place-content: center; justify-items: center; text-align: center; gap: clamp(8px, 1.6vh, 16px); padding-block: clamp(10px, 2vh, 20px); }
+  .mm-lote__kicker { font-size: 0.72rem; letter-spacing: 0.42em; text-transform: uppercase; color: var(--muted); }
+  .mm-lote__num { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: min(24vw, 27vh); line-height: 0.8; color: var(--deep); letter-spacing: -0.03em; --t: clamp(3px, 0.45vw, 6px); --d: 0.5s; }
+  .mm-lote__num::after { top: 52%; transition-duration: 1.6s; }
+  .mm-lote h1 { margin: 0; font-family: var(--mm-logo-font); font-weight: 300; font-size: clamp(1.4rem, min(3.4vw, 4vh), 2.2rem); line-height: 1.2; letter-spacing: 0; text-wrap: balance; color: var(--ink); }
+  .mm-lote__lead { margin: 0; color: var(--muted); max-width: 42ch; }
+  .mm-lote__form-wrap { display: grid; justify-items: center; width: min(100%, 440px); }
+  .mm-lote__form { display: flex; gap: 6px; padding: 5px; width: 100%; border-radius: 999px; background: #fff; box-shadow: inset 0 0 0 1px rgb(30 51 34 / 0.22); }
+  .mm-lote__form:focus-within { box-shadow: inset 0 0 0 1.5px var(--deep); }
+  .mm-lote__form input { flex: 1; min-width: 0; border: 0; background: none; padding: 11px 18px; font: inherit; font-size: 1rem; color: var(--ink); box-shadow: none; }
+  .mm-lote__form input:focus { outline: none; }
+  .mm-lote__form button, .mm-lote__passform button { border: 0; border-radius: 999px; padding: 11px 22px; background: var(--deep); color: #fff; cursor: pointer; font: inherit; font-size: 0.95rem; white-space: nowrap; transition: transform 0.3s; }
+  .mm-lote__form button:hover { transform: translateY(-1px); }
+  .mm-lote__legal { margin: 0; font-size: 0.75rem; color: var(--muted); }
+  .mm-lote__done { margin: 0; font-family: var(--serif); font-style: italic; font-size: 1.5rem; color: var(--green); }
+  .mm-lote__err { margin: 6px 0 0; font-size: 0.85rem; color: #a33; }
+
+  .mm-lote__reto { display: flex; align-items: center; gap: 14px 18px; margin-top: clamp(4px, 1vh, 10px); padding: 12px 14px 12px 18px; border-radius: 18px; background: color-mix(in srgb, var(--lime) 18%, #fff); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lime) 55%, transparent); text-align: start; max-width: 560px; text-decoration: none; color: inherit; transition: transform 0.4s var(--ease); }
+  .mm-lote__reto:hover { transform: translateY(-2px); }
+  .mm-lote__reto b { display: block; font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.45rem; line-height: 1.05; color: var(--deep); }
+  .mm-lote__reto small { display: block; font-size: 0.88rem; color: var(--muted); line-height: 1.4; }
+  .mm-lote__reto em { flex: none; font-style: normal; font-size: 0.85rem; color: #fff; background: var(--green); padding: 8px 14px; border-radius: 999px; white-space: nowrap; }
+
+  .mm-lote__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 24px; padding-block: 0 clamp(14px, 3vh, 24px); font-size: 0.82rem; color: var(--muted); }
+  .mm-lote__foot nav { display: flex; gap: 18px; }
+  .mm-lote__foot a { color: var(--deep); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+  .mm-lote__pass { position: relative; }
+  .mm-lote__pass summary { cursor: pointer; list-style: none; padding: 0; }
+  .mm-lote__pass summary::-webkit-details-marker { display: none; }
+  .mm-lote__passform { position: absolute; right: 0; bottom: calc(100% + 8px); display: flex; flex-wrap: wrap; gap: 6px; padding: 8px; background: #fff; border-radius: 22px; box-shadow: 0 10px 30px -14px rgb(15 36 20 / 0.45), inset 0 0 0 1px var(--line); width: max-content; max-width: calc(100vw - 32px); }
+  .mm-lote__passform input { width: 160px; border: 0; padding: 6px 12px; font: inherit; font-size: 0.9rem; background: none; box-shadow: none; }
+  .mm-lote__passform input:focus { outline: none; }
+  .mm-lote__passform button { padding: 6px 14px; font-size: 0.85rem; }
+  .mm-lote__pass[open] .mm-lote__passform:has(.mm-lote__err) { border-radius: 16px; }
+
+  @media (max-width: 560px) {
+    .mm-lote__num { font-size: min(34vw, 22vh); }
+    .mm-lote__form { flex-wrap: wrap; border-radius: 22px; }
+    .mm-lote__form input { padding: 10px 14px; }
+    .mm-lote__form button { flex: 1 1 100%; padding: 10px; }
+    .mm-lote__reto { padding: 10px 12px; gap: 10px; }
+    .mm-lote__reto b { font-size: 1.2rem; }
+    .mm-lote__reto small { font-size: 0.78rem; }
+    .mm-lote__reto em { padding: 7px 11px; font-size: 0.78rem; }
+    .mm-lote__lead { font-size: 0.92rem; }
+    .mm-lote__foot { justify-content: center; }
+    .mm-lote__passform { right: auto; left: 50%; transform: translateX(-50%); }
+  }
+  @media (max-height: 700px) { .mm-lote__num { font-size: min(30vw, 19vh); } .mm-lote__hero { gap: 7px; } .mm-lote__reto { margin-top: 0; } }
+  @media (prefers-reduced-motion: reduce) { .mm-lote__x::after, .mm-lote__fix { transition: none; } }
+</style>
+
+<script>
+  (() => {
+    const el = document.getElementById('mm-lote-mm_lote');
+    if (!el) return;
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('is-in')));
+    // Si hay un error de contraseña, deja abierto el recuadro para que se vea
+    if (el.querySelector('.mm-lote__passform .mm-lote__err')) el.querySelector('.mm-lote__pass').open = true;
+  })();
+</script>
+
+
+<button type="button" class="mms-trigger" id="mms-trigger-mm_secreto" hidden>
+  <i aria-hidden="true"></i>No pulses aquí
+</button>
+
+<div class="mms" id="mms-mm_secreto" role="dialog" aria-modal="true" aria-label="Secreto de Mood Matcha" hidden
+  data-endpoint="https://vista-previa.invalid/exec" data-url="https://moodmatcha.es" data-compartir="He encontrado el secreto de Mood Matcha 👀 ¿Tú eres capaz?">
+  <div class="mms__fondo" aria-hidden="true"></div>
+  <button type="button" class="mms__volver" data-mms-cerrar>← Volver</button>
+
+  <!-- 1 · aviso -->
+  <section class="mms__paso" data-paso="aviso">
+    <p class="mms__alerta">⚠️ Has encontrado algo que no deberías</p>
+    <p class="mms__texto">Pero antes de descubrir nuestro secreto, tendrás que superar una pequeña prueba.</p>
+    <button type="button" class="mms__btn" data-mms-ir="juego">Acepto el reto</button>
+  </section>
+
+  <!-- 2 · juego -->
+  <section class="mms__paso" data-paso="juego" hidden>
+    <h2 class="mms__titulo">Uno de estos objetos no pinta nada aquí. ¿Sabes cuál es?</h2>
+    <p class="mms__texto">Encuentra al impostor para desbloquear nuestro secreto.</p>
+    <div class="mms__objetos" data-mms-objetos></div>
+    <p class="mms__msg" data-mms-msg aria-live="polite"></p>
+    <div class="mms__exito" data-mms-exito hidden>
+      <div class="mms__candado" aria-hidden="true">🔓</div>
+      <p class="mms__alerta">¡Has encontrado al impostor! 🔓</p>
+      <p class="mms__texto">Oficialmente, tienes acceso al lado secreto de Mood Matcha.</p>
+      <button type="button" class="mms__btn" data-mms-ir="sala">Entrar</button>
+    </div>
+  </section>
+
+  <!-- 3 · sala secreta y voto -->
+  <section class="mms__paso mms__paso--sala" data-paso="sala" hidden>
+    <h2 class="mms__titulo">Bienvenido al lado secreto de Mood Matcha</h2>
+    <p class="mms__texto">Estamos a punto de tomar una de las decisiones más importantes de nuestra marca: elegir cómo será la etiqueta de nuestro primer matcha.</p>
+    <p class="mms__texto">Y como has conseguido llegar hasta aquí, queremos que formes parte de esta decisión.</p>
+    <div class="mms__etiquetas" data-mms-etiquetas></div>
+    <p class="mms__votar">Vota tu favorita</p>
+    <button type="button" class="mms__btn" data-mms-votar disabled>Confirmar mi voto</button>
+    <p class="mms__msg" data-mms-estado aria-live="polite"></p>
+  </section>
+
+  <!-- 4 · final -->
+  <section class="mms__paso" data-paso="final" hidden>
+    <p class="mms__alerta mms__alerta--grande">Misión completada 🍵🔓</p>
+    <p class="mms__texto">Acabas de participar en una decisión real de Mood Matcha.</p>
+    <p class="mms__comenta">Ahora vuelve al vídeo y comenta «LO ENCONTRÉ», pero no reveles quién era el impostor 🤫</p>
+    <button type="button" class="mms__btn" data-mms-compartir>Compartir el reto</button>
+    <p class="mms__msg" data-mms-compartido aria-live="polite"></p>
+    <button type="button" class="mms__enlace" data-mms-cerrar>Volver a la página de inicio</button>
+  </section>
+
+  <!-- ampliar etiqueta -->
+  <div class="mms__lupa" data-mms-lupa hidden>
+    <button type="button" class="mms__volver" data-mms-lupa-cerrar>✕ Cerrar</button>
+    <div class="mms__lupa-marco"><img alt="" data-mms-lupa-img width="1600" height="1200"></div>
+    <p class="mms__pista">Toca la imagen para acercarte</p>
+  </div>
+  <div class="mms__confeti" aria-hidden="true" data-mms-confeti></div>
+</div>
+
+<template id="mms-objetos-mm_secreto"><button type="button" class="mms__obj" data-tipo="chasen" aria-label="Objeto 1"><svg viewBox="0 0 120 120" role="img" aria-label="Utensilio" focusable="false"><rect x="49" y="10" width="22" height="44" rx="6" fill="#e6d29f" stroke="#1f3a28" stroke-width="2"/>
+      <path d="M49 46h22" stroke="#1f3a28" stroke-width="2"/>
+      <path d="M50 54C32 64 28 90 43 105c7 7 27 7 34 0 15-15 11-41-7-51z" fill="#efe1b8" stroke="#1f3a28" stroke-width="2"/>
+      <path d="M54 56c-8 14-9 32-4 48M60 56v50M66 56c8 14 9 32 4 48M57 56c-14 14-17 32-10 46M63 56c14 14 17 32 10 46" fill="none" stroke="#b99b5c" stroke-width="1.4"/>
+      <path d="M51 55h18" stroke="#1f3a28" stroke-width="2.4" stroke-linecap="round"/></svg>
+</button><button type="button" class="mms__obj" data-tipo="chashaku" aria-label="Objeto 2"><svg viewBox="0 0 120 120" role="img" aria-label="Utensilio" focusable="false"><path d="M30 98C52 78 76 54 104 22l5 5C83 60 58 84 36 104z" fill="#e6d29f" stroke="#1f3a28" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M66 63l6 6" stroke="#1f3a28" stroke-width="2.2" stroke-linecap="round"/>
+      <ellipse cx="27" cy="101" rx="14" ry="8" transform="rotate(-40 27 101)" fill="#e6d29f" stroke="#1f3a28" stroke-width="2"/>
+      <ellipse cx="26" cy="102" rx="9" ry="4.6" transform="rotate(-40 26 102)" fill="#8fb04a"/>
+      <circle cx="18" cy="112" r="1.6" fill="#8fb04a"/><circle cx="12" cy="106" r="1.2" fill="#8fb04a"/></svg>
+</button><button type="button" class="mms__obj" data-tipo="chawan" aria-label="Objeto 3"><svg viewBox="0 0 120 120" role="img" aria-label="Utensilio" focusable="false"><rect x="47" y="84" width="26" height="10" rx="3" fill="#3f3a33" stroke="#1f3a28" stroke-width="2"/>
+      <path d="M16 50c0 40 88 40 88 0z" fill="#4a423a" stroke="#1f3a28" stroke-width="2"/>
+      <path d="M26 66c10 10 58 10 68 0" fill="none" stroke="#6b6156" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+      <ellipse cx="60" cy="50" rx="44" ry="11" fill="#5d5349" stroke="#1f3a28" stroke-width="2"/>
+      <ellipse cx="60" cy="51" rx="37" ry="7.5" fill="#9cc14a"/>
+      <ellipse cx="52" cy="50" rx="9" ry="2.2" fill="#c3dc77" opacity=".8"/></svg>
+</button><button type="button" class="mms__obj" data-tipo="tamiz" aria-label="Objeto 4"><svg viewBox="0 0 120 120" role="img" aria-label="Utensilio" focusable="false"><defs><pattern id="mm-malla-mm_secreto" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M0 0L5 5M5 0L0 5" stroke="#8a948c" stroke-width=".7"/></pattern></defs>
+      <path d="M92 48l22-10" stroke="#1f3a28" stroke-width="5" stroke-linecap="round"/>
+      <path d="M92 48l22-10" stroke="#c9cfc8" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M26 48c0 42 68 42 68 0z" fill="#eef1ec" stroke="#1f3a28" stroke-width="2"/>
+      <path d="M26 48c0 42 68 42 68 0z" fill="url(#mm-malla-mm_secreto)"/>
+      <ellipse cx="60" cy="48" rx="34" ry="8" fill="#c9cfc8" stroke="#1f3a28" stroke-width="2"/>
+      <ellipse cx="60" cy="48" rx="27" ry="5" fill="#9cc14a"/>
+      <path d="M22 50l-7 2" stroke="#1f3a28" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="55" cy="96" r="1.6" fill="#8fb04a"/><circle cx="62" cy="102" r="1.3" fill="#8fb04a"/><circle cx="66" cy="95" r="1.1" fill="#8fb04a"/><circle cx="58" cy="108" r="1.2" fill="#8fb04a"/></svg>
+</button><button type="button" class="mms__obj" data-tipo="electrico" aria-label="Objeto 5"><svg viewBox="0 0 120 120" role="img" aria-label="Utensilio" focusable="false"><rect x="47" y="8" width="26" height="54" rx="12" fill="#f3efe2" stroke="#1f3a28" stroke-width="2"/>
+      <circle cx="60" cy="24" r="5" fill="#2f6b2a"/>
+      <rect x="56" y="62" width="8" height="5" fill="#c9cfc8" stroke="#1f3a28" stroke-width="1.6"/>
+      <path d="M60 67v28" stroke="#1f3a28" stroke-width="4" stroke-linecap="round"/>
+      <path d="M60 67v28" stroke="#c9cfc8" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="60" cy="102" r="11" fill="none" stroke="#1f3a28" stroke-width="2"/>
+      <path d="M50 102c2-4 4 4 6 0s4 4 6 0 4 4 6 0" fill="none" stroke="#1f3a28" stroke-width="1.6"/>
+      <path d="M40 104c-3 2-4 6-2 9M80 104c3 2 4 6 2 9" fill="none" stroke="#8fb04a" stroke-width="1.6" stroke-linecap="round"/></svg>
+</button><button type="button" class="mms__obj" data-tipo="espumadera" aria-label="Objeto 6"><svg viewBox="0 0 120 120" role="img" aria-label="Utensilio" focusable="false"><path d="M62 52L106 12" stroke="#1f3a28" stroke-width="7" stroke-linecap="round"/>
+      <path d="M62 52L106 12" stroke="#c9cfc8" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="104" cy="14" r="2.4" fill="#1f3a28"/>
+      <circle cx="44" cy="74" r="30" fill="#c9cfc8" stroke="#1f3a28" stroke-width="2"/>
+      <circle cx="44" cy="74" r="25" fill="none" stroke="#e3e7e1" stroke-width="1.5"/>
+      <g fill="#7d867f">
+        <circle cx="44" cy="74" r="3"/><circle cx="34" cy="74" r="3"/><circle cx="54" cy="74" r="3"/><circle cx="44" cy="64" r="3"/><circle cx="44" cy="84" r="3"/>
+        <circle cx="36" cy="66" r="2.4"/><circle cx="52" cy="66" r="2.4"/><circle cx="36" cy="82" r="2.4"/><circle cx="52" cy="82" r="2.4"/>
+        <circle cx="27" cy="68" r="2"/><circle cx="27" cy="80" r="2"/><circle cx="61" cy="68" r="2"/><circle cx="61" cy="80" r="2"/><circle cx="44" cy="55" r="2"/><circle cx="44" cy="93" r="2"/>
+      </g></svg>
+</button></template>
+
+<template id="mms-etiquetas-mm_secreto"><div class="mms__eti" data-codigo="A" >
+      <button type="button" class="mms__eti-img" data-mms-ampliar aria-label="Ampliar Propuesta A"><img src="assets/etiqueta-A.png" srcset="assets/etiqueta-A.png 600w, assets/etiqueta-A.png 1200w" sizes="(min-width: 760px) 320px, 85vw" data-grande="assets/etiqueta-A.png" alt="Propuesta A" loading="lazy" width="1200" height="900"><span class="mms__lupa-ico" aria-hidden="true">⤢</span>
+      </button>
+      <button type="button" class="mms__eti-elegir" aria-pressed="false" data-mms-elegir>
+        <span class="mms__eti-nombre">Propuesta A</span><span class="mms__eti-check">Elegir</span>
+      </button>
+    </div><div class="mms__eti" data-codigo="B" >
+      <button type="button" class="mms__eti-img" data-mms-ampliar aria-label="Ampliar Propuesta B"><img src="assets/etiqueta-B.png" srcset="assets/etiqueta-B.png 600w, assets/etiqueta-B.png 1200w" sizes="(min-width: 760px) 320px, 85vw" data-grande="assets/etiqueta-B.png" alt="Propuesta B" loading="lazy" width="1200" height="900"><span class="mms__lupa-ico" aria-hidden="true">⤢</span>
+      </button>
+      <button type="button" class="mms__eti-elegir" aria-pressed="false" data-mms-elegir>
+        <span class="mms__eti-nombre">Propuesta B</span><span class="mms__eti-check">Elegir</span>
+      </button>
+    </div><div class="mms__eti" data-codigo="C" >
+      <button type="button" class="mms__eti-img" data-mms-ampliar aria-label="Ampliar Propuesta C"><img src="assets/etiqueta-C.png" srcset="assets/etiqueta-C.png 600w, assets/etiqueta-C.png 1200w" sizes="(min-width: 760px) 320px, 85vw" data-grande="assets/etiqueta-C.png" alt="Propuesta C" loading="lazy" width="1200" height="900"><span class="mms__lupa-ico" aria-hidden="true">⤢</span>
+      </button>
+      <button type="button" class="mms__eti-elegir" aria-pressed="false" data-mms-elegir>
+        <span class="mms__eti-nombre">Propuesta C</span><span class="mms__eti-check">Elegir</span>
+      </button>
+    </div></template>
+
+<style>
+  .mms-aviso-editor { margin: 12px; padding: 12px 16px; border-radius: 14px; background: #fde8e6; border: 2px solid #c0392b; color: #8e1d12; font: 400 14px/1.4 system-ui, sans-serif; }
+  .mms-trigger { --deep: #1e3322; display: inline-flex; align-items: center; gap: 9px; min-height: 40px; padding: 8px 16px; border: 1px dashed color-mix(in srgb, var(--deep) 55%, transparent); border-radius: 999px; background: transparent; color: var(--deep);
+    font: 400 0.68rem/1 var(--mm-logo-font, 'Jost', system-ui, sans-serif); letter-spacing: 0.32em; text-transform: uppercase; cursor: pointer; animation: mms-nervioso 7s ease-in-out 4s infinite; -webkit-tap-highlight-color: transparent; }
+  .mms-trigger[hidden] { display: none; }
+  .mms-trigger i { width: 7px; height: 7px; border-radius: 50%; background: #c0392b; box-shadow: 0 0 0 0 rgb(192 57 43 / 0.5); animation: mms-latido 2.2s ease-out infinite; }
+  .mms-trigger:hover, .mms-trigger:focus-visible { border-style: solid; outline: none; }
+  .mms-trigger--flotante { position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 20; background: #fff; }
+  @keyframes mms-latido { 70% { box-shadow: 0 0 0 7px rgb(192 57 43 / 0); } 100% { box-shadow: 0 0 0 0 rgb(192 57 43 / 0); } }
+  @keyframes mms-nervioso { 0%, 92%, 100% { transform: none; } 93% { transform: rotate(-2deg) translateX(-1px); } 95% { transform: rotate(2deg) translateX(1px); } 97% { transform: rotate(-1deg); } }
+
+  /* glitch al pulsar */
+  html.mms-glitch body { animation: mms-glitch 0.65s steps(2, end); }
+  html.mms-glitch body::after { content: ""; position: fixed; inset: 0; z-index: 9998; pointer-events: none; background: repeating-linear-gradient(0deg, rgb(30 51 34 / 0.08) 0 2px, transparent 2px 5px); mix-blend-mode: multiply; animation: mms-scan 0.65s steps(4) forwards; }
+  @keyframes mms-glitch { 0% { filter: none; transform: none; } 20% { filter: hue-rotate(80deg) saturate(2); transform: translate(-4px, 1px) skewX(4deg); clip-path: inset(10% 0 30% 0); } 40% { filter: contrast(1.8) saturate(0.2) brightness(1.1); transform: translate(5px, -2px); clip-path: inset(40% 0 5% 0); } 60% { filter: hue-rotate(-60deg); transform: translate(-2px, 2px) skewX(-6deg); clip-path: inset(0 0 55% 0); } 80% { filter: contrast(2); transform: translate(3px, 0); clip-path: none; } 100% { filter: none; transform: none; } }
+  @keyframes mms-scan { to { opacity: 0; } }
+
+  .mms { --ink: #1b2a1f; --muted: #5f6b61; --deep: #1e3322; --green: #2f6b2a; --lime: #c9dc5c; --rojo: #c0392b;
+    --etiqueta: linear-gradient(100deg, #add9af 0%, #fbf8d1 36%, #f3e5cd 68%, #c9e2af 100%);
+    --sans: var(--mm-logo-font, 'Jost', system-ui, sans-serif); --serif: 'Cormorant Garamond', 'Cormorant', Garamond, serif;
+    position: fixed; inset: 0; z-index: 9999; overflow-y: auto; overscroll-behavior: contain; color: var(--ink); font: 300 16px/1.55 var(--sans);
+    padding: max(58px, calc(env(safe-area-inset-top, 0px) + 54px)) max(18px, env(safe-area-inset-right, 0px)) max(28px, env(safe-area-inset-bottom, 0px)) max(18px, env(safe-area-inset-left, 0px));
+    display: grid; place-items: center; animation: mms-entra 0.45s cubic-bezier(.2,.8,.2,1); }
+  .mms[hidden], .mms [hidden] { display: none !important; }
+  .mms__fondo { position: fixed; inset: 0; z-index: -1; background: radial-gradient(120% 80% at 50% 0%, #ffffff 0%, #f6f8f1 55%, #eef3e6 100%); }
+  .mms.is-sala .mms__fondo { background: var(--etiqueta); }
+  @keyframes mms-entra { from { opacity: 0; transform: scale(1.03); filter: blur(6px); } }
+  .mms *, .mms *::before, .mms *::after { box-sizing: border-box; }
+  .mms button { font: inherit; -webkit-tap-highlight-color: transparent; }
+  .mms :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+  .mms__volver { position: fixed; top: max(12px, calc(env(safe-area-inset-top, 0px) + 8px)); left: max(14px, env(safe-area-inset-left, 0px)); z-index: 3; border: 0; background: rgb(255 255 255 / 0.85); backdrop-filter: blur(8px); border-radius: 999px; padding: 10px 16px; min-height: 40px; color: var(--deep); font-size: 0.9rem; cursor: pointer; box-shadow: 0 2px 10px -4px rgb(0 0 0 / 0.2); }
+  .mms__paso { width: min(100%, 560px); display: grid; justify-items: center; text-align: center; gap: 14px; animation: mms-paso 0.45s cubic-bezier(.2,.8,.2,1); }
+  .mms__paso--sala { width: min(100%, 980px); }
+  @keyframes mms-paso { from { opacity: 0; transform: translateY(14px); } }
+  .mms__alerta { margin: 0; font: 500 clamp(1.15rem, 4.6vw, 1.6rem)/1.2 var(--sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--deep); text-wrap: balance; }
+  .mms__alerta--grande { font-size: clamp(1.5rem, 7vw, 2.4rem); }
+  .mms__titulo { margin: 0; font: 400 clamp(1.15rem, 4.8vw, 1.7rem)/1.2 var(--sans); letter-spacing: 0.04em; text-transform: uppercase; color: var(--deep); text-wrap: balance; }
+  .mms__texto { margin: 0; color: var(--muted); max-width: 46ch; text-wrap: pretty; }
+  .mms__comenta { margin: 4px 0 0; font: 400 clamp(1.25rem, 5vw, 1.6rem)/1.3 var(--serif); font-style: italic; color: var(--green); max-width: 30ch; text-wrap: balance; }
+  .mms__btn { border: 0; border-radius: 999px; padding: 14px 26px; min-height: 48px; background: var(--deep); color: #fff; font-size: 0.95rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: transform 0.2s, opacity 0.2s; }
+  .mms__btn:active { transform: scale(0.97); }
+  .mms__btn[disabled] { opacity: 0.35; cursor: not-allowed; }
+  .mms__enlace { border: 0; background: none; color: var(--deep); text-decoration: underline; text-underline-offset: 4px; padding: 10px; cursor: pointer; font-size: 0.9rem; }
+  .mms__msg { margin: 0; min-height: 1.6em; font-size: 0.98rem; color: var(--deep); }
+  .mms__msg.is-mal { color: var(--rojo); }
+
+  /* juego */
+  .mms__objetos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(10px, 3vw, 18px); width: min(100%, 460px); margin-top: 6px; }
+  .mms__obj { aspect-ratio: 1; border: 0; border-radius: 26px; padding: 10%; cursor: pointer; display: grid; place-items: center; min-width: 0;
+    background: radial-gradient(circle at 50% 45%, #ffffff 0%, #f7f9f2 55%, #e9f0de 100%); box-shadow: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 10px 24px -16px rgb(30 51 34 / 0.45), 0 0 0 1px rgb(30 51 34 / 0.06);
+    transition: transform 0.25s cubic-bezier(.2,.8,.2,1), box-shadow 0.25s; }
+  .mms__obj svg, .mms__obj img { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; }
+  .mms__obj:active { transform: scale(0.95); }
+  .mms__obj.is-mal { animation: mms-no 0.45s; box-shadow: 0 0 0 2px var(--rojo), 0 10px 24px -16px rgb(30 51 34 / 0.45); }
+  .mms__obj.is-bien { animation: mms-si 0.8s cubic-bezier(.2,1.4,.4,1); box-shadow: 0 0 0 3px var(--lime), 0 0 40px 8px rgb(201 220 92 / 0.5); }
+  .mms__objetos.is-resuelto .mms__obj:not(.is-bien) { opacity: 0.25; filter: grayscale(0.6); pointer-events: none; }
+  @keyframes mms-no { 20% { transform: translateX(-6px) rotate(-3deg); } 40% { transform: translateX(6px) rotate(3deg); } 60% { transform: translateX(-4px); } 80% { transform: translateX(3px); } }
+  @keyframes mms-si { 0% { transform: scale(1); } 40% { transform: scale(1.18) rotate(-6deg); } 100% { transform: scale(1.06); } }
+  .mms__exito { display: grid; justify-items: center; gap: 10px; margin-top: 6px; animation: mms-paso 0.5s cubic-bezier(.2,.8,.2,1); }
+  .mms__candado { font-size: 2.6rem; line-height: 1; animation: mms-si 0.8s cubic-bezier(.2,1.4,.4,1); }
+
+  /* sala */
+  .mms__etiquetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; width: 100%; margin-top: 8px; }
+  .mms__eti { display: grid; gap: 10px; background: rgb(255 255 255 / 0.75); border-radius: 24px; padding: 12px; transition: box-shadow 0.25s, transform 0.25s; }
+  .mms__eti.is-elegida { box-shadow: 0 0 0 2.5px var(--deep); transform: translateY(-2px); }
+  .mms__eti-img { position: relative; border: 0; padding: 0; border-radius: 16px; overflow: hidden; background: #fff; cursor: zoom-in; aspect-ratio: 4 / 3; display: grid; place-items: center; }
+  .mms__eti-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .mms__eti-vacia { display: grid; place-items: center; width: 100%; height: 100%; padding: 16px; background: var(--etiqueta); color: var(--green); font: 400 1.15rem/1.2 var(--serif); font-style: italic; }
+  .mms__lupa-ico { position: absolute; right: 10px; bottom: 10px; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: rgb(255 255 255 / 0.9); color: var(--deep); font-size: 1rem; box-shadow: 0 2px 8px -3px rgb(0 0 0 / 0.3); }
+  .mms__eti-elegir { display: flex; justify-content: space-between; align-items: center; gap: 10px; border: 0; border-radius: 999px; padding: 12px 16px; min-height: 48px; background: #fff; color: var(--deep); cursor: pointer; box-shadow: inset 0 0 0 1px rgb(30 51 34 / 0.18); }
+  .mms__eti-nombre { font-weight: 400; }
+  .mms__eti-check { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; }
+  .mms__eti-elegir[aria-pressed="true"] { background: var(--deep); color: #fff; }
+  .mms__eti-elegir[aria-pressed="true"] .mms__eti-check::before { content: "✓ "; }
+  .mms__paso--sala [data-mms-votar] { position: sticky; bottom: max(14px, env(safe-area-inset-bottom, 0px)); z-index: 2; box-shadow: 0 10px 30px -10px rgb(30 51 34 / 0.55); }
+  .mms__votar { margin: 8px 0 0; font: 500 0.95rem/1 var(--sans); letter-spacing: 0.24em; text-transform: uppercase; color: var(--deep); }
+
+  /* ampliar */
+  .mms__lupa { position: fixed; inset: 0; z-index: 5; background: rgb(20 36 26 / 0.92); display: grid; grid-template-rows: 1fr auto; padding: max(64px, calc(env(safe-area-inset-top, 0px) + 60px)) 0 max(18px, env(safe-area-inset-bottom, 0px)); }
+  .mms__lupa-marco { overflow: auto; display: grid; place-items: center; -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y pinch-zoom; }
+  .mms__lupa-marco img { max-width: 94vw; max-height: 100%; height: auto; width: auto; cursor: zoom-in; transition: max-width 0.3s; }
+  .mms__lupa.is-zoom .mms__lupa-marco { place-items: start; }
+  .mms__lupa.is-zoom .mms__lupa-marco img { max-width: none; max-height: none; width: 220vw; cursor: zoom-out; }
+  .mms__pista { margin: 10px 0 0; text-align: center; color: #dfe8d9; font-size: 0.85rem; }
+
+  /* confeti */
+  .mms__confeti { position: fixed; inset: 0; pointer-events: none; z-index: 6; overflow: hidden; }
+  .mms__confeti i { position: absolute; top: -20px; left: var(--x); width: var(--s); height: var(--s); border-radius: 50%; background: var(--c); animation: mms-cae var(--t) cubic-bezier(.3,.6,.5,1) forwards; animation-delay: var(--d); }
+  @keyframes mms-cae { to { transform: translate(var(--dx), 105vh) rotate(540deg); opacity: 0.9; } }
+
+  @media (min-width: 760px) { .mms__objetos { gap: 20px; } }
+  @media (prefers-reduced-motion: reduce) {
+    .mms-trigger, .mms-trigger i, html.mms-glitch body, html.mms-glitch body::after, .mms, .mms__paso, .mms__obj, .mms__candado, .mms__exito, .mms__confeti i { animation: none !important; }
+  }
+</style>
+
+<script>
+(() => {
+  const SID = 'mm_secreto';
+  const capa = document.getElementById('mms-' + SID), trigger = document.getElementById('mms-trigger-' + SID);
+  if (!capa || !trigger || capa.dataset.listo) return; capa.dataset.listo = '1';
+  const $ = (s, r = capa) => r.querySelector(s), $$ = (s, r = capa) => [...r.querySelectorAll(s)];
+  const ENDPOINT = (capa.dataset.endpoint || '').trim();
+  const MAL = ("Uy… creo que necesitas otro matcha 😂\nEse es de la familia. Sigue buscando 👀\nCasi… pero no 😅" || '').split(/\r?\n/).map(t => t.trim()).filter(Boolean);
+  const guarda = { get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k, v){ try { localStorage.setItem(k, v); } catch(e){} } };
+  const vibra = p => { try { navigator.vibrate && navigator.vibrate(p); } catch(e){} };
+  const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* 1 · coloca el botón justo debajo de la frase tachada de «Lote 001» (sin tocar esa sección) */
+  const h1 = document.querySelector('.mm-lote__hero h1');
+  if (h1){ h1.insertAdjacentElement('afterend', trigger); } else { trigger.classList.add('mms-trigger--flotante'); document.body.appendChild(trigger); }
+  trigger.hidden = false;
+
+  /* identificador anónimo del votante (no es un dato personal) */
+  function votante(){ let id = guarda.get('mms-votante');
+    if (!id){ id = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2));
+      guarda.set('mms-votante', id); try { document.cookie = 'mms_votante=' + id + ';max-age=31536000;path=/;SameSite=Lax'; } catch(e){} }
+    return id; }
+  function huella(){ const t = [navigator.language, screen.width + 'x' + screen.height, Intl.DateTimeFormat().resolvedOptions().timeZone, navigator.platform || ''].join('|');
+    let h = 0; for (let i = 0; i < t.length; i++){ h = (h * 31 + t.charCodeAt(i)) | 0; } return (h >>> 0).toString(36); }
+
+  /* navegación entre pasos */
+  function paso(nombre){
+    $$('.mms__paso').forEach(p => p.hidden = p.dataset.paso !== nombre);
+    capa.classList.toggle('is-sala', nombre === 'sala' || nombre === 'final');
+    capa.scrollTop = 0;
+    if (nombre === 'juego') empiezaJuego();
+    if (nombre === 'sala') abreSala();
+    const f = $(`.mms__paso[data-paso="${nombre}"] .mms__btn, .mms__paso[data-paso="${nombre}"] button`); if (f) setTimeout(() => f.focus({ preventScroll: true }), 50);
+  }
+  let abierta = false;
+  function abre(){
+    if (abierta) return; abierta = true; vibra([20, 40, 20]);
+    const muestra = () => { capa.hidden = false; document.documentElement.style.overflow = 'hidden'; paso('aviso');
+      try { history.pushState({ mmsSecreto: true }, '', location.href); } catch(e){} };
+    if (reducido) return muestra();
+    document.documentElement.classList.add('mms-glitch');
+    setTimeout(() => { document.documentElement.classList.remove('mms-glitch'); muestra(); }, 650);
+  }
+  function cierra(desdeHistorial){
+    if (!abierta) return; abierta = false; capa.hidden = true; $('[data-mms-lupa]').hidden = true; document.documentElement.style.overflow = '';
+    if (!desdeHistorial && history.state && history.state.mmsSecreto) { try { history.back(); } catch(e){} }
+    trigger.focus({ preventScroll: true });
+  }
+  trigger.addEventListener('click', abre);
+  $$('[data-mms-cerrar]').forEach(b => b.addEventListener('click', () => cierra(false)));
+  $$('[data-mms-ir]').forEach(b => b.addEventListener('click', () => paso(b.dataset.mmsIr)));
+  addEventListener('popstate', () => { if (abierta) cierra(true); });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && abierta){ if (!$('[data-mms-lupa]').hidden) $('[data-mms-lupa]').hidden = true; else cierra(false); } });
+
+  /* 2 · encuentra al impostor (posiciones aleatorias en cada partida) */
+  let fallos = 0;
+  function baraja(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  function empiezaJuego(){
+    fallos = 0; const caja = $('[data-mms-objetos]'), msg = $('[data-mms-msg]');
+    const plantilla = document.getElementById('mms-objetos-' + SID).content.cloneNode(true);
+    caja.replaceChildren(...baraja([...plantilla.querySelectorAll('.mms__obj')]));
+    caja.classList.remove('is-resuelto'); $('[data-mms-exito]').hidden = true; msg.textContent = ''; msg.classList.remove('is-mal');
+    $$('.mms__obj', caja).forEach((b, i) => { b.setAttribute('aria-label', 'Objeto ' + (i + 1)); b.addEventListener('click', () => elige(b)); });
+  }
+  function elige(b){
+    const caja = $('[data-mms-objetos]'), msg = $('[data-mms-msg]');
+    if (caja.classList.contains('is-resuelto')) return;
+    if (b.dataset.tipo === 'espumadera'){
+      b.classList.add('is-bien'); caja.classList.add('is-resuelto'); msg.textContent = ''; vibra([30, 60, 30, 60, 140]); confeti();
+      guarda.set('mms-resuelto', '1'); setTimeout(() => { $('[data-mms-exito]').hidden = false; $('[data-mms-exito] .mms__btn').focus({ preventScroll: true }); }, 450);
+      return;
+    }
+    fallos++; vibra(70); b.classList.remove('is-mal'); void b.offsetWidth; b.classList.add('is-mal'); setTimeout(() => b.classList.remove('is-mal'), 600);
+    msg.classList.add('is-mal'); msg.textContent = MAL.length ? MAL[(fallos - 1) % MAL.length] : 'Uy… creo que necesitas otro matcha 😂';
+    if (fallos >= 3) msg.textContent += ' Pista: busca lo que verías en una cocina, no en una ceremonia.';
+  }
+  function confeti(){
+    if (reducido) return; const c = $('[data-mms-confeti]'), cols = ['#9cc14a', '#c9dc5c', '#1e3322', '#f4e278', '#add9af', '#f3e5cd'];
+    c.replaceChildren(...Array.from({ length: 34 }, () => { const i = document.createElement('i');
+      i.style.cssText = `--x:${Math.random() * 100}%;--s:${6 + Math.random() * 8}px;--c:${cols[Math.floor(Math.random() * cols.length)]};--t:${1.2 + Math.random()}s;--d:${Math.random() * 0.25}s;--dx:${(Math.random() - 0.5) * 120}px`; return i; }));
+    setTimeout(() => c.replaceChildren(), 2600);
+  }
+
+  /* 3 · sala secreta: solo se monta tras superar el juego */
+  let elegida = null;
+  function abreSala(){
+    const caja = $('[data-mms-etiquetas]'), estado = $('[data-mms-estado]'), boton = $('[data-mms-votar]');
+    if (!caja.children.length) caja.appendChild(document.getElementById('mms-etiquetas-' + SID).content.cloneNode(true));
+    const previo = guarda.get('mms-voto');
+    $$('[data-mms-elegir]', caja).forEach(b => b.onclick = () => {
+      if (guarda.get('mms-voto')) return;
+      elegida = b.closest('.mms__eti').dataset.codigo;
+      $$('.mms__eti', caja).forEach(e => { const yo = e.dataset.codigo === elegida; e.classList.toggle('is-elegida', yo); $('[data-mms-elegir]', e).setAttribute('aria-pressed', yo); $('.mms__eti-check', e).textContent = yo ? 'Elegida' : 'Elegir'; });
+      boton.disabled = false; estado.textContent = ''; estado.classList.remove('is-mal'); });
+    $$('[data-mms-ampliar]', caja).forEach(b => b.onclick = () => { const img = $('img', b); if (!img) return;
+      const lupa = $('[data-mms-lupa]'); $('[data-mms-lupa-img]').src = img.dataset.grande || img.currentSrc || img.src; $('[data-mms-lupa-img]').alt = img.alt; lupa.classList.remove('is-zoom'); lupa.hidden = false; });
+    if (previo){
+      const p = JSON.parse(previo); boton.disabled = false; boton.textContent = 'Continuar';
+      $$('.mms__eti', caja).forEach(e => { const yo = e.dataset.codigo === p.codigo; e.classList.toggle('is-elegida', yo); $('[data-mms-elegir]', e).setAttribute('aria-pressed', yo); $('.mms__eti-check', e).textContent = yo ? 'Tu voto' : ''; });
+      estado.classList.remove('is-mal'); estado.textContent = 'Ya votaste desde este móvil. ¡Gracias, mini socia!';
+    }
+  }
+  $('[data-mms-lupa-cerrar]').addEventListener('click', () => $('[data-mms-lupa]').hidden = true);
+  $('[data-mms-lupa-img]').addEventListener('click', () => $('[data-mms-lupa]').classList.toggle('is-zoom'));
+
+  $('[data-mms-votar]').addEventListener('click', async () => {
+    const boton = $('[data-mms-votar]'), estado = $('[data-mms-estado]');
+    if (guarda.get('mms-voto')) return paso('final');
+    if (!elegida) return;
+    estado.classList.remove('is-mal');
+    if (!ENDPOINT){ estado.classList.add('is-mal'); estado.textContent = 'La votación se abre muy pronto. Vuelve en un rato 🍵'; return; }
+    boton.disabled = true; estado.textContent = 'Guardando tu voto…';
+    try {
+      const r = await fetch(ENDPOINT, { method: 'POST', body: JSON.stringify({ voto: elegida, votante: votante(), huella: huella(), origen: location.host }) });
+      const d = await r.json();
+      if (d.ok || d.error === 'duplicado'){
+        guarda.set('mms-voto', JSON.stringify({ codigo: elegida, fecha: Date.now() })); vibra([30, 60, 120]); confeti(); paso('final');
+      } else { throw new Error(d.error || 'error'); }
+    } catch(e){
+      boton.disabled = false; estado.classList.add('is-mal'); estado.textContent = 'No hemos podido guardar tu voto. Revisa tu conexión e inténtalo otra vez.';
+    }
+  });
+
+  /* 4 · compartir */
+  $('[data-mms-compartir]').addEventListener('click', async () => {
+    const texto = capa.dataset.compartir, url = capa.dataset.url || location.origin, aviso = $('[data-mms-compartido]');
+    if (navigator.share){ try { await navigator.share({ title: 'Mood Matcha', text: texto, url }); return; } catch(e){ if (e && e.name === 'AbortError') return; } }
+    try { await navigator.clipboard.writeText(texto + ' ' + url); aviso.textContent = 'Enlace copiado. ¡Pásaselo a quien quieras!'; }
+    catch(e){ aviso.textContent = texto + ' ' + url; }
+  });
+})();
+</script>
+
+
+</main><div class="vp-aviso">Vista previa · los votos no se guardan</div></body></html>

@@ -1,0 +1,55 @@
+<title>Mood Matcha Botón Prohibido</title>
+<meta charset="utf-8">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400&family=Cormorant+Garamond:ital,wght@1,400&display=swap">
+<style>
+/* Layout: un teléfono centrado con la página cerrada real dentro; a la izquierda, qué probar. Fondo con el degradado de la etiqueta. */
+:root{--tinta:#1f3a28;--verde:#1d9e55;--suave:#4f6455;--marco:#14241a;
+  --etiqueta:linear-gradient(100deg,#add9af 0%,#fbf8d1 36%,#f3e5cd 68%,#c9e2af 100%)}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;background:var(--etiqueta);color:var(--tinta);font:300 16px/1.5 "Jost",system-ui,sans-serif;
+  padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow-x:hidden}
+.escena{min-height:calc(100vh - 48px);display:flex;gap:48px;align-items:center;justify-content:center;flex-wrap:wrap}
+.lado{max-width:300px;display:grid;gap:14px}
+.lado small{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--verde);font-weight:400}
+.lado h1{margin:0;font-weight:300;font-size:34px;line-height:1.05}
+.lado h1 em{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:400}
+.lado p{margin:0;color:var(--suave);font-size:15px}
+.lado ol{margin:0;padding-left:1.2em;display:grid;gap:6px;color:var(--suave);font-size:14px}
+.lado button{justify-self:start;border:1px solid rgba(31,58,40,.3);background:rgba(255,255,255,.7);border-radius:99px;padding:10px 18px;font:400 14px "Jost",sans-serif;color:var(--tinta);cursor:pointer}
+.lado button:focus-visible{outline:2px solid var(--verde);outline-offset:3px}
+.tel{position:relative;flex:0 0 auto;width:min(390px,calc((100vh - 48px) * .4757));max-width:100%;aspect-ratio:412/866;border-radius:56px;background:var(--marco);padding:11px;
+  box-shadow:0 40px 80px -30px rgba(20,36,26,.55),inset 0 0 0 2px #2c3f32}
+.tel::before{content:"";position:absolute;top:22px;left:50%;transform:translateX(-50%);width:104px;height:28px;border-radius:20px;background:#000;z-index:2}
+.pantalla{width:100%;height:100%;border-radius:46px;overflow:hidden;background:#fff;display:grid;grid-template-rows:44px 1fr}
+.estado{display:flex;justify-content:space-between;align-items:center;padding:4px 30px 0;font-size:14px;font-weight:400}
+.pantalla iframe{width:100%;height:100%;border:0;display:block}
+@media (max-width:760px){.lado{max-width:420px;text-align:center;justify-items:center}.lado ol{text-align:left}.lado button{justify-self:center}}
+</style>
+
+<div class="escena">
+  <div class="lado">
+    <small>Capítulo 13 · vista previa</small>
+    <h1>El botón <em>prohibido</em></h1>
+    <p>Así lo verá la gente en el móvil. Tócalo todo, como si vinieras del vídeo.</p>
+    <ol>
+      <li>Pulsa «No pulses aquí».</li>
+      <li>Acepta el reto y encuentra al impostor (prueba a fallar).</li>
+      <li>Amplía las etiquetas, elige una y vota.</li>
+      <li>Prueba «Compartir el reto».</li>
+    </ol>
+    <p>Las etiquetas son de ejemplo y aquí los votos no se guardan.</p>
+    <button type="button" id="otra">Jugar otra vez desde cero</button>
+  </div>
+  <div class="tel"><div class="pantalla"><div class="estado" aria-hidden="true"><span>9:41</span><span>●●● ▮</span></div>
+    <iframe id="web" src="demo.html" title="Página de inicio de Mood Matcha con el botón prohibido"></iframe></div></div>
+</div>
+
+<script>
+document.getElementById('otra').addEventListener('click', () => {
+  const f = document.getElementById('web');
+  try { f.contentWindow.localStorage.removeItem('mms-voto'); f.contentWindow.localStorage.removeItem('mms-votante'); f.contentWindow.localStorage.removeItem('mms-resuelto'); } catch (e) {}
+  f.src = 'demo.html?' + Date.now();
+});
+</script>
