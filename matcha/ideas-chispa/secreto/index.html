@@ -156,8 +156,8 @@ details.spoiler ol{margin:8px 0 0;padding-left:1.2em;color:var(--suave)}
 
 <header class="cabecera">
   <small>Día 13 · el secreto de la web</small>
-  <h1>La sala que <em>no existe</em></h1>
-  <p>Versión sencilla: una puerta escondida que tu pista del vídeo desvela, tres preguntas rápidas de moods y la votación. En 1 o 2 minutos se hace, pero da la sensación de haber descubierto algo.</p>
+  <h1>La sala <em>secreta</em></h1>
+  <p>Pruébalo como lo haría alguien que viene de tu vídeo. Tu pista sería: <em>«En nuestra web hay una sala secreta. Para entrar, mantén el dedo encima de lo que está tachado.»</em></p>
 </header>
 
 <main class="fila">
@@ -187,40 +187,35 @@ details.spoiler ol{margin:8px 0 0;padding-left:1.2em;color:var(--suave)}
       <!-- capa 3 · la sala -->
       <div class="capa sala oculta" id="c3"></div>
     </div></div>
-    <div class="estado" id="estado">Capa 1 de 3 · la web de siempre</div>
-    <div class="controles"><button id="reset">Empezar de nuevo</button><button id="saltar">Saltar a las llaves</button></div>
-    <details class="spoiler"><summary>Solución completa (spoiler)</summary><ol>
-      <li><b>Puerta:</b> mantén pulsado «no existe» 2 segundos.</li>
-      <li><b>Llaves:</b> lunes con despertador → Monday · comida con amigas → Social · domingo sin prisa → Slow.</li>
-      <li><b>Sala:</b> elige etiqueta, deja tu email y llévate la frase secreta.</li>
+    <div class="estado" id="estado">Paso 1 de 2 · la web de siempre</div>
+    <div class="controles"><button id="reset">Empezar de nuevo</button></div>
+    <details class="spoiler"><summary>Solución (spoiler)</summary><ol>
+      <li>Mantén el dedo encima de «no existe» 2 segundos.</li>
+      <li>Elige etiqueta y deja tu email.</li>
+      <li>Ve al vídeo y comenta «LISTO».</li>
     </ol></details>
   </div>
 
   <aside class="explica">
-    <h2>Sencillo, <em>pero secreto</em></h2>
+    <h2>Así de <em>sencillo</em></h2>
     <div class="capa-info">
-      <span class="eyebrow">La pista del vídeo</span>
-      <h3>Tú das la llave de la puerta</h3>
-      <p>Sin tu frase nadie sabría por dónde empezar. Con ella, lo encuentran en 30 segundos y sienten que lo han descubierto. Elige una:</p>
-      <p class="cita">«Hay una sala en nuestra web que no existe. Para entrar, tienes que tocar lo que no existe… y no soltar.»</p>
-      <p class="cita">«La puerta está en lo que hemos tachado. Mantén el dedo encima.»</p>
-      <p class="cita">«Lo que no existe también se puede tocar. Pruébalo en nuestra web.»</p>
-      <p>La primera es mi favorita: es misteriosa pero, cuando la piensas, es clara.</p>
+      <span class="eyebrow">Tu pista en el vídeo</span>
+      <p class="cita">«En nuestra web hay una sala secreta. Para entrar, mantén el dedo encima de lo que está tachado.»</p>
     </div>
     <div class="capa-info">
-      <span class="eyebrow">El recorrido</span>
-      <h3>1 o 2 minutos en total</h3>
+      <span class="eyebrow">Lo que hace la gente</span>
       <ul>
-        <li><b style="font-weight:400;color:var(--tinta)">La puerta:</b> mantener pulsado «no existe». Si alguien no lo pilla, a los 20, 40 y 60 segundos aparecen ayudas (en la web real, 1, 2 y 3 minutos).</li>
-        <li><b style="font-weight:400;color:var(--tinta)">Tres llaves:</b> tres frases cortas y hay que tocar el mood que pega con cada una. Un toque por pregunta. Si fallas dos veces, el mood correcto brilla.</li>
-        <li><b style="font-weight:400;color:var(--tinta)">La sala:</b> número de entrada, etiquetas, email para votar y la frase secreta.</li>
+        <li>Entra en la web y ve la pantalla de siempre.</li>
+        <li>Mantiene el dedo en «no existe» y se abre la sala secreta.</li>
+        <li>Ve las etiquetas antes que nadie, elige una y deja su email para votar.</li>
+        <li>Vuelve al vídeo y comenta «LISTO».</li>
       </ul>
+      <p>Si alguien no lo encuentra, la raya tiembla y después aparece una ayuda.</p>
     </div>
     <div class="capa-info">
-      <span class="eyebrow">Lo que hará que comenten</span>
-      <h3>La frase secreta</h3>
-      <p>Al votar reciben «el lunes empieza a las 8» para escribirla en tu vídeo sin explicar nada. Los que entran se reconocen y los que no preguntan qué significa.</p>
-      <div class="chips"><span>reto-dia-13</span><span>voto-etiqueta</span><span>voto-A / B / C</span></div>
+      <span class="eyebrow">Tú ves los votos</span>
+      <p>En Shopify, Clientes, filtrando por etiqueta. Un voto por email.</p>
+      <div class="chips"><span>reto-dia-13</span><span>voto-A / B / C</span></div>
     </div>
   </aside>
 </main>
@@ -247,7 +242,7 @@ function relojPistas(){ timers.forEach(clearTimeout);
              setTimeout(() => pista('Mantén pulsado lo que está tachado.'), 60000) ]; }
 puerta.addEventListener('pointerdown', e => { if (abierta) return; puerta.setPointerCapture(e.pointerId); puerta.classList.add('cargando'); t0 = performance.now();
   carga = setTimeout(() => { abierta = true; vibra([30,80,30]); puerta.classList.remove('cargando'); puerta.classList.add('cae'); pista('');
-    c1.classList.add('glitch'); setTimeout(() => { c1.classList.remove('glitch'); ve(c1, c2, 'Capa 2 de 3 · las tres llaves'); }, 1100); }, 2000); });
+    c1.classList.add('glitch'); setTimeout(() => { c1.classList.remove('glitch'); abreSala(); }, 1100); }, 2000); });
 const suelta = () => { clearTimeout(carga); puerta.classList.remove('cargando'); };
 puerta.addEventListener('pointerup', suelta); puerta.addEventListener('pointercancel', suelta);
 
@@ -275,12 +270,12 @@ dial.addEventListener('click', e => { const o = e.target.closest('.orbe'); if (!
 function abreSala(){
   const n = String(80 + Math.floor(Math.random() * 300)).padStart(4, '0'); let elegida = null;
   c3.innerHTML = `<div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
-    <span class="eyebrow" style="margin-top:6px">Has encontrado</span><h3>La sala que <em>no existe</em></h3>
+    <span class="eyebrow" style="margin-top:6px">Lo has encontrado</span><h3>La sala <em>secreta</em></h3>
     <span class="numero">Eres la persona n.º ${n} en entrar</span>
     <p class="mini" style="margin:0">Estas son nuestras etiquetas. Nadie más las ha visto. Elige la de la primera lata.</p>
     <div class="carrusel">${LATAS.map(l => `<button class="opcion" data-v="${l.v}" aria-pressed="false"><div class="lata ${l.cls}"><div class="et">${l.et}</div></div><b>Propuesta ${l.v}</b><span class="mini">${l.n}</span></button>`).join('')}</div>
     <button class="boton" id="elegir" disabled>Elegir esta</button>`;
-  ve(c2, c3, 'Capa 3 de 3 · la sala que no existe');
+  c1.classList.add('oculta'); c2.classList.add('oculta'); c3.classList.remove('oculta'); estado.textContent = 'Paso 2 de 2 · la sala secreta';
   $$('.opcion', c3).forEach(o => o.addEventListener('click', () => { $$('.opcion', c3).forEach(x => x.setAttribute('aria-pressed', x === o)); elegida = LATAS.find(l => l.v === o.dataset.v); $('#elegir').disabled = false; }));
   $('#elegir').onclick = () => {
     c3.innerHTML = `<div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
@@ -298,10 +293,9 @@ function abreSala(){
       if (!f.querySelector('[type=checkbox]').checked){ f.querySelector('.err').textContent = 'Marca la casilla para poder enviarlo.'; return; }
       vibra(40);
       c3.innerHTML = `<div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
-        <span class="eyebrow" style="margin-top:10px">Voto guardado · n.º ${n}</span><h3>Ya eres <em>mini socia</em></h3>
+        <span class="eyebrow" style="margin-top:10px">Voto guardado · n.º ${n}</span><h3>Gracias, <em>mini socia</em></h3>
         <div class="lata-mini"><div class="lata ${elegida.cls}"><div class="et">${elegida.et}</div></div><span>Has votado la <b style="font-weight:500">propuesta ${elegida.v}</b></span></div>
-        <div class="clave"><span>Tu frase secreta</span><b>«el lunes empieza a las 8»</b><span>Escríbela en los comentarios del vídeo. Sin explicar nada. Los que la entiendan, sabrán que has entrado.</span></div>
-        <p class="mini">Y no digas dónde está la puerta. La sala se cierra el domingo.</p>`; };
+        <div class="clave"><span>¡Lo has conseguido!</span><b>Ve al vídeo y comenta «LISTO»</b><span>Así sabremos que has entrado. Y no digas dónde está la puerta.</span></div>`; };
   };
 }
 
@@ -309,10 +303,10 @@ function abreSala(){
 function reinicia(){
   abierta = false; paso = 0; fallos = 0; res.textContent = '';
   puerta.className = 'x puerta'; $('#susurro').classList.remove('on'); pista('');
-  c2.classList.add('oculta'); c3.classList.add('oculta'); c1.classList.remove('oculta'); estado.textContent = 'Capa 1 de 3 · la web de siempre';
+  c2.classList.add('oculta'); c3.classList.add('oculta'); c1.classList.remove('oculta'); estado.textContent = 'Paso 1 de 2 · la web de siempre';
   pintaLlaves(); relojPistas();
 }
 $('#reset').onclick = reinicia;
-$('#saltar').onclick = () => { abierta = true; timers.forEach(clearTimeout); pista(''); ve(c1, c2, 'Capa 2 de 3 · las tres llaves'); };
+
 reinicia();
 </script>
