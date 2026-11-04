@@ -138,11 +138,25 @@ const _f = window.fetch; window.fetch = (u, o) => (String(u).includes('vista-pre
       <div class="mms__candado" aria-hidden="true">🔓</div>
       <p class="mms__alerta">¡Has encontrado al impostor! 🔓</p>
       <p class="mms__texto">Oficialmente, tienes acceso al lado secreto de Mood Matcha.</p>
-      <button type="button" class="mms__btn" data-mms-ir="sala">Entrar</button>
+      <button type="button" class="mms__btn" data-mms-ir="email">Entrar</button>
     </div>
   </section>
 
-  <!-- 3 · sala secreta y voto -->
+  <!-- 3 · email: sin email no se puede votar -->
+  <section class="mms__paso" data-paso="email" hidden>
+    <p class="mms__votar">Antes de entrar</p>
+    <h2 class="mms__titulo">Déjanos tu email para poder votar</h2>
+    <form class="mms__form" data-mms-form novalidate>
+      <label for="mms-email-mm_secreto" class="mms__vh">Tu email</label>
+      <input id="mms-email-mm_secreto" type="email" name="email" placeholder="tu@email.com" autocomplete="email" inputmode="email" required>
+      <label class="mms__check"><input type="checkbox" name="novedades"> <span>Quiero recibir las novedades de Mood Matcha (opcional)</span></label>
+      <p class="mms__legal">Sin email no se puede votar, y solo vale un voto por email. Si no marcas la casilla, lo usamos únicamente para contar tu voto.</p>
+      <p class="mms__msg" data-mms-error aria-live="polite"></p>
+      <button type="submit" class="mms__btn">Ver las etiquetas</button>
+    </form>
+  </section>
+
+  <!-- 4 · sala secreta y voto -->
   <section class="mms__paso mms__paso--sala" data-paso="sala" hidden>
     <h2 class="mms__titulo">Bienvenido al lado secreto de Mood Matcha</h2>
     <p class="mms__texto">Estamos a punto de tomar una de las decisiones más importantes de nuestra marca: elegir cómo será la etiqueta de nuestro primer matcha.</p>
@@ -153,23 +167,7 @@ const _f = window.fetch; window.fetch = (u, o) => (String(u).includes('vista-pre
     <p class="mms__msg" data-mms-estado aria-live="polite"></p>
   </section>
 
-  <!-- 3b · email para que el voto cuente -->
-  <section class="mms__paso" data-paso="email" hidden>
-    <p class="mms__votar">Último paso</p>
-    <h2 class="mms__titulo">Para que tu voto cuente, déjanos tu email</h2>
-    <div class="mms__elegida" data-mms-elegida></div>
-    <form class="mms__form" data-mms-form novalidate>
-      <label for="mms-email-mm_secreto" class="mms__vh">Tu email</label>
-      <input id="mms-email-mm_secreto" type="email" name="email" placeholder="tu@email.com" autocomplete="email" inputmode="email" required>
-      <label class="mms__check"><input type="checkbox" name="novedades"> <span>Quiero recibir las novedades de Mood Matcha (opcional)</span></label>
-      <p class="mms__legal">Solo vale un voto por email. Si no marcas la casilla, usamos tu email únicamente para contar tu voto.</p>
-      <p class="mms__msg" data-mms-error aria-live="polite"></p>
-      <button type="submit" class="mms__btn">Enviar mi voto</button>
-    </form>
-    <button type="button" class="mms__enlace" data-mms-ir="sala">← Cambiar de etiqueta</button>
-  </section>
-
-  <!-- 4 · final -->
+  <!-- 5 · final -->
   <section class="mms__paso" data-paso="final" hidden>
     <p class="mms__alerta mms__alerta--grande">Misión completada 🍵🔓</p>
     <p class="mms__texto">Acabas de participar en una decisión real de Mood Matcha.</p>
@@ -329,9 +327,6 @@ const _f = window.fetch; window.fetch = (u, o) => (String(u).includes('vista-pre
   .mms__eti-elegir[aria-pressed="true"] { background: var(--deep); color: #fff; }
   .mms__eti-elegir[aria-pressed="true"] .mms__eti-check::before { content: "✓ "; }
   .mms__vh { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .mms__elegida { display: flex; align-items: center; gap: 14px; width: min(100%, 420px); background: rgb(255 255 255 / 0.8); border-radius: 20px; padding: 10px 14px; text-align: left; }
-  .mms__elegida img { width: 96px; height: 72px; object-fit: contain; border-radius: 10px; background: #fff; flex: none; }
-  .mms__elegida b { font-weight: 400; }
   .mms__form { display: grid; gap: 12px; width: min(100%, 420px); text-align: left; }
   .mms__form input[type=email] { width: 100%; border: 0; border-radius: 999px; padding: 14px 18px; min-height: 50px; font: 300 1rem var(--sans); color: var(--ink); background: #fff; box-shadow: inset 0 0 0 1px rgb(30 51 34 / 0.22); }
   .mms__form input[type=email]:focus { outline: none; box-shadow: inset 0 0 0 1.5px var(--deep); }
@@ -388,6 +383,7 @@ const _f = window.fetch; window.fetch = (u, o) => (String(u).includes('vista-pre
 
   /* navegación entre pasos */
   function paso(nombre){
+    if (nombre === 'email' && (guarda.get('mms-voto') || emailVoto)) nombre = 'sala';
     $$('.mms__paso').forEach(p => p.hidden = p.dataset.paso !== nombre);
     capa.classList.toggle('is-sala', ['sala','email','final'].includes(nombre));
     capa.scrollTop = 0;
@@ -445,7 +441,7 @@ const _f = window.fetch; window.fetch = (u, o) => (String(u).includes('vista-pre
   }
 
   /* 3 · sala secreta: solo se monta tras superar el juego */
-  let elegida = null;
+  let elegida = null, emailVoto = '';
   function abreSala(){
     const caja = $('[data-mms-etiquetas]'), estado = $('[data-mms-estado]'), boton = $('[data-mms-votar]');
     if (!caja.children.length) caja.appendChild(document.getElementById('mms-etiquetas-' + SID).content.cloneNode(true));
@@ -466,34 +462,35 @@ const _f = window.fetch; window.fetch = (u, o) => (String(u).includes('vista-pre
   $('[data-mms-lupa-cerrar]').addEventListener('click', () => $('[data-mms-lupa]').hidden = true);
   $('[data-mms-lupa-img]').addEventListener('click', () => $('[data-mms-lupa]').classList.toggle('is-zoom'));
 
-  $('[data-mms-votar]').addEventListener('click', () => {
-    if (guarda.get('mms-voto')) return paso('final');
-    if (!elegida) return;
-    const eti = $(`.mms__eti[data-codigo="${elegida}"]`), img = eti && $('img', eti);
-    $('[data-mms-elegida]').innerHTML = (img ? `<img src="${img.currentSrc || img.src}" alt="">` : '') + `<span>Has elegido la <b>${$('.mms__eti-nombre', eti).textContent}</b></span>`;
-    $('[data-mms-error]').textContent = ''; paso('email');
+  /* 3 · email: hay que dejarlo antes de ver y elegir las etiquetas */
+  $('[data-mms-form]').addEventListener('submit', e => {
+    e.preventDefault();
+    const f = e.target, error = $('[data-mms-error]');
+    const email = f.email.value.trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email)){ error.classList.add('is-mal'); error.textContent = 'Revisa el email: parece que falta algo.'; f.email.focus(); return; }
+    error.textContent = ''; emailVoto = email;
+    if (f.novedades.checked) suscribe(email);
+    vibra(30); paso('sala');
   });
 
-  /* 3b · el voto solo cuenta con email (uno por email) */
-  $('[data-mms-form]').addEventListener('submit', async e => {
-    e.preventDefault();
-    const f = e.target, error = $('[data-mms-error]'), boton = $('button[type=submit]', f);
-    const email = f.email.value.trim().toLowerCase(), novedades = f.novedades.checked;
-    error.classList.add('is-mal');
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email)){ error.textContent = 'Revisa el email: parece que falta algo.'; f.email.focus(); return; }
-    if (!ENDPOINT){ error.textContent = 'La votación se abre muy pronto. Vuelve en un rato 🍵'; return; }
-    boton.disabled = true; error.classList.remove('is-mal'); error.textContent = 'Guardando tu voto…';
+  /* 4 · el voto se envía con su email (uno por email) */
+  $('[data-mms-votar]').addEventListener('click', async () => {
+    if (guarda.get('mms-voto')) return paso('final');
+    if (!elegida) return;
+    if (!emailVoto) return paso('email');
+    const boton = $('[data-mms-votar]'), estado = $('[data-mms-estado]');
+    if (!ENDPOINT){ estado.classList.add('is-mal'); estado.textContent = 'La votación se abre muy pronto. Vuelve en un rato 🍵'; return; }
+    boton.disabled = true; estado.classList.remove('is-mal'); estado.textContent = 'Guardando tu voto…';
     try {
-      const r = await fetch(ENDPOINT, { method: 'POST', body: JSON.stringify({ voto: elegida, email, novedades, votante: votante(), huella: huella(), origen: location.host }) });
+      const r = await fetch(ENDPOINT, { method: 'POST', body: JSON.stringify({ voto: elegida, email: emailVoto, novedades: $('[data-mms-form]').novedades.checked, votante: votante(), huella: huella(), origen: location.host }) });
       const d = await r.json();
       if (d.ok || d.error === 'duplicado'){
         guarda.set('mms-voto', JSON.stringify({ codigo: elegida, fecha: Date.now() }));
-        if (novedades) suscribe(email);
-        vibra([30, 60, 120]); confeti(); paso('final');
+        estado.textContent = ''; vibra([30, 60, 120]); confeti(); paso('final');
         if (d.error === 'duplicado') $('[data-mms-compartido]').textContent = 'Este email ya había votado, así que contamos tu primer voto. ¡Gracias!';
       } else { throw new Error(d.error || 'error'); }
     } catch(err){
-      boton.disabled = false; error.classList.add('is-mal'); error.textContent = 'No hemos podido guardar tu voto. Revisa tu conexión e inténtalo otra vez.';
+      boton.disabled = false; estado.classList.add('is-mal'); estado.textContent = 'No hemos podido guardar tu voto. Revisa tu conexión e inténtalo otra vez.';
     }
   });
   /* si acepta novedades, también la apuntamos a la newsletter de Shopify (sin recargar la página) */
