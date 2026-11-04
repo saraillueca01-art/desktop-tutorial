@@ -19,7 +19,7 @@ Abre la hoja: la pestaña **Resumen** muestra los votos y el porcentaje de cada 
 
 ## Votos repetidos: qué se evita y qué no
 
-- Para que el voto cuente hay que dejar el email. **El sistema solo acepta un voto por email**: si alguien vuelve a votar con el mismo, se queda el primero.
+- Después del juego, hay que dejar el email antes de ver y elegir las etiquetas: sin email no se puede votar. **El sistema solo acepta un voto por email**: si alguien vuelve a votar con el mismo, se queda el primero.
 - Además, la web no deja votar otra vez desde el mismo móvil.
 - No es infalible: alguien con varios emails podría votar varias veces. En «Resumen» verás cuántos votos vienen de un móvil que ya había votado con otro email, como referencia.
 - La casilla de novedades es opcional. Si la marcan, además se apuntan a tu newsletter de Shopify con las etiquetas «newsletter, lista-espera, reto-dia-13». Si no la marcan, su email solo sirve para contar el voto.
