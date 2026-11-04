@@ -99,7 +99,11 @@ details.spoiler ol{margin:8px 0 0;padding-left:1.2em;color:var(--suave)}
 .franja .hueco.fijo{box-shadow:0 0 0 2px var(--lima)}
 .franja small{font-size:9px;color:#a9bfae;line-height:1.1}
 .franja.activa small{color:#fff}
-.verso{min-height:44px;margin-top:8px;font:400 17px/1.25 var(--serif);font-style:italic;color:#fff;max-width:26ch}
+.llaves{display:flex;gap:12px;margin-top:6px}
+.llaves span{width:44px;height:44px;border-radius:50%;border:1.5px dashed rgba(238,243,230,.35);display:grid;place-items:center;font:400 7px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--tinta);transition:background .4s,border .4s}
+.llaves span.ok{border:0;background:radial-gradient(circle,var(--c) 0%,color-mix(in srgb,var(--c) 60%,#fff) 50%,rgba(255,255,255,.1) 80%)}
+.orbe.brillo{box-shadow:0 0 0 3px var(--lima),0 0 24px 6px rgba(201,220,92,.5)}
+.verso{min-height:66px;font-size:20px!important;margin-top:8px;font:400 17px/1.25 var(--serif);font-style:italic;color:#fff;max-width:26ch}
 .resultado{margin-top:4px;font-size:12px;color:var(--lima);min-height:16px}
 .btn-claro{border:0;border-radius:99px;padding:10px 20px;background:#eef3e6;color:var(--tinta);font:400 13px var(--sans);cursor:pointer}
 .btn-claro[disabled]{opacity:.35}
@@ -153,7 +157,7 @@ details.spoiler ol{margin:8px 0 0;padding-left:1.2em;color:var(--suave)}
 <header class="cabecera">
   <small>Día 13 · el secreto de la web</small>
   <h1>La sala que <em>no existe</em></h1>
-  <p>La web parece la de siempre. Nada dice que haya algo escondido… salvo el vídeo. Prueba a encontrar la puerta sin leer las pistas de la derecha.</p>
+  <p>Versión sencilla: una puerta escondida que tu pista del vídeo desvela, tres preguntas rápidas de moods y la votación. En 1 o 2 minutos se hace, pero da la sensación de haber descubierto algo.</p>
 </header>
 
 <main class="fila">
@@ -174,54 +178,48 @@ details.spoiler ol{margin:8px 0 0;padding-left:1.2em;color:var(--suave)}
       <div class="capa cerradura oculta" id="c2">
         <div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
         <h3>Sí <em>existe</em></h3>
-        <p class="sub">Pero está cerrada. La abre quien sabe cómo es un día de Mood Matcha.</p>
-        <div class="dial" id="dial"><div class="aro"></div><div class="centro"><small>cerradura</small><b>0 / 6</b><small>moods</small></div></div>
-        <div class="verso" id="verso">Toca una hora para escucharla.</div>
-        <div class="franjas" id="franjas"></div>
+        <p class="sub">Para abrirla necesitas tres llaves. Cada una es un mood.</p>
+        <div class="dial" id="dial"><div class="aro"></div><div class="centro"><small>llave</small><b id="nllave">1 / 3</b><small>de 3</small></div></div>
+        <div class="verso" id="verso"></div>
+        <div class="llaves" id="llaves"><span></span><span></span><span></span></div>
         <div class="resultado" id="resultado"></div>
-        <button class="btn-claro" id="girar" disabled>Girar la cerradura</button>
       </div>
       <!-- capa 3 · la sala -->
       <div class="capa sala oculta" id="c3"></div>
     </div></div>
     <div class="estado" id="estado">Capa 1 de 3 · la web de siempre</div>
-    <div class="controles"><button id="reset">Empezar de nuevo</button><button id="saltar">Saltar a la cerradura</button></div>
+    <div class="controles"><button id="reset">Empezar de nuevo</button><button id="saltar">Saltar a las llaves</button></div>
     <details class="spoiler"><summary>Solución completa (spoiler)</summary><ol>
       <li><b>Puerta:</b> mantén pulsado «no existe» 2 segundos.</li>
-      <li><b>Cerradura:</b> 8:00 Monday · 11:00 Focus · 14:00 Social · 19:00 Good · 22:00 Chill · Domingo Slow. Luego «Girar la cerradura».</li>
+      <li><b>Llaves:</b> lunes con despertador → Monday · comida con amigas → Social · domingo sin prisa → Slow.</li>
       <li><b>Sala:</b> elige etiqueta, deja tu email y llévate la frase secreta.</li>
     </ol></details>
   </div>
 
   <aside class="explica">
-    <h2>Tres capas, <em>como un secreto de verdad</em></h2>
+    <h2>Sencillo, <em>pero secreto</em></h2>
     <div class="capa-info">
-      <span class="eyebrow">Capa 1 · la puerta</span>
-      <h3>La web no enseña nada</h3>
-      <p>Quien entra ve tu pantalla «Lote 001» de siempre: el email, el reto de seguidores. Ningún botón raro. La única pista está en el vídeo:</p>
-      <p class="cita">«Hay una sala en nuestra web que no existe. Bueno… sí existe. Lo que pasa es que no se ve.»</p>
-      <p>La puerta es lo tachado: hay que <b style="font-weight:400;color:var(--tinta)">mantener pulsado «no existe»</b> dos segundos. La raya cae y la web se abre.</p>
+      <span class="eyebrow">La pista del vídeo</span>
+      <h3>Tú das la llave de la puerta</h3>
+      <p>Sin tu frase nadie sabría por dónde empezar. Con ella, lo encuentran en 30 segundos y sienten que lo han descubierto. Elige una:</p>
+      <p class="cita">«Hay una sala en nuestra web que no existe. Para entrar, tienes que tocar lo que no existe… y no soltar.»</p>
+      <p class="cita">«La puerta está en lo que hemos tachado. Mantén el dedo encima.»</p>
+      <p class="cita">«Lo que no existe también se puede tocar. Pruébalo en nuestra web.»</p>
+      <p>La primera es mi favorita: es misteriosa pero, cuando la piensas, es clara.</p>
+    </div>
+    <div class="capa-info">
+      <span class="eyebrow">El recorrido</span>
+      <h3>1 o 2 minutos en total</h3>
       <ul>
-        <li>A los 20 s, la raya roja tiembla un poco.</li>
-        <li>A los 40 s aparece, casi transparente: «lo que no existe… también se toca».</li>
-        <li>A los 60 s, una pista clara. En la web real serían 1, 2 y 3 minutos.</li>
+        <li><b style="font-weight:400;color:var(--tinta)">La puerta:</b> mantener pulsado «no existe». Si alguien no lo pilla, a los 20, 40 y 60 segundos aparecen ayudas (en la web real, 1, 2 y 3 minutos).</li>
+        <li><b style="font-weight:400;color:var(--tinta)">Tres llaves:</b> tres frases cortas y hay que tocar el mood que pega con cada una. Un toque por pregunta. Si fallas dos veces, el mood correcto brilla.</li>
+        <li><b style="font-weight:400;color:var(--tinta)">La sala:</b> número de entrada, etiquetas, email para votar y la frase secreta.</li>
       </ul>
     </div>
     <div class="capa-info">
-      <span class="eyebrow">Capa 2 · la cerradura</span>
-      <h3>Los moods son la combinación</h3>
-      <p>Seis horas del día, cada una con un verso. Hay que poner el mood que le toca y girar la cerradura. Si falla, solo dice cuántos están en su sitio («3 de 6»), sin decir cuáles. Para cambiar uno, se toca su hora y se elige otro mood. Cada 2 intentos fallidos, la cerradura fija uno correcto.</p>
-      <p>Esto genera comentarios como «tengo 5 de 6 y no sé cuál falla».</p>
-    </div>
-    <div class="capa-info">
-      <span class="eyebrow">Capa 3 · la sala que no existe</span>
-      <h3>Votar y llevarse una frase</h3>
-      <p>Ven las etiquetas antes que nadie, eligen una y dejan su email para que el voto cuente. Al final reciben:</p>
-      <ul>
-        <li><b style="font-weight:400;color:var(--tinta)">Su número de entrada</b> («eres la persona n.º 0128»).</li>
-        <li><b style="font-weight:400;color:var(--tinta)">Una frase secreta</b> para escribir en los comentarios del vídeo sin explicar nada: «el lunes empieza a las 8».</li>
-      </ul>
-      <p>Así los que lo encuentran se reconocen entre ellos, y los demás preguntan «¿qué significa eso?» y van a buscar.</p>
+      <span class="eyebrow">Lo que hará que comenten</span>
+      <h3>La frase secreta</h3>
+      <p>Al votar reciben «el lunes empieza a las 8» para escribirla en tu vídeo sin explicar nada. Los que entran se reconocen y los que no preguntan qué significa.</p>
       <div class="chips"><span>reto-dia-13</span><span>voto-etiqueta</span><span>voto-A / B / C</span></div>
     </div>
   </aside>
@@ -249,43 +247,28 @@ function relojPistas(){ timers.forEach(clearTimeout);
              setTimeout(() => pista('Mantén pulsado lo que está tachado.'), 60000) ]; }
 puerta.addEventListener('pointerdown', e => { if (abierta) return; puerta.setPointerCapture(e.pointerId); puerta.classList.add('cargando'); t0 = performance.now();
   carga = setTimeout(() => { abierta = true; vibra([30,80,30]); puerta.classList.remove('cargando'); puerta.classList.add('cae'); pista('');
-    c1.classList.add('glitch'); setTimeout(() => { c1.classList.remove('glitch'); ve(c1, c2, 'Capa 2 de 3 · la cerradura'); }, 1100); }, 2000); });
+    c1.classList.add('glitch'); setTimeout(() => { c1.classList.remove('glitch'); ve(c1, c2, 'Capa 2 de 3 · las tres llaves'); }, 1100); }, 2000); });
 const suelta = () => { clearTimeout(carga); puerta.classList.remove('cargando'); };
 puerta.addEventListener('pointerup', suelta); puerta.addEventListener('pointercancel', suelta);
 
-/* ===== capa 2: la cerradura del día ===== */
-const dial = $('#dial'), franjas = $('#franjas'), verso = $('#verso'), res = $('#resultado'), girar = $('#girar');
-let puesto = Array(6).fill(null), fijo = Array(6).fill(false), activa = 0, intentos = 0, elegidoMood = null;
-function pintaCerradura(){
-  $$('.orbe', dial).forEach(o => o.remove());
+/* ===== capa 2: tres llaves de mood ===== */
+const PREG = [ { t:'Es lunes. Suena el despertador.', m:'monday' }, { t:'Comida con amigas. No paráis de reír.', m:'social' }, { t:'Domingo. Sin planes y sin prisa.', m:'slow' } ];
+const dial = $('#dial'), verso = $('#verso'), res = $('#resultado');
+let paso = 0, fallos = 0;
+function pintaLlaves(){
+  $$('.orbe', dial).forEach(o => o.parentNode.removeChild(o));
   Object.keys(MOODS).forEach((m, i) => { const a = i / 6 * Math.PI * 2 - Math.PI / 2, o = document.createElement('button');
-    o.className = 'orbe' + (puesto.includes(m) ? ' usado' : '') + (elegidoMood === m ? ' elegido' : ''); o.dataset.m = m; o.style.setProperty('--c', MOODS[m]); o.textContent = m;
+    o.className = 'orbe'; o.dataset.m = m; o.style.setProperty('--c', MOODS[m]); o.textContent = m;
     o.style.left = (115 + Math.cos(a) * 92 - 25) + 'px'; o.style.top = (115 + Math.sin(a) * 92 - 25) + 'px'; dial.appendChild(o); });
-  franjas.innerHTML = DIA.map((d, i) => `<button class="franja${i === activa ? ' activa' : ''}" data-i="${i}"><span class="hueco${puesto[i] ? ' lleno' : ''}${fijo[i] ? ' fijo' : ''}" style="--c:${puesto[i] ? MOODS[puesto[i]] : 'transparent'}">${puesto[i] || ''}</span><small>${d.h}</small></button>`).join('');
-  $('.centro b', dial).textContent = puesto.filter(Boolean).length + ' / 6';
-  girar.disabled = puesto.some(x => !x);
+  $('#nllave').textContent = Math.min(paso + 1, 3) + ' / 3';
+  verso.textContent = paso < 3 ? '«' + PREG[paso].t + '»' : '';
+  $$('#llaves span').forEach((s, k) => { s.className = k < paso ? 'ok' : ''; s.style.setProperty('--c', k < paso ? MOODS[PREG[k].m] : 'transparent'); s.textContent = k < paso ? PREG[k].m : ''; });
 }
-franjas.addEventListener('click', e => { const f = e.target.closest('.franja'); if (!f) return; const i = +f.dataset.i;
-  if (fijo[i]){ verso.textContent = '«' + DIA[i].v + '» Esta ya está fijada.'; return; } activa = i; verso.textContent = '«' + DIA[i].v + '»'; pintaCerradura(); });
-dial.addEventListener('click', e => { const o = e.target.closest('.orbe'); if (!o) return;
-  if (fijo[activa]) activa = puesto.findIndex((x, k) => !x && !fijo[k]);
-  if (activa < 0) return;
-  const m = o.dataset.m, antes = puesto.indexOf(m);
-  if (antes >= 0 && fijo[antes]) return;
-  if (antes >= 0) puesto[antes] = null;
-  puesto[activa] = m; vibra(15);
-  const sig = puesto.findIndex(x => !x); if (sig >= 0){ activa = sig; verso.textContent = '«' + DIA[sig].v + '»'; }
-  pintaCerradura(); });
-girar.addEventListener('click', () => {
-  const bien = puesto.filter((m, i) => m === DIA[i].m).length; intentos++; dial.classList.remove('gira'); void dial.offsetWidth; dial.classList.add('gira');
-  if (bien === 6){ res.textContent = '6 de 6. La cerradura gira…'; vibra([40,80,40,80,160]); pista(''); setTimeout(abreSala, 1300); return; }
-  res.textContent = `${bien} de 6 en su sitio. La cerradura no gira.`; dial.classList.add('tiembla-x'); setTimeout(() => dial.classList.remove('tiembla-x'), 450); vibra(60);
-  if (intentos % 2 === 0){ const k = DIA.findIndex((d, i) => !fijo[i] && puesto[i] !== d.m); if (k >= 0){ fijo[k] = true;
-      pista(`La cerradura te regala una: a las ${DIA[k].h} va ${DIA[k].m[0].toUpperCase() + DIA[k].m.slice(1)}.`); } }
-  else if (intentos === 1) pista('Toca cada hora y lee su verso: el nombre del mood lo dice todo.');
-  // no dice cuáles están bien: se quedan puestos y se pueden cambiar tocando la hora
-  puesto = puesto.map((m, i) => fijo[i] ? DIA[i].m : (fijo.some((f, k) => f && DIA[k].m === m) ? null : m));
-  activa = fijo.findIndex(f => !f); pintaCerradura();
+dial.addEventListener('click', e => { const o = e.target.closest('.orbe'); if (!o || paso >= 3) return;
+  if (o.dataset.m === PREG[paso].m){ vibra(25); paso++; fallos = 0; res.textContent = paso < 3 ? '¡Llave ' + paso + ' de 3!' : 'Las tres llaves. Se abre…'; pista(''); dial.classList.remove('gira'); void dial.offsetWidth; dial.classList.add('gira');
+    pintaLlaves(); if (paso === 3){ vibra([40,80,40,80,160]); setTimeout(abreSala, 1200); } }
+  else { fallos++; vibra(60); o.classList.add('tiembla-x'); setTimeout(() => o.classList.remove('tiembla-x'), 450); res.textContent = 'Ese no. Prueba otro.';
+    if (fallos >= 2){ $(`.orbe[data-m="${PREG[paso].m}"]`, dial).classList.add('brillo'); pista('El que brilla es el que buscas.'); } }
 });
 
 /* ===== capa 3: la sala que no existe ===== */
@@ -324,12 +307,12 @@ function abreSala(){
 
 /* controles del prototipo */
 function reinicia(){
-  abierta = false; puesto = Array(6).fill(null); fijo = Array(6).fill(false); activa = 0; intentos = 0; res.textContent = ''; verso.textContent = 'Toca una hora para escucharla.';
+  abierta = false; paso = 0; fallos = 0; res.textContent = '';
   puerta.className = 'x puerta'; $('#susurro').classList.remove('on'); pista('');
   c2.classList.add('oculta'); c3.classList.add('oculta'); c1.classList.remove('oculta'); estado.textContent = 'Capa 1 de 3 · la web de siempre';
-  pintaCerradura(); relojPistas();
+  pintaLlaves(); relojPistas();
 }
 $('#reset').onclick = reinicia;
-$('#saltar').onclick = () => { abierta = true; timers.forEach(clearTimeout); pista(''); ve(c1, c2, 'Capa 2 de 3 · la cerradura'); };
+$('#saltar').onclick = () => { abierta = true; timers.forEach(clearTimeout); pista(''); ve(c1, c2, 'Capa 2 de 3 · las tres llaves'); };
 reinicia();
 </script>
