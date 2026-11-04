@@ -24,7 +24,14 @@ em{font-family:var(--serif);font-style:italic;font-weight:400}
 .pestanas{display:none;gap:6px;margin:18px auto 0;max-width:1180px}
 .pestanas button{flex:1;border:1px solid rgba(31,58,40,.25);background:#fff;border-radius:99px;padding:9px 6px;font:400 13px var(--sans);color:var(--tinta);cursor:pointer}
 .pestanas button[aria-selected="true"]{background:var(--tinta);color:#fff}
-.fila{max-width:1180px;margin:24px auto 60px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px;align-items:start}
+.fila{max-width:1080px;margin:24px auto 60px;display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:48px;align-items:start}
+.explica{display:grid;gap:18px}
+.explica h3{margin:0;font:300 26px/1.1 var(--sans)}
+.explica ol{margin:0;padding-left:1.2em;display:grid;gap:10px;color:var(--suave)}
+.explica ol b{color:var(--tinta);font-weight:400}
+.tarjeta{background:#fff;border-radius:20px;padding:20px 22px;display:grid;gap:10px}
+.tarjeta p{margin:0;color:var(--suave);font-size:15px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}.chips span{font-size:12px;border-radius:99px;padding:3px 10px;background:#eef3e6;color:var(--hoja)}
 .prop{display:grid;gap:14px;justify-items:center;min-width:0}
 .prop h2{margin:0;font:300 26px/1.1 var(--sans);text-align:center}
 .prop .lema{margin:0;text-align:center;font-size:14px;color:var(--suave);max-width:34ch}
@@ -143,12 +150,18 @@ details.spoiler ol{margin:8px 0 0;padding-left:1.2em;color:var(--suave)}
 .lata .et svg{width:32px}
 .boton{border:0;border-radius:99px;padding:11px 20px;background:var(--hoja);color:#fff;font:400 14px var(--sans);cursor:pointer}
 .boton[disabled]{opacity:.4}
+.email-paso{width:100%;display:grid;gap:8px;text-align:left}
+.email-paso input[type=email]{width:100%;border:0;border-radius:99px;padding:12px 16px;font:300 15px var(--sans);color:var(--tinta);background:#fff;outline-offset:2px}
+.email-paso label.ok{display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--suave);line-height:1.35}
+.email-paso label.ok input{margin-top:2px;accent-color:var(--hoja)}
+.email-paso .err{font-size:11px;color:var(--rojo);min-height:14px}
+.lata-mini{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.7);border-radius:16px;padding:8px 12px;width:100%}
+.lata-mini .lata{width:46px;height:60px;border-radius:6px}.lata-mini .lata::before{height:7px}.lata-mini .lata .et{top:14px;bottom:8px;font-size:6px}.lata-mini .lata .et svg{width:20px}
 .voto-hecho{background:#fff;border-radius:18px;padding:14px;width:100%;display:grid;gap:6px;justify-items:center}
 .voto-hecho b{font:400 22px/1.1 var(--serif);font-style:italic;font-weight:400}
 
 @media (max-width:980px){
-  .pestanas{display:flex}
-  .fila{grid-template-columns:1fr}
+  .fila{grid-template-columns:1fr;justify-items:center}
   .prop[hidden]{display:none}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
@@ -158,55 +171,16 @@ details.spoiler ol{margin:8px 0 0;padding-left:1.2em;color:var(--suave)}
 
 <header class="cabecera">
   <small>Día 13 · el secreto de la web</small>
-  <h1>Tres retos con <em>los moods</em></h1>
-  <p>Cada móvil se juega como en el teléfono. Si fallas tres veces, aparece sola una pista abajo, cada vez más clara. Quien lo resuelve entra en la sala secreta y vota la etiqueta (las latas son de ejemplo).</p>
+  <h1>Ordena tu día, <em>vota tu etiqueta</em></h1>
+  <p>El reto elegido. Se juega como en el teléfono: ordena los moods según el momento del día. Si fallas, aparece sola una pista abajo. Quien lo resuelve entra en la sala secreta, elige etiqueta y deja su email para que su voto cuente (las latas son de ejemplo).</p>
 </header>
 
-<div class="pestanas" role="tablist">
-  <button role="tab" aria-selected="true" data-p="p1">1 · Escondidos</button>
-  <button role="tab" aria-selected="false" data-p="p2">2 · Tu día</button>
-  <button role="tab" aria-selected="false" data-p="p3">3 · Sintoniza</button>
-</div>
 
 <main class="fila">
-  <!-- ============ 1 · LOS SEIS MOODS ESCONDIDOS ============ -->
-  <section class="prop" id="p1">
-    <h2><span class="num">1</span>Los 6 moods escondidos</h2>
-    <span class="dif">Fácil · buscar y tocar</span>
-    <p class="lema">«En nuestra web hay seis moods escondidos. Quien los reúna todos entra en una sala que no sale en ningún menú.»</p>
-    <div class="tel"><div class="pant" id="pant1">
-      <div class="capa" id="j1">
-        <div class="logo">M<svg viewBox="0 0 38 22" class="escondido" data-m="good"><use href="#oo"/></svg>DMATCHA</div>
-        <div class="lote"><span class="escondido" data-m="monday">Lote</span></div>
-        <div class="n001"><span class="x">00<span class="escondido" data-m="focus">1</span></span></div>
-        <div class="frase">Todavía <span class="x escondido" data-m="chill">no existe</span><span class="fix">se está <span class="escondido" data-m="social">preparando</span></span></div>
-        <p class="mini" style="margin-top:22px;max-width:24ch">Algo bueno se está cocinando a fuego <span class="escondido" data-m="slow">lento</span>.</p>
-        <div class="contador">Moods encontrados: <b id="cuenta1">0</b> de 6</div>
-        <div class="bandeja" id="bandeja1"></div>
-      </div>
-      <div class="funde" id="funde1"></div>
-      <div class="capa sala oculta" id="r1">
-        <div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
-        <div class="sello-mood iris"><svg viewBox="0 0 38 22"><use href="#oo"/></svg></div>
-        <span class="eyebrow">Has reunido los 6 moods</span>
-        <h3>Esta sala <em>no existe</em></h3>
-        <p class="mini" style="margin:0">Estás viendo nuestras etiquetas antes que nadie. Elige la de la primera lata.</p>
-        <div class="carrusel" data-voto="1"></div>
-        <button class="boton" data-votar="1" disabled>Votar esta etiqueta</button>
-      </div>
-      <div class="capa sala oculta" id="f1"></div>
-    </div></div>
-    <div class="controles"><button data-r="1">Empezar de nuevo</button></div>
-    <details class="spoiler"><summary>Dónde están (spoiler)</summary><ol>
-      <li>Las OO del logo (Good).</li><li>La palabra «Lote» (Monday).</li><li>El 1 de 001 (Focus).</li>
-      <li>«no existe» (Chill).</li><li>«preparando» (Social).</li><li>«lento» en la frase pequeña (Slow).</li>
-    </ol></details>
-  </section>
 
   <!-- ============ 2 · EL ORDEN DEL DÍA ============ -->
   <section class="prop" id="p2">
-    <h2><span class="num">2</span>Ordena tu día</h2>
-    <span class="dif">Media · pensar un poco</span>
+    <h2>Ordena tu día</h2>
     <p class="lema">«Cada mood tiene su momento. Ordena el día de Mood Matcha y se abre la puerta.»</p>
     <div class="tel"><div class="pant" id="pant2">
       <div class="capa" id="j2">
@@ -233,41 +207,26 @@ details.spoiler ol{margin:8px 0 0;padding-left:1.2em;color:var(--suave)}
       <li>19:00 → <b>Good</b> (ha salido todo bien).</li><li>22:00 → <b>Chill</b> (sofá y manta).</li><li>Domingo → <b>Slow</b> (sin prisa).</li>
     </ol></details>
   </section>
-
-  <!-- ============ 3 · SINTONIZA TU MOOD ============ -->
-  <section class="prop" id="p3">
-    <h2><span class="num">3</span>Sintoniza el mood secreto</h2>
-    <span class="dif">Fácil · deslizar</span>
-    <p class="lema">«Mood Matcha tiene seis moods… y uno que no sale en ninguna parte. Se encuentra como una emisora de radio.»</p>
-    <div class="tel"><div class="pant" id="pant3">
-      <div class="capa" id="j3">
-        <div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
-        <div class="frase" style="margin-top:12px;font-size:15px">Lote <span class="x">001</span> · todavía <span class="x">no existe</span></div>
-        <span class="eyebrow" style="margin-top:26px">Hoy estoy en modo</span>
-        <div class="dial-palabra" id="palabra3">good</div>
-        <div class="dial" id="dial3"><div class="tira"></div><div class="marca" id="marca3"></div><div class="boton-dial" id="boton3"><svg viewBox="0 0 38 22"><use href="#oo"/></svg></div></div>
-        <div class="temp" id="temp3"><span>frío</span><i></i><i></i><i></i><i></i><span>¡aquí!</span></div>
-        <div class="carga"><i id="carga3"></i></div>
-        <p class="mini" style="margin-top:14px;max-width:26ch">Hay un mood que no sale en ninguna parte. Busca su señal.</p>
-      </div>
-      <div class="capa sala oculta" id="r3">
-        <div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
-        <div class="sello-mood iris"><svg viewBox="0 0 38 22"><use href="#oo"/></svg></div>
-        <span class="eyebrow">Mood 07</span>
-        <h3><em>Curious</em></h3>
-        <p class="mini" style="margin:0">Solo lo encuentra quien busca. Has visto nuestras latas antes que nadie: elige una.</p>
-        <div class="carrusel" data-voto="3"></div>
-        <button class="boton" data-votar="3" disabled>Votar esta etiqueta</button>
-      </div>
-      <div class="capa sala oculta" id="f3"></div>
-    </div></div>
-    <div class="controles"><button data-r="3">Empezar de nuevo</button></div>
-    <details class="spoiler"><summary>Cómo se resuelve (spoiler)</summary><ol>
-      <li>Desliza el círculo por la tira de colores: cambia el mood y el fondo.</li>
-      <li>Entre <b>Monday</b> y <b>Social</b> hay una señal: la palabra parpadea y el medidor llega a «¡aquí!».</li>
-      <li>Déjalo ahí un segundo y medio y se abre la sala.</li>
-    </ol></details>
-  </section>
+  <aside class="explica">
+    <h3>Cómo funcionaría <em>en la web</em></h3>
+    <ol>
+      <li><b>Entran desde el vídeo</b> y ven tu pantalla «Lote 001». El reto está ahí mismo, sin menús.</li>
+      <li><b>Ordenan el día:</b> tocan cada momento para leer su pista y ponen el mood que le toca. Si fallan 3, 5 y 7 veces, la pista se vuelve más clara.</li>
+      <li><b>Entran en la sala secreta</b> y ven las etiquetas antes que nadie.</li>
+      <li><b>Eligen etiqueta y dejan su email</b> para que el voto cuente, con la casilla de aceptar novedades.</li>
+      <li><b>Tú ves los resultados</b> en privado.</li>
+    </ol>
+    <div class="tarjeta">
+      <span class="eyebrow">Los votos, en tu Shopify</span>
+      <p>Cada email se guarda como cliente suscrito con unas etiquetas. En Clientes filtras por etiqueta y ves cuántos votos tiene cada propuesta. Nadie más puede verlo.</p>
+      <div class="chips"><span>reto-dia-13</span><span>voto-etiqueta</span><span>voto-A / voto-B / voto-C</span></div>
+      <p>Si alguien vota dos veces con el mismo email, cuenta solo uno.</p>
+    </div>
+    <div class="tarjeta">
+      <span class="eyebrow">Lo que necesito de ti</span>
+      <p>Las 2 o 3 propuestas de etiqueta en imagen, para ponerlas en la sala secreta en lugar de estas latas de ejemplo.</p>
+    </div>
+  </aside>
 </main>
 
 <script>
@@ -301,51 +260,33 @@ function montaVoto(n, sello){
   $$('.opcion', car).forEach(o => o.addEventListener('click', () => { $$('.opcion', car).forEach(x => x.setAttribute('aria-pressed', x === o)); elegida = o.dataset.v; btn.disabled = false; }));
   btn.onclick = () => { const l = LATAS.find(x => x.v === elegida);
     $('#f' + n).innerHTML = `<div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
+      <span class="eyebrow" style="margin-top:16px">Último paso</span><h3>Para que tu voto <em>cuente</em></h3>
+      <div class="lata-mini"><div class="lata ${l.cls}"><div class="et">${l.et}</div></div><span style="text-align:left;font-size:13px">Has elegido la <b style="font-weight:500">propuesta ${l.v}</b><br><span class="mini">${l.n}</span></span></div>
+      <form class="email-paso" novalidate>
+        <span class="mini">Déjanos tu email. Solo vale un voto por email.</span>
+        <input type="email" placeholder="tu@email.com" aria-label="Tu email" autocomplete="email" required>
+        <label class="ok"><input type="checkbox" required> Acepto recibir novedades de Mood Matcha. Puedo darme de baja cuando quiera.</label>
+        <span class="err" aria-live="polite"></span>
+        <button class="boton" type="submit">Enviar mi voto</button>
+      </form>
+      <button class="boton" type="button" data-cambiar style="background:transparent;color:var(--hoja);padding:4px">← Cambiar de etiqueta</button>`;
+    ver($('#r' + n), $('#f' + n));
+    $('[data-cambiar]', $('#f' + n)).onclick = () => ver($('#f' + n), $('#r' + n));
+    $('form', $('#f' + n)).onsubmit = e => { e.preventDefault(); const f = e.target, em = f.querySelector('[type=email]').value.trim(), ok = f.querySelector('[type=checkbox]').checked;
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){ f.querySelector('.err').textContent = 'Revisa el email.'; return; }
+      if (!ok){ f.querySelector('.err').textContent = 'Marca la casilla para poder enviarlo.'; return; }
+      gracias(l, em); };
+  };
+  function gracias(l, em){
+    $('#f' + n).innerHTML = `<div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
       <span class="eyebrow" style="margin-top:20px">Voto guardado</span><h3>Gracias, <em>mini socia</em></h3>
       <div class="voto-hecho"><div class="lata ${l.cls}"><div class="et">${l.et}</div></div><b>Has votado la propuesta ${l.v}</b><span class="mini">${sello}</span></div>
-      <p class="mini">Un voto por móvil. Contaremos el resultado en el próximo vídeo… pero no digas dónde estaba la sala.</p>`;
-    vibra(40); ver($('#r' + n), $('#f' + n)); };
+      <p class="mini">Voto guardado con ${em}. Contaremos el resultado en el próximo vídeo… pero no digas cómo se entra.</p>`;
+    vibra(40); }
 }
 function reinicia(n){ ['r','f'].forEach(k => $('#' + k + n).classList.add('oculta')); $('#j' + n).classList.remove('oculta'); pista(n, ''); }
 
-/* pestañas en móvil */
-$$('.pestanas button').forEach(b => b.addEventListener('click', () => { $$('.pestanas button').forEach(o => o.setAttribute('aria-selected', o === b)); pestanasMovil(); }));
-function pestanasMovil(){ const movil = matchMedia('(max-width:980px)').matches, sel = $('.pestanas [aria-selected="true"]').dataset.p;
-  $$('.prop').forEach(p => p.hidden = movil && p.id !== sel); }
-addEventListener('resize', pestanasMovil); pestanasMovil();
 
-/* ============ 1 · los seis moods escondidos ============ */
-(() => {
-  const pant = $('#pant1'), j = $('#j1'), bandeja = $('#bandeja1'), ORDEN = ['good','chill','focus','monday','social','slow'];
-  let hallados = new Set(), fallos = 0;
-  const TXT = ['Los moods se esconden en las palabras de esta pantalla.', 'Toca letras y palabras: el logo, el número, lo tachado…', ''];
-  function inicio(){
-    hallados = new Set(); fallos = 0; $('#cuenta1').textContent = 0; $('#funde1').classList.remove('on'); reinicia(1);
-    bandeja.innerHTML = ORDEN.map(m => `<span class="orbe vacio" data-hueco="${m}"></span>`).join('');
-    $$('.escondido', j).forEach(e => { e.classList.remove('hallado'); e.style.removeProperty('--c'); });
-  }
-  function siguiente(){ return $$('.escondido', j).find(e => !hallados.has(e.dataset.m)); }
-  j.addEventListener('click', e => {
-    const esc = e.target.closest('.escondido');
-    if (esc && !hallados.has(esc.dataset.m)){
-      const m = esc.dataset.m; hallados.add(m); esc.style.setProperty('--c', MOODS[m]); esc.classList.add('hallado'); vibra(25); pista(1, '');
-      const P = pant.getBoundingClientRect(), k = pant.offsetWidth / P.width, a = esc.getBoundingClientRect(), hueco = $(`[data-hueco="${m}"]`), b = hueco.getBoundingClientRect();
-      const vu = document.createElement('div'); vu.className = 'vuela'; vu.style.setProperty('--c', MOODS[m]);
-      vu.style.left = ((a.left + a.width / 2 - P.left) * k - 22) + 'px'; vu.style.top = ((a.top + a.height / 2 - P.top) * k - 22) + 'px'; pant.appendChild(vu);
-      requestAnimationFrame(() => requestAnimationFrame(() => { vu.style.left = ((b.left - P.left) * k + (b.width * k - 44) / 2) + 'px'; vu.style.top = ((b.top - P.top) * k + (b.height * k - 44) / 2) + 'px'; vu.style.transform = 'scale(.9)'; }));
-      setTimeout(() => { vu.remove(); hueco.className = 'orbe'; hueco.style.setProperty('--c', MOODS[m]); hueco.textContent = m; $('#cuenta1').textContent = hallados.size;
-        if (hallados.size === 6){ vibra([30,60,30,60,120]); setTimeout(() => $('#funde1').classList.add('on'), 300); setTimeout(() => { ver(j, $('#r1')); $('#funde1').classList.remove('on'); }, 1900); } }, 820);
-      return;
-    }
-    if (esc) return;
-    fallos++; const nivel = Math.min(3, Math.floor(fallos / 3)); if (!nivel) return;
-    if (nivel < 3) pista(1, TXT[nivel - 1], nivel);
-    else { const s = siguiente(); if (s) pista(1, `Te falta ${NOMBRE(s.dataset.m)}. Mira lo que brilla.`, 3, [s]); }
-  });
-  montaVoto(1, 'Encontraste los 6 moods');
-  $('[data-r="1"]').addEventListener('click', () => { inicio(); montaVoto(1, 'Encontraste los 6 moods'); });
-  inicio();
-})();
 
 /* ============ 2 · ordena tu día ============ */
 (() => {
@@ -382,35 +323,4 @@ addEventListener('resize', pestanasMovil); pestanasMovil();
   inicio();
 })();
 
-/* ============ 3 · sintoniza el mood secreto ============ */
-(() => {
-  const pant = $('#pant3'), j = $('#j3'), dial = $('#dial3'), boton = $('#boton3'), palabra = $('#palabra3'), temp = $$('#temp3 i'), carga = $('#carga3');
-  const SECRETO = .62, ORDEN = ['good','chill','focus','monday','social','slow'];
-  let pos = .05, arrastres = 0, t0 = null, raf, abierto = false;
-  function coloca(p){
-    pos = Math.min(1, Math.max(0, p)); boton.style.left = (pos * 100) + '%';
-    const d = Math.abs(pos - SECRETO), cerca = d < .025;
-    const m = ORDEN[Math.min(5, Math.floor(pos * 6))];
-    palabra.classList.toggle('fallo', cerca); palabra.textContent = cerca ? '¿curious?' : m; palabra.style.color = cerca ? 'var(--tinta)' : 'color-mix(in srgb,' + MOODS[m] + ' 70%, #1f3a28)';
-    pant.style.background = cerca ? 'radial-gradient(circle at 50% 40%,#fff,#efe9f6 60%,#e3f0e4)' : `radial-gradient(circle at 50% 40%,#fffef1,color-mix(in srgb,${MOODS[m]} 35%,#fffef1))`;
-    const nivel = d < .025 ? 4 : d < .06 ? 3 : d < .12 ? 2 : d < .2 ? 1 : 0; temp.forEach((i, k) => i.classList.toggle('on', k < nivel));
-    boton.classList.toggle('cerca', cerca);
-    if (cerca && t0 === null){ t0 = performance.now(); vibra(40); cuenta(); }
-    if (!cerca){ t0 = null; cancelAnimationFrame(raf); carga.style.setProperty('--p', '0%'); }
-  }
-  function cuenta(){ if (t0 === null || abierto) return; const k = Math.min(1, (performance.now() - t0) / 1500); carga.style.setProperty('--p', (k * 100) + '%');
-    if (k >= 1){ abierto = true; vibra([30,60,120]); pista(3, ''); setTimeout(() => ver(j, $('#r3')), 500); return; } raf = requestAnimationFrame(cuenta); }
-  let activo = false;
-  const mueve = e => { const r = dial.getBoundingClientRect(); coloca((e.clientX - r.left) / r.width); };
-  dial.addEventListener('pointerdown', e => { activo = true; dial.setPointerCapture(e.pointerId); mueve(e); });
-  dial.addEventListener('pointermove', e => { if (activo) mueve(e); });
-  dial.addEventListener('pointerup', () => { if (!activo) return; activo = false; if (abierto || Math.abs(pos - SECRETO) < .025) return; arrastres++;
-    if (arrastres === 3) pista(3, 'El medidor de abajo te dice si estás cerca. Muévete despacio.', 1);
-    if (arrastres === 5) pista(3, 'La señal está entre Monday y Social.', 2);
-    if (arrastres >= 7){ $('#marca3').style.left = (SECRETO * 100) + '%'; $('#marca3').classList.add('on'); pista(3, 'Pon el círculo justo en la rayita y espera.', 3, [$('#marca3')]); } });
-  function inicio(){ abierto = false; arrastres = 0; t0 = null; reinicia(3); $('#marca3').classList.remove('on'); coloca(.05); }
-  montaVoto(3, 'Encontraste el Mood 07 · Curious');
-  $('[data-r="3"]').addEventListener('click', () => { inicio(); montaVoto(3, 'Encontraste el Mood 07 · Curious'); });
-  inicio();
-})();
 </script>
