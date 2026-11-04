@@ -19,9 +19,10 @@ Abre la hoja: la pestaña **Resumen** muestra los votos y el porcentaje de cada 
 
 ## Votos repetidos: qué se evita y qué no
 
-- Cada móvil recibe un identificador anónimo al votar. El sistema rechaza un segundo voto con el mismo identificador, y la web no deja votar otra vez desde ese móvil.
-- No se pide email ni registro, así que **no es infalible**: alguien podría volver a votar desde otro móvil, en modo incógnito o borrando los datos del navegador.
-- Para detectarlo, cada voto guarda también una «huella» aproximada del dispositivo (idioma, tamaño de pantalla, zona horaria). En «Resumen» verás cuántos votos podrían venir de un móvil que ya había votado. Úsalo como referencia, no como prueba.
+- Para que el voto cuente hay que dejar el email. **El sistema solo acepta un voto por email**: si alguien vuelve a votar con el mismo, se queda el primero.
+- Además, la web no deja votar otra vez desde el mismo móvil.
+- No es infalible: alguien con varios emails podría votar varias veces. En «Resumen» verás cuántos votos vienen de un móvil que ya había votado con otro email, como referencia.
+- La casilla de novedades es opcional. Si la marcan, además se apuntan a tu newsletter de Shopify con las etiquetas «newsletter, lista-espera, reto-dia-13». Si no la marcan, su email solo sirve para contar el voto.
 
 ## Mientras no esté conectado
 
