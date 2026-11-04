@@ -524,7 +524,120 @@ def email_recordatorio():
 """
 
 
+# ---------- Gracias por venir a la inauguración ----------
+WA_CITA_CHAKRA = wa('Hola, vengo del email y quiero reservar una cita en Chakra Wellness Center 😊')
+WA_CLASE_PILATES = wa('Hola, vengo del email y quiero reservar una clase en Espai Pilates Reformer 😊')
+
+
+def email_gracias():
+    """Agradecimiento tras la inauguración y bienvenida a Chakra y a Espai Pilates Reformer."""
+    G = '#c9a43a'; GL = '#e2be4a'; N = '#141413'; C = '#f7f2e8'; T = '#1d1d1b'; S = '#6b6760'
+    VP = '#7db7a3'; VPT = '#4f8a76'; VPC = '#efe6d4'
+    serif = "Georgia,'Times New Roman',serif"
+    sans = "'Helvetica Neue',Helvetica,Arial,sans-serif"
+    def btn(texto, url, fondo=G, color=N):
+        return f'<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr><td align="center" bgcolor="{fondo}" style="background:{fondo};"><a href="{url}" style="display:inline-block;padding:16px 30px;font-family:{sans};font-size:12px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;color:{color};text-decoration:none;">{texto}</a></td></tr></table>'
+    return f"""<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="x-apple-disable-message-reformatting">
+  <title>Gracias por acompañarnos</title>
+  <style>
+    body {{ margin: 0; padding: 0; background: #e9e4da; }}
+    @media (max-width: 620px) {{
+      .container {{ width: 100% !important; }}
+      .px {{ padding-left: 28px !important; padding-right: 28px !important; }}
+      .big {{ font-size: 40px !important; }}
+      .logo-p {{ width: 130px !important; height: auto !important; }}
+    }}
+  </style>
+</head>
+<body style="margin:0;padding:0;background:#e9e4da;">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">Gracias por venir a nuestra inauguración. Bienvenida a Chakra Wellness Center y a Espai Pilates Reformer.&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#e9e4da;">
+    <tr><td align="center" style="padding:24px 12px;">
+      <table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;background:#ffffff;">
+
+        <tr><td align="center" style="padding:0 0 10px;background:#e9e4da;font-family:{sans};font-size:11px;color:{S};">¿No ves bien este email? <a href="*|ARCHIVE|*" style="color:{S};">Ábrelo en el navegador</a></td></tr>
+
+        <tr><td align="center" style="padding:34px 12px 30px;background:#ffffff;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr>
+            <td valign="middle" style="padding:0 22px;"><img src="{BASE}/campanas-octubre/media/logo-espai-pilates.png" width="176" height="75" alt="Espai Pilates Reformer" class="logo-p" style="display:block;border:0;width:176px;height:75px;"></td>
+            <td valign="middle" style="border-left:1px solid #e8dfcc;padding:0 22px;"><img src="{BASE}/facial-luminus/media/logo-chakra.png" width="80" height="90" alt="Chakra Wellness Center by Espai Vital" style="display:block;border:0;width:80px;height:90px;"></td>
+          </tr></table>
+        </td></tr>
+
+        <!-- Gracias -->
+        <tr><td class="px" align="center" bgcolor="{N}" style="background:{N};padding:60px 50px 54px;">
+          <p style="margin:0;font-family:{sans};font-size:12px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:{GL};">Desde el corazón</p>
+          <p class="big" style="margin:18px 0 0;font-family:{serif};font-size:52px;line-height:1.1;color:#ffffff;"><em style="color:{GL};">Gracias</em></p>
+          <p style="margin:14px 0 0;font-family:{serif};font-size:22px;line-height:1.45;color:#ffffff;">por acompañarnos en nuestra inauguración</p>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:30px auto 0;"><tr><td width="64" style="border-top:1px solid {G};font-size:0;line-height:0;">&nbsp;</td></tr></table>
+          <p style="margin:28px 0 0;font-family:{sans};font-size:17px;line-height:1.75;color:#d8d2c6;">Fue una tarde muy especial y tenerte con nosotros la hizo todavía mejor. Gracias por cada sonrisa, cada abrazo y cada palabra bonita.</p>
+          <p style="margin:18px 0 0;font-family:{serif};font-style:italic;font-size:20px;line-height:1.6;color:#ffffff;">Esto solo acaba de empezar.</p>
+        </td></tr>
+
+        <!-- Bienvenida -->
+        <tr><td class="px" align="center" style="padding:48px 48px 10px;background:#ffffff;">
+          <p style="margin:0;font-family:{sans};font-size:12px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:#8f6d14;">Te damos la bienvenida a</p>
+          <p style="margin:12px 0 0;font-family:{serif};font-size:26px;line-height:1.35;color:{T};">dos espacios pensados<br><em>para volver a ti</em></p>
+        </td></tr>
+
+        <!-- Chakra -->
+        <tr><td class="px" style="padding:30px 40px 0;background:#ffffff;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+            <td align="center" bgcolor="#ffffff" style="background:#ffffff;border:1px solid #e8dfcc;border-top:3px solid {G};padding:34px 28px 36px;">
+              <img src="{BASE}/facial-luminus/media/logo-chakra.png" width="62" height="70" alt="Chakra Wellness Center" style="display:block;border:0;width:62px;height:70px;margin:0 auto;">
+              <p style="margin:16px 0 0;font-family:{serif};font-size:24px;color:{T};">Chakra Wellness Center</p>
+              <p style="margin:4px 0 0;font-family:{sans};font-size:11px;font-weight:bold;letter-spacing:4px;text-transform:uppercase;color:#8f6d14;">by Espai Vital</p>
+              <p style="margin:16px 0 22px;font-family:{sans};font-size:15px;line-height:1.7;color:{S};">Tu nuevo refugio de bienestar y belleza en Benissa: tratamientos faciales y corporales para cuidarte por dentro y por fuera.</p>
+              {btn('Reservar mi cita', WA_CITA_CHAKRA, N, GL)}
+            </td>
+          </tr></table>
+        </td></tr>
+
+        <!-- Pilates -->
+        <tr><td class="px" style="padding:18px 40px 0;background:#ffffff;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+            <td align="center" bgcolor="#ffffff" style="background:#ffffff;border:1px solid #dde9e4;border-top:3px solid {VP};padding:34px 28px 36px;">
+              <img src="{BASE}/campanas-octubre/media/logo-espai-pilates.png" width="190" height="81" alt="Espai Pilates Reformer" style="display:block;border:0;width:190px;height:81px;margin:0 auto;">
+              <p style="margin:16px 0 0;font-family:{serif};font-size:24px;color:#3f403d;">Espai Pilates Reformer</p>
+              <p style="margin:16px 0 22px;font-family:{sans};font-size:15px;line-height:1.7;color:{S};">Renovado para ti: un espacio para moverte, fortalecerte y sentirte bien en cada clase.</p>
+              {btn('Reservar mi clase', WA_CLASE_PILATES, VP, '#ffffff')}
+            </td>
+          </tr></table>
+        </td></tr>
+
+        <!-- Cierre -->
+        <tr><td class="px" align="center" style="padding:46px 56px 44px;background:#ffffff;">
+          <p style="margin:0;font-family:{serif};font-size:22px;line-height:1.55;color:{T};">Estamos aquí para acompañarte.</p>
+          <p style="margin:8px 0 0;font-family:{serif};font-style:italic;font-size:19px;line-height:1.55;color:{S};">Nos vemos muy pronto.</p>
+          <p style="margin:20px 0 0;font-size:22px;color:{G};">♡</p>
+        </td></tr>
+
+        <tr><td align="center" bgcolor="{N}" style="background:{N};padding:26px 24px;">
+          <p style="margin:0;font-family:{sans};font-size:13px;line-height:1.8;color:#d8d2c6;">C/ Calpe 5 · Benissa · junto a Espai Vital<br>WhatsApp <a href="{WA_CITA_CHAKRA}" style="color:{GL};font-weight:bold;text-decoration:none;">648 79 59 83</a></p>
+        </td></tr>
+
+        <tr><td align="center" style="padding:28px 24px 32px;font-family:{sans};font-size:12px;line-height:1.7;color:{S};">
+          <strong style="color:{T};">Chakra Wellness Center by Espai Vital · Espai Pilates Reformer</strong><br>
+          C/ Benidoleig 31, bajo · 03720 Benissa (Alicante)<br>
+          <a href="tel:+34633388152" style="color:{S};">+34 633 38 81 52</a> · <a href="mailto:info@chakracenterbenissa.com" style="color:{S};">info@chakracenterbenissa.com</a><br><br>
+          Recibes este email porque eres cliente o aceptaste recibir novedades de nuestro centro.<br>
+          <a href="*|UPDATE_PROFILE|*" style="color:{S};">Actualizar mis datos</a> · <a href="*|UNSUB|*" style="color:{S};">Darme de baja</a>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
+"""
+
+
 EMAILS = {
+    'email-gracias': email_gracias(),
     'email-recordatorio': email_recordatorio(),
     'email-nueva-fecha': email_nueva_fecha(),
     'email-inauguracion': email_invitacion(),
