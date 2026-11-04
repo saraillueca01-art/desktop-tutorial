@@ -4,10 +4,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap">
 <style>
-/* Layout: tres retos jugables con los moods, cada uno en un móvil. Misma estética «Degradado»: crema, círculos de mood, degradado de la etiqueta, Jost fino y cursiva Cormorant. */
+/* Layout: un móvil jugable (la web real «Lote 001» con una puerta escondida) y, al lado, las tres capas del reto. Identidad «Degradado». */
 :root{
-  --tinta:#1f3a28; --verde:#1d9e55; --hoja:#28602f; --suave:#5d6f61;
-  --menta:#add9af; --vainilla:#fbf8d1; --melocoton:#f3e5cd; --pistacho:#c9e2af; --crema:#fffef1; --rojo:#b23b2e;
+  --tinta:#1f3a28; --verde:#1d9e55; --hoja:#28602f; --suave:#5d6f61; --noche:#14241a;
+  --menta:#add9af; --vainilla:#fbf8d1; --melocoton:#f3e5cd; --pistacho:#c9e2af; --crema:#fffef1; --rojo:#b23b2e; --lima:#c9dc5c;
   --etiqueta:linear-gradient(100deg,#add9af 0%,#fbf8d1 36%,#f3e5cd 68%,#c9e2af 100%);
   --good:#f4e278; --chill:#89b3d8; --focus:#72927f; --monday:#d8d8c8; --social:#edab57; --slow:#beadd4;
   --sans:"Jost",system-ui,sans-serif; --serif:"Cormorant Garamond",Georgia,serif;
@@ -17,152 +17,133 @@ html,body{overflow-x:clip}
 body{margin:0;background:#f6f4ea;color:var(--tinta);font:300 16px/1.55 var(--sans);
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 em{font-family:var(--serif);font-style:italic;font-weight:400}
-.cabecera{max-width:1180px;margin:0 auto;padding-block:36px 8px;display:grid;gap:10px}
-.cabecera small{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--verde);font-weight:400}
+.cabecera{max-width:1080px;margin:0 auto;padding-block:36px 8px;display:grid;gap:10px}
+.cabecera small,.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--verde);font-weight:400}
 .cabecera h1{margin:0;font:300 clamp(34px,5vw,58px)/1.05 var(--sans);text-wrap:balance}
 .cabecera p{margin:0;max-width:66ch;color:var(--suave)}
-.pestanas{display:none;gap:6px;margin:18px auto 0;max-width:1180px}
-.pestanas button{flex:1;border:1px solid rgba(31,58,40,.25);background:#fff;border-radius:99px;padding:9px 6px;font:400 13px var(--sans);color:var(--tinta);cursor:pointer}
-.pestanas button[aria-selected="true"]{background:var(--tinta);color:#fff}
-.fila{max-width:1080px;margin:24px auto 60px;display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:48px;align-items:start}
-.explica{display:grid;gap:18px}
-.explica h3{margin:0;font:300 26px/1.1 var(--sans)}
-.explica ol{margin:0;padding-left:1.2em;display:grid;gap:10px;color:var(--suave)}
-.explica ol b{color:var(--tinta);font-weight:400}
-.tarjeta{background:#fff;border-radius:20px;padding:20px 22px;display:grid;gap:10px}
-.tarjeta p{margin:0;color:var(--suave);font-size:15px}
-.chips{display:flex;gap:6px;flex-wrap:wrap}.chips span{font-size:12px;border-radius:99px;padding:3px 10px;background:#eef3e6;color:var(--hoja)}
-.prop{display:grid;gap:14px;justify-items:center;min-width:0}
-.prop h2{margin:0;font:300 26px/1.1 var(--sans);text-align:center}
-.prop .lema{margin:0;text-align:center;font-size:14px;color:var(--suave);max-width:34ch}
-.num{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--tinta);color:#fff;font-size:12px;font-weight:400;margin-right:8px;vertical-align:3px}
-.dif{font-size:11px;letter-spacing:.12em;text-transform:uppercase;border-radius:99px;padding:3px 10px;font-weight:400;background:#fff;border:1px solid rgba(31,58,40,.2)}
+.fila{max-width:1080px;margin:24px auto 60px;display:grid;grid-template-columns:minmax(0,370px) minmax(0,1fr);gap:48px;align-items:start}
+.lado-tel{display:grid;gap:14px;justify-items:center;position:sticky;top:16px}
 .controles{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .controles button{border:1px solid rgba(31,58,40,.25);background:#fff;border-radius:99px;padding:7px 14px;font:400 13px var(--sans);color:var(--tinta);cursor:pointer}
+.estado{font-size:13px;color:var(--suave);text-align:center;min-height:20px}
 details.spoiler{width:100%;max-width:330px;background:#fff;border-radius:16px;padding:12px 16px;font-size:14px}
 details.spoiler summary{cursor:pointer;font-weight:400}
 details.spoiler ol{margin:8px 0 0;padding-left:1.2em;color:var(--suave)}
 :focus-visible{outline:2px solid var(--verde);outline-offset:3px}
 
+.explica{display:grid;gap:18px}
+.explica h2{margin:0;font:300 30px/1.1 var(--sans)}
+.capa-info{background:#fff;border-radius:20px;padding:20px 22px;display:grid;gap:8px}
+.capa-info h3{margin:0;font:300 22px/1.15 var(--sans)}
+.capa-info p,.capa-info li{margin:0;color:var(--suave);font-size:15px}
+.capa-info ul{margin:0;padding-left:1.1em;display:grid;gap:6px}
+.capa-info .cita{font:400 19px/1.3 var(--serif);font-style:italic;color:var(--hoja)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}.chips span{font-size:12px;border-radius:99px;padding:3px 10px;background:#eef3e6;color:var(--hoja)}
+
 /* el móvil */
 .tel{position:relative;width:min(330px,100%);aspect-ratio:330/690;border-radius:46px;background:#13221a;padding:10px;box-shadow:0 30px 60px -28px rgba(20,36,26,.55)}
 .tel::before{content:"";position:absolute;top:18px;left:50%;transform:translateX(-50%);width:90px;height:24px;border-radius:14px;background:#000;z-index:30}
-.pant{position:relative;width:100%;height:100%;border-radius:37px;overflow:hidden;background:var(--crema);touch-action:manipulation;user-select:none;-webkit-user-select:none;transition:background .5s}
+.pant{position:relative;width:100%;height:100%;border-radius:37px;overflow:hidden;background:var(--crema);user-select:none;-webkit-user-select:none}
 .pant *{-webkit-tap-highlight-color:transparent}
-.capa{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:52px 18px 20px;text-align:center;transition:opacity .6s,transform .6s}
-.capa.oculta{opacity:0;pointer-events:none;transform:scale(1.04)}
+.capa{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:50px 20px 18px;text-align:center;transition:opacity .7s,transform .7s,filter .7s}
+.capa.oculta{opacity:0;pointer-events:none;transform:scale(1.05);filter:blur(6px)}
 .logo{font:300 15px/1 var(--sans);letter-spacing:.08em;white-space:nowrap;color:var(--tinta)}
 .logo svg{height:.72em;width:auto;vertical-align:-.02em}
-.lote{position:relative;z-index:3;margin-top:20px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--suave)}
-.n001{font:300 74px/1 var(--sans);color:var(--tinta)}
-.x{position:relative;display:inline-block}
-.x::after{content:"";position:absolute;left:-4%;right:-4%;top:52%;height:2px;background:var(--rojo);transform:rotate(-4deg);pointer-events:none}
-.frase{font-size:18px;margin-top:4px}
-.frase .fix{display:block;font-family:var(--serif);font-style:italic;font-size:23px;color:var(--verde)}
 .mini{font-size:11px;color:var(--suave)}
-.eyebrow{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--verde);font-weight:400}
+
+/* --- capa 1: la web de siempre --- */
+.web .kick{margin-top:30px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--suave)}
+.web .n001{font:300 84px/1 var(--sans)}
+.x{position:relative;display:inline-block}
+.x::after{content:"";position:absolute;left:-4%;right:-4%;top:52%;height:2px;background:var(--rojo);transform:rotate(-4deg);pointer-events:none;transition:transform .9s cubic-bezier(.5,0,.6,1.4),opacity .6s}
+.web .frase{font-size:19px;margin-top:4px}
+.web .frase .fix{display:block;font-family:var(--serif);font-style:italic;font-size:24px;color:var(--verde)}
+.web .lead{margin-top:16px;font-size:13px;color:var(--suave);max-width:28ch}
+.web .form{margin-top:16px;display:flex;gap:6px;background:#fff;border-radius:99px;padding:5px;width:100%;box-shadow:0 0 0 1px rgba(31,58,40,.1)}
+.web .form span{flex:1;text-align:left;padding:9px 12px;font-size:13px;color:#9aa69d}
+.web .form b{background:var(--hoja);color:#fff;border-radius:99px;padding:9px 14px;font-size:12px;font-weight:400}
+.web .reto{margin-top:auto;width:100%;border-radius:18px;background:var(--lima);padding:12px 14px;text-align:left;display:grid;gap:2px}
+.web .reto b{font-weight:400;font-size:15px}
+.puerta{cursor:pointer;touch-action:none}
+.puerta .anillo{position:absolute;left:50%;top:50%;width:0;height:0;border-radius:50%;border:2px solid var(--verde);transform:translate(-50%,-50%);opacity:0;pointer-events:none}
+.puerta.cargando .anillo{animation:carga 1.6s linear forwards}
+@keyframes carga{from{width:10px;height:10px;opacity:.9}to{width:130px;height:130px;opacity:0}}
+.puerta.tiembla::after{animation:hilo .5s ease-in-out 3}
+@keyframes hilo{50%{transform:rotate(-1deg) translateY(-2px)}}
+.puerta.cae::after{transform:rotate(18deg) translateY(40px);opacity:0}
+.susurro{position:absolute;left:0;right:0;font:400 15px/1.2 var(--serif);font-style:italic;color:var(--hoja);opacity:0;transition:opacity 1.5s;pointer-events:none}
+.susurro.on{opacity:.75}
+.glitch{animation:glitch .5s steps(3) 2}
+@keyframes glitch{33%{transform:translateX(-3px) skewX(-8deg);filter:hue-rotate(90deg)}66%{transform:translateX(3px) skewX(6deg)}}
+
+/* --- capa 2: la cerradura del día --- */
+.cerradura{background:radial-gradient(circle at 50% 30%,#21402c,var(--noche) 70%);color:#eef3e6}
+.cerradura .logo{color:#eef3e6}
+.cerradura h3{margin:10px 0 0;font:300 24px/1.1 var(--sans)}
+.cerradura .sub{margin:4px 0 0;font-size:12px;color:#a9bfae;max-width:28ch}
+.dial{position:relative;width:230px;height:230px;margin-top:8px}
+.dial .aro{position:absolute;inset:30px;border-radius:50%;border:1px dashed rgba(238,243,230,.25)}
+.dial .centro{position:absolute;inset:72px;border-radius:50%;display:grid;place-items:center;align-content:center;background:radial-gradient(circle,#2c5238,#1a3022);box-shadow:inset 0 0 0 1px rgba(238,243,230,.15);text-align:center}
+.dial .centro b{font:400 28px/1 var(--serif);font-style:italic;font-weight:400;color:#fff}
+.dial .centro small{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#a9bfae}
+.dial.gira .centro{animation:giro 1s cubic-bezier(.5,0,.3,1.4)}
+@keyframes giro{to{transform:rotate(360deg)}}
+.orbe{position:absolute;width:50px;height:50px;border-radius:50%;border:0;padding:0;display:grid;place-items:center;font:400 7.5px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--tinta);cursor:pointer;
+  background:radial-gradient(circle,var(--c) 0%,color-mix(in srgb,var(--c) 60%,#fff) 45%,rgba(255,255,255,.08) 76%);transition:transform .3s,opacity .3s}
+.orbe.usado{opacity:.35}
+.orbe.elegido{transform:scale(1.15);box-shadow:0 0 0 2px #fff}
+.franjas{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;width:100%;margin-top:6px}
+.franja{display:grid;gap:4px;justify-items:center;border:0;background:none;padding:0;font:inherit;color:#eef3e6;cursor:pointer}
+.franja .hueco{width:100%;aspect-ratio:1;border-radius:50%;border:1.5px dashed rgba(238,243,230,.3);display:grid;place-items:center;font:400 6.5px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--tinta)}
+.franja .hueco.lleno{border:0;background:radial-gradient(circle,var(--c) 0%,color-mix(in srgb,var(--c) 60%,#fff) 50%,rgba(255,255,255,.1) 80%)}
+.franja .hueco.fijo{box-shadow:0 0 0 2px var(--lima)}
+.franja small{font-size:9px;color:#a9bfae;line-height:1.1}
+.franja.activa small{color:#fff}
+.verso{min-height:44px;margin-top:8px;font:400 17px/1.25 var(--serif);font-style:italic;color:#fff;max-width:26ch}
+.resultado{margin-top:4px;font-size:12px;color:var(--lima);min-height:16px}
+.btn-claro{border:0;border-radius:99px;padding:10px 20px;background:#eef3e6;color:var(--tinta);font:400 13px var(--sans);cursor:pointer}
+.btn-claro[disabled]{opacity:.35}
+.tiembla-x{animation:tx .45s}
+@keyframes tx{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* --- capa 3: la sala que no existe --- */
+.sala{background:var(--etiqueta);justify-content:flex-start;gap:8px;overflow-y:auto}
+.sala h3{margin:2px 0 0;font:300 24px/1.1 var(--sans)}
+.numero{font:400 15px/1 var(--sans);letter-spacing:.06em;background:rgba(255,255,255,.7);border-radius:99px;padding:6px 12px}
+.carrusel{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;width:calc(100% + 40px);margin:0 -20px;padding:6px 20px;scrollbar-width:none}
+.carrusel::-webkit-scrollbar{display:none}
+.opcion{flex:0 0 66%;scroll-snap-align:center;border:0;background:rgba(255,255,255,.7);border-radius:20px;padding:12px;display:grid;gap:6px;justify-items:center;cursor:pointer;color:var(--tinta);font:inherit}
+.opcion[aria-pressed="true"]{outline:2px solid var(--tinta);background:#fff}
+.lata{width:80px;height:104px;border-radius:10px;position:relative;overflow:hidden;background:#e9ebe6;box-shadow:inset 6px 0 10px rgba(255,255,255,.5),inset -8px 0 12px rgba(0,0,0,.12),0 8px 16px -8px rgba(0,0,0,.35)}
+.lata::before{content:"";position:absolute;left:0;right:0;top:0;height:12px;background:linear-gradient(#cfd2cc,#aeb2aa)}
+.lata .et{position:absolute;left:0;right:0;top:26px;bottom:14px;display:grid;place-items:center;font:300 9px/1.1 var(--sans);letter-spacing:.08em}
+.lata.a .et{background:var(--etiqueta);color:var(--verde)}
+.lata.b .et{background:linear-gradient(var(--good) 0 16%,var(--chill) 16% 33%,var(--focus) 33% 50%,var(--monday) 50% 66%,var(--social) 66% 83%,var(--slow) 83%);font-weight:500}
+.lata.c{background:#f3efe2}.lata.c .et{background:var(--crema);border-block:1px solid rgba(31,58,40,.2)}
+.lata .et svg{width:30px}
+.boton{border:0;border-radius:99px;padding:11px 20px;background:var(--hoja);color:#fff;font:400 14px var(--sans);cursor:pointer}
+.boton[disabled]{opacity:.4}
+.email-paso{width:100%;display:grid;gap:7px;text-align:left}
+.email-paso input[type=email]{width:100%;border:0;border-radius:99px;padding:11px 16px;font:300 15px var(--sans);color:var(--tinta);background:#fff}
+.email-paso label{display:flex;gap:8px;align-items:flex-start;font-size:10.5px;color:var(--suave);line-height:1.35}
+.email-paso label input{margin-top:2px;accent-color:var(--hoja)}
+.email-paso .err{font-size:11px;color:var(--rojo);min-height:14px}
+.lata-mini{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.7);border-radius:16px;padding:8px 12px;width:100%;text-align:left;font-size:13px}
+.lata-mini .lata{width:44px;height:58px;border-radius:6px;flex:0 0 auto}.lata-mini .lata::before{height:7px}.lata-mini .lata .et{top:14px;bottom:8px;font-size:6px}.lata-mini .lata .et svg{width:18px}
+.clave{background:var(--noche);color:#fff;border-radius:18px;padding:14px;width:100%;display:grid;gap:6px}
+.clave b{font:400 21px/1.2 var(--serif);font-style:italic;font-weight:400;color:var(--lima)}
+.clave span{font-size:11px;color:#a9bfae}
 
 /* pistas */
 .pista-caja{position:absolute;left:12px;right:12px;bottom:14px;z-index:28;background:var(--tinta);color:#fff;border-radius:16px;padding:10px 12px;font-size:12.5px;line-height:1.35;
   display:flex;gap:10px;align-items:center;text-align:left;transform:translateY(160%);transition:transform .5s cubic-bezier(.3,1.3,.5,1);pointer-events:none}
 .pista-caja.on{transform:none}
 .pista-caja b{flex:0 0 auto;background:var(--good);color:var(--tinta);border-radius:99px;padding:3px 8px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:500}
-.pista-caja .nivel{margin-left:auto;display:flex;gap:3px}
-.pista-caja .nivel i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25)}
-.pista-caja .nivel i.on{background:var(--good)}
-.brilla{animation:brilla 1.2s ease-out infinite!important;border-radius:12px}
-@keyframes brilla{0%{box-shadow:0 0 0 0 rgba(29,158,85,.7)}100%{box-shadow:0 0 0 14px rgba(29,158,85,0)}}
-
-/* orbes de mood */
-.orbe{width:52px;height:52px;border-radius:50%;border:0;padding:0;display:grid;place-items:center;font:400 8px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--tinta);cursor:pointer;
-  background:radial-gradient(circle,var(--c) 0%,color-mix(in srgb,var(--c) 55%,var(--crema)) 42%,var(--crema) 76%);transition:transform .3s,opacity .3s}
-.orbe svg{width:40%}
-.orbe.vacio{background:none;border:1.5px dashed rgba(31,58,40,.25);cursor:default}
-.vuela{position:absolute;z-index:26;width:44px;height:44px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,var(--c) 0%,color-mix(in srgb,var(--c) 55%,var(--crema)) 45%,transparent 75%);
-  transition:left .8s cubic-bezier(.5,0,.3,1),top .8s cubic-bezier(.5,-.6,.3,1),transform .8s}
-
-/* ===== 1 · los seis moods escondidos ===== */
-.escondido{position:relative;z-index:2;cursor:pointer;border-radius:8px;transition:color .4s,text-shadow .4s}
-.escondido.hallado{color:var(--c)!important;text-shadow:0 0 12px var(--c)}
-#j1{padding-bottom:84px}
-.bandeja{margin-top:auto;display:grid;grid-template-columns:repeat(6,1fr);gap:6px;width:100%}
-.bandeja .orbe{width:100%;height:auto;aspect-ratio:1}
-.contador{margin:10px 0 8px;font-size:12px;color:var(--suave)}
-.contador b{font-weight:500;color:var(--tinta)}
-.funde{position:absolute;left:50%;top:50%;width:150px;height:150px;margin:-75px 0 0 -75px;border-radius:50%;z-index:25;opacity:0;transform:scale(.3);pointer-events:none;
-  background:conic-gradient(var(--good),var(--social),var(--slow),var(--chill),var(--focus),var(--monday),var(--good));filter:blur(2px);transition:opacity .8s,transform 1.2s cubic-bezier(.3,1.4,.5,1)}
-.funde.on{opacity:1;transform:scale(1) rotate(180deg)}
-
-/* ===== 2 · el orden del día ===== */
-.reloj{position:relative;width:240px;height:240px;margin-top:6px}
-.reloj .orbe{position:absolute}
-.reloj .centro{position:absolute;inset:70px;border-radius:50%;display:grid;place-items:center;align-content:center;gap:2px;background:var(--etiqueta);text-align:center;padding:10px}
-.reloj .centro b{font:400 18px/1 var(--serif);font-style:italic;font-weight:400}
-.dia{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;width:100%;margin-top:10px}
-.hueco{display:grid;gap:4px;justify-items:center;border:0;background:none;padding:0;font:inherit;color:var(--tinta);cursor:pointer}
-.hueco .orbe{width:100%;height:auto;aspect-ratio:1}
-.hueco small{font-size:9.5px;color:var(--suave);line-height:1.1}
-.hueco.activo .orbe.vacio{border-color:var(--verde);border-style:solid;box-shadow:0 0 0 3px rgba(29,158,85,.15)}
-.nota-dia{min-height:36px;margin-top:8px;font:400 17px/1.2 var(--serif);font-style:italic;color:var(--hoja)}
-.tiembla{animation:tiembla .45s}
-@keyframes tiembla{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-.timeline-ok .dia .orbe{animation:late 1.6s ease-in-out infinite;animation-delay:calc(var(--i)*.12s)}
-@keyframes late{50%{transform:translateY(-6px)}}
-
-/* ===== 3 · sintoniza tu mood ===== */
-.dial-palabra{margin-top:18px;font:300 64px/1 var(--serif);font-style:italic;min-height:70px;transition:color .3s,opacity .2s}
-.dial-palabra.fallo{animation:fallo .18s steps(2) infinite}
-@keyframes fallo{50%{opacity:.25;transform:translateX(2px) skewX(-6deg)}}
-.dial{position:relative;width:100%;height:58px;margin-top:22px;touch-action:none}
-.dial .tira{position:absolute;left:0;right:0;top:20px;height:18px;border-radius:99px;
-  background:linear-gradient(90deg,var(--good) 0 16.6%,var(--chill) 16.6% 33.3%,var(--focus) 33.3% 50%,var(--monday) 50% 66.6%,var(--social) 66.6% 83.3%,var(--slow) 83.3%);
-  box-shadow:inset 0 0 0 1px rgba(31,58,40,.1)}
-.dial .tira::after{content:"";position:absolute;inset:0;border-radius:99px;background:linear-gradient(90deg,rgba(255,255,255,.5),transparent 20%,transparent 80%,rgba(255,255,255,.5))}
-.dial .marca{position:absolute;top:10px;width:2px;height:38px;background:var(--tinta);opacity:0;transition:opacity .4s}
-.dial .marca.on{opacity:.6}
-.dial .boton-dial{position:absolute;top:8px;width:42px;height:42px;margin-left:-21px;border-radius:50%;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.2),0 0 0 3px var(--tinta);display:grid;place-items:center;cursor:grab}
-.dial .boton-dial svg{width:22px;color:var(--tinta)}
-.dial .boton-dial.cerca{box-shadow:0 4px 12px rgba(0,0,0,.2),0 0 0 3px var(--verde),0 0 20px 6px rgba(29,158,85,.45)}
-.temp{display:flex;gap:4px;margin-top:14px;align-items:center;font-size:11px;color:var(--suave)}
-.temp i{width:22px;height:6px;border-radius:6px;background:#e6e4d6;transition:background .3s}
-.temp i.on{background:var(--verde)}
-.carga{width:160px;height:4px;border-radius:4px;background:rgba(31,58,40,.12);margin-top:10px;overflow:hidden}
-.carga i{display:block;height:100%;width:var(--p,0%);background:var(--tinta)}
-
-/* ===== sala secreta y votación (común) ===== */
-.sala{background:var(--etiqueta);justify-content:flex-start;gap:9px;overflow-y:auto}
-.sala h3{margin:2px 0 0;font:300 25px/1.1 var(--sans)}
-.sello-mood{width:86px;height:86px;border-radius:50%;display:grid;place-items:center;color:var(--tinta);
-  background:radial-gradient(circle,var(--c) 0%,color-mix(in srgb,var(--c) 50%,#fff) 45%,rgba(255,255,255,.6) 75%);animation:respira 4s ease-in-out infinite}
-.sello-mood svg{width:42%}
-.sello-mood.iris{--c:#fff;background:conic-gradient(var(--good),var(--social),var(--slow),var(--chill),var(--focus),var(--monday),var(--good))}
-@keyframes respira{50%{transform:scale(1.06)}}
-.carrusel{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;width:calc(100% + 36px);margin:0 -18px;padding:6px 18px;scrollbar-width:none}
-.carrusel::-webkit-scrollbar{display:none}
-.opcion{flex:0 0 68%;scroll-snap-align:center;border:0;background:rgba(255,255,255,.7);border-radius:20px;padding:12px;display:grid;gap:6px;justify-items:center;cursor:pointer;color:var(--tinta);font:inherit}
-.opcion[aria-pressed="true"]{outline:2px solid var(--tinta);background:#fff}
-.lata{width:82px;height:106px;border-radius:10px;position:relative;overflow:hidden;background:#e9ebe6;box-shadow:inset 6px 0 10px rgba(255,255,255,.5),inset -8px 0 12px rgba(0,0,0,.12),0 8px 16px -8px rgba(0,0,0,.35)}
-.lata::before{content:"";position:absolute;left:0;right:0;top:0;height:12px;background:linear-gradient(#cfd2cc,#aeb2aa)}
-.lata .et{position:absolute;left:0;right:0;top:26px;bottom:14px;display:grid;place-items:center;font:300 9px/1.1 var(--sans);letter-spacing:.08em}
-.lata.a .et{background:var(--etiqueta);color:var(--verde)}
-.lata.b .et{background:linear-gradient(var(--good) 0 16%,var(--chill) 16% 33%,var(--focus) 33% 50%,var(--monday) 50% 66%,var(--social) 66% 83%,var(--slow) 83%);font-weight:500}
-.lata.c{background:#f3efe2}.lata.c .et{background:var(--crema);border-block:1px solid rgba(31,58,40,.2)}
-.lata .et svg{width:32px}
-.boton{border:0;border-radius:99px;padding:11px 20px;background:var(--hoja);color:#fff;font:400 14px var(--sans);cursor:pointer}
-.boton[disabled]{opacity:.4}
-.email-paso{width:100%;display:grid;gap:8px;text-align:left}
-.email-paso input[type=email]{width:100%;border:0;border-radius:99px;padding:12px 16px;font:300 15px var(--sans);color:var(--tinta);background:#fff;outline-offset:2px}
-.email-paso label.ok{display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--suave);line-height:1.35}
-.email-paso label.ok input{margin-top:2px;accent-color:var(--hoja)}
-.email-paso .err{font-size:11px;color:var(--rojo);min-height:14px}
-.lata-mini{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.7);border-radius:16px;padding:8px 12px;width:100%}
-.lata-mini .lata{width:46px;height:60px;border-radius:6px}.lata-mini .lata::before{height:7px}.lata-mini .lata .et{top:14px;bottom:8px;font-size:6px}.lata-mini .lata .et svg{width:20px}
-.voto-hecho{background:#fff;border-radius:18px;padding:14px;width:100%;display:grid;gap:6px;justify-items:center}
-.voto-hecho b{font:400 22px/1.1 var(--serif);font-style:italic;font-weight:400}
+.cerradura .pista-caja,.pant.noche .pista-caja{background:#eef3e6;color:var(--tinta)}
 
 @media (max-width:980px){
   .fila{grid-template-columns:1fr;justify-items:center}
-  .prop[hidden]{display:none}
+  .lado-tel{position:static}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
@@ -171,60 +152,77 @@ details.spoiler ol{margin:8px 0 0;padding-left:1.2em;color:var(--suave)}
 
 <header class="cabecera">
   <small>Día 13 · el secreto de la web</small>
-  <h1>Ordena tu día, <em>vota tu etiqueta</em></h1>
-  <p>El reto elegido. Se juega como en el teléfono: ordena los moods según el momento del día. Si fallas, aparece sola una pista abajo. Quien lo resuelve entra en la sala secreta, elige etiqueta y deja su email para que su voto cuente (las latas son de ejemplo).</p>
+  <h1>La sala que <em>no existe</em></h1>
+  <p>La web parece la de siempre. Nada dice que haya algo escondido… salvo el vídeo. Prueba a encontrar la puerta sin leer las pistas de la derecha.</p>
 </header>
 
-
 <main class="fila">
-
-  <!-- ============ 2 · EL ORDEN DEL DÍA ============ -->
-  <section class="prop" id="p2">
-    <h2>Ordena tu día</h2>
-    <p class="lema">«Cada mood tiene su momento. Ordena el día de Mood Matcha y se abre la puerta.»</p>
-    <div class="tel"><div class="pant" id="pant2">
-      <div class="capa" id="j2">
+  <div class="lado-tel">
+    <div class="tel"><div class="pant" id="pant">
+      <!-- capa 1 · la web de siempre -->
+      <div class="capa web" id="c1">
         <div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
-        <div class="frase" style="margin-top:12px;font-size:15px">Lote <span class="x">001</span> · todavía <span class="x">no existe</span></div>
-        <div class="reloj" id="reloj2"><div class="centro"><span class="mini">Un día de</span><b>Mood Matcha</b><span class="mini">toca un mood</span></div></div>
-        <div class="nota-dia" id="nota2">Toca un hueco del día para leer su pista</div>
-        <div class="dia" id="dia2"></div>
+        <div class="kick">Lote</div>
+        <div class="n001"><span class="x">001</span></div>
+        <div class="frase" style="position:relative">Todavía <span class="x puerta" id="puerta">no existe<span class="anillo"></span></span><span class="fix">se está preparando</span>
+          <span class="susurro" id="susurro" style="top:-26px">lo que no existe… también se toca</span></div>
+        <p class="lead">Déjanos tu email y te contamos todas las novedades de Mood Matcha antes que a nadie.</p>
+        <div class="form"><span>Tu email</span><b>Quiero enterarme</b></div>
+        <div class="reto"><b>1 seguidor = 1 céntimo</b><span class="mini">Por cada persona que nos siga, invertimos 1 céntimo en Mood Matcha.</span></div>
       </div>
-      <div class="capa sala oculta" id="r2">
+      <!-- capa 2 · la cerradura del día -->
+      <div class="capa cerradura oculta" id="c2">
         <div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
-        <div class="sello-mood iris"><svg viewBox="0 0 38 22"><use href="#oo"/></svg></div>
-        <span class="eyebrow">Tu día está en orden</span>
-        <h3>Bienvenida a <em>la sala</em></h3>
-        <p class="mini" style="margin:0">Solo entra quien entiende los moods. Elige la etiqueta de la primera lata.</p>
-        <div class="carrusel" data-voto="2"></div>
-        <button class="boton" data-votar="2" disabled>Votar esta etiqueta</button>
+        <h3>Sí <em>existe</em></h3>
+        <p class="sub">Pero está cerrada. La abre quien sabe cómo es un día de Mood Matcha.</p>
+        <div class="dial" id="dial"><div class="aro"></div><div class="centro"><small>cerradura</small><b>0 / 6</b><small>moods</small></div></div>
+        <div class="verso" id="verso">Toca una hora para escucharla.</div>
+        <div class="franjas" id="franjas"></div>
+        <div class="resultado" id="resultado"></div>
+        <button class="btn-claro" id="girar" disabled>Girar la cerradura</button>
       </div>
-      <div class="capa sala oculta" id="f2"></div>
+      <!-- capa 3 · la sala -->
+      <div class="capa sala oculta" id="c3"></div>
     </div></div>
-    <div class="controles"><button data-r="2">Empezar de nuevo</button></div>
-    <details class="spoiler"><summary>Cómo se resuelve (spoiler)</summary><ol>
-      <li>Lunes 8:00 → <b>Monday</b> (empieza la semana).</li><li>11:00 → <b>Focus</b> (mucho que hacer).</li><li>14:00 → <b>Social</b> (comida con amigos).</li>
-      <li>19:00 → <b>Good</b> (ha salido todo bien).</li><li>22:00 → <b>Chill</b> (sofá y manta).</li><li>Domingo → <b>Slow</b> (sin prisa).</li>
+    <div class="estado" id="estado">Capa 1 de 3 · la web de siempre</div>
+    <div class="controles"><button id="reset">Empezar de nuevo</button><button id="saltar">Saltar a la cerradura</button></div>
+    <details class="spoiler"><summary>Solución completa (spoiler)</summary><ol>
+      <li><b>Puerta:</b> mantén pulsado «no existe» 2 segundos.</li>
+      <li><b>Cerradura:</b> 8:00 Monday · 11:00 Focus · 14:00 Social · 19:00 Good · 22:00 Chill · Domingo Slow. Luego «Girar la cerradura».</li>
+      <li><b>Sala:</b> elige etiqueta, deja tu email y llévate la frase secreta.</li>
     </ol></details>
-  </section>
+  </div>
+
   <aside class="explica">
-    <h3>Cómo funcionaría <em>en la web</em></h3>
-    <ol>
-      <li><b>Entran desde el vídeo</b> y ven tu pantalla «Lote 001». El reto está ahí mismo, sin menús.</li>
-      <li><b>Ordenan el día:</b> tocan cada momento para leer su pista y ponen el mood que le toca. Si fallan 3, 5 y 7 veces, la pista se vuelve más clara.</li>
-      <li><b>Entran en la sala secreta</b> y ven las etiquetas antes que nadie.</li>
-      <li><b>Eligen etiqueta y dejan su email</b> para que el voto cuente, con la casilla de aceptar novedades.</li>
-      <li><b>Tú ves los resultados</b> en privado.</li>
-    </ol>
-    <div class="tarjeta">
-      <span class="eyebrow">Los votos, en tu Shopify</span>
-      <p>Cada email se guarda como cliente suscrito con unas etiquetas. En Clientes filtras por etiqueta y ves cuántos votos tiene cada propuesta. Nadie más puede verlo.</p>
-      <div class="chips"><span>reto-dia-13</span><span>voto-etiqueta</span><span>voto-A / voto-B / voto-C</span></div>
-      <p>Si alguien vota dos veces con el mismo email, cuenta solo uno.</p>
+    <h2>Tres capas, <em>como un secreto de verdad</em></h2>
+    <div class="capa-info">
+      <span class="eyebrow">Capa 1 · la puerta</span>
+      <h3>La web no enseña nada</h3>
+      <p>Quien entra ve tu pantalla «Lote 001» de siempre: el email, el reto de seguidores. Ningún botón raro. La única pista está en el vídeo:</p>
+      <p class="cita">«Hay una sala en nuestra web que no existe. Bueno… sí existe. Lo que pasa es que no se ve.»</p>
+      <p>La puerta es lo tachado: hay que <b style="font-weight:400;color:var(--tinta)">mantener pulsado «no existe»</b> dos segundos. La raya cae y la web se abre.</p>
+      <ul>
+        <li>A los 20 s, la raya roja tiembla un poco.</li>
+        <li>A los 40 s aparece, casi transparente: «lo que no existe… también se toca».</li>
+        <li>A los 60 s, una pista clara. En la web real serían 1, 2 y 3 minutos.</li>
+      </ul>
     </div>
-    <div class="tarjeta">
-      <span class="eyebrow">Lo que necesito de ti</span>
-      <p>Las 2 o 3 propuestas de etiqueta en imagen, para ponerlas en la sala secreta en lugar de estas latas de ejemplo.</p>
+    <div class="capa-info">
+      <span class="eyebrow">Capa 2 · la cerradura</span>
+      <h3>Los moods son la combinación</h3>
+      <p>Seis horas del día, cada una con un verso. Hay que poner el mood que le toca y girar la cerradura. Si falla, solo dice cuántos están en su sitio («3 de 6»), sin decir cuáles. Para cambiar uno, se toca su hora y se elige otro mood. Cada 2 intentos fallidos, la cerradura fija uno correcto.</p>
+      <p>Esto genera comentarios como «tengo 5 de 6 y no sé cuál falla».</p>
+    </div>
+    <div class="capa-info">
+      <span class="eyebrow">Capa 3 · la sala que no existe</span>
+      <h3>Votar y llevarse una frase</h3>
+      <p>Ven las etiquetas antes que nadie, eligen una y dejan su email para que el voto cuente. Al final reciben:</p>
+      <ul>
+        <li><b style="font-weight:400;color:var(--tinta)">Su número de entrada</b> («eres la persona n.º 0128»).</li>
+        <li><b style="font-weight:400;color:var(--tinta)">Una frase secreta</b> para escribir en los comentarios del vídeo sin explicar nada: «el lunes empieza a las 8».</li>
+      </ul>
+      <p>Así los que lo encuentran se reconocen entre ellos, y los demás preguntan «¿qué significa eso?» y van a buscar.</p>
+      <div class="chips"><span>reto-dia-13</span><span>voto-etiqueta</span><span>voto-A / B / C</span></div>
     </div>
   </aside>
 </main>
@@ -232,95 +230,106 @@ details.spoiler ol{margin:8px 0 0;padding-left:1.2em;color:var(--suave)}
 <script>
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const MOODS = { good:'#f4e278', chill:'#89b3d8', focus:'#72927f', monday:'#d8d8c8', social:'#edab57', slow:'#beadd4' };
-const NOMBRE = m => m[0].toUpperCase() + m.slice(1);
+const DIA = [ { h:'8:00', v:'Cuando el despertador gana.', m:'monday' }, { h:'11:00', v:'Cuando la lista no se acaba.', m:'focus' },
+  { h:'14:00', v:'Cuando la mesa es larga y hay risas.', m:'social' }, { h:'19:00', v:'Cuando todo ha salido bien.', m:'good' },
+  { h:'22:00', v:'Cuando la manta te llama.', m:'chill' }, { h:'Dom.', v:'Cuando el reloj no importa.', m:'slow' } ];
+const LATAS = [ { v:'A', cls:'a', et:'M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>D<br>MATCHA', n:'Degradado' },
+  { v:'B', cls:'b', et:'MOOD<br>MATCHA', n:'Los 6 moods' }, { v:'C', cls:'c', et:'<svg viewBox="0 0 38 22"><use href="#oo"/></svg>', n:'Mínima' } ];
 const vibra = ms => { try { navigator.vibrate && navigator.vibrate(ms) } catch(e){} };
-const ver = (fuera, dentro) => { fuera.classList.add('oculta'); dentro.classList.remove('oculta'); };
+const pant = $('#pant'), c1 = $('#c1'), c2 = $('#c2'), c3 = $('#c3'), estado = $('#estado');
+function ve(a, b, txt){ a.classList.add('oculta'); b.classList.remove('oculta'); estado.textContent = txt; }
+function pista(texto){ let c = $('.pista-caja', pant); if (!c){ c = document.createElement('div'); c.className = 'pista-caja'; c.innerHTML = '<b>Pista</b><span></span>'; pant.appendChild(c); }
+  if (!texto){ c.classList.remove('on'); return; } c.children[1].textContent = texto; c.classList.add('on'); }
 
-/* pistas comunes */
-function pista(n, texto, nivel, brillo){
-  let caja = $('#pc' + n);
-  if (!caja){ caja = document.createElement('div'); caja.className = 'pista-caja'; caja.id = 'pc' + n; caja.setAttribute('aria-live','polite');
-    caja.innerHTML = '<b>Pista</b><span></span><span class="nivel"><i></i><i></i><i></i></span>'; $('#pant' + n).appendChild(caja); }
-  $$('.brilla', $('#pant' + n)).forEach(e => e.classList.remove('brilla'));
-  if (!texto){ caja.classList.remove('on'); return; }
-  caja.children[1].textContent = texto; $$('.nivel i', caja).forEach((i, k) => i.classList.toggle('on', k < nivel)); caja.classList.add('on');
-  (brillo || []).forEach(e => e && e.classList.add('brilla'));
+/* ===== capa 1: la puerta ===== */
+const puerta = $('#puerta'); let timers = [], t0, carga, abierta = false;
+function relojPistas(){ timers.forEach(clearTimeout);
+  timers = [ setTimeout(() => puerta.classList.add('tiembla'), 20000),
+             setTimeout(() => { puerta.classList.remove('tiembla'); $('#susurro').classList.add('on'); }, 40000),
+             setTimeout(() => pista('Mantén pulsado lo que está tachado.'), 60000) ]; }
+puerta.addEventListener('pointerdown', e => { if (abierta) return; puerta.setPointerCapture(e.pointerId); puerta.classList.add('cargando'); t0 = performance.now();
+  carga = setTimeout(() => { abierta = true; vibra([30,80,30]); puerta.classList.remove('cargando'); puerta.classList.add('cae'); pista('');
+    c1.classList.add('glitch'); setTimeout(() => { c1.classList.remove('glitch'); ve(c1, c2, 'Capa 2 de 3 · la cerradura'); }, 1100); }, 2000); });
+const suelta = () => { clearTimeout(carga); puerta.classList.remove('cargando'); };
+puerta.addEventListener('pointerup', suelta); puerta.addEventListener('pointercancel', suelta);
+
+/* ===== capa 2: la cerradura del día ===== */
+const dial = $('#dial'), franjas = $('#franjas'), verso = $('#verso'), res = $('#resultado'), girar = $('#girar');
+let puesto = Array(6).fill(null), fijo = Array(6).fill(false), activa = 0, intentos = 0, elegidoMood = null;
+function pintaCerradura(){
+  $$('.orbe', dial).forEach(o => o.remove());
+  Object.keys(MOODS).forEach((m, i) => { const a = i / 6 * Math.PI * 2 - Math.PI / 2, o = document.createElement('button');
+    o.className = 'orbe' + (puesto.includes(m) ? ' usado' : '') + (elegidoMood === m ? ' elegido' : ''); o.dataset.m = m; o.style.setProperty('--c', MOODS[m]); o.textContent = m;
+    o.style.left = (115 + Math.cos(a) * 92 - 25) + 'px'; o.style.top = (115 + Math.sin(a) * 92 - 25) + 'px'; dial.appendChild(o); });
+  franjas.innerHTML = DIA.map((d, i) => `<button class="franja${i === activa ? ' activa' : ''}" data-i="${i}"><span class="hueco${puesto[i] ? ' lleno' : ''}${fijo[i] ? ' fijo' : ''}" style="--c:${puesto[i] ? MOODS[puesto[i]] : 'transparent'}">${puesto[i] || ''}</span><small>${d.h}</small></button>`).join('');
+  $('.centro b', dial).textContent = puesto.filter(Boolean).length + ' / 6';
+  girar.disabled = puesto.some(x => !x);
 }
+franjas.addEventListener('click', e => { const f = e.target.closest('.franja'); if (!f) return; const i = +f.dataset.i;
+  if (fijo[i]){ verso.textContent = '«' + DIA[i].v + '» Esta ya está fijada.'; return; } activa = i; verso.textContent = '«' + DIA[i].v + '»'; pintaCerradura(); });
+dial.addEventListener('click', e => { const o = e.target.closest('.orbe'); if (!o) return;
+  if (fijo[activa]) activa = puesto.findIndex((x, k) => !x && !fijo[k]);
+  if (activa < 0) return;
+  const m = o.dataset.m, antes = puesto.indexOf(m);
+  if (antes >= 0 && fijo[antes]) return;
+  if (antes >= 0) puesto[antes] = null;
+  puesto[activa] = m; vibra(15);
+  const sig = puesto.findIndex(x => !x); if (sig >= 0){ activa = sig; verso.textContent = '«' + DIA[sig].v + '»'; }
+  pintaCerradura(); });
+girar.addEventListener('click', () => {
+  const bien = puesto.filter((m, i) => m === DIA[i].m).length; intentos++; dial.classList.remove('gira'); void dial.offsetWidth; dial.classList.add('gira');
+  if (bien === 6){ res.textContent = '6 de 6. La cerradura gira…'; vibra([40,80,40,80,160]); pista(''); setTimeout(abreSala, 1300); return; }
+  res.textContent = `${bien} de 6 en su sitio. La cerradura no gira.`; dial.classList.add('tiembla-x'); setTimeout(() => dial.classList.remove('tiembla-x'), 450); vibra(60);
+  if (intentos % 2 === 0){ const k = DIA.findIndex((d, i) => !fijo[i] && puesto[i] !== d.m); if (k >= 0){ fijo[k] = true;
+      pista(`La cerradura te regala una: a las ${DIA[k].h} va ${DIA[k].m[0].toUpperCase() + DIA[k].m.slice(1)}.`); } }
+  else if (intentos === 1) pista('Toca cada hora y lee su verso: el nombre del mood lo dice todo.');
+  // no dice cuáles están bien: se quedan puestos y se pueden cambiar tocando la hora
+  puesto = puesto.map((m, i) => fijo[i] ? DIA[i].m : (fijo.some((f, k) => f && DIA[k].m === m) ? null : m));
+  activa = fijo.findIndex(f => !f); pintaCerradura();
+});
 
-/* votación común */
-const LATAS = [
-  { v:'A', cls:'a', et:'M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>D<br>MATCHA', n:'Degradado' },
-  { v:'B', cls:'b', et:'MOOD<br>MATCHA', n:'Los 6 moods' },
-  { v:'C', cls:'c', et:'<svg viewBox="0 0 38 22"><use href="#oo"/></svg>', n:'Mínima' }
-];
-function montaVoto(n, sello){
-  const car = $(`[data-voto="${n}"]`), btn = $(`[data-votar="${n}"]`); let elegida = null;
-  car.innerHTML = LATAS.map(l => `<button class="opcion" data-v="${l.v}" aria-pressed="false"><div class="lata ${l.cls}"><div class="et">${l.et}</div></div><b>Propuesta ${l.v}</b><span class="mini">${l.n}</span></button>`).join('');
-  btn.disabled = true;
-  $$('.opcion', car).forEach(o => o.addEventListener('click', () => { $$('.opcion', car).forEach(x => x.setAttribute('aria-pressed', x === o)); elegida = o.dataset.v; btn.disabled = false; }));
-  btn.onclick = () => { const l = LATAS.find(x => x.v === elegida);
-    $('#f' + n).innerHTML = `<div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
-      <span class="eyebrow" style="margin-top:16px">Último paso</span><h3>Para que tu voto <em>cuente</em></h3>
-      <div class="lata-mini"><div class="lata ${l.cls}"><div class="et">${l.et}</div></div><span style="text-align:left;font-size:13px">Has elegido la <b style="font-weight:500">propuesta ${l.v}</b><br><span class="mini">${l.n}</span></span></div>
+/* ===== capa 3: la sala que no existe ===== */
+function abreSala(){
+  const n = String(80 + Math.floor(Math.random() * 300)).padStart(4, '0'); let elegida = null;
+  c3.innerHTML = `<div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
+    <span class="eyebrow" style="margin-top:6px">Has encontrado</span><h3>La sala que <em>no existe</em></h3>
+    <span class="numero">Eres la persona n.º ${n} en entrar</span>
+    <p class="mini" style="margin:0">Estas son nuestras etiquetas. Nadie más las ha visto. Elige la de la primera lata.</p>
+    <div class="carrusel">${LATAS.map(l => `<button class="opcion" data-v="${l.v}" aria-pressed="false"><div class="lata ${l.cls}"><div class="et">${l.et}</div></div><b>Propuesta ${l.v}</b><span class="mini">${l.n}</span></button>`).join('')}</div>
+    <button class="boton" id="elegir" disabled>Elegir esta</button>`;
+  ve(c2, c3, 'Capa 3 de 3 · la sala que no existe');
+  $$('.opcion', c3).forEach(o => o.addEventListener('click', () => { $$('.opcion', c3).forEach(x => x.setAttribute('aria-pressed', x === o)); elegida = LATAS.find(l => l.v === o.dataset.v); $('#elegir').disabled = false; }));
+  $('#elegir').onclick = () => {
+    c3.innerHTML = `<div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
+      <span class="eyebrow" style="margin-top:10px">Último paso</span><h3>Para que tu voto <em>cuente</em></h3>
+      <div class="lata-mini"><div class="lata ${elegida.cls}"><div class="et">${elegida.et}</div></div><span>Has elegido la <b style="font-weight:500">propuesta ${elegida.v}</b><br><span class="mini">${elegida.n}</span></span></div>
       <form class="email-paso" novalidate>
-        <span class="mini">Déjanos tu email. Solo vale un voto por email.</span>
-        <input type="email" placeholder="tu@email.com" aria-label="Tu email" autocomplete="email" required>
-        <label class="ok"><input type="checkbox" required> Acepto recibir novedades de Mood Matcha. Puedo darme de baja cuando quiera.</label>
+        <span class="mini">Déjanos tu email. Un voto por email.</span>
+        <input type="email" placeholder="tu@email.com" aria-label="Tu email" autocomplete="email">
+        <label><input type="checkbox"> Acepto recibir novedades de Mood Matcha. Puedo darme de baja cuando quiera.</label>
         <span class="err" aria-live="polite"></span>
         <button class="boton" type="submit">Enviar mi voto</button>
-      </form>
-      <button class="boton" type="button" data-cambiar style="background:transparent;color:var(--hoja);padding:4px">← Cambiar de etiqueta</button>`;
-    ver($('#r' + n), $('#f' + n));
-    $('[data-cambiar]', $('#f' + n)).onclick = () => ver($('#f' + n), $('#r' + n));
-    $('form', $('#f' + n)).onsubmit = e => { e.preventDefault(); const f = e.target, em = f.querySelector('[type=email]').value.trim(), ok = f.querySelector('[type=checkbox]').checked;
+      </form>`;
+    $('form', c3).onsubmit = e => { e.preventDefault(); const f = e.target, em = f.querySelector('[type=email]').value.trim();
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){ f.querySelector('.err').textContent = 'Revisa el email.'; return; }
-      if (!ok){ f.querySelector('.err').textContent = 'Marca la casilla para poder enviarlo.'; return; }
-      gracias(l, em); };
+      if (!f.querySelector('[type=checkbox]').checked){ f.querySelector('.err').textContent = 'Marca la casilla para poder enviarlo.'; return; }
+      vibra(40);
+      c3.innerHTML = `<div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
+        <span class="eyebrow" style="margin-top:10px">Voto guardado · n.º ${n}</span><h3>Ya eres <em>mini socia</em></h3>
+        <div class="lata-mini"><div class="lata ${elegida.cls}"><div class="et">${elegida.et}</div></div><span>Has votado la <b style="font-weight:500">propuesta ${elegida.v}</b></span></div>
+        <div class="clave"><span>Tu frase secreta</span><b>«el lunes empieza a las 8»</b><span>Escríbela en los comentarios del vídeo. Sin explicar nada. Los que la entiendan, sabrán que has entrado.</span></div>
+        <p class="mini">Y no digas dónde está la puerta. La sala se cierra el domingo.</p>`; };
   };
-  function gracias(l, em){
-    $('#f' + n).innerHTML = `<div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
-      <span class="eyebrow" style="margin-top:20px">Voto guardado</span><h3>Gracias, <em>mini socia</em></h3>
-      <div class="voto-hecho"><div class="lata ${l.cls}"><div class="et">${l.et}</div></div><b>Has votado la propuesta ${l.v}</b><span class="mini">${sello}</span></div>
-      <p class="mini">Voto guardado con ${em}. Contaremos el resultado en el próximo vídeo… pero no digas cómo se entra.</p>`;
-    vibra(40); }
 }
-function reinicia(n){ ['r','f'].forEach(k => $('#' + k + n).classList.add('oculta')); $('#j' + n).classList.remove('oculta'); pista(n, ''); }
 
-
-
-/* ============ 2 · ordena tu día ============ */
-(() => {
-  const j = $('#j2'), reloj = $('#reloj2'), dia = $('#dia2'), nota = $('#nota2');
-  const DIA = [ { h:'Lunes 8:00', p:'Empieza la semana', m:'monday' }, { h:'11:00', p:'Mucho que hacer', m:'focus' }, { h:'14:00', p:'Comida con amigos', m:'social' },
-                { h:'19:00', p:'Ha salido todo bien', m:'good' }, { h:'22:00', p:'Sofá y manta', m:'chill' }, { h:'Domingo', p:'Sin ninguna prisa', m:'slow' } ];
-  let paso = 0, fallos = 0;
-  function inicio(){
-    paso = 0; fallos = 0; reinicia(2); j.classList.remove('timeline-ok'); nota.textContent = 'Toca un hueco del día para leer su pista';
-    $$('.orbe', reloj).forEach(o => o.remove());
-    Object.keys(MOODS).forEach((m, i) => { const a = i / 6 * Math.PI * 2 - Math.PI / 2, o = document.createElement('button');
-      o.className = 'orbe'; o.dataset.m = m; o.style.setProperty('--c', MOODS[m]); o.textContent = m;
-      o.style.left = (120 + Math.cos(a) * 92 - 26) + 'px'; o.style.top = (120 + Math.sin(a) * 92 - 26) + 'px'; reloj.appendChild(o); });
-    dia.innerHTML = DIA.map((d, i) => `<button class="hueco${i === 0 ? ' activo' : ''}" data-i="${i}" style="--i:${i}"><span class="orbe vacio"></span><small>${d.h}</small></button>`).join('');
-  }
-  dia.addEventListener('click', e => { const h = e.target.closest('.hueco'); if (!h) return; const d = DIA[+h.dataset.i]; nota.textContent = `${d.h}: «${d.p}»`; });
-  reloj.addEventListener('click', e => {
-    const o = e.target.closest('.orbe'); if (!o || o.style.visibility === 'hidden') return;
-    const d = DIA[paso], hueco = dia.children[paso];
-    if (o.dataset.m === d.m){
-      o.style.visibility = 'hidden'; const ob = hueco.querySelector('.orbe'); ob.className = 'orbe'; ob.style.setProperty('--c', MOODS[d.m]); ob.textContent = d.m;
-      hueco.classList.remove('activo'); vibra(25); pista(2, ''); fallos = 0; paso++;
-      if (paso < 6){ dia.children[paso].classList.add('activo'); nota.textContent = `${DIA[paso].h}: «${DIA[paso].p}»`; }
-      else { nota.textContent = '¡Así es un día Mood Matcha!'; j.classList.add('timeline-ok'); vibra([30,60,120]); setTimeout(() => ver(j, $('#r2')), 1700); }
-    } else {
-      fallos++; hueco.classList.add('tiembla'); setTimeout(() => hueco.classList.remove('tiembla'), 450); nota.textContent = `${NOMBRE(o.dataset.m)} no encaja a las ${d.h.replace('Lunes ','')}…`;
-      if (fallos === 3) pista(2, `Lee la pista de este momento: «${d.p}».`, 1, [hueco]);
-      if (fallos === 5) pista(2, `¿Qué mood pega con «${d.p}»? Piensa en su nombre.`, 2, [hueco]);
-      if (fallos >= 7) pista(2, `Aquí va ${NOMBRE(d.m)}.`, 3, [$(`.orbe[data-m="${d.m}"]`, reloj)]);
-    }
-  });
-  montaVoto(2, 'Ordenaste el día de Mood Matcha');
-  $('[data-r="2"]').addEventListener('click', () => { inicio(); montaVoto(2, 'Ordenaste el día de Mood Matcha'); });
-  inicio();
-})();
-
+/* controles del prototipo */
+function reinicia(){
+  abierta = false; puesto = Array(6).fill(null); fijo = Array(6).fill(false); activa = 0; intentos = 0; res.textContent = ''; verso.textContent = 'Toca una hora para escucharla.';
+  puerta.className = 'x puerta'; $('#susurro').classList.remove('on'); pista('');
+  c2.classList.add('oculta'); c3.classList.add('oculta'); c1.classList.remove('oculta'); estado.textContent = 'Capa 1 de 3 · la web de siempre';
+  pintaCerradura(); relojPistas();
+}
+$('#reset').onclick = reinicia;
+$('#saltar').onclick = () => { abierta = true; timers.forEach(clearTimeout); pista(''); ve(c1, c2, 'Capa 2 de 3 · la cerradura'); };
+reinicia();
 </script>
