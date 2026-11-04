@@ -1,0 +1,480 @@
+<title>Mood Matcha El Secreto</title>
+<meta charset="utf-8">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,300;1,400&family=Caveat:wght@500&display=swap">
+<style>
+/* Layout: tres prototipos jugables, cada uno en un móvil. Escritorio: en fila. Móvil: pestañas. Misma identidad «Degradado». */
+:root{
+  --tinta:#1f3a28; --verde:#1d9e55; --hoja:#28602f; --suave:#5d6f61;
+  --menta:#add9af; --vainilla:#fbf8d1; --melocoton:#f3e5cd; --pistacho:#c9e2af; --crema:#fffef1; --rojo:#b23b2e;
+  --etiqueta:linear-gradient(100deg,#add9af 0%,#fbf8d1 36%,#f3e5cd 68%,#c9e2af 100%);
+  --sans:"Jost",system-ui,sans-serif; --serif:"Cormorant Garamond",Georgia,serif; --mano:"Caveat","Comic Sans MS",cursive;
+}
+*{box-sizing:border-box}
+html,body{overflow-x:clip}
+body{margin:0;background:#f6f4ea;color:var(--tinta);font:300 16px/1.55 var(--sans);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+em{font-family:var(--serif);font-style:italic;font-weight:400}
+.cabecera{max-width:1180px;margin:0 auto;padding-block:36px 8px;display:grid;gap:10px}
+.cabecera small{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--verde);font-weight:400}
+.cabecera h1{margin:0;font:300 clamp(34px,5vw,58px)/1.05 var(--sans);text-wrap:balance}
+.cabecera p{margin:0;max-width:64ch;color:var(--suave)}
+.pestanas{display:none;gap:6px;margin:18px auto 0;max-width:1180px}
+.pestanas button{flex:1;border:1px solid rgba(31,58,40,.25);background:#fff;border-radius:99px;padding:9px 8px;font:400 13px var(--sans);color:var(--tinta);cursor:pointer}
+.pestanas button[aria-selected="true"]{background:var(--tinta);color:#fff}
+.fila{max-width:1180px;margin:24px auto 60px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px;align-items:start}
+.prop{display:grid;gap:14px;justify-items:center;min-width:0}
+.prop h2{margin:0;font:300 26px/1.1 var(--sans);text-align:center}
+.prop .lema{margin:0;text-align:center;font-size:14px;color:var(--suave);max-width:34ch}
+.num{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--tinta);color:#fff;font-size:12px;font-weight:400;margin-right:8px;vertical-align:3px}
+.rec{font-size:11px;letter-spacing:.14em;text-transform:uppercase;background:var(--verde);color:#fff;border-radius:99px;padding:3px 10px;font-weight:400}
+.controles{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.controles button{border:1px solid rgba(31,58,40,.25);background:#fff;border-radius:99px;padding:7px 14px;font:400 13px var(--sans);color:var(--tinta);cursor:pointer}
+.controles button.on{background:var(--tinta);color:#fff;border-color:var(--tinta)}
+details.spoiler{width:100%;max-width:330px;background:#fff;border-radius:16px;padding:12px 16px;font-size:14px}
+details.spoiler summary{cursor:pointer;font-weight:400}
+details.spoiler ol{margin:8px 0 0;padding-left:1.2em;color:var(--suave)}
+:focus-visible{outline:2px solid var(--verde);outline-offset:3px}
+
+/* el móvil */
+.tel{position:relative;width:min(330px,100%);aspect-ratio:330/690;border-radius:46px;background:#13221a;padding:10px;box-shadow:0 30px 60px -28px rgba(20,36,26,.55);transition:transform .8s cubic-bezier(.3,1.3,.5,1)}
+.tel.girado{transform:rotate(-90deg) scale(.82)}
+.tel::before{content:"";position:absolute;top:18px;left:50%;transform:translateX(-50%);width:90px;height:24px;border-radius:14px;background:#000;z-index:30}
+.pant{position:relative;width:100%;height:100%;border-radius:37px;overflow:hidden;background:var(--crema);touch-action:none;user-select:none;-webkit-user-select:none}
+.pant *{-webkit-tap-highlight-color:transparent}
+.capa{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:52px 18px 20px;text-align:center;transition:opacity .6s,transform .6s}
+.capa.oculta{opacity:0;pointer-events:none;transform:scale(1.04)}
+.logo{font:300 15px/1 var(--sans);letter-spacing:.08em;white-space:nowrap;color:var(--tinta)}
+.logo svg{height:.72em;width:auto;vertical-align:-.02em;cursor:pointer}
+.lote{margin-top:22px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--suave)}
+.n001{font:300 78px/1 var(--sans);position:relative;display:inline-block;color:var(--tinta)}
+.x{position:relative;display:inline-block}
+.x::after{content:"";position:absolute;left:-4%;right:-4%;top:52%;height:2px;background:var(--rojo);transform:rotate(-4deg)}
+.frase{font-size:19px;margin-top:6px}
+.frase .fix{display:block;font-family:var(--serif);font-style:italic;font-size:24px;color:var(--verde)}
+.mini{font-size:11px;color:var(--suave)}
+.burbuja{position:absolute;z-index:20;left:50%;transform:translateX(-50%);background:var(--tinta);color:#fff;border-radius:14px;padding:7px 12px;font-size:12px;white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none}
+.burbuja.on{opacity:1}
+.pista-mano{font:500 20px/1 var(--mano);color:var(--verde)}
+
+/* ===== 1 · céntimo ===== */
+.hilo{position:relative;display:inline-block}
+.hilo .linea{position:absolute;left:-4%;width:108%;top:52%;height:3px;background:var(--rojo);border-radius:2px;transform-origin:left center;transform:rotate(-4deg);cursor:grab;touch-action:none}
+.hilo .linea::before{content:"";position:absolute;inset:-14px -4px}
+.hilo .linea::after{content:"";position:absolute;right:-6px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--rojo);opacity:0;transition:opacity .3s}
+.hilo.pista .linea::after{opacity:1}
+.hucha{position:relative;margin-top:auto;width:150px;height:170px}
+.hucha .tarro{position:absolute;inset:18px 0 0;border-radius:22px 22px 38px 38px;background:linear-gradient(160deg,rgba(255,255,255,.75),rgba(173,217,175,.35));border:1.5px solid rgba(31,58,40,.25);overflow:hidden}
+.hucha .tarro::before{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--lleno,62%);background:repeating-radial-gradient(circle at 20% 30%,#d8b45a 0 6px,#c79e3e 6px 7px,transparent 7px 14px),linear-gradient(#e9cf86,#c9a24a);opacity:.9}
+.hucha .ranura{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:54px;height:10px;border-radius:6px;background:var(--tinta);transition:box-shadow .3s}
+.hucha.cerca .ranura{box-shadow:0 0 0 6px rgba(29,158,85,.35)}
+.hucha .cuenta{position:absolute;left:0;right:0;bottom:16px;font:400 20px/1 var(--sans);font-variant-numeric:tabular-nums;color:var(--tinta);text-shadow:0 1px 0 #fff}
+.hucha.tiembla{animation:tiembla .5s}
+@keyframes tiembla{20%,60%{transform:translateX(-4px) rotate(-2deg)}40%,80%{transform:translateX(4px) rotate(2deg)}}
+.falta{margin-top:8px;font-size:12px;color:var(--rojo);letter-spacing:.04em}
+.moneda{position:absolute;z-index:25;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font:500 13px var(--sans);color:#6b4f12;
+  background:radial-gradient(circle at 35% 30%,#fff3c4,#e2b94f 55%,#b38722);box-shadow:0 4px 10px rgba(0,0,0,.25),inset 0 0 0 2px rgba(255,255,255,.5);cursor:grab;touch-action:none;display:none}
+.moneda.on{display:grid}
+.moneda.rueda{animation:rueda 1.1s cubic-bezier(.3,.8,.4,1) forwards}
+@keyframes rueda{from{transform:translateX(320px) rotate(720deg)}to{transform:none}}
+.moneda.cae{animation:cae .9s cubic-bezier(.4,0,.6,1.4) forwards}
+@keyframes cae{from{transform:translateY(-60px) scale(.6)}to{transform:none}}
+
+/* consejo de mini socios */
+.consejo{background:var(--etiqueta);justify-content:flex-start;gap:10px;overflow-y:auto}
+.consejo h3,.sala h3,.cata h3{margin:4px 0 0;font:300 25px/1.1 var(--sans)}
+.socio{font:500 22px/1 var(--mano);color:var(--verde);transform:rotate(-4deg)}
+.carrusel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;width:calc(100% + 36px);margin:0 -18px;padding:6px 18px;scrollbar-width:none}
+.carrusel::-webkit-scrollbar{display:none}
+.opcion{flex:0 0 74%;scroll-snap-align:center;border:0;background:rgba(255,255,255,.7);border-radius:20px;padding:12px;display:grid;gap:8px;justify-items:center;cursor:pointer;color:var(--tinta);font:inherit}
+.opcion[aria-pressed="true"]{outline:2px solid var(--tinta)}
+.lata{width:86px;height:110px;border-radius:10px;position:relative;overflow:hidden;box-shadow:inset 6px 0 10px rgba(255,255,255,.5),inset -8px 0 12px rgba(0,0,0,.12),0 8px 16px -8px rgba(0,0,0,.35)}
+.lata::before{content:"";position:absolute;left:0;right:0;top:0;height:12px;background:linear-gradient(#cfd2cc,#aeb2aa)}
+.lata .et{position:absolute;left:0;right:0;top:26px;bottom:14px;display:grid;place-items:center;font:300 9px/1.1 var(--sans);letter-spacing:.08em}
+.lata.a{background:#e9ebe6}.lata.a .et{background:var(--etiqueta);color:var(--verde)}
+.lata.b{background:#e9ebe6}.lata.b .et{background:linear-gradient(#f4e278 0 16%,#89b3d8 16% 33%,#72927f 33% 50%,#d8d8c8 50% 66%,#edab57 66% 83%,#beadd4 83%);color:var(--tinta);font-weight:500}
+.lata.c{background:#f3efe2}.lata.c .et{background:var(--crema);color:var(--tinta);border-block:1px solid rgba(31,58,40,.2)}
+.lata .et svg{width:34px}
+.firma{width:100%;height:84px;background:#fff;border-radius:14px;border:1px dashed rgba(31,58,40,.35);touch-action:none;display:block}
+.boton{border:0;border-radius:99px;padding:11px 20px;background:var(--hoja);color:#fff;font:400 14px var(--sans);cursor:pointer}
+.boton[disabled]{opacity:.4}
+.acta{background:#fff;border-radius:16px;padding:14px;width:100%;text-align:left;font-size:13px;display:grid;gap:8px}
+.barra{display:grid;grid-template-columns:70px 1fr 34px;gap:8px;align-items:center;font-size:12px}
+.barra i{height:8px;border-radius:8px;background:var(--pistacho);display:block;transform-origin:left;animation:crece 1s ease-out}
+.barra.tu i{background:var(--verde)}
+@keyframes crece{from{transform:scaleX(0)}}
+
+/* ===== 2 · séptimo mood ===== */
+.orbes{position:relative;width:100%;height:250px;margin-top:14px}
+.orbe{position:absolute;width:62px;height:62px;border-radius:50%;border:0;padding:0;cursor:grab;touch-action:none;display:grid;place-items:center;font:400 8.5px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--tinta);
+  background:radial-gradient(circle,var(--c) 0%,color-mix(in srgb,var(--c) 55%,var(--crema)) 42%,var(--crema) 76%);transition:transform .3s}
+.orbe.vuelve{transition:left .5s cubic-bezier(.3,1.3,.5,1),top .5s cubic-bezier(.3,1.3,.5,1)}
+.hueco{position:absolute;width:70px;height:70px;border-radius:50%;border:1.5px dashed rgba(31,58,40,.4);display:grid;place-items:center;font:300 24px var(--serif);color:var(--suave)}
+.cuenco{margin-top:6px;width:150px;height:76px;border-radius:0 0 80px 80px;background:linear-gradient(#ffffff,#e8ece3);border:1.5px solid rgba(31,58,40,.2);border-top-width:0;position:relative;overflow:hidden}
+.cuenco::before{content:"";position:absolute;left:0;right:0;top:0;height:10px;background:rgba(31,58,40,.08)}
+.mezcla{position:absolute;inset:auto 10px 8px;height:0;border-radius:0 0 70px 70px;background:var(--mez,#ddd);transition:height .5s,background .6s}
+.gotas{display:flex;gap:6px;justify-content:center;min-height:14px;margin-top:6px}
+.gotas i{width:12px;height:12px;border-radius:50%;background:var(--c)}
+.iris{background:conic-gradient(from 0deg,#f4e278,#edab57,#beadd4,#89b3d8,#add9af,#f4e278);animation:gira 4s linear infinite}
+@keyframes gira{to{filter:hue-rotate(360deg)}}
+.nace{width:120px;height:120px;border-radius:50%;margin:10px auto 0;box-shadow:0 0 50px rgba(190,173,212,.8)}
+.sala{background:radial-gradient(circle at 50% 0%,#fff 0%,#efe9f6 40%,#e3f0e4 100%);gap:10px;justify-content:flex-start;overflow-y:auto}
+.flotan{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.flotan .opcion{flex:0 0 auto;width:88px;padding:8px;background:transparent}
+.flotan .opcion .lata{animation:flota 3s ease-in-out infinite}
+.flotan .opcion:nth-child(2) .lata{animation-delay:.4s}.flotan .opcion:nth-child(3) .lata{animation-delay:.8s}
+@keyframes flota{50%{transform:translateY(-8px) rotate(2deg)}}
+.pegatina{margin-top:10px;width:150px;height:150px;border-radius:50%;display:grid;place-items:center;align-content:center;gap:2px;transform:rotate(-8deg);color:var(--tinta);font-size:11px;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 10px 20px -10px rgba(0,0,0,.4)}
+.pegatina b{font:400 26px/1 var(--serif);font-style:italic;letter-spacing:0;text-transform:none}
+
+/* ===== 3 · receta ===== */
+.bol{position:relative;width:210px;height:210px;margin-top:10px;border-radius:50%;background:radial-gradient(circle,#2a2622 0%,#3b342d 62%,#5a5047 64%,#6b6056 70%,#3a332c 72%);box-shadow:0 18px 30px -16px rgba(0,0,0,.6)}
+.bol .liq{position:absolute;inset:26px;border-radius:50%;background:var(--liq,transparent);transition:background .8s}
+.bol .espuma{position:absolute;inset:26px;border-radius:50%;opacity:var(--esp,0);background:radial-gradient(circle at 30% 30%,#e8f0b8 0 6%,transparent 7%),radial-gradient(circle at 60% 50%,#dfe9a6 0 4%,transparent 5%),radial-gradient(circle at 45% 70%,#e8f0b8 0 5%,transparent 6%),radial-gradient(circle,#c7da6e,#a9c54a);transition:opacity .4s}
+.bol .oo{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transition:opacity 1s;color:#f6f9e4}
+.bol .oo svg{width:96px}
+.bol.lista .oo{opacity:1}
+.bol canvas{position:absolute;inset:0;width:100%;height:100%;border-radius:50%;touch-action:none}
+.vapor{position:absolute;top:-34px;left:50%;transform:translateX(-50%);width:60px;height:40px;cursor:pointer}
+.vapor i{position:absolute;bottom:0;width:6px;height:30px;border-radius:6px;background:linear-gradient(transparent,rgba(31,58,40,.15));animation:vap 2.5s ease-in-out infinite}
+.vapor i:nth-child(1){left:12px}.vapor i:nth-child(2){left:27px;animation-delay:.6s}.vapor i:nth-child(3){left:42px;animation-delay:1.2s}
+@keyframes vap{50%{transform:translateY(-8px) scaleY(1.2);opacity:.5}}
+.vapor b{position:absolute;inset:0;display:grid;place-items:center;font:500 22px var(--mano);color:var(--verde);opacity:0;transition:opacity .4s}
+.vapor.ver b{opacity:1}
+.paso3{margin-top:14px;min-height:96px;width:100%;display:grid;gap:8px;justify-items:center}
+.paso3 p{margin:0;font-size:13px;color:var(--suave)}
+.paso3 strong{font-weight:400;color:var(--tinta)}
+.mantener{width:70px;height:70px;border-radius:50%;border:0;background:conic-gradient(var(--verde) calc(var(--p,0)*1%),#e6eadf 0);display:grid;place-items:center;cursor:pointer;touch-action:none}
+.mantener span{width:56px;height:56px;border-radius:50%;background:#fff;display:grid;place-items:center;font:400 12px var(--sans);color:var(--tinta)}
+.termo{width:100%;max-width:240px;accent-color:var(--verde)}
+.temp{font:400 26px/1 var(--serif);font-style:italic;color:var(--hoja)}
+.temp.mal{color:var(--rojo)}
+.progreso{width:100%;max-width:220px;height:8px;border-radius:8px;background:#e6eadf;overflow:hidden}
+.progreso i{display:block;height:100%;width:var(--p,0%);background:var(--verde);transition:width .2s}
+.cata{background:linear-gradient(180deg,#fffef1,#f3e5cd);justify-content:flex-start;gap:10px;overflow-y:auto}
+.estante{width:100%;height:12px;border-radius:4px;background:linear-gradient(#c79e6a,#a57b45);margin-top:-6px}
+
+@media (max-width:980px){
+  .pestanas{display:flex}
+  .fila{grid-template-columns:1fr}
+  .prop[hidden]{display:none}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="oo" viewBox="0 0 38 22"><path d="M19 5A10 10 0 1 0 19 17A10 10 0 1 0 19 5Z" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol></svg>
+
+<header class="cabecera">
+  <small>Día 13 · el secreto de la web</small>
+  <h1>Tres retos para esconder <em>la votación de etiquetas</em></h1>
+  <p>Cada móvil se puede jugar como lo haría alguien que llega desde TikTok. Las etiquetas son de ejemplo: aquí irán tus propuestas reales. Si te atascas, abre «Cómo se resuelve» debajo de cada móvil.</p>
+</header>
+
+<div class="pestanas" role="tablist">
+  <button role="tab" aria-selected="true" data-p="p1">1 · Céntimo</button>
+  <button role="tab" aria-selected="false" data-p="p2">2 · 7.º mood</button>
+  <button role="tab" aria-selected="false" data-p="p3">3 · Receta</button>
+</div>
+
+<main class="fila">
+  <!-- ================= 1 · EL CÉNTIMO PERDIDO ================= -->
+  <section class="prop" id="p1">
+    <h2><span class="num">1</span>El céntimo perdido <span class="rec">Recomendada</span></h2>
+    <p class="lema">«En nuestra web hay escondido un céntimo. Quien lo encuentre decide cómo será nuestra lata.»</p>
+    <div class="controles" id="c1">
+      <span class="mini">Escondite que te ha tocado:</span>
+      <button data-e="hilo" class="on">El hilo</button><button data-e="girar">Girar el móvil</button><button data-e="oo">Las OO</button>
+    </div>
+    <div class="tel" id="tel1"><div class="pant" id="pant1">
+      <div class="capa" id="j1">
+        <div class="logo">M<svg viewBox="0 0 38 22" id="oo1" role="button" aria-label="Logo"><use href="#oo"/></svg>DMATCHA</div>
+        <div class="lote">Lote</div>
+        <div class="n001 x">001</div>
+        <div class="frase">Todavía <span class="hilo" id="hilo"><span>no existe</span><span class="linea" id="linea"></span></span><span class="fix">se está preparando</span></div>
+        <div class="hucha" id="hucha"><div class="ranura"></div><div class="tarro"></div><div class="cuenta" id="cuenta">34,99 €</div></div>
+        <div class="falta" id="falta">Falta un céntimo</div>
+        <div class="mini" style="margin-top:6px">1 seguidor = 1 céntimo</div>
+        <div class="burbuja" id="b1" style="top:46%">frío… frío…</div>
+      </div>
+      <div class="moneda" id="moneda">1c</div>
+      <div class="capa consejo oculta" id="r1">
+        <div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
+        <small class="mini" style="letter-spacing:.18em;text-transform:uppercase;color:var(--verde)">Acabas de poner el último céntimo</small>
+        <h3>Bienvenida al <em>consejo de mini socios</em></h3>
+        <div class="socio" id="socio">Mini socio n.º 0347</div>
+        <p class="mini" style="margin:0">Desliza y elige la etiqueta de nuestra primera lata.</p>
+        <div class="carrusel" id="car1">
+          <button class="opcion" data-v="A" aria-pressed="false"><div class="lata a"><div class="et">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>D<br>MATCHA</div></div><b>Propuesta A</b><span class="mini">Degradado</span></button>
+          <button class="opcion" data-v="B" aria-pressed="false"><div class="lata b"><div class="et">MOOD<br>MATCHA</div></div><b>Propuesta B</b><span class="mini">Los 6 moods</span></button>
+          <button class="opcion" data-v="C" aria-pressed="false"><div class="lata c"><div class="et"><svg viewBox="0 0 38 22"><use href="#oo"/></svg></div></div><b>Propuesta C</b><span class="mini">Mínima</span></button>
+        </div>
+        <p class="mini" style="margin:0">Firma el acta con el dedo</p>
+        <canvas class="firma" id="firma"></canvas>
+        <button class="boton" id="votar1" disabled>Firmar y votar</button>
+      </div>
+      <div class="capa consejo oculta" id="f1">
+        <div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
+        <h3>Acta del <em>consejo</em></h3>
+        <div class="acta" id="acta1"></div>
+        <p class="mini">Tu voto cuenta para elegir la etiqueta real. Solo un voto por móvil.</p>
+      </div>
+    </div></div>
+    <div class="controles"><button id="girar" hidden>↻ Girar el móvil</button><button class="reset" data-r="1">Empezar de nuevo</button></div>
+    <details class="spoiler"><summary>Cómo se resuelve (spoiler)</summary><ol>
+      <li><b>El hilo:</b> arrastra hacia abajo la línea roja que tacha «no existe». Al soltarla, cae el céntimo.</li>
+      <li><b>Girar el móvil:</b> el céntimo rueda desde el borde.</li>
+      <li><b>Las OO:</b> toca 3 veces las OO del logo y una se suelta.</li>
+      <li>Arrastra el céntimo hasta la ranura de la hucha.</li>
+    </ol></details>
+  </section>
+
+  <!-- ================= 2 · EL SÉPTIMO MOOD ================= -->
+  <section class="prop" id="p2">
+    <h2><span class="num">2</span>El séptimo mood</h2>
+    <p class="lema">«Mood Matcha tiene seis moods. Pero hay un séptimo que solo encuentra quien busca.»</p>
+    <div class="tel"><div class="pant" id="pant2">
+      <div class="capa" id="j2">
+        <div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
+        <div class="lote">Lote</div>
+        <div class="n001 x" style="font-size:54px">001</div>
+        <div class="frase" style="font-size:15px">Todavía <span class="x">no existe</span></div>
+        <div class="orbes" id="orbes"></div>
+        <div class="cuenco" id="cuenco"><div class="mezcla" id="mezcla"></div></div>
+        <div class="gotas" id="gotas"></div>
+        <div class="mini" id="m2">Toca un mood para escucharlo. Arrástralo al cuenco para mezclar.</div>
+        <div class="burbuja" id="b2" style="top:30%"></div>
+      </div>
+      <div class="capa sala oculta" id="r2">
+        <div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
+        <div class="nace iris"></div>
+        <small class="mini" style="letter-spacing:.18em;text-transform:uppercase">Mood 07</small>
+        <h3><em>Curious</em></h3>
+        <p class="mini" style="margin:0">Solo lo tienen quienes buscan. Has visto nuestras latas antes que nadie: elige una.</p>
+        <div class="flotan" id="flot2">
+          <button class="opcion" data-v="A" aria-pressed="false"><div class="lata a"><div class="et">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>D<br>MATCHA</div></div><span class="mini">A</span></button>
+          <button class="opcion" data-v="B" aria-pressed="false"><div class="lata b"><div class="et">MOOD<br>MATCHA</div></div><span class="mini">B</span></button>
+          <button class="opcion" data-v="C" aria-pressed="false"><div class="lata c"><div class="et"><svg viewBox="0 0 38 22"><use href="#oo"/></svg></div></div><span class="mini">C</span></button>
+        </div>
+      </div>
+      <div class="capa sala oculta" id="f2">
+        <div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
+        <h3>Ya es <em>oficial</em></h3>
+        <div class="pegatina iris" id="peg2"><span>Mood Curious</span><b>votó la B</b><span>Lote 001</span></div>
+        <p class="mini">Haz captura y compártela. Solo la tienen quienes encontraron el séptimo mood.</p>
+      </div>
+    </div></div>
+    <div class="controles"><button class="reset" data-r="2">Empezar de nuevo</button></div>
+    <details class="spoiler"><summary>Cómo se resuelve (spoiler)</summary><ol>
+      <li>Toca cada mood: sus frases son las pistas.</li>
+      <li>La mezcla secreta es <b>Chill + Monday + Slow</b>, en cualquier orden.</li>
+      <li>Otra combinación sale «turbia» y el cuenco se vacía.</li>
+    </ol></details>
+  </section>
+
+  <!-- ================= 3 · LA RECETA QUE NO EXISTE ================= -->
+  <section class="prop" id="p3">
+    <h2><span class="num">3</span>La receta que no existe</h2>
+    <p class="lema">«Nuestra web no existe porque el matcha no está preparado. ¿Sabrías prepararlo?»</p>
+    <div class="tel"><div class="pant" id="pant3">
+      <div class="capa" id="j3">
+        <div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
+        <div class="frase" style="margin-top:16px;font-size:16px">Lo que <span class="x">no existe</span><span class="fix" style="font-size:20px">todavía se puede preparar</span></div>
+        <div class="bol" id="bol" style="margin-top:46px"><div class="vapor" id="vapor"><i></i><i></i><i></i><b>80</b></div><div class="liq"></div><div class="espuma"></div><div class="oo"><svg viewBox="0 0 38 22"><use href="#oo"/></svg></div><canvas id="zig"></canvas></div>
+        <div class="paso3" id="paso3"></div>
+        <div class="mini" style="margin-top:auto;font-size:8px;opacity:.55">…y quince segundos de paciencia.</div>
+      </div>
+      <div class="capa cata oculta" id="r3">
+        <div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
+        <small class="mini" style="letter-spacing:.18em;text-transform:uppercase;color:var(--verde)">Sí existe</small>
+        <h3>Bienvenida a la <em>cata a ciegas</em></h3>
+        <p class="mini" style="margin:0">Tres latas sin nombre. Elige la que pondrías en tu estantería.</p>
+        <div class="flotan" id="flot3">
+          <button class="opcion" data-v="A" aria-pressed="false"><div class="lata a"><div class="et">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>D<br>MATCHA</div></div><span class="mini">Lata A</span></button>
+          <button class="opcion" data-v="B" aria-pressed="false"><div class="lata b"><div class="et">MOOD<br>MATCHA</div></div><span class="mini">Lata B</span></button>
+          <button class="opcion" data-v="C" aria-pressed="false"><div class="lata c"><div class="et"><svg viewBox="0 0 38 22"><use href="#oo"/></svg></div></div><span class="mini">Lata C</span></button>
+        </div>
+        <div class="estante"></div>
+        <button class="boton" id="votar3" disabled>Ponerla en mi estantería</button>
+      </div>
+      <div class="capa cata oculta" id="f3">
+        <div class="logo">M<svg viewBox="0 0 38 22"><use href="#oo"/></svg>DMATCHA</div>
+        <h3>Tu lata ya está <em>en la estantería</em></h3>
+        <div id="elegida3"></div>
+        <div class="estante" style="max-width:160px"></div>
+        <p class="mini">Has preparado el primer matcha de Mood Matcha. Solo un voto por móvil.</p>
+      </div>
+    </div></div>
+    <div class="controles"><button class="reset" data-r="3">Empezar de nuevo</button></div>
+    <details class="spoiler"><summary>Cómo se resuelve (spoiler)</summary><ol>
+      <li>Mantén pulsado el círculo justo 2 segundos (2 g). Si te pasas o te quedas corta, se repite.</li>
+      <li>Sube el termómetro a 80 °C. Si pasas de 85, el matcha se quema. Pista: toca el vapor.</li>
+      <li>Dibuja zigzag dentro del cuenco hasta llenar la barra (15 s de batido).</li>
+    </ol></details>
+  </section>
+</main>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const MOODS = { good:'#f4e278', chill:'#89b3d8', focus:'#72927f', monday:'#d8d8c8', social:'#edab57', slow:'#beadd4' };
+const vibra = ms => { try { navigator.vibrate && navigator.vibrate(ms) } catch(e){} };
+function ver(capaFuera, capaDentro){ capaFuera.classList.add('oculta'); capaDentro.classList.remove('oculta'); }
+function relPos(e, el){ const r = el.getBoundingClientRect(); return { x: (e.clientX - r.left), y: (e.clientY - r.top), r }; }
+function arrastrable(el, alSoltar, alMover){
+  let dx = 0, dy = 0, activo = false;
+  el.addEventListener('pointerdown', e => { activo = true; el.setPointerCapture(e.pointerId); const r = el.getBoundingClientRect(); dx = e.clientX - r.left; dy = e.clientY - r.top; el.style.cursor = 'grabbing'; el.classList.remove('vuelve'); });
+  el.addEventListener('pointermove', e => { if (!activo) return; const p = el.offsetParent.getBoundingClientRect();
+    const k = el.offsetParent.offsetWidth / p.width; // corrige la escala si el móvil está girado o encogido
+    el.style.left = (e.clientX - p.left - dx) * k + 'px'; el.style.top = (e.clientY - p.top - dy) * k + 'px'; alMover && alMover(e); });
+  el.addEventListener('pointerup', e => { if (!activo) return; activo = false; el.style.cursor = 'grab'; alSoltar && alSoltar(e); });
+}
+function solapa(a, b, margen = 0){ const A = a.getBoundingClientRect(), B = b.getBoundingClientRect();
+  return A.left < B.right + margen && A.right > B.left - margen && A.top < B.bottom + margen && A.bottom > B.top - margen; }
+function votos(v){ const base = { A:41, B:37, C:22 }; base[v] += 1; const t = base.A + base.B + base.C;
+  return ['A','B','C'].map(k => `<div class="barra${k === v ? ' tu' : ''}"><span>Propuesta ${k}</span><i style="width:${Math.round(base[k] / t * 100)}%"></i><span>${Math.round(base[k] / t * 100)} %</span></div>`).join(''); }
+
+/* pestañas en móvil */
+$$('.pestanas button').forEach(b => b.addEventListener('click', () => {
+  $$('.pestanas button').forEach(o => o.setAttribute('aria-selected', o === b));
+  $$('.prop').forEach(p => p.hidden = p.id !== b.dataset.p);
+}));
+function pestanasMovil(){ const movil = matchMedia('(max-width:980px)').matches; const sel = $('.pestanas [aria-selected="true"]').dataset.p;
+  $$('.prop').forEach(p => p.hidden = movil && p.id !== sel); }
+addEventListener('resize', pestanasMovil); pestanasMovil();
+
+/* ============ 1 · el céntimo perdido ============ */
+(() => {
+  const pant = $('#pant1'), j = $('#j1'), moneda = $('#moneda'), hucha = $('#hucha'), cuenta = $('#cuenta'), b1 = $('#b1'), tel = $('#tel1');
+  let escondite = 'hilo', euros = 34.99, hecho = false, tocadosOO = 0, frio;
+  function reinicia(){
+    hecho = false; tocadosOO = 0; euros = 34.99; cuenta.textContent = '34,99 €'; $('#falta').textContent = 'Falta un céntimo';
+    moneda.className = 'moneda'; $('#linea').style.transform = ''; $('#linea').style.opacity = 1; $('#hilo').classList.remove('pista');
+    tel.classList.remove('girado'); $('#girar').hidden = escondite !== 'girar';
+    ['r1','f1'].forEach(id => $('#' + id).classList.add('oculta')); j.classList.remove('oculta');
+    $$('#car1 .opcion').forEach(o => o.setAttribute('aria-pressed','false')); limpiaFirma(); $('#votar1').disabled = true;
+    clearTimeout(frio); frio = setTimeout(() => { if (!moneda.classList.contains('on')){ hucha.classList.add('tiembla'); b1.classList.add('on');
+      if (escondite === 'hilo') $('#hilo').classList.add('pista');
+      setTimeout(() => { hucha.classList.remove('tiembla'); b1.classList.remove('on'); }, 1800); } }, 12000);
+  }
+  function sacaMoneda(x, y, anim){ const r = pant.getBoundingClientRect(), k = pant.offsetWidth / r.width;
+    moneda.style.left = x + 'px'; moneda.style.top = y + 'px'; moneda.className = 'moneda on ' + anim; vibra(30);
+    setTimeout(() => moneda.classList.remove(anim), 1200); }
+  $$('#c1 [data-e]').forEach(b => b.addEventListener('click', () => { $$('#c1 [data-e]').forEach(o => o.classList.toggle('on', o === b)); escondite = b.dataset.e; reinicia(); }));
+  // el hilo
+  const linea = $('#linea'); let tirando = false, y0 = 0;
+  linea.addEventListener('pointerdown', e => { if (escondite !== 'hilo') return; tirando = true; linea.setPointerCapture(e.pointerId); y0 = e.clientY; });
+  linea.addEventListener('pointermove', e => { if (!tirando) return; const d = Math.max(0, e.clientY - y0); linea.style.transform = `rotate(${-4 + d * .5}deg) translateY(${d * .4}px)`; });
+  linea.addEventListener('pointerup', e => { if (!tirando) return; tirando = false; const d = e.clientY - y0;
+    if (d > 30){ linea.style.opacity = 0; const h = $('#hilo'), p = relPos(e, pant); sacaMoneda(pant.offsetWidth/2 - 19, h.offsetTop + h.offsetHeight + 60, 'cae'); }
+    else linea.style.transform = ''; });
+  // girar el móvil
+  $('#girar').addEventListener('click', () => { tel.classList.toggle('girado');
+    if (tel.classList.contains('girado') && escondite === 'girar' && !moneda.classList.contains('on')){ setTimeout(() => sacaMoneda(40, pant.offsetHeight * .62, 'rueda'), 500); setTimeout(() => tel.classList.remove('girado'), 2000); } });
+  // las OO
+  $('#oo1').addEventListener('click', () => { if (escondite !== 'oo' || moneda.classList.contains('on')) return; tocadosOO++;
+    $('#oo1').style.transform = `rotate(${tocadosOO * 25}deg)`; vibra(15);
+    if (tocadosOO >= 3){ $('#oo1').style.transform = ''; sacaMoneda(pant.offsetWidth/2 + 4, 54, 'cae'); } });
+  // toques en falso: el contador baja
+  j.addEventListener('pointerdown', e => { if (e.target === j && !moneda.classList.contains('on')){ euros -= .01; cuenta.textContent = euros.toFixed(2).replace('.', ',') + ' €';
+    $('#falta').textContent = 'casi…'; setTimeout(() => $('#falta').textContent = 'Faltan ' + Math.round((35 - euros) * 100) + ' céntimos', 700); } });
+  // la moneda a la hucha
+  arrastrable(moneda, () => { hucha.classList.remove('cerca'); if (solapa(moneda, hucha.querySelector('.ranura'), 18)){
+      moneda.className = 'moneda'; vibra([20,40,60]); hecho = true; cuenta.textContent = '35,00 €'; $('#falta').textContent = '¡Clinc!';
+      hucha.style.setProperty('--lleno','78%'); $('#socio').textContent = 'Mini socio n.º ' + String(200 + Math.floor(Math.random() * 800)).padStart(4,'0');
+      setTimeout(() => ver(j, $('#r1')), 1100); } },
+    () => hucha.classList.toggle('cerca', solapa(moneda, hucha.querySelector('.ranura'), 18)));
+  // votación: elegir + firmar
+  const car = $('#car1'); let elegida = null, firmado = false;
+  $$('.opcion', car).forEach(o => o.addEventListener('click', () => { $$('.opcion', car).forEach(x => x.setAttribute('aria-pressed', x === o)); elegida = o.dataset.v; comprueba(); }));
+  const cv = $('#firma'), cx = cv.getContext('2d'); let pinta = false, trazo = 0;
+  function tamFirma(){ cv.width = cv.offsetWidth * 2; cv.height = cv.offsetHeight * 2; cx.lineWidth = 4; cx.lineCap = 'round'; cx.strokeStyle = '#1f3a28'; }
+  function limpiaFirma(){ firmado = false; trazo = 0; if (cv.width) cx.clearRect(0, 0, cv.width, cv.height); }
+  cv.addEventListener('pointerdown', e => { if (!cv.width) tamFirma(); pinta = true; cv.setPointerCapture(e.pointerId); const p = relPos(e, cv), k = cv.width / p.r.width; cx.beginPath(); cx.moveTo(p.x * k, p.y * k); });
+  cv.addEventListener('pointermove', e => { if (!pinta) return; const p = relPos(e, cv), k = cv.width / p.r.width; cx.lineTo(p.x * k, p.y * k); cx.stroke(); trazo++; if (trazo > 25){ firmado = true; comprueba(); } });
+  cv.addEventListener('pointerup', () => pinta = false);
+  function comprueba(){ $('#votar1').disabled = !(elegida && firmado); }
+  $('#votar1').addEventListener('click', () => { $('#acta1').innerHTML = `<b>${$('#socio').textContent}</b><span>Voto: Propuesta ${elegida}. Firmado.</span><span class="mini">Así va la votación (ejemplo):</span>` + votos(elegida); ver($('#r1'), $('#f1')); });
+  $('[data-r="1"]').addEventListener('click', reinicia);
+  reinicia();
+})();
+
+/* ============ 2 · el séptimo mood ============ */
+(() => {
+  const caja = $('#orbes'), cuenco = $('#cuenco'), mezcla = $('#mezcla'), gotas = $('#gotas'), b2 = $('#b2'), j = $('#j2');
+  const FRASES = { good:'Casi todos me eligen a mí.', chill:'Me llevo bien con quien empieza la semana.', focus:'Yo voy solo. No me mezcles.',
+    monday:'Sin Chill no soy nadie.', social:'Yo con todos… menos con este juego.', slow:'A mí no me metáis prisa: voy al final.' };
+  const POS = [[18,10],[100,4],[182,10],[34,96],[166,96],[100,170]];
+  let dentro = [], hueco;
+  function crea(){
+    caja.innerHTML = ''; dentro = []; gotas.innerHTML = ''; mezcla.style.height = '0'; $('#m2').textContent = 'Toca un mood para escucharlo. Arrástralo al cuenco para mezclar.';
+    hueco = document.createElement('div'); hueco.className = 'hueco'; hueco.textContent = '?'; hueco.style.left = '96px'; hueco.style.top = '88px'; caja.appendChild(hueco);
+    Object.keys(MOODS).forEach((m, i) => { const o = document.createElement('button'); o.className = 'orbe'; o.style.setProperty('--c', MOODS[m]);
+      o.textContent = m; o.dataset.m = m; const [x, y] = POS[i]; o.dataset.x = x; o.dataset.y = y; o.style.left = x + 'px'; o.style.top = y + 'px';
+      let movido = false, x0, y0;
+      o.addEventListener('pointerdown', e => { movido = false; x0 = e.clientX; y0 = e.clientY; });
+      o.addEventListener('pointermove', e => { if (Math.hypot(e.clientX - x0, e.clientY - y0) > 6) movido = true; });
+      arrastrable(o, () => {
+        if (!movido){ b2.textContent = '«' + FRASES[m] + '»'; b2.classList.add('on'); clearTimeout(b2.t); b2.t = setTimeout(() => b2.classList.remove('on'), 2200); }
+        if (movido && solapa(o, cuenco, 10)) echa(o); else { o.classList.add('vuelve'); o.style.left = o.dataset.x + 'px'; o.style.top = o.dataset.y + 'px'; }
+      });
+      caja.appendChild(o); });
+  }
+  function mezclaColor(ms){ const h = c => [1,3,5].map(i => parseInt(c.slice(i,i+2),16)); const s = ms.map(m => h(MOODS[m]));
+    return 'rgb(' + [0,1,2].map(k => Math.round(s.reduce((a, v) => a + v[k], 0) / s.length)).join(',') + ')'; }
+  function echa(o){
+    const m = o.dataset.m; o.style.visibility = 'hidden'; dentro.push(m); vibra(15);
+    gotas.innerHTML = dentro.map(x => `<i style="--c:${MOODS[x]}"></i>`).join('');
+    mezcla.style.height = (dentro.length * 18) + 'px'; mezcla.style.setProperty('--mez', mezclaColor(dentro));
+    if (dentro.length === 3){
+      const ok = ['chill','monday','slow'].every(x => dentro.includes(x));
+      if (ok){ mezcla.classList.add('iris'); $('#m2').textContent = 'Algo está naciendo…'; vibra([30,60,30,60,120]); setTimeout(() => ver(j, $('#r2')), 1500); }
+      else { mezcla.style.setProperty('--mez', '#8d8a6a'); $('#m2').textContent = 'Uy. Eso no es un mood. Prueba otra mezcla.';
+        setTimeout(() => { $$('.orbe', caja).forEach(x => { x.style.visibility = ''; x.classList.add('vuelve'); x.style.left = x.dataset.x + 'px'; x.style.top = x.dataset.y + 'px'; });
+          dentro = []; gotas.innerHTML = ''; mezcla.style.height = '0'; }, 1300); }
+    }
+  }
+  $$('#flot2 .opcion').forEach(o => o.addEventListener('click', () => { $$('#flot2 .opcion').forEach(x => x.setAttribute('aria-pressed', x === o));
+    $('#peg2 b').textContent = 'votó la ' + o.dataset.v; setTimeout(() => ver($('#r2'), $('#f2')), 500); }));
+  $('[data-r="2"]').addEventListener('click', () => { ['r2','f2'].forEach(id => $('#' + id).classList.add('oculta')); j.classList.remove('oculta'); mezcla.classList.remove('iris'); crea(); });
+  crea();
+})();
+
+/* ============ 3 · la receta que no existe ============ */
+(() => {
+  const j = $('#j3'), bol = $('#bol'), paso = $('#paso3'), cv = $('#zig'), cx = cv.getContext('2d');
+  let fase = 0;
+  function p1(){ fase = 1; bol.classList.remove('lista'); bol.style.setProperty('--esp', 0); bol.style.setProperty('--liq', 'transparent');
+    paso.innerHTML = `<p><strong>Paso 1.</strong> Echa el matcha. Ni más ni menos.</p><button class="mantener" id="mant"><span>Mantén</span></button><p id="msg3">&nbsp;</p>`;
+    const b = $('#mant'); let t0 = 0, raf;
+    const sube = () => { const s = (performance.now() - t0) / 1000; b.style.setProperty('--p', Math.min(100, s / 3 * 100)); b.firstElementChild.textContent = s.toFixed(1) + ' s'; raf = requestAnimationFrame(sube); };
+    b.addEventListener('pointerdown', e => { b.setPointerCapture(e.pointerId); t0 = performance.now(); sube(); });
+    b.addEventListener('pointerup', () => { cancelAnimationFrame(raf); const s = (performance.now() - t0) / 1000;
+      if (s >= 1.7 && s <= 2.3){ bol.style.setProperty('--liq', 'radial-gradient(circle,#8fb04a,#5f7f2c)'); vibra(30); setTimeout(p2, 500); }
+      else { $('#msg3').textContent = s < 1.7 ? 'Te has quedado corta. Prueba otra vez.' : 'Demasiado matcha. Prueba otra vez.'; b.style.setProperty('--p', 0); b.firstElementChild.textContent = 'Mantén'; } });
+  }
+  function p2(){ fase = 2;
+    paso.innerHTML = `<p><strong>Paso 2.</strong> El agua. Ni fría ni hirviendo.</p><span class="temp" id="temp">20 °C</span><input class="termo" id="termo" type="range" min="20" max="100" value="20" aria-label="Temperatura"><p id="msg3">&nbsp;</p>`;
+    const t = $('#termo'), out = $('#temp'); let espera;
+    t.addEventListener('input', () => { const v = +t.value; out.textContent = v + ' °C'; out.classList.toggle('mal', v > 85); clearTimeout(espera);
+      if (v > 85){ $('#msg3').textContent = '¡Se ha quemado! Vuelve a empezar.'; bol.style.setProperty('--liq', 'radial-gradient(circle,#6b6a3a,#3f3d21)'); setTimeout(p1, 1300); return; }
+      if (v >= 78 && v <= 82) espera = setTimeout(() => { vibra(30); bol.style.setProperty('--liq', 'radial-gradient(circle,#a6c457,#6f9233)'); p3(); }, 700); });
+  }
+  function p3(){ fase = 3;
+    paso.innerHTML = `<p><strong>Paso 3.</strong> Bate en zigzag dentro del cuenco.</p><div class="progreso"><i id="bar3"></i></div><p id="msg3">&nbsp;</p>`;
+    cv.width = cv.offsetWidth; cv.height = cv.offsetHeight; let dist = 0, pinta = false, ultimo = null; const META = 2400;
+    cv.onpointerdown = e => { pinta = true; cv.setPointerCapture(e.pointerId); ultimo = relPos(e, cv); };
+    cv.onpointermove = e => { if (!pinta || fase !== 3) return; const p = relPos(e, cv); const d = Math.hypot(p.x - ultimo.x, p.y - ultimo.y);
+      dist += Math.min(d, 40); cx.strokeStyle = 'rgba(230,240,190,.35)'; cx.lineWidth = 3; cx.beginPath(); cx.moveTo(ultimo.x, ultimo.y); cx.lineTo(p.x, p.y); cx.stroke(); ultimo = p;
+      const k = Math.min(1, dist / META); $('#bar3').style.setProperty('--p', (k * 100) + '%'); bol.style.setProperty('--esp', k);
+      if (k >= 1){ fase = 4; pinta = false; cx.clearRect(0, 0, cv.width, cv.height); bol.classList.add('lista'); vibra([30,60,120]); $('#msg3').textContent = '¡Espuma perfecta!'; setTimeout(() => ver(j, $('#r3')), 1600); } };
+    cv.onpointerup = () => pinta = false;
+  }
+  $('#vapor').addEventListener('click', () => { const v = $('#vapor'); v.classList.add('ver'); setTimeout(() => v.classList.remove('ver'), 900); });
+  let elegida = null;
+  $$('#flot3 .opcion').forEach(o => o.addEventListener('click', () => { $$('#flot3 .opcion').forEach(x => x.setAttribute('aria-pressed', x === o)); elegida = o; $('#votar3').disabled = false; }));
+  $('#votar3').addEventListener('click', () => { $('#elegida3').innerHTML = elegida.querySelector('.lata').outerHTML; ver($('#r3'), $('#f3')); });
+  $('[data-r="3"]').addEventListener('click', () => { ['r3','f3'].forEach(id => $('#' + id).classList.add('oculta')); j.classList.remove('oculta'); $('#votar3').disabled = true;
+    $$('#flot3 .opcion').forEach(x => x.setAttribute('aria-pressed','false')); cx.clearRect(0, 0, cv.width, cv.height); p1(); });
+  p1();
+})();
+</script>
