@@ -73,6 +73,7 @@
     .btn { font: inherit; border: 1px solid var(--ink); background: var(--ink); color: var(--card); padding: 8px 14px; border-radius: 999px; cursor: pointer; }
     .btn.ghost { background: transparent; color: var(--ink); }
     .btn.small { padding: 4px 10px; font-size: .8rem; }
+    .barra { height: 8px; border-radius: 4px; background: var(--ink); min-width: 2px; }
     .btn.adjuntar { position: relative; overflow: hidden; display: inline-block; }
     .btn.adjuntar input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; font-size: 0; }
     .btn.danger { border-color: var(--red); color: var(--red); background: transparent; }
@@ -245,6 +246,11 @@
     <div class="card" style="margin-top:14px">
       <h2>Gastos por categoría</h2>
       <div class="table-wrap"><table id="tCats"></table></div>
+    </div>
+    <div class="card off" id="cardTop" style="margin-top:14px">
+      <h2>Productos más vendidos</h2>
+      <p class="note" style="margin:0 0 10px">Unidades vendidas en el periodo elegido arriba: web (Shopify, sin TikTok Shop) y tienda física.</p>
+      <div class="table-wrap"><table id="tTop"></table></div>
     </div>
   </section>
 
@@ -559,17 +565,19 @@ const NEGOCIOS = {
     nombre: 'Benissalud',
     clave: 'contabilidad-benissalud-v1',
     serie: 'BEN', color: '#1f2a8f',
-    shopify: false,
+    shopify: true, tienda: 'Benissalud', dominio: 'b2izum-t2.myshopify.com',
+    // Web de Benissalud: precios con IVA incluido, productos al 10 % y envíos al 21 %; sin TikTok Shop
+    ivaShop: { productos: 10, envio: 21 }, sinCanales: ['tiktok'],
     socias: false,
     caja: true,
-    catIng: ['Venta en tienda', 'Servicios / sesiones', 'Bonos y paquetes', 'Talleres y formaciones', 'Venta de producto', 'Subvención', 'Otros ingresos'],
+    catIng: ['Venta en tienda', 'Ventas tienda online (Shopify)', 'Servicios / sesiones', 'Bonos y paquetes', 'Talleres y formaciones', 'Venta de producto', 'Subvención', 'Otros ingresos'],
     catGas: ['Cuota autónomos', 'Alquiler', 'Suministros (luz, agua, internet)', 'Material sanitario', 'Software y suscripciones',
       'Publicidad', 'Colegio profesional y seguros', 'Gestoría', 'Formación', 'Transporte y dietas', 'Equipos',
       'Comisiones bancarias', 'Otros gastos'],
   },
   moodmatcha: {
     nombre: 'MOOD MATCHA',
-    tienda: 'MOOD MATCHA',
+    tienda: 'MOOD MATCHA', dominio: 'gu6dfz-vq.myshopify.com',
     clave: 'contabilidad-moodmatcha-v1',
     serie: 'MM', color: '#2f5d46',
     shopify: true,
@@ -641,14 +649,6 @@ const NEGOCIOS = {
   const dbs = {};
   const cargar = () => {
     Object.entries(NEGOCIOS).forEach(([k, n]) => { dbs[k] = { ...blank(), ...leer(n.clave) }; });
-    const viejos = dbs.benissalud.movs.filter(m => m.origen === 'shopify');
-    if (viejos.length) {
-      const mm = dbs.moodmatcha;
-      mm.movs.push(...viejos.filter(m => !mm.movs.some(x => x.id === m.id)));
-      if (!mm.shopify.url) mm.shopify = { ...dbs.benissalud.shopify };
-      dbs.benissalud.movs = dbs.benissalud.movs.filter(m => m.origen !== 'shopify');
-      escribir(NEGOCIOS.moodmatcha.clave, mm); escribir(NEGOCIOS.benissalud.clave, dbs.benissalud);
-    }
   };
   cargar();
 
@@ -731,6 +731,32 @@ const NEGOCIOS = {
     }
     $('#tCatsIng').innerHTML = tablaCats(movs.filter(m => m.tipo === 'ingreso'), 'Sin ingresos en este periodo.');
     $('#tCats').innerHTML = tablaCats(movs.filter(m => m.tipo === 'gasto'), 'Sin gastos en este periodo.');
+    renderTop(movs);
+  };
+  // Productos más vendidos: líneas de los pedidos de Shopify y tickets de la tienda («2× Nombre, Otro»)
+  const claveProd = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[®™]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+  const renderTop = movs => {
+    const ver = !total() && (CFG().shopify || CFG().caja);
+    $('#cardTop').classList.toggle('off', !ver); if (!ver) return;
+    const top = {};
+    const sumarProd = (nombre, q, imp, donde) => {
+      const k = claveProd(nombre); if (!k) return;
+      const o = top[k] ||= { nombre: nombre.trim(), web: 0, tienda: 0, imp: 0 };
+      o[donde] += q; o.imp += imp;
+    };
+    movs.forEach(m => {
+      if (m.origen === 'shopify') (m.lineas || []).forEach(l => sumarProd(l.n, +l.q || 0, +l.imp || 0, 'web'));
+      if (m.origen === 'tienda') {
+        const c = calc(m), partes = m.concepto.replace(/^Venta en tienda: /, '').split(', ');
+        partes.forEach(t => { const x = t.match(/^(\d+)× (.+)$/); sumarProd(x ? x[2] : t, x ? +x[1] : 1, c.total / partes.length, 'tienda'); });
+      }
+    });
+    const filas = Object.values(top).sort((a, b) => (b.web + b.tienda) - (a.web + a.tienda) || b.imp - a.imp);
+    if (!filas.length) { $('#tTop').innerHTML = '<tr><td class="empty">Todavía no hay ventas de productos en este periodo.</td></tr>'; return; }
+    const max = filas[0].web + filas[0].tienda;
+    $('#tTop').innerHTML = '<tr><th>Producto</th><th class="n">Web</th><th class="n">Tienda</th><th class="n">Total uds.</th><th style="width:30%"></th><th class="n">Vendido (con IVA)</th></tr>'
+      + filas.map(f => `<tr><td>${esc(f.nombre)}</td><td class="n">${f.web || '—'}</td><td class="n">${f.tienda || '—'}</td><td class="n"><b>${f.web + f.tienda}</b></td>
+        <td><div class="barra" style="width:${Math.round(100 * (f.web + f.tienda) / max)}%"></div></td><td class="n">${eur(f.imp)}</td></tr>`).join('');
   };
 
   // ---------- Movimientos ----------
@@ -799,40 +825,54 @@ const NEGOCIOS = {
     }).join('') + `<p class="note" style="grid-column:1/-1">Si eliges «Todo el año» se muestra el trimestre actual. Si más del 70 % de tus ingresos ya llevan retención, puedes no estar obligada al 130: consúltalo con la gestoría.</p>`;
   };
 
-  // ---------- Shopify (MOOD MATCHA) ----------
-  // Apunta (o actualiza) los pedidos como ingresos. pedidos: [{id, nombre, fecha, estado, total, iva}]
+  // ---------- Shopify (cada negocio con su tienda) ----------
+  // Apunta (o actualiza) los pedidos como ingresos del negocio n. pedidos: [{id, nombre, fecha, estado, total, iva, envio?, canal?}]
+  // Si el negocio tiene ivaShop, el total (IVA incluido) se separa en productos y envío, cada uno con su IVA.
   // Si se pasa `anio`, la lista es el año completo y se quitan los pedidos de ese año que ya no aparecen.
-  const aplicarPedidos = (pedidos, anio) => {
-    const d = dbs.moodmatcha;
-    const previos = new Map(d.movs.filter(m => m.origen === 'shopify').map(m => [m.shopifyId, m]));
-    const vistos = new Set(), r = { nuevos: 0, actualizados: 0, quitados: 0 };
+  const aplicarPedidos = (n, pedidos, anio) => {
+    const d = dbs[n], cfg = NEGOCIOS[n];
+    const previos = new Map(d.movs.filter(m => m.origen === 'shopify').map(m => [m.id, m]));
+    const vistos = new Set(), r = { nuevos: 0, actualizados: 0, quitados: 0, fuera: 0 };
     const quitar = m => { d.movs = d.movs.filter(x => x !== m); r.quitados++; };
+    const apuntar = (id, p, datos) => {
+      vistos.add(id); const m = previos.get(id);
+      if (m) { if (['fecha', 'base', 'ivaImp', 'concepto', 'lineas'].some(k => JSON.stringify(m[k]) !== JSON.stringify(datos[k]))) { Object.assign(m, datos); r.actualizados++; } return; }
+      d.movs.push({
+        id, origen: 'shopify', shopifyId: String(p.id), venta: 'shp' + p.id, tipo: 'ingreso', socia: 'yo',
+        categoria: cfg.catIng.find(c => /Shopify/.test(c)) || cfg.catIng[0], nfactura: p.nombre, contraparte: `Tienda ${cfg.tienda || cfg.nombre}`,
+        cobrado: '1', deducible: '1', ...datos
+      });
+      r.nuevos++;
+    };
     pedidos.forEach(p => {
-      const id = String(p.id), m = previos.get(id), tot = r2(+p.total), iva = r2(+p.iva);
-      vistos.add(id);
-      if (!ESTADOS_COBRADOS.includes(p.estado) || tot <= 0) { if (m) quitar(m); return; }
-      const datos = { fecha: p.fecha, concepto: `Pedido ${p.nombre}`, base: r2(tot - iva), ivaImp: iva, iva: '', irpf: '0' };
-      if (m) {
-        if (m.fecha !== datos.fecha || m.base !== datos.base || m.ivaImp !== datos.ivaImp) { Object.assign(m, datos); r.actualizados++; }
+      const tot = r2(+p.total);
+      if ((cfg.sinCanales || []).includes(p.canal)) { r.fuera++; return; }
+      if (!ESTADOS_COBRADOS.includes(p.estado) || tot <= 0) return;
+      // Importe de cada producto ajustado a lo cobrado de verdad (con los descuentos del pedido)
+      const suma = (p.lineas || []).reduce((a, l) => a + l.imp, 0), cobrado = r2(tot - Math.min(tot, +p.envio || 0));
+      const base = { fecha: p.fecha, irpf: '0' }, lineas = p.lineas ? { lineas: p.lineas.map(l => ({ ...l, imp: suma ? r2(l.imp * cobrado / suma) : 0 })) } : {};
+      if (cfg.ivaShop) {
+        const envio = Math.min(tot, r2(+p.envio || 0)), prod = r2(tot - envio);
+        const bp = r2(prod / (1 + cfg.ivaShop.productos / 100)), be = r2(envio / (1 + cfg.ivaShop.envio / 100));
+        apuntar('shp' + p.id, p, { ...base, concepto: `Pedido ${p.nombre} · productos`, ...lineas, base: bp, iva: String(cfg.ivaShop.productos), ivaImp: r2(prod - bp) });
+        if (envio > 0) apuntar('shp' + p.id + 'e', p, { ...base, concepto: `Pedido ${p.nombre} · envío`, base: be, iva: String(cfg.ivaShop.envio), ivaImp: r2(envio - be) });
       } else {
-        d.movs.push({
-          id: 'shp' + id, origen: 'shopify', shopifyId: id, tipo: 'ingreso', socia: 'yo',
-          categoria: NEGOCIOS.moodmatcha.catIng[0], nfactura: p.nombre, contraparte: `Tienda ${NEGOCIOS.moodmatcha.tienda}`,
-          cobrado: '1', deducible: '1', ...datos
-        });
-        r.nuevos++;
+        const iva = r2(+p.iva);
+        apuntar('shp' + p.id, p, { ...base, ...lineas, concepto: `Pedido ${p.nombre}`, base: r2(tot - iva), ivaImp: iva, iva: '' });
       }
     });
-    if (anio) previos.forEach((m, id) => { if (!vistos.has(id) && m.fecha.startsWith(anio)) quitar(m); });
-    escribir(NEGOCIOS.moodmatcha.clave, d); fillYears();
-    return `${r.nuevos} pedidos nuevos, ${r.actualizados} actualizados, ${r.quitados} quitados (cancelados o reembolsados).`;
+    // Lo que ya no está (cancelado, reembolsado del todo, sin envío, de un canal que no cuenta): fuera
+    previos.forEach((m, id) => { if (!vistos.has(id) && (!anio || m.fecha.startsWith(anio)) && (anio || pedidos.some(p => String(p.id) === m.shopifyId))) quitar(m); });
+    escribir(cfg.clave, d); fillYears();
+    return `${r.nuevos} apuntes nuevos, ${r.actualizados} actualizados, ${r.quitados} quitados`
+      + (r.fuera ? ` · ${r.fuera} pedidos de TikTok Shop no se cuentan` : '') + '.';
   };
 
   const renderShopify = () => {
-    const d = dbs.moodmatcha, movs = filtered().filter(m => m.origen === 'shopify'), t = sumar(movs);
+    const d = db(), movs = filtered().filter(m => m.origen === 'shopify'), t = sumar(movs);
     $('#kpisShop').innerHTML = [
-      ['Pedidos', movs.length, true], ['Ventas (base)', t.ing], ['IVA de las ventas', t.ivaRep],
-      ['Ticket medio (con IVA)', movs.length ? (t.ing + t.ivaRep) / movs.length : 0]
+      ['Pedidos', new Set(movs.map(m => m.shopifyId)).size, true], ['Ventas (base)', t.ing], ['IVA de las ventas', t.ivaRep],
+      ['Ticket medio (con IVA)', movs.length ? (t.ing + t.ivaRep) / new Set(movs.map(m => m.shopifyId)).size : 0]
     ].map(([l, v, n]) => `<div class="card kpi"><div class="lbl">${l}</div><div class="val">${n ? v : eur(v)}</div></div>`).join('');
     const F = $('#fShop'); F.url.value = d.shopify.url; F.clave.value = d.shopify.clave;
     if (d.shopify.ultima && !$('#msgShop').textContent) $('#msgShop').textContent = 'Última sincronización: ' + new Date(d.shopify.ultima).toLocaleString('es-ES');
@@ -840,8 +880,8 @@ const NEGOCIOS = {
 
   $('#fShop').addEventListener('submit', async e => {
     e.preventDefault();
-    const F = e.target, d = dbs.moodmatcha, y = +$('#fAnio').value, msg = $('#msgShop');
-    d.shopify.url = F.url.value.trim(); d.shopify.clave = F.clave.value; escribir(NEGOCIOS.moodmatcha.clave, d);
+    const F = e.target, n = neg, d = dbs[n], y = +$('#fAnio').value, msg = $('#msgShop');
+    d.shopify.url = F.url.value.trim(); d.shopify.clave = F.clave.value; escribir(NEGOCIOS[n].clave, d);
     if (!d.shopify.url) { msg.textContent = 'Primero pega la URL del conector.'; return; }
     $('#btnSync').disabled = true; msg.textContent = `Descargando pedidos de ${y}…`;
     try {
@@ -851,7 +891,7 @@ const NEGOCIOS = {
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || 'respuesta no válida');
       d.shopify.ultima = new Date().toISOString();
-      msg.textContent = `✓ ${y}: ` + aplicarPedidos(data.pedidos, String(y));
+      msg.textContent = `✓ ${y}: ` + aplicarPedidos(n, data.pedidos, String(y));
       render();
     } catch (err) {
       msg.textContent = 'No se pudo sincronizar: ' + err.message + '. Revisa la URL y la clave.';
@@ -862,8 +902,9 @@ const NEGOCIOS = {
   const PEDIDOS_GQL = `query Pedidos($first: Int!, $after: String, $q: String) {
     orders(first: $first, after: $after, query: $q, sortKey: PROCESSED_AT) {
       pageInfo { hasNextPage endCursor }
-      nodes { id name processedAt cancelledAt test displayFinancialStatus
-        currentTotalPriceSet { shopMoney { amount } } currentTotalTaxSet { shopMoney { amount } } } } }`;
+      nodes { id name processedAt cancelledAt test displayFinancialStatus sourceName
+        lineItems(first: 50) { nodes { title quantity currentQuantity product { title } discountedTotalSet { shopMoney { amount } } } }
+        totalShippingPriceSet { shopMoney { amount } } currentTotalPriceSet { shopMoney { amount } } currentTotalTaxSet { shopMoney { amount } } } } }`;
   const fechaMadrid = iso => new Date(iso).toLocaleDateString('sv-SE', { timeZone: 'Europe/Madrid' });
   let mcp = null;
   window.claude?.use?.('mcp').then(m => {
@@ -882,10 +923,18 @@ const NEGOCIOS = {
   };
   // Datos de la tienda (nombre, productos, pedidos) para ver que la conexión funciona
   const TIENDA_GQL = 'query Tienda { shop { name myshopifyDomain } productsCount { count } ordersCount { count } }';
+  // ¿Qué negocio es la tienda conectada en Claude? (por su dirección myshopify)
+  let tiendaConectada = null;
+  const leerTienda = async () => {
+    const d = (await mcp.callTool('Shopify', 'graphql_query', { query: TIENDA_GQL })).payload?.data;
+    if (!d?.shop) throw { code: 'tool_error', message: 'Shopify no devolvió la tienda' };
+    tiendaConectada = { ...d, negocio: Object.keys(NEGOCIOS).find(k => NEGOCIOS[k].dominio === d.shop.myshopifyDomain) };
+    return tiendaConectada;
+  };
+  const otraTienda = t => `Claude está conectado ahora a la tienda «${t.shop.name}»${t.negocio ? `, que es de ${NEGOCIOS[t.negocio].nombre}` : ''}. Para traer los pedidos de ${CFG().nombre}, cambia la tienda en la conexión de Shopify de claude.ai (Ajustes → Conectores) y vuelve a pulsar.`;
   const cargarTienda = async () => {
     try {
-      const d = (await mcp.callTool('Shopify', 'graphql_query', { query: TIENDA_GQL })).payload?.data;
-      if (!d?.shop) return;
+      const d = await leerTienda();
       $('#tiendaInfo').innerHTML = [
         ['Tienda conectada', esc(d.shop.name)], ['Productos', d.productsCount?.count ?? '—'], ['Pedidos en total', d.ordersCount?.count ?? '—'],
       ].map(([l, v]) => `<div class="card kpi"><div class="lbl">${l}</div><div class="val">${v}</div></div>`).join('');
@@ -894,19 +943,22 @@ const NEGOCIOS = {
       $('#msgClaudeShop').textContent = ERRORES_SHOPIFY[err.code] || ('No se pudo leer Shopify: ' + (err.message || err));
     }
   };
-  let tiendaLeida = false;
-  // Al abrir la pestaña Shopify dentro de Claude: datos de la tienda y pedidos al momento (una vez por visita a la página)
+  const tiendaLeida = new Set();
+  // Al abrir la pestaña Shopify dentro de Claude: datos de la tienda y pedidos al momento (una vez por negocio y visita)
   const alAbrirShopify = async () => {
-    if (!mcp || tiendaLeida) return;
-    tiendaLeida = true;
+    if (!mcp || tiendaLeida.has(neg)) return;
+    tiendaLeida.add(neg);
+    $('#tiendaInfo').classList.add('off'); $('#msgClaudeShop').textContent = '';
     await cargarTienda();
     $('#btnClaudeShop').click();
   };
   $('#btnClaudeShop').onclick = async () => {
     if (!mcp) return;
-    const y = +$('#fAnio').value, msg = $('#msgClaudeShop'), btn = $('#btnClaudeShop');
+    const n = neg, y = +$('#fAnio').value, msg = $('#msgClaudeShop'), btn = $('#btnClaudeShop');
     btn.disabled = true; msg.textContent = `Leyendo los pedidos de ${y} en Shopify…`;
     try {
+      const t = await leerTienda();
+      if (t.negocio !== n) { msg.textContent = otraTienda(t); return; }
       const pedidos = [];
       let after = null;
       do {
@@ -920,14 +972,16 @@ const NEGOCIOS = {
           pedidos.push({
             id: o.id.split('/').pop(), nombre: o.name, fecha: fechaMadrid(o.processedAt), estado: o.displayFinancialStatus,
             total: +o.currentTotalPriceSet.shopMoney.amount, iva: +o.currentTotalTaxSet.shopMoney.amount,
+            envio: +(o.totalShippingPriceSet?.shopMoney.amount || 0), canal: String(o.sourceName || '').toLowerCase(),
+            lineas: (o.lineItems?.nodes || []).filter(l => l.currentQuantity > 0).map(l => ({ n: l.product?.title || l.title, q: l.currentQuantity, imp: r2(+l.discountedTotalSet.shopMoney.amount * l.currentQuantity / (l.quantity || 1)) })),
           });
         });
         after = orders.pageInfo.hasNextPage ? orders.pageInfo.endCursor : null;
       } while (after);
-      dbs.moodmatcha.shopify.ultima = new Date().toISOString(); escribir(NEGOCIOS.moodmatcha.clave, dbs.moodmatcha);
-      const res = aplicarPedidos(pedidos, String(y));
-      msg.textContent = pedidos.length ? `✓ Conectada con Shopify. ${y}: ${res}`
-        : `✓ Conectada con Shopify. La tienda todavía no tiene pedidos en ${y}: en cuanto entren ventas aparecerán aquí y en Movimientos.`;
+      dbs[n].shopify.ultima = new Date().toISOString();
+      const res = aplicarPedidos(n, pedidos, String(y));
+      msg.textContent = pedidos.length ? `✓ Conectada con la tienda ${t.shop.name}. ${y}: ${res}`
+        : `✓ Conectada con la tienda ${t.shop.name}. Todavía no tiene pedidos en ${y}: en cuanto entren ventas aparecerán aquí y en Movimientos.`;
       render();
     } catch (err) {
       msg.textContent = ERRORES_SHOPIFY[err.code] || ('No se pudo leer Shopify: ' + (err.message || err));
@@ -966,10 +1020,10 @@ const NEGOCIOS = {
           id: g('Id') || g('Name'), nombre: g('Name'),
           fecha: (g('Paid at') || g('Created at')).slice(0, 10),
           estado: g('Cancelled at') ? 'CANCELLED' : g('Financial Status').toUpperCase(),
-          total: neto, iva: bruto ? r2(+g('Taxes') * neto / bruto) : 0,
+          total: neto, iva: bruto ? r2(+g('Taxes') * neto / bruto) : 0, envio: +g('Shipping') || 0, canal: g('Source').toLowerCase(),
         });
       });
-      msg.textContent = `✓ ${pedidos.length} pedidos leídos: ` + aplicarPedidos(pedidos);
+      msg.textContent = `✓ ${pedidos.length} pedidos leídos: ` + aplicarPedidos(neg, pedidos);
       render();
     } catch (err) { msg.textContent = 'No se pudo importar: ' + err.message; }
     e.target.value = '';
@@ -2028,12 +2082,13 @@ const NEGOCIOS = {
     const p = productos().find(x => x.id === FP.id.value); if (!p || !await confirmar(`¿Borrar el producto «${p.nombre}» de la caja?`)) return;
     db().productos = productos().filter(x => x !== p); save(); FP.classList.add('hidden'); renderCaja();
   };
-  // MOOD MATCHA: traer los productos y precios de la tienda de Shopify
+  // Traer los productos y precios de la tienda de Shopify del negocio
   const PRODUCTOS_GQL = 'query Productos($first: Int!, $after: String) { products(first: $first, after: $after, query: "status:active") { pageInfo { hasNextPage endCursor } nodes { id title variants(first: 20) { nodes { id title price } } } } }';
   $('#btnShopProductos').onclick = async () => {
     if (!mcp) return;
     aviso('Trayendo tus productos de Shopify…');
     try {
+      const t = await leerTienda(); if (t.negocio !== neg) { aviso(otraTienda(t), true, 15000); return; }
       const nuevos = []; let after = null;
       do {
         const input = { query: PRODUCTOS_GQL, first: 50 }; if (after) input.after = after;
