@@ -646,6 +646,8 @@ def email_gracias():
 
 
 # ---------- Bienvenida a Adri, nuevo recepcionista (paleta crema) ----------
+# Cambiar por el enlace del reel de Adri cuando esté subido
+REEL_ADRI = 'https://www.instagram.com/'
 WA_RECEPCION = wa('Hola Adri, vengo del email y quiero reservar una cita 😊')
 
 
@@ -705,6 +707,12 @@ def email_bienvenida_adri():
           </tr></table>
           <p class="big" style="margin:26px 0 0;font-family:{serif};font-size:46px;line-height:1.15;color:{T};">Te presentamos<br>a <em style="color:{G};">Adri</em></p>
           <p style="margin:18px 0 0;font-family:{sans};font-size:17px;line-height:1.7;color:{S};">Nuestro nuevo recepcionista ya forma parte del equipo y está deseando conocerte.</p>
+        </td></tr>
+
+        <!-- Vídeo -->
+        <tr><td class="px" align="center" style="padding:44px 48px 0;background:{CR};">
+          <a href="{REEL_ADRI}" style="text-decoration:none;"><img src="{BASE}/campanas-octubre/media/video-adri.jpg" width="504" alt="Conoce a Adri en vídeo" style="display:block;border:0;width:100%;max-width:504px;height:auto;"></a>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:22px auto 0;"><tr><td>{btn('Ver el vídeo', REEL_ADRI, G, '#ffffff')}</td></tr></table>
         </td></tr>
 
         <!-- Qué hace -->
@@ -769,6 +777,7 @@ if __name__ == '__main__':
         BASE + '/campanas-octubre/media/cartel-inauguracion.jpg': ('campanas-octubre/media/cartel-inauguracion.jpg', 'image/jpeg'),
         BASE + '/campanas-octubre/media/inauguracion-foto.jpg': ('campanas-octubre/media/inauguracion-foto.jpg', 'image/jpeg'),
         BASE + '/campanas-octubre/media/video-inauguracion.jpg': ('campanas-octubre/media/video-inauguracion.jpg', 'image/jpeg'),
+        BASE + '/campanas-octubre/media/video-adri.jpg': ('campanas-octubre/media/video-adri.jpg', 'image/jpeg'),
     }
     for nombre, html in EMAILS.items():
         open(os.path.join(here, nombre + '.html'), 'w').write(html)
