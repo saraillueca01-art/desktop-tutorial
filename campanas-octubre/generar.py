@@ -645,7 +645,102 @@ def email_gracias():
 """
 
 
+# ---------- Bienvenida a Adri, nuevo recepcionista (paleta crema) ----------
+WA_RECEPCION = wa('Hola Adri, vengo del email y quiero reservar una cita 😊')
+
+
+def email_bienvenida_adri():
+    """Presenta a Adri, el nuevo recepcionista. Paleta crema."""
+    BG = '#efe6d6'; CR = '#f8f2e7'; CR2 = '#efe4d0'; LN = '#e3d5bd'
+    T = '#3b3631'; S = '#7a7066'; G = '#b8955a'; GT = '#8c6c38'
+    serif = "Georgia,'Times New Roman',serif"
+    sans = "'Helvetica Neue',Helvetica,Arial,sans-serif"
+    def btn(texto, url, fondo=T, color=CR):
+        return f'<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr><td align="center" bgcolor="{fondo}" style="background:{fondo};border-radius:40px;"><a href="{url}" style="display:inline-block;padding:16px 34px;font-family:{sans};font-size:12px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;color:{color};text-decoration:none;">{texto}</a></td></tr></table>'
+    def fila(icono, titulo, texto):
+        return (f'<tr><td width="44" valign="top" style="padding:14px 0;font-size:20px;">{icono}</td>'
+                f'<td valign="top" style="padding:14px 0;border-bottom:1px solid {LN};font-family:{sans};">'
+                f'<strong style="font-size:15px;color:{T};">{titulo}</strong><br>'
+                f'<span style="font-size:14px;line-height:1.6;color:{S};">{texto}</span></td></tr>')
+    filas = (fila('🗓️', 'Reservar tus citas', 'En Chakra Wellness Center y en Espai Pilates Reformer.')
+             + fila('💬', 'Resolver tus dudas', 'Sobre tratamientos, clases, bonos y horarios.')
+             + fila('🤍', 'Recibirte con una sonrisa', 'Cada vez que vengas a vernos.'))
+    return f"""<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="x-apple-disable-message-reformatting">
+  <title>Te presentamos a Adri</title>
+  <style>
+    body {{ margin: 0; padding: 0; background: {BG}; }}
+    @media (max-width: 620px) {{
+      .container {{ width: 100% !important; }}
+      .px {{ padding-left: 28px !important; padding-right: 28px !important; }}
+      .big {{ font-size: 40px !important; }}
+      .logo-p {{ width: 130px !important; height: auto !important; }}
+    }}
+  </style>
+</head>
+<body style="margin:0;padding:0;background:{BG};">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">Hay una cara nueva en recepción. Te presentamos a Adri, que te ayudará con tus citas y tus dudas.&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:{BG};">
+    <tr><td align="center" style="padding:24px 12px;">
+      <table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;background:{CR};">
+
+        <tr><td align="center" style="padding:0 0 10px;background:{BG};font-family:{sans};font-size:11px;color:{S};">¿No ves bien este email? <a href="*|ARCHIVE|*" style="color:{S};">Ábrelo en el navegador</a></td></tr>
+
+        <tr><td align="center" style="padding:34px 12px 28px;background:#ffffff;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr>
+            <td valign="middle" style="padding:0 22px;"><img src="{BASE}/campanas-octubre/media/logo-espai-pilates.png" width="176" height="75" alt="Espai Pilates Reformer" class="logo-p" style="display:block;border:0;width:176px;height:75px;"></td>
+            <td valign="middle" style="border-left:1px solid {LN};padding:0 22px;"><img src="{BASE}/facial-luminus/media/logo-chakra.png" width="80" height="90" alt="Chakra Wellness Center by Espai Vital" style="display:block;border:0;width:80px;height:90px;"></td>
+          </tr></table>
+        </td></tr>
+
+        <!-- Hero -->
+        <tr><td class="px" align="center" bgcolor="{CR2}" style="background:{CR2};padding:52px 48px 50px;">
+          <p style="margin:0;font-family:{sans};font-size:12px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:{GT};">Una cara nueva en recepción</p>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:30px auto 0;"><tr>
+            <td width="120" height="120" align="center" valign="middle" bgcolor="{CR}" style="width:120px;height:120px;background:{CR};border:2px solid {G};border-radius:60px;font-family:{serif};font-style:italic;font-size:56px;line-height:120px;color:{G};">A</td>
+          </tr></table>
+          <p class="big" style="margin:26px 0 0;font-family:{serif};font-size:46px;line-height:1.15;color:{T};">Te presentamos<br>a <em style="color:{G};">Adri</em></p>
+          <p style="margin:18px 0 0;font-family:{sans};font-size:17px;line-height:1.7;color:{S};">Nuestro nuevo recepcionista ya forma parte del equipo y está deseando conocerte.</p>
+        </td></tr>
+
+        <!-- Qué hace -->
+        <tr><td class="px" style="padding:44px 56px 10px;background:{CR};">
+          <p style="margin:0 0 6px;font-family:{sans};font-size:11px;font-weight:bold;letter-spacing:4px;text-transform:uppercase;color:{GT};">Adri estará aquí para</p>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">{filas}</table>
+        </td></tr>
+
+        <tr><td class="px" align="center" style="padding:40px 48px 48px;background:{CR};">
+          <p style="margin:0 0 24px;font-family:{serif};font-style:italic;font-size:21px;line-height:1.5;color:{T};">La próxima vez que vengas,<br>¡pásate a saludarle!</p>
+          {btn('Escribir a recepción', WA_RECEPCION)}
+          <p style="margin:14px 0 0;font-family:{sans};font-size:14px;color:{S};">WhatsApp <a href="{WA_RECEPCION}" style="color:{T};font-weight:bold;text-decoration:none;">648 79 59 83</a></p>
+        </td></tr>
+
+        <tr><td align="center" bgcolor="{CR2}" style="background:{CR2};padding:30px 24px;">
+          <p style="margin:0;font-family:{serif};font-style:italic;font-size:19px;color:{T};">Bienvenido al equipo, Adri</p>
+          <p style="margin:10px 0 0;font-size:20px;color:{G};">♡</p>
+        </td></tr>
+
+        <tr><td align="center" style="padding:28px 24px 32px;font-family:{sans};font-size:12px;line-height:1.7;color:{S};background:{CR};">
+          <strong style="color:{T};">Chakra Wellness Center by Espai Vital · Espai Pilates Reformer</strong><br>
+          C/ Benidoleig 31, bajo · 03720 Benissa (Alicante)<br>
+          <a href="tel:+34633388152" style="color:{S};">+34 633 38 81 52</a> · <a href="mailto:info@chakracenterbenissa.com" style="color:{S};">info@chakracenterbenissa.com</a><br><br>
+          Recibes este email porque eres cliente o aceptaste recibir novedades de nuestro centro.<br>
+          <a href="*|UPDATE_PROFILE|*" style="color:{S};">Actualizar mis datos</a> · <a href="*|UNSUB|*" style="color:{S};">Darme de baja</a>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
+"""
+
+
 EMAILS = {
+    'email-bienvenida-adri': email_bienvenida_adri(),
     'email-gracias': email_gracias(),
     'email-recordatorio': email_recordatorio(),
     'email-nueva-fecha': email_nueva_fecha(),
