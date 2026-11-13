@@ -703,7 +703,7 @@ def email_bienvenida_adri():
         <tr><td class="px" align="center" bgcolor="{CR2}" style="background:{CR2};padding:52px 48px 50px;">
           <p style="margin:0;font-family:{sans};font-size:12px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:{GT};">Una cara nueva en recepción</p>
           <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:30px auto 0;"><tr>
-            <td align="center"><img src="{BASE}/campanas-octubre/media/adri-avatar.jpg" width="160" height="160" alt="Adri" style="display:block;border:0;width:160px;height:160px;"></td>
+            <td align="center"><img src="{BASE}/campanas-octubre/media/adri-avatar-2.jpg" width="160" height="160" alt="Adri" style="display:block;border:0;width:160px;height:160px;"></td>
           </tr></table>
           <p class="big" style="margin:26px 0 0;font-family:{serif};font-size:46px;line-height:1.15;color:{T};">Te presentamos<br>a <em style="color:{G};">Adri</em></p>
           <p style="margin:18px 0 0;font-family:{sans};font-size:17px;line-height:1.7;color:{S};">Nuestro nuevo recepcionista ya forma parte del equipo y está deseando conocerte.</p>
@@ -778,7 +778,7 @@ if __name__ == '__main__':
         BASE + '/campanas-octubre/media/inauguracion-foto.jpg': ('campanas-octubre/media/inauguracion-foto.jpg', 'image/jpeg'),
         BASE + '/campanas-octubre/media/video-inauguracion.jpg': ('campanas-octubre/media/video-inauguracion.jpg', 'image/jpeg'),
         BASE + '/campanas-octubre/media/video-adri-2.jpg': ('campanas-octubre/media/video-adri-2.jpg', 'image/jpeg'),
-        BASE + '/campanas-octubre/media/adri-avatar.jpg': ('campanas-octubre/media/adri-avatar.jpg', 'image/jpeg'),
+        BASE + '/campanas-octubre/media/adri-avatar-2.jpg': ('campanas-octubre/media/adri-avatar-2.jpg', 'image/jpeg'),
     }
     for nombre, html in EMAILS.items():
         open(os.path.join(here, nombre + '.html'), 'w').write(html)
