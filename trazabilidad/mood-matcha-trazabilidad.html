@@ -458,6 +458,7 @@ details.box[open] > summary::before { content: "–"; }
           <label class="f">IVA de venta<select id="pf-iva"><option value="10">10 % (matcha y alimentación)</option><option value="21">21 % (accesorios: batidor, cuenco…)</option><option value="4">4 %</option></select></label>
         </div>
         <h3>Qué te cuesta cada unidad</h3>
+        <label class="f">Usar el coste por unidad de un lote<select id="pf-fromlot"></select></label>
         <div class="costs" id="pf-costs"></div>
         <div class="row"><button class="btn small" type="button" id="pf-add" data-addcost="pf-costs">+ Añadir coste</button></div>
         <div class="msg ok" id="pf-preview"></div>
@@ -992,13 +993,14 @@ ${d.notas ? `<p><b>Notas de la recepción:</b> ${esc(d.notas)}</p>` : ""}
 </body></html>`;
 }
 function costReport(d) {
-  const ci = lotCostInfo(d.costes, d.unidadesLote, d.lote);
+  const uds = isFinite(toNum(d.unidadesLote)) ? toNum(d.unidadesLote) : lotUnits({ cantidad: d.fields && d.fields.cantidad });
+  const ci = lotCostInfo(d.costes, uds, d.lote);
   if (!ci.lines.length && !ci.gastos.length) return "";
   return `<h2 ${H}>6. Coste del lote</h2><table ${T}><tr><th align="left">Concepto</th><th align="right">Importe (sin IVA)</th></tr>
 ${ci.lines.map((c) => `<tr><td>${esc(c.concepto)}</td><td align="right">${esc(money(c.base))}</td></tr>`).join("")}
 ${ci.gastos.map((g) => `<tr><td>${esc(g.proveedor)} · ${esc(g.concepto)} (gasto)</td><td align="right">${esc(money(gastoBase(g)))}</td></tr>`).join("")}
 <tr><td><b>Total</b></td><td align="right"><b>${esc(money(ci.total))}</b></td></tr>
-${isFinite(ci.perUnit) ? `<tr><td><b>Coste por unidad (${esc(d.unidadesLote)} ud.)</b></td><td align="right"><b>${esc(money(ci.perUnit))}</b></td></tr>` : ""}</table>`;
+${isFinite(ci.perUnit) ? `<tr><td><b>Coste por unidad (${esc(uds)} ud.)</b></td><td align="right"><b>${esc(money(ci.perUnit))}</b></td></tr>` : ""}</table>`;
 }
 function traceHTML(r, ventas) {
   const total = ventas.reduce((s, v) => s + (Number(v.unidades) || 0), 0);
@@ -1032,7 +1034,7 @@ function renderLots() {
     const cls = r.resultado === "ACEPTADO" ? "ok" : r.resultado === "RECHAZADO" ? "bad" : "warn";
     return `<button class="lotcard" type="button" data-open-lot="${esc(r.id)}"><span class="lot">${esc(r.id)}</span>
       <span><b>${esc(r.producto || "Producto sin nombre")}</b> · ${esc(r.cantidad || "")}<br><span class="meta">${esc(r.proveedor || "")} · lote prov. ${esc(r.loteProveedor || "—")} · recibido ${esc(fmtDate(r.fecha))}</span></span>
-      <span class="conn"><span class="chip ${cls}">${esc(r.resultado || "—")}</span><span class="chip">${u} ud. vendidas</span>${(() => { const ci = lotCostInfo(r.costes, r.unidadesLote, r.id); return isFinite(ci.perUnit) ? `<span class="chip">${money(ci.perUnit)}/ud.</span>` : ""; })()}</span></button>`;
+      <span class="conn"><span class="chip ${cls}">${esc(r.resultado || "—")}</span><span class="chip">${u} ud. vendidas</span>${(() => { const ci = lotCostInfo(r.costes, lotUnits(r), r.id); return isFinite(ci.perUnit) ? `<span class="chip">${money(ci.perUnit)}/ud.</span>` : ""; })()}</span></button>`;
   }).join("") : `<div class="empty">${state.recepciones.length ? "Ningún lote coincide con la búsqueda." : "Aún no hay lotes. Registra una recepción y aparecerá aquí."}</div>`;
   for (const id of ["s-lote", "g-lote"]) { const sel = $(id), cur = sel.value; sel.innerHTML = lotOptions(id === "s-lote" ? "Elige lote" : "Ninguno"); sel.value = cur; }
   $("dl-proveedores").innerHTML = [...new Set(state.recepciones.map((r) => r.proveedor).filter(Boolean))].map((p) => `<option>${esc(p)}</option>`).join("");
@@ -1047,12 +1049,12 @@ function renderDetail(id) {
   const g = state.gastos.filter((x) => x.lote === id);
   const clientes = [...new Set(v.map((x) => x.cliente).filter(Boolean))];
   box.hidden = false;
-  const ci = lotCostInfo(r.costes, r.unidadesLote, r.id);
+  const ci = lotCostInfo(r.costes, lotUnits(r), r.id);
   box.innerHTML = `<div class="row between"><h2>Lote <span class="lot big">${esc(r.id)}</span></h2>
     <div class="actions"><button class="btn" type="button" id="btn-edit">Editar datos y coste</button><button class="btn" type="button" id="btn-adddocs"><svg class="i"><use href="#i-plus"/></svg>Añadir documentos</button></div></div>
     <div class="actions">${r.informeUrl ? `<a class="btn small" href="${esc(r.informeUrl)}" target="_blank" rel="noopener">Informe de recepción</a>` : `<button class="btn small" type="button" id="btn-redo">Crear informe de recepción</button>`}
     <button class="btn small" type="button" id="btn-trace">Informe de trazabilidad a Drive</button></div>
-    <div class="stats"><div class="stat"><span>Coste total del lote</span><b>${ci.lines.length || ci.gastos.length ? money(ci.total) : "—"}</b></div><div class="stat"><span>Coste por unidad</span><b>${isFinite(ci.perUnit) ? money(ci.perUnit) : "—"}</b></div><div class="stat"><span>Unidades</span><b>${r.unidadesLote != null ? esc(r.unidadesLote) : "—"}</b></div><div class="stat"><span>Vendidas</span><b>${v.reduce((s, x) => s + (Number(x.unidades) || 0), 0)}</b></div></div>
+    <div class="stats"><div class="stat"><span>Coste total del lote</span><b>${ci.lines.length || ci.gastos.length ? money(ci.total) : "—"}</b></div><div class="stat"><span>Coste por unidad</span><b>${isFinite(ci.perUnit) ? money(ci.perUnit) : "—"}</b></div><div class="stat"><span>Unidades</span><b>${isFinite(lotUnits(r)) ? esc(lotUnits(r)) : "—"}</b></div><div class="stat"><span>Vendidas</span><b>${v.reduce((s, x) => s + (Number(x.unidades) || 0), 0)}</b></div></div>
     ${ci.lines.length || ci.gastos.length ? `<p class="hint">${[...ci.lines.map((c) => `${esc(c.concepto)}: ${money(c.base)}`), ...ci.gastos.map((x) => `${esc(x.proveedor)} (gasto): ${money(gastoBase(x))}`)].join(" · ")} · importes sin IVA</p>` : `<p class="hint">Aún no has apuntado el coste de este lote. Pulsa «Editar datos y coste».</p>`}
     <div id="detail-msg">${state.detailMsg || ""}</div>
     <dl class="kv">${[["Producto", r.producto], ["Proveedor", r.proveedor], ["País", r.pais], ["Lote del proveedor", r.loteProveedor], ["Pedido Alibaba", r.pedido], ["Factura", r.facturaNum], ["DUA", r.dua], ["Recibido", fmtDate(r.fecha)], ["Cantidad", r.cantidad], ["Consumo preferente", fmtDate(r.consumoPreferente)], ["Ubicación", r.ubicacion], ["Resultado", r.resultado], ["Incidencias", r.incidencias || "Ninguna"]].map(([l, x]) => `<dt>${esc(l)}</dt><dd>${esc(pend(x))}</dd>`).join("")}
@@ -1090,6 +1092,14 @@ function renderDetail(id) {
 function readCosts(containerId) {
   return [...$(containerId).querySelectorAll(".costrow")].map((r) => ({ concepto: r.querySelector(".c-con").value.trim(), importe: toNum(r.querySelector(".c-imp").value), ivaIncl: Number(r.querySelector(".c-iva").value) }))
     .filter((c) => c.concepto || isFinite(c.importe)).map((c) => ({ ...c, importe: isFinite(c.importe) ? c.importe : null }));
+}
+// Unidades del lote: las apuntadas, o si no, el número de "cantidad" (115, 115 latas…) cuando no es un peso.
+function lotUnits(r) {
+  if (!r) return NaN;
+  const u = toNum(r.unidadesLote); if (isFinite(u) && u > 0) return u;
+  const m = /^\s*(\d+(?:[.,]\d+)?)\s*([a-záéíóúñ]*)/i.exec(String(r.cantidad || ""));
+  if (!m || ["kg", "g", "gr", "grs", "gramos", "kilos", "kilo", "l", "ml"].includes(m[2].toLowerCase())) return NaN;
+  const n = toNum(m[1]); return n > 0 ? n : NaN;
 }
 function lotCostInfo(costes, uds, lotId) {
   const lines = (Array.isArray(costes) ? costes : []).map((c) => ({ ...c, base: nz(c.importe) / (1 + nz(c.ivaIncl) / 100) }));
@@ -1131,7 +1141,7 @@ function openEdit(id, sugerido, aviso) {
   $("le-inc").value = (sugerido && sugerido.incidencias != null) ? sugerido.incidencias : (r.incidencias || "");
   $("le-res").value = (sugerido && sugerido.resultado) || r.resultado || "ACEPTADO CON OBSERVACIONES";
   const costes = (r.costes && r.costes.length) ? r.costes : ((sugerido && sugerido.costes) || []);
-  fillCosts("le", costes, r.unidadesLote != null ? r.unidadesLote : (sugerido && sugerido.unidadesLote), id);
+  fillCosts("le", costes, isFinite(lotUnits(r)) ? lotUnits(r) : (sugerido && sugerido.unidadesLote), id);
   $("le-rep").checked = true; $("le-msg").innerHTML = "";
   $("ld-form").hidden = true; $("le-form").hidden = false;
   $("le-form").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1449,10 +1459,21 @@ function openProd(p) {
   $("pf-title").textContent = p ? "Editar producto" : "Nuevo producto";
   $("pf-nombre").value = p ? p.nombre || "" : ""; $("pf-precio").value = p && p.precio != null ? fmt2(nz(p.precio)) : ""; $("pf-iva").value = String(p ? nz(p.iva, 10) : 10);
   $("pf-costs").innerHTML = (p && p.costes && p.costes.length ? p.costes : [{ concepto: "Matcha" }, { concepto: "Lata" }, { concepto: "Etiqueta" }]).map(costRow).join("");
+  $("pf-fromlot").innerHTML = `<option value="">Elegir lote…</option>` + sortDesc(state.recepciones, "id").map((r) => { const ci = lotCostInfo(r.costes, lotUnits(r), r.id); return isFinite(ci.perUnit) ? `<option value="${esc(r.id)}">${esc(r.id)} · ${esc(r.producto || "")} · ${money(ci.perUnit)}/ud.</option>` : ""; }).join("");
   $("pf-delete").hidden = !p; $("pf-delete").textContent = "Borrar producto"; delete $("pf-delete").dataset.confirm;
   $("prod-form").hidden = false; updatePreview(); $("prod-form").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 $("btn-new-prod").addEventListener("click", () => openProd(null));
+$("pf-fromlot").addEventListener("change", () => {
+  const r = state.recepciones.find((x) => x.id === $("pf-fromlot").value); if (!r) return;
+  const ci = lotCostInfo(r.costes, lotUnits(r), r.id); if (!isFinite(ci.perUnit)) return;
+  const label = `Matcha (lote ${r.id})`;
+  const rows = [...$("pf-costs").querySelectorAll(".costrow")];
+  const target = rows.find((x) => /^matcha/i.test(x.querySelector(".c-con").value.trim()) || x.querySelector(".c-con").value.includes(r.id));
+  if (target) { target.querySelector(".c-con").value = label; target.querySelector(".c-imp").value = fmt2(ci.perUnit); target.querySelector(".c-iva").value = "0"; }
+  else $("pf-costs").insertAdjacentHTML("afterbegin", costRow({ concepto: label, importe: ci.perUnit, ivaIncl: 0 }));
+  $("pf-fromlot").value = ""; updatePreview();
+});
 $("prod-form").addEventListener("input", updatePreview);
 $("pf-cancel").addEventListener("click", () => { $("prod-form").hidden = true; });
 $("pf-delete").addEventListener("click", async () => {
