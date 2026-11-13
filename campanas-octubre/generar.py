@@ -703,7 +703,7 @@ def email_bienvenida_adri():
         <tr><td class="px" align="center" bgcolor="{CR2}" style="background:{CR2};padding:52px 48px 50px;">
           <p style="margin:0;font-family:{sans};font-size:12px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:{GT};">Una cara nueva en recepción</p>
           <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:30px auto 0;"><tr>
-            <td width="120" height="120" align="center" valign="middle" bgcolor="{CR}" style="width:120px;height:120px;background:{CR};border:2px solid {G};border-radius:60px;font-family:{serif};font-style:italic;font-size:56px;line-height:120px;color:{G};">A</td>
+            <td align="center"><img src="{BASE}/campanas-octubre/media/adri-avatar.jpg" width="160" height="160" alt="Adri" style="display:block;border:0;width:160px;height:160px;"></td>
           </tr></table>
           <p class="big" style="margin:26px 0 0;font-family:{serif};font-size:46px;line-height:1.15;color:{T};">Te presentamos<br>a <em style="color:{G};">Adri</em></p>
           <p style="margin:18px 0 0;font-family:{sans};font-size:17px;line-height:1.7;color:{S};">Nuestro nuevo recepcionista ya forma parte del equipo y está deseando conocerte.</p>
@@ -711,7 +711,7 @@ def email_bienvenida_adri():
 
         <!-- Vídeo -->
         <tr><td class="px" align="center" style="padding:44px 48px 0;background:{CR};">
-          <a href="{REEL_ADRI}" style="text-decoration:none;"><img src="{BASE}/campanas-octubre/media/video-adri.jpg" width="504" alt="Conoce a Adri en vídeo" style="display:block;border:0;width:100%;max-width:504px;height:auto;"></a>
+          <a href="{REEL_ADRI}" style="text-decoration:none;"><img src="{BASE}/campanas-octubre/media/video-adri.jpg" width="504" alt="Conoce a Adri: ver el vídeo" style="display:block;border:0;width:100%;max-width:504px;height:auto;"></a>
           <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:22px auto 0;"><tr><td>{btn('Ver el vídeo', REEL_ADRI, G, '#ffffff')}</td></tr></table>
         </td></tr>
 
@@ -778,6 +778,7 @@ if __name__ == '__main__':
         BASE + '/campanas-octubre/media/inauguracion-foto.jpg': ('campanas-octubre/media/inauguracion-foto.jpg', 'image/jpeg'),
         BASE + '/campanas-octubre/media/video-inauguracion.jpg': ('campanas-octubre/media/video-inauguracion.jpg', 'image/jpeg'),
         BASE + '/campanas-octubre/media/video-adri.jpg': ('campanas-octubre/media/video-adri.jpg', 'image/jpeg'),
+        BASE + '/campanas-octubre/media/adri-avatar.jpg': ('campanas-octubre/media/adri-avatar.jpg', 'image/jpeg'),
     }
     for nombre, html in EMAILS.items():
         open(os.path.join(here, nombre + '.html'), 'w').write(html)
