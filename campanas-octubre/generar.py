@@ -711,7 +711,7 @@ def email_bienvenida_adri():
 
         <!-- Vídeo -->
         <tr><td class="px" align="center" style="padding:44px 48px 0;background:{CR};">
-          <a href="{REEL_ADRI}" style="text-decoration:none;"><img src="{BASE}/campanas-octubre/media/video-adri.jpg" width="504" alt="Conoce a Adri: ver el vídeo" style="display:block;border:0;width:100%;max-width:504px;height:auto;"></a>
+          <a href="{REEL_ADRI}" style="text-decoration:none;"><img src="{BASE}/campanas-octubre/media/video-adri-2.jpg" width="504" alt="Conoce a Adri: ver el vídeo" style="display:block;border:0;width:100%;max-width:504px;height:auto;"></a>
           <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:22px auto 0;"><tr><td>{btn('Ver el vídeo', REEL_ADRI, G, '#ffffff')}</td></tr></table>
         </td></tr>
 
@@ -777,7 +777,7 @@ if __name__ == '__main__':
         BASE + '/campanas-octubre/media/cartel-inauguracion.jpg': ('campanas-octubre/media/cartel-inauguracion.jpg', 'image/jpeg'),
         BASE + '/campanas-octubre/media/inauguracion-foto.jpg': ('campanas-octubre/media/inauguracion-foto.jpg', 'image/jpeg'),
         BASE + '/campanas-octubre/media/video-inauguracion.jpg': ('campanas-octubre/media/video-inauguracion.jpg', 'image/jpeg'),
-        BASE + '/campanas-octubre/media/video-adri.jpg': ('campanas-octubre/media/video-adri.jpg', 'image/jpeg'),
+        BASE + '/campanas-octubre/media/video-adri-2.jpg': ('campanas-octubre/media/video-adri-2.jpg', 'image/jpeg'),
         BASE + '/campanas-octubre/media/adri-avatar.jpg': ('campanas-octubre/media/adri-avatar.jpg', 'image/jpeg'),
     }
     for nombre, html in EMAILS.items():
