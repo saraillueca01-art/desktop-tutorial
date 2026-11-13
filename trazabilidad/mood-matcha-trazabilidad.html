@@ -313,6 +313,12 @@ details.box[open] > summary::before { content: "–"; }
           <select id="rv-resultado"><option>ACEPTADO</option><option>ACEPTADO CON OBSERVACIONES</option><option>RECHAZADO</option></select>
         </label>
       </div>
+      <h3>Coste del lote</h3>
+      <p class="hint">Todo lo que te ha costado este pedido: mercancía, envío, aduanas… Con las unidades se calcula lo que te cuesta cada una.</p>
+      <div class="grid"><label class="f">Unidades del lote<input id="rv-uds" type="number" min="0" step="1" placeholder="115"></label></div>
+      <div class="costs" id="rv-costs"></div>
+      <div class="row"><button class="btn small" type="button" data-addcost="rv-costs">+ Añadir coste</button></div>
+      <div class="msg ok" id="rv-costprev"></div>
       <div class="row">
         <button class="btn primary" id="btn-create" type="submit">Crear informe en Drive</button>
         <button class="btn" id="btn-cancel" type="button">Descartar</button>
@@ -334,6 +340,40 @@ details.box[open] > summary::before { content: "–"; }
       <div class="lots" id="lot-list"></div>
     </div>
     <div class="box" id="lot-detail" hidden></div>
+
+    <form class="box" id="ld-form" hidden>
+      <div class="row between"><h2>Añadir documentos</h2><span class="lot big" id="ld-lot"></span></div>
+      <div class="drop" id="ld-drop">
+        <p class="hint">Certificado de análisis que te llegó después, DUA, factura de transporte, fotos… PDF (también escaneado) o foto. Se guardan en Drive junto al resto del lote.</p>
+        <div class="row"><input type="file" id="ld-files" multiple accept=".pdf,image/png,image/jpeg,image/webp,.docx,.xlsx" style="max-width:100%"></div>
+        <ul class="files" id="ld-list"></ul>
+      </div>
+      <label class="f" style="display:flex;gap:8px;align-items:center;font-size:14px"><input type="checkbox" id="ld-ai" checked style="width:auto"> Que Claude los lea y actualice los datos y la documentación del lote</label>
+      <div class="row"><button class="btn primary" type="submit" id="ld-go">Añadir al lote</button><button class="btn" type="button" id="ld-cancel">Cancelar</button></div>
+      <ul class="progress" id="ld-progress" hidden></ul>
+      <div id="ld-msg"></div>
+    </form>
+
+    <form class="box" id="le-form" hidden>
+      <div class="row between"><h2>Editar lote</h2><span class="lot big" id="le-lot"></span></div>
+      <div id="le-top"></div>
+      <div class="grid" id="le-fields"></div>
+      <h3>Documentación</h3>
+      <div class="tablewrap"><table id="le-checks"><thead><tr><th>Documento</th><th>Estado</th><th>Observaciones</th></tr></thead><tbody></tbody></table></div>
+      <div class="grid">
+        <label class="f wide">Incidencias / observaciones<textarea id="le-inc"></textarea></label>
+        <label class="f">Resultado<select id="le-res"><option>ACEPTADO</option><option>ACEPTADO CON OBSERVACIONES</option><option>RECHAZADO</option></select></label>
+      </div>
+      <h3>Coste del lote</h3>
+      <p class="hint">Todo lo que te ha costado este pedido: mercancía, envío, aduanas… Con las unidades se calcula lo que te cuesta cada una.</p>
+      <div class="grid"><label class="f">Unidades del lote<input id="le-uds" type="number" min="0" step="1" placeholder="115"></label></div>
+      <div class="costs" id="le-costs"></div>
+      <div class="row"><button class="btn small" type="button" data-addcost="le-costs">+ Añadir coste</button></div>
+      <div class="msg ok" id="le-costprev"></div>
+      <label class="f" style="display:flex;gap:8px;align-items:center;font-size:14px"><input type="checkbox" id="le-rep" checked style="width:auto"> Rehacer el informe de recepción en Drive con estos cambios</label>
+      <div class="row"><button class="btn primary" type="submit" id="le-save">Guardar cambios</button><button class="btn" type="button" id="le-cancel">Cancelar</button></div>
+      <div id="le-msg"></div>
+    </form>
   </section>
 
   <!-- VENTAS -->
@@ -419,7 +459,7 @@ details.box[open] > summary::before { content: "–"; }
         </div>
         <h3>Qué te cuesta cada unidad</h3>
         <div class="costs" id="pf-costs"></div>
-        <div class="row"><button class="btn small" type="button" id="pf-add">+ Añadir coste</button></div>
+        <div class="row"><button class="btn small" type="button" id="pf-add" data-addcost="pf-costs">+ Añadir coste</button></div>
         <div class="msg ok" id="pf-preview"></div>
         <div class="row">
           <button class="btn primary" type="submit">Guardar producto</button>
@@ -434,7 +474,7 @@ details.box[open] > summary::before { content: "–"; }
       <div class="box">
         <div class="row between"><h2>Facturas del mes</h2>
           <div class="actions"><button class="btn" type="button" id="btn-g-csv">Descargar CSV</button><button class="btn primary" type="button" id="btn-new-gasto"><svg class="i"><use href="#i-plus"/></svg>Nuevo gasto</button></div></div>
-        <p class="hint">Publicidad, suscripciones, gestoría… Se restan del beneficio del mes. Las facturas de matcha y envases no se restan aquí porque ya están dentro del coste de cada producto.</p>
+        <p class="hint">Publicidad, suscripciones, gestoría… Se restan del beneficio del mes. Las facturas de matcha y envases, y los gastos unidos a un lote, no se restan aquí porque ya están dentro del coste de cada producto o lote.</p>
         <div class="bars" id="g-bars"></div>
         <div class="tablewrap" id="g-table"></div>
         <p class="hint" id="g-csv-msg"></p>
@@ -524,7 +564,7 @@ const FIELDS = [
 ];
 
 let db = null, mcp = null, sample = null, downloads = null, fileArgs = false, imgLimit = 0;
-const state = { recepciones: [], ventas: [], gastos: [], productos: [], config: null, files: [], gfile: null, draft: null, orders: null, selected: null };
+const state = { recepciones: [], ventas: [], gastos: [], productos: [], config: null, editLot: null, addLot: null, files: [], gfile: null, draft: null, orders: null, selected: null };
 const $ = (id) => document.getElementById(id);
 const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const todayISO = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
@@ -607,7 +647,7 @@ function renderHome() {
     ? `<p class="hint">A estos lotes les falta el certificado de análisis o la factura, o hay algo que revisar.</p><div class="lots">${sortDesc(pendientes, "id").slice(0, 5).map((r) => `<button class="lotcard" type="button" data-open-lot="${esc(r.id)}" style="grid-template-columns:auto 1fr"><span class="lot">${esc(r.id)}</span><span><b>${esc(r.producto || "")}</b><br><span class="meta">${esc(r.proveedor || "")} · ${esc(fmtDate(r.fecha))}</span></span></button>`).join("")}</div>`
     : `<div class="allgood"><svg class="i"><use href="#i-check"/></svg>Todos los lotes tienen su documentación.</div>`);
 }
-document.addEventListener("click", (e) => { const b = e.target.closest("[data-open-lot]"); if (b) { state.selected = b.dataset.openLot; go("lotes"); renderDetail(state.selected); } });
+document.addEventListener("click", (e) => { const b = e.target.closest("[data-open-lot]"); if (b) { state.selected = b.dataset.openLot; state.detailMsg = ""; go("lotes"); renderDetail(state.selected); } });
 
 /* ---------- lectura de documentos (PDF con texto o escaneado, fotos) ---------- */
 function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = () => rej(new Error("No se pudo cargar " + src)); document.head.appendChild(s); }); }
@@ -820,9 +860,12 @@ REGLAS:
 - En la nota de cada check: qué documento es y el dato clave (p. ej. "COA nº 123, plomo 0,3 mg/kg"). Si no estás seguro de si un valor cumple el límite legal, escribe "revisar con Reglamento (CE) 396/2005 / (UE) 2023/915" y estado "revisar".
 - "coincide": compara el lote del certificado con el lote de la mercancía / factura. Sin certificado, "pendiente".
 - resultado: "ACEPTADO", "ACEPTADO CON OBSERVACIONES" o "RECHAZADO". Si falta el COA o algo está en "revisar", como mucho "ACEPTADO CON OBSERVACIONES".
+- unidades: número de unidades recibidas (latas, bolsas…) si se sabe; si solo hay peso, null.
+- costes: lo que se ha pagado según factura o documentos (mercancía, envío, seguro, aduanas…), un elemento por concepto, con el importe tal cual y su moneda (EUR, USD…). Si no hay importes, [].
 
 Responde SOLO con un objeto JSON con esta forma:
-{"producto":string|null,"proveedor":string|null,"pais":string|null,"pedido":string|null,"facturaNum":string|null,"facturaFecha":string|null,"loteProveedor":string|null,"cantidad":string|null,"formato":string|null,"fechaProduccion":string|null,"consumoPreferente":string|null,"dua":string|null,"transporte":string|null,"ubicacion":string|null,
+{"producto":string|null,"proveedor":string|null,"pais":string|null,"pedido":string|null,"facturaNum":string|null,"facturaFecha":string|null,"loteProveedor":string|null,"cantidad":string|null,"formato":string|null,"fechaProduccion":string|null,"consumoPreferente":string|null,"dua":string|null,"transporte":string|null,"ubicacion":string|null,"unidades":number|null,
+"costes":[{"concepto":string,"importe":number,"moneda":string}],
 "checks":{"coa":{"estado":string,"nota":string},"plaguicidas":{...},"metales":{...},"micro":{...},"ficha":{...},"factura":{...},"dua":{...},"eco":{...},"envase":{...},"coincide":{...}},
 "incidencias":[string],"resultado":string}
 
@@ -848,7 +891,15 @@ function buildDraft(lote, folder, form, docs, ai) {
   if (controlNo.length) inc.push("Control en recepción NO conforme: " + controlNo.join("; "));
   let resultado = ["ACEPTADO", "ACEPTADO CON OBSERVACIONES", "RECHAZADO"].includes(ai.resultado) ? ai.resultado : "ACEPTADO CON OBSERVACIONES";
   if ((controlNo.length || checks.coa.estado !== "ok") && resultado === "ACEPTADO") resultado = "ACEPTADO CON OBSERVACIONES";
-  return { lote, folder, fecha: form.fecha, notas: form.notas, controles: form.controles, docs, fields: f, checks, incidencias: inc.join("\n"), resultado };
+  return { lote, folder, fecha: form.fecha, notas: form.notas, controles: form.controles, docs, fields: f, checks, incidencias: inc.join("\n"), resultado,
+    unidadesLote: isFinite(toNum(ai.unidades)) ? toNum(ai.unidades) : null, costes: aiCostes(ai.costes) };
+}
+function aiCostes(list) {
+  return (Array.isArray(list) ? list : []).filter((c) => c && (c.concepto || c.importe != null)).map((c) => {
+    const mon = String(c.moneda || "EUR").toUpperCase(), imp = toNum(c.importe);
+    return mon === "EUR" ? { concepto: String(c.concepto || ""), importe: isFinite(imp) ? imp : null, ivaIncl: 0 }
+      : { concepto: `${c.concepto || "Coste"} (${isFinite(imp) ? fmt2(imp) : "?"} ${mon}: pon el importe en €)`, importe: null, ivaIncl: 0 };
+  });
 }
 
 function renderReview(warnings) {
@@ -858,6 +909,7 @@ function renderReview(warnings) {
   $("rv-checks").querySelector("tbody").innerHTML = CHECKS.map(([k, l]) => `<tr><td>${esc(l)}</td><td><select id="ck-${k}">${Object.entries(ESTADOS).map(([v, t]) => `<option value="${v}"${d.checks[k].estado === v ? " selected" : ""}>${t}</option>`).join("")}</select></td><td><input id="ckn-${k}" value="${esc(d.checks[k].nota)}"></td></tr>`).join("");
   $("rv-incidencias").value = d.incidencias;
   $("rv-resultado").value = d.resultado;
+  fillCosts("rv", d.costes, d.unidadesLote, d.lote);
   const uploaded = d.docs.filter((x) => x.url);
   $("rv-msg").innerHTML =
     (uploaded.length ? `<div class="msg ok">Documentos en Drive: ${uploaded.map((x) => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.nombre)}</a>`).join(", ")}</div>` : "") +
@@ -874,6 +926,7 @@ $("review").addEventListener("submit", async (e) => {
   for (const [k] of CHECKS) d.checks[k] = { estado: $("ck-" + k).value, nota: $("ckn-" + k).value.trim() };
   d.incidencias = $("rv-incidencias").value.trim();
   d.resultado = $("rv-resultado").value;
+  d.costes = readCosts("rv-costs"); d.unidadesLote = isFinite(toNum($("rv-uds").value)) ? toNum($("rv-uds").value) : null;
   const btn = $("btn-create"); btn.disabled = true; $("rv-msg").innerHTML = `<div class="msg warn">Creando informe…</div>`;
   let informe = { id: "", url: "" }; let driveErr = "";
   if (mcp) {
@@ -886,7 +939,7 @@ $("review").addEventListener("submit", async (e) => {
     if (!db) throw new Error("La base de datos de la app no está disponible. Abre la app con tu cuenta de Claude.");
     await db.collection("recepciones").doc(d.lote).set({
       lote: d.lote, fecha: d.fecha, ...d.fields, notas: d.notas, controles: d.controles, checks: d.checks,
-      incidencias: d.incidencias, resultado: d.resultado, docs: d.docs, informeUrl: informe.url, informeId: informe.id, creado: new Date().toISOString()
+      incidencias: d.incidencias, resultado: d.resultado, docs: d.docs, costes: d.costes, unidadesLote: d.unidadesLote, informeUrl: informe.url, informeId: informe.id, creado: new Date().toISOString()
     });
     const msg = informe.url
       ? `<div class="msg ok">Lote <b>${esc(d.lote)}</b> registrado. <a href="${esc(informe.url)}" target="_blank" rel="noopener">Abrir informe en Drive</a></div>`
@@ -932,10 +985,20 @@ ${CHECKS.map(([k, l]) => `<tr><td>${esc(l)}</td><td>${esc(ESTADOS[d.checks[k].es
 <tr><td><b>Resultado</b></td><td><b>${esc(d.resultado)}</b></td></tr></table>
 <h2 ${H}>5. Observaciones / incidencias</h2>
 <p>${d.incidencias ? esc(d.incidencias).replace(/\n/g, "<br>") : "Ninguna"}</p>
+${costReport(d)}
 ${d.notas ? `<p><b>Notas de la recepción:</b> ${esc(d.notas)}</p>` : ""}
 <p style="margin-top:20pt"><b>Responsable de la recepción:</b> ${esc(pend(f.responsable))} &nbsp;&nbsp; <b>Firma:</b> ____________________</p>
 <p style="font-size:8.5pt;color:#777">Generado con la app de trazabilidad Mood Matcha el ${esc(fmtDate(todayISO()))}. Registro conforme al art. 18 del Reglamento (CE) 178/2002. Conservar al menos 5 años.</p>
 </body></html>`;
+}
+function costReport(d) {
+  const ci = lotCostInfo(d.costes, d.unidadesLote, d.lote);
+  if (!ci.lines.length && !ci.gastos.length) return "";
+  return `<h2 ${H}>6. Coste del lote</h2><table ${T}><tr><th align="left">Concepto</th><th align="right">Importe (sin IVA)</th></tr>
+${ci.lines.map((c) => `<tr><td>${esc(c.concepto)}</td><td align="right">${esc(money(c.base))}</td></tr>`).join("")}
+${ci.gastos.map((g) => `<tr><td>${esc(g.proveedor)} · ${esc(g.concepto)} (gasto)</td><td align="right">${esc(money(gastoBase(g)))}</td></tr>`).join("")}
+<tr><td><b>Total</b></td><td align="right"><b>${esc(money(ci.total))}</b></td></tr>
+${isFinite(ci.perUnit) ? `<tr><td><b>Coste por unidad (${esc(d.unidadesLote)} ud.)</b></td><td align="right"><b>${esc(money(ci.perUnit))}</b></td></tr>` : ""}</table>`;
 }
 function traceHTML(r, ventas) {
   const total = ventas.reduce((s, v) => s + (Number(v.unidades) || 0), 0);
@@ -969,13 +1032,14 @@ function renderLots() {
     const cls = r.resultado === "ACEPTADO" ? "ok" : r.resultado === "RECHAZADO" ? "bad" : "warn";
     return `<button class="lotcard" type="button" data-open-lot="${esc(r.id)}"><span class="lot">${esc(r.id)}</span>
       <span><b>${esc(r.producto || "Producto sin nombre")}</b> · ${esc(r.cantidad || "")}<br><span class="meta">${esc(r.proveedor || "")} · lote prov. ${esc(r.loteProveedor || "—")} · recibido ${esc(fmtDate(r.fecha))}</span></span>
-      <span class="conn"><span class="chip ${cls}">${esc(r.resultado || "—")}</span><span class="chip">${u} ud. vendidas</span></span></button>`;
+      <span class="conn"><span class="chip ${cls}">${esc(r.resultado || "—")}</span><span class="chip">${u} ud. vendidas</span>${(() => { const ci = lotCostInfo(r.costes, r.unidadesLote, r.id); return isFinite(ci.perUnit) ? `<span class="chip">${money(ci.perUnit)}/ud.</span>` : ""; })()}</span></button>`;
   }).join("") : `<div class="empty">${state.recepciones.length ? "Ningún lote coincide con la búsqueda." : "Aún no hay lotes. Registra una recepción y aparecerá aquí."}</div>`;
   for (const id of ["s-lote", "g-lote"]) { const sel = $(id), cur = sel.value; sel.innerHTML = lotOptions(id === "s-lote" ? "Elige lote" : "Ninguno"); sel.value = cur; }
   $("dl-proveedores").innerHTML = [...new Set(state.recepciones.map((r) => r.proveedor).filter(Boolean))].map((p) => `<option>${esc(p)}</option>`).join("");
   if (state.selected) renderDetail(state.selected);
 }
 
+function setDetailMsg(html) { state.detailMsg = html; const el = $("detail-msg"); if (el) el.innerHTML = html; }
 function renderDetail(id) {
   const r = state.recepciones.find((x) => x.id === id); const box = $("lot-detail");
   if (!r) { box.hidden = true; return; }
@@ -983,16 +1047,22 @@ function renderDetail(id) {
   const g = state.gastos.filter((x) => x.lote === id);
   const clientes = [...new Set(v.map((x) => x.cliente).filter(Boolean))];
   box.hidden = false;
+  const ci = lotCostInfo(r.costes, r.unidadesLote, r.id);
   box.innerHTML = `<div class="row between"><h2>Lote <span class="lot big">${esc(r.id)}</span></h2>
-    <div class="row">${r.informeUrl ? `<a class="btn" href="${esc(r.informeUrl)}" target="_blank" rel="noopener">Informe de recepción</a>` : `<button class="btn" type="button" id="btn-redo">Crear informe de recepción</button>`}
-    <button class="btn primary" type="button" id="btn-trace">Informe de trazabilidad a Drive</button></div></div>
-    <div id="detail-msg"></div>
+    <div class="actions"><button class="btn" type="button" id="btn-edit">Editar datos y coste</button><button class="btn" type="button" id="btn-adddocs"><svg class="i"><use href="#i-plus"/></svg>Añadir documentos</button></div></div>
+    <div class="actions">${r.informeUrl ? `<a class="btn small" href="${esc(r.informeUrl)}" target="_blank" rel="noopener">Informe de recepción</a>` : `<button class="btn small" type="button" id="btn-redo">Crear informe de recepción</button>`}
+    <button class="btn small" type="button" id="btn-trace">Informe de trazabilidad a Drive</button></div>
+    <div class="stats"><div class="stat"><span>Coste total del lote</span><b>${ci.lines.length || ci.gastos.length ? money(ci.total) : "—"}</b></div><div class="stat"><span>Coste por unidad</span><b>${isFinite(ci.perUnit) ? money(ci.perUnit) : "—"}</b></div><div class="stat"><span>Unidades</span><b>${r.unidadesLote != null ? esc(r.unidadesLote) : "—"}</b></div><div class="stat"><span>Vendidas</span><b>${v.reduce((s, x) => s + (Number(x.unidades) || 0), 0)}</b></div></div>
+    ${ci.lines.length || ci.gastos.length ? `<p class="hint">${[...ci.lines.map((c) => `${esc(c.concepto)}: ${money(c.base)}`), ...ci.gastos.map((x) => `${esc(x.proveedor)} (gasto): ${money(gastoBase(x))}`)].join(" · ")} · importes sin IVA</p>` : `<p class="hint">Aún no has apuntado el coste de este lote. Pulsa «Editar datos y coste».</p>`}
+    <div id="detail-msg">${state.detailMsg || ""}</div>
     <dl class="kv">${[["Producto", r.producto], ["Proveedor", r.proveedor], ["País", r.pais], ["Lote del proveedor", r.loteProveedor], ["Pedido Alibaba", r.pedido], ["Factura", r.facturaNum], ["DUA", r.dua], ["Recibido", fmtDate(r.fecha)], ["Cantidad", r.cantidad], ["Consumo preferente", fmtDate(r.consumoPreferente)], ["Ubicación", r.ubicacion], ["Resultado", r.resultado], ["Incidencias", r.incidencias || "Ninguna"]].map(([l, x]) => `<dt>${esc(l)}</dt><dd>${esc(pend(x))}</dd>`).join("")}
     <dt>Documentos</dt><dd>${(r.docs || []).length ? r.docs.map((d) => d.url ? `<a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.nombre)}</a>` : esc(d.nombre)).join(" · ") : "PENDIENTE"}</dd>
     ${g.length ? `<dt>Gastos de este lote</dt><dd>${g.map((x) => `${esc(x.proveedor)} · ${esc(money(Number(x.total), x.moneda))}`).join(" · ")}</dd>` : ""}</dl>
     <h3>Ventas de este lote</h3>
     <div class="tablewrap">${salesTable(v, false)}</div>
     <p class="hint"><b>Si hubiera que retirar este lote, avisar a:</b> ${clientes.length ? clientes.map(esc).join(", ") : "nadie todavía (no hay ventas registradas)"}.</p>`;
+  $("btn-edit").onclick = () => openEdit(r.id);
+  $("btn-adddocs").onclick = () => openAddDocs(r.id);
   $("btn-trace").onclick = async () => {
     const m = $("detail-msg"); if (!mcp) { m.innerHTML = `<div class="msg bad">Drive no está disponible en esta vista.</div>`; return; }
     $("btn-trace").disabled = true; m.innerHTML = `<div class="msg warn">Creando informe…</div>`;
@@ -1009,12 +1079,180 @@ function renderDetail(id) {
     const m = $("detail-msg"); if (!mcp) { m.innerHTML = `<div class="msg bad">Drive no está disponible en esta vista.</div>`; return; }
     redo.disabled = true;
     try {
-      const d = { lote: r.id, fecha: r.fecha, notas: r.notas, controles: r.controles || {}, docs: r.docs || [], fields: Object.fromEntries(FIELDS.map(([k]) => [k, r[k] || ""])), checks: r.checks || Object.fromEntries(CHECKS.map(([k]) => [k, { estado: "pendiente", nota: "" }])), incidencias: r.incidencias, resultado: r.resultado };
+      const d = { lote: r.id, fecha: r.fecha, notas: r.notas, controles: r.controles || {}, docs: r.docs || [], fields: Object.fromEntries(FIELDS.map(([k]) => [k, r[k] || ""])), checks: r.checks || Object.fromEntries(CHECKS.map(([k]) => [k, { estado: "pendiente", nota: "" }])), incidencias: r.incidencias, resultado: r.resultado, costes: r.costes, unidadesLote: r.unidadesLote };
       const res = await mcp.callTool(DRIVE, "create_file", { title: `Recepción ${r.id} · ${r.producto || "Matcha"} · ${fmtDate(r.fecha).replace(/\//g, "-")}`, parentId: await monthFolder(r.fecha), contentMimeType: "text/html", textContent: reportHTML(d) });
       await db.collection("recepciones").doc(r.id).update({ informeUrl: (res.payload && res.payload.viewUrl) || "", informeId: (res.payload && res.payload.id) || "" });
     } catch (err) { m.innerHTML = `<div class="msg bad">${esc(err.code ? mcpError(err, DRIVE) : (err.message || "Error"))}</div>`; redo.disabled = false; }
   };
 }
+
+/* ---------- coste del lote, editar lote y añadir documentos ---------- */
+function readCosts(containerId) {
+  return [...$(containerId).querySelectorAll(".costrow")].map((r) => ({ concepto: r.querySelector(".c-con").value.trim(), importe: toNum(r.querySelector(".c-imp").value), ivaIncl: Number(r.querySelector(".c-iva").value) }))
+    .filter((c) => c.concepto || isFinite(c.importe)).map((c) => ({ ...c, importe: isFinite(c.importe) ? c.importe : null }));
+}
+function lotCostInfo(costes, uds, lotId) {
+  const lines = (Array.isArray(costes) ? costes : []).map((c) => ({ ...c, base: nz(c.importe) / (1 + nz(c.ivaIncl) / 100) }));
+  const gastos = lotId ? state.gastos.filter((g) => g.lote === lotId && (g.moneda || "EUR") === "EUR") : [];
+  const total = lines.reduce((s, c) => s + c.base, 0) + gastos.reduce((s, g) => s + gastoBase(g), 0);
+  const u = toNum(uds);
+  return { lines, gastos, total, perUnit: isFinite(u) && u > 0 ? total / u : NaN };
+}
+function costPreview(prefix, lotId) {
+  const ci = lotCostInfo(readCosts(prefix + "-costs"), $(prefix + "-uds").value, lotId);
+  $(prefix + "-costprev").innerHTML = `Coste total: <b>${money(ci.total)}</b> sin IVA${ci.gastos.length ? ` (incluye ${ci.gastos.length} gasto(s) unidos a este lote)` : ""}` + (isFinite(ci.perUnit) ? ` · <b>${money(ci.perUnit)}</b> por unidad` : " · pon las unidades para ver el coste por unidad");
+}
+function fillCosts(prefix, costes, uds, lotId) {
+  $(prefix + "-uds").value = uds != null && uds !== "" ? uds : "";
+  $(prefix + "-costs").innerHTML = (costes && costes.length ? costes : [{ concepto: "Mercancía" }, { concepto: "Envío" }]).map(costRow).join("");
+  $(prefix + "-costs").dataset.lot = lotId || "";
+  costPreview(prefix, lotId);
+}
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("[data-addcost]");
+  if (a) { $(a.dataset.addcost).insertAdjacentHTML("beforeend", costRow()); return; }
+  const r = e.target.closest("[data-rmcost]");
+  if (r) { const f = r.closest("form"); r.closest(".costrow").remove(); if (f) f.dispatchEvent(new Event("input", { bubbles: true })); }
+});
+$("review").addEventListener("input", (e) => { if (e.target.closest("#rv-costs") || e.target.id === "rv-uds") costPreview("rv", state.draft && state.draft.lote); });
+$("le-form").addEventListener("input", (e) => { if (e.target.closest("#le-costs") || e.target.id === "le-uds") costPreview("le", state.editLot); });
+
+// Editar lote: carga los datos guardados (o los que propone Claude) en el formulario.
+function openEdit(id, sugerido, aviso) {
+  const r = state.recepciones.find((x) => x.id === id); if (!r) return;
+  state.editLot = id;
+  const val = (k) => (sugerido && sugerido.fields && sugerido.fields[k]) || r[k] || "";
+  const checks = (sugerido && sugerido.checks) || r.checks || {};
+  $("le-lot").textContent = id;
+  $("le-top").innerHTML = aviso || "";
+  $("le-fields").innerHTML = FIELDS.map(([k, l]) => `<label class="f">${esc(l)}<input id="le-${k}" value="${esc(val(k))}"></label>`).join("");
+  $("le-checks").querySelector("tbody").innerHTML = CHECKS.map(([k, l]) => { const c = checks[k] || { estado: "pendiente", nota: "" };
+    return `<tr><td>${esc(l)}</td><td><select id="lek-${k}">${Object.entries(ESTADOS).map(([v, t]) => `<option value="${v}"${normEstado(c.estado) === v ? " selected" : ""}>${t}</option>`).join("")}</select></td><td><input id="lekn-${k}" value="${esc(c.nota || "")}"></td></tr>`; }).join("");
+  $("le-inc").value = (sugerido && sugerido.incidencias != null) ? sugerido.incidencias : (r.incidencias || "");
+  $("le-res").value = (sugerido && sugerido.resultado) || r.resultado || "ACEPTADO CON OBSERVACIONES";
+  const costes = (r.costes && r.costes.length) ? r.costes : ((sugerido && sugerido.costes) || []);
+  fillCosts("le", costes, r.unidadesLote != null ? r.unidadesLote : (sugerido && sugerido.unidadesLote), id);
+  $("le-rep").checked = true; $("le-msg").innerHTML = "";
+  $("ld-form").hidden = true; $("le-form").hidden = false;
+  $("le-form").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+$("le-cancel").addEventListener("click", () => { $("le-form").hidden = true; state.editLot = null; });
+$("le-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const id = state.editLot, r = state.recepciones.find((x) => x.id === id); if (!r || !db) return;
+  const upd = {};
+  for (const [k] of FIELDS) upd[k] = $("le-" + k).value.trim();
+  upd.checks = Object.fromEntries(CHECKS.map(([k]) => [k, { estado: $("lek-" + k).value, nota: $("lekn-" + k).value.trim() }]));
+  upd.incidencias = $("le-inc").value.trim(); upd.resultado = $("le-res").value;
+  upd.costes = readCosts("le-costs"); upd.unidadesLote = isFinite(toNum($("le-uds").value)) ? toNum($("le-uds").value) : null;
+  upd.actualizado = new Date().toISOString();
+  const btn = $("le-save"); btn.disabled = true; $("le-msg").innerHTML = `<div class="msg warn">Guardando…</div>`;
+  let aviso = "";
+  if ($("le-rep").checked) {
+    if (!mcp) aviso = "Drive no está disponible: el informe no se ha rehecho.";
+    else {
+      try {
+        const d = { lote: id, fecha: r.fecha, notas: r.notas, controles: r.controles || {}, docs: r.docs || [], fields: Object.fromEntries(FIELDS.map(([k]) => [k, upd[k]])), checks: upd.checks, incidencias: upd.incidencias, resultado: upd.resultado, costes: upd.costes, unidadesLote: upd.unidadesLote };
+        const res = await mcp.callTool(DRIVE, "create_file", { title: `Recepción ${id} · ${upd.producto || "Matcha"} · ${fmtDate(r.fecha).replace(/\//g, "-")}`, parentId: await monthFolder(r.fecha), contentMimeType: "text/html", textContent: reportHTML(d) });
+        const nuevo = { id: (res.payload && res.payload.id) || "", url: (res.payload && res.payload.viewUrl) || "" };
+        if (nuevo.id && r.informeId && r.informeId !== nuevo.id) { try { await mcp.callTool(DRIVE, "trash_file", { fileId: r.informeId }); } catch { aviso = "El informe anterior sigue en Drive; puedes borrarlo a mano."; } }
+        upd.informeUrl = nuevo.url; upd.informeId = nuevo.id;
+      } catch (err) { aviso = "El informe no se ha rehecho: " + mcpError(err, DRIVE); }
+    }
+  }
+  try {
+    await db.collection("recepciones").doc(id).update(upd);
+    $("le-form").hidden = true; state.editLot = null;
+    renderDetail(id);
+    setDetailMsg(`<div class="msg ${aviso ? "warn" : "ok"}">Cambios guardados.${upd.informeUrl ? ` <a href="${esc(upd.informeUrl)}" target="_blank" rel="noopener">Abrir informe nuevo</a>` : ""} ${esc(aviso)}</div>`);
+  } catch (err) { $("le-msg").innerHTML = `<div class="msg bad">No se ha podido guardar: ${esc(err.message || err.code)}</div>`; }
+  finally { btn.disabled = false; }
+});
+
+// Añadir documentos a un lote existente.
+state.ldFiles = [];
+function renderLdFiles() { $("ld-list").innerHTML = state.ldFiles.map((f, i) => `<li><span>${esc(f.name)} · ${(f.size / 1024).toFixed(0)} KB</span><button class="btn small" type="button" data-ldrm="${i}">Quitar</button></li>`).join(""); }
+$("ld-list").addEventListener("click", (e) => { const i = e.target.dataset.ldrm; if (i !== undefined) { state.ldFiles.splice(+i, 1); renderLdFiles(); } });
+$("ld-files").addEventListener("change", (e) => { state.ldFiles.push(...e.target.files); e.target.value = ""; renderLdFiles(); });
+wireDrop($("ld-drop"), (fs) => { state.ldFiles.push(...fs); renderLdFiles(); });
+function openAddDocs(id) {
+  state.addLot = id; state.ldFiles = []; renderLdFiles();
+  $("ld-lot").textContent = id; $("ld-msg").innerHTML = ""; $("ld-progress").hidden = true;
+  $("le-form").hidden = true; $("ld-form").hidden = false;
+  $("ld-form").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+$("ld-cancel").addEventListener("click", () => { $("ld-form").hidden = true; });
+$("ld-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const id = state.addLot, r = state.recepciones.find((x) => x.id === id);
+  if (!r || !db) return;
+  if (!state.ldFiles.length) { $("ld-msg").innerHTML = `<div class="msg warn">Elige al menos un documento.</div>`; return; }
+  if (!mcp) { $("ld-msg").innerHTML = `<div class="msg bad">Drive no está disponible en esta vista.</div>`; return; }
+  const btn = $("ld-go"); btn.disabled = true; $("ld-msg").innerHTML = "";
+  const ul = $("ld-progress"); ul.hidden = false;
+  const steps = [{ t: "Guardar en Drive" }, { t: "Leer los documentos" }, { t: "Actualizar el lote con Claude" }];
+  const draw = () => { ul.innerHTML = steps.map((s) => `<li class="${s.st || ""}">${esc(s.t)}</li>`).join(""); };
+  const warnings = [], nuevos = [], texts = []; let images = [];
+  try {
+    steps[0].st = "now"; draw();
+    const folder = await monthFolder(r.fecha);
+    for (const f of state.ldFiles) {
+      try { const p = await uploadToDrive(f, `${id} · ${f.name}`, folder); nuevos.push({ nombre: f.name, id: p.id || "", url: p.viewUrl || "", mime: f.type }); }
+      catch (err) { warnings.push(`${f.name} no se ha guardado: ${mcpError(err, DRIVE)}`); }
+    }
+    if (nuevos.length) await db.collection("recepciones").doc(id).update({ docs: [...(r.docs || []), ...nuevos] });
+    steps[0].st = "done";
+    if (!$("ld-ai").checked || !sample) {
+      if ($("ld-ai").checked && !sample) warnings.push("Claude no está disponible: los documentos se han añadido pero no se han revisado.");
+      steps[1].st = steps[2].st = "done"; draw();
+      $("ld-form").hidden = true; renderDetail(id);
+      setDetailMsg(`<div class="msg ${warnings.length ? "warn" : "ok"}">${nuevos.length} documento(s) añadido(s) al lote. ${esc(warnings.join(" "))}</div>`);
+      return;
+    }
+    steps[1].st = "now"; draw();
+    for (const f of state.ldFiles) {
+      try { const x = await readLocal(f); if (x.texto.trim() || x.images.length) { texts.push({ nombre: f.name, texto: x.texto.trim() || "(escaneado: va en las imágenes)" }); images.push(...x.images.map((b) => ({ b, nombre: f.name }))); } }
+      catch { warnings.push(`No he podido leer ${f.name}.`); }
+    }
+    if (images.length > imgLimit) images = images.slice(0, imgLimit);
+    steps[1].st = "done"; steps[2].st = "now"; draw();
+    const actual = { ...Object.fromEntries(FIELDS.map(([k]) => [k, r[k] || null])), checks: r.checks || {}, incidencias: r.incidencias || "", resultado: r.resultado || "", documentosQueYaTenia: (r.docs || []).map((d) => d.nombre) };
+    const prompt = `Eres el responsable de calidad de Mood Matcha (importa matcha de Alibaba). Este es el registro actual del lote ${id}:
+${JSON.stringify(actual)}
+
+Han llegado documentos nuevos para este lote (texto abajo${images.length ? `; las páginas escaneadas van en ${images.length} imagen(es) en orden: ${images.map((x) => x.nombre).join(", ")}` : ""}).
+Devuelve el registro ACTUALIZADO teniendo en cuenta lo que ya había y lo nuevo:
+- Rellena los datos que falten si aparecen en los documentos nuevos; no borres datos que ya estaban salvo que el documento demuestre que eran un error (dilo en incidencias).
+- Actualiza cada check: "ok" solo si ahora hay documento correcto; "pendiente" si sigue faltando; "revisar" si hay algo raro (lote que no coincide, valor fuera de límite, plaguicida detectado…); "na" si no aplica. Pon en la nota qué documento es y el dato clave.
+- Si no estás seguro de si un valor cumple el límite legal, estado "revisar" y nota "revisar con Reglamento (CE) 396/2005 / (UE) 2023/915".
+- incidencias: texto completo actualizado. resultado: ACEPTADO, ACEPTADO CON OBSERVACIONES o RECHAZADO.
+- costes: importes pagados que aparezcan en los documentos nuevos (envío, aduanas, factura…), con su moneda. Si no hay, [].
+No inventes nada. Responde SOLO con JSON:
+{"fields":{${FIELDS.map(([k]) => `"${k}":string|null`).join(",")}},"checks":{"coa":{"estado":string,"nota":string},...},"incidencias":string,"resultado":string,"unidades":number|null,"costes":[{"concepto":string,"importe":number,"moneda":string}]}
+
+DOCUMENTOS NUEVOS:
+${texts.map((t, i) => `--- ${i + 1}: ${t.nombre} ---\n${t.texto}`).join("\n\n") || "(solo imágenes)"}`;
+    let ai = null;
+    try { ai = await sample.json(prompt, withImages({ modelTier: "default", cache: false }, images.map((x) => x.b))); }
+    catch (err) { warnings.push(sampleError(err)); }
+    steps[2].st = ai ? "done" : "err"; draw();
+    $("ld-form").hidden = true;
+    if (ai && typeof ai === "object") {
+      const sug = { fields: {}, checks: {}, incidencias: typeof ai.incidencias === "string" ? ai.incidencias : null, resultado: ["ACEPTADO", "ACEPTADO CON OBSERVACIONES", "RECHAZADO"].includes(ai.resultado) ? ai.resultado : null, unidadesLote: isFinite(toNum(ai.unidades)) ? toNum(ai.unidades) : null };
+      for (const [k] of FIELDS) { const v = ai.fields && ai.fields[k]; if (v != null && String(v).trim()) sug.fields[k] = String(v); }
+      for (const [k] of CHECKS) { const c = ai.checks && ai.checks[k]; sug.checks[k] = c ? { estado: normEstado(c.estado), nota: c.nota || "" } : ((r.checks || {})[k] || { estado: "pendiente", nota: "" }); }
+      const nuevosCostes = aiCostes(ai.costes);
+      if (nuevosCostes.length) sug.costes = [...(r.costes || []), ...nuevosCostes];
+      openEdit(id, sug, `<div class="msg ok">${nuevos.length} documento(s) añadido(s). Claude ha actualizado los datos: revísalos y pulsa «Guardar cambios».</div>${warnings.map((w) => `<div class="msg warn">${esc(w)}</div>`).join("")}`);
+      if (sug.costes) { fillCosts("le", sug.costes, $("le-uds").value || sug.unidadesLote, id); }
+    } else {
+      renderDetail(id);
+      setDetailMsg(`<div class="msg warn">${nuevos.length} documento(s) añadido(s), pero no se han podido revisar. ${esc(warnings.join(" "))}</div>`);
+    }
+  } catch (err) {
+    $("ld-msg").innerHTML = `<div class="msg bad">${esc(err.code ? mcpError(err, DRIVE) : (err.message || "Error"))}</div>`;
+  } finally { btn.disabled = false; }
+});
 
 /* ---------- productos y costes ---------- */
 const CFG_DEFAULT = { iva: 10, comPct: 0, comFix: 0, envio: 0, emb: 0 };
@@ -1051,7 +1289,7 @@ function resumenMes(ym) {
   const ventas = state.ventas.filter((v) => String(v.fecha || "").startsWith(ym));
   const calc = ventas.map((v) => ({ v, r: calcVenta(v) }));
   const sum = (k) => calc.reduce((s, x) => s + (isFinite(x.r[k]) ? x.r[k] : 0), 0);
-  const otros = state.gastos.filter((g) => String(g.fecha || "").startsWith(ym) && (g.moneda || "EUR") === "EUR" && !SIN_RESTAR.includes(g.categoria)).reduce((s, g) => s + gastoBase(g), 0);
+  const otros = state.gastos.filter((g) => String(g.fecha || "").startsWith(ym) && (g.moneda || "EUR") === "EUR" && !SIN_RESTAR.includes(g.categoria) && !g.lote).reduce((s, g) => s + gastoBase(g), 0);
   const neto = sum("neto"), coste = sum("coste"), envio = sum("envio"), com = sum("comision") + sum("emb");
   const beneficio = neto - coste - envio - com - otros;
   return { calc, cobrado: sum("cobrado"), neto, coste, envio, com, otros, beneficio, margen: neto ? beneficio / neto : NaN, sinProducto: calc.filter((x) => x.r.sinProducto).length, uds: sum("uds") };
@@ -1215,8 +1453,6 @@ function openProd(p) {
   $("prod-form").hidden = false; updatePreview(); $("prod-form").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 $("btn-new-prod").addEventListener("click", () => openProd(null));
-$("pf-add").addEventListener("click", () => { $("pf-costs").insertAdjacentHTML("beforeend", costRow()); });
-$("pf-costs").addEventListener("click", (e) => { if (e.target.closest("[data-rmcost]")) { e.target.closest(".costrow").remove(); updatePreview(); } });
 $("prod-form").addEventListener("input", updatePreview);
 $("pf-cancel").addEventListener("click", () => { $("prod-form").hidden = true; });
 $("pf-delete").addEventListener("click", async () => {
