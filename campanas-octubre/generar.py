@@ -647,7 +647,7 @@ def email_gracias():
 
 # ---------- Bienvenida a Adri, nuevo recepcionista (paleta crema) ----------
 # Cambiar por el enlace del reel de Adri cuando esté subido
-REEL_ADRI = 'https://www.instagram.com/'
+REEL_ADRI = 'https://www.instagram.com/reel/DfrzjqapUvP/'
 WA_RECEPCION = wa('Hola Adri, vengo del email y quiero reservar una cita 😊')
 
 
