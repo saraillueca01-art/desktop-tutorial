@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
-/* Layout: one working column (max 960px), sticky tab bar, lot codes set like stamped labels in mono.
+/* Layout: home menu of four tiles, then one working column per section (max 980px) with a back link.
    Look: always white, matcha-green details, cream for soft areas (single light theme on purpose). */
 :root {
   --bg: #ffffff;
@@ -15,6 +15,7 @@
   --muted: #66705c;
   --line: #ebe4d4;
   --accent: #4a7a2c;
+  --accent-soft: #eef4e6;
   --accent-ink: #ffffff;
   --ok: #2f7a3e; --ok-bg: #e6f3e3;
   --warn: #8a5a00; --warn-bg: #fbefd2;
@@ -24,28 +25,44 @@
   --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
   color-scheme: light;
 }
-
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
-.wrap { max-width: 960px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px; }
-header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
-h1 { font-family: var(--font-display); font-weight: 700; font-size: 1.75rem; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
-h1 span { color: var(--accent); }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 56px; }
+header.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; border-bottom: 3px solid var(--cream); padding-bottom: 14px; margin-bottom: 20px; }
+.brand { display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 0; cursor: pointer; color: inherit; text-align: left; }
+.brand .leaf { width: 34px; height: 34px; border-radius: 50% 4px 50% 4px; background: var(--accent); flex: none; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; letter-spacing: -0.01em; margin: 0; line-height: 1.1; }
+h1 small { display: block; font: 500 13px var(--font-body); color: var(--muted); letter-spacing: 0; }
 h2 { font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; margin: 0; text-wrap: balance; }
 h3 { font-family: var(--font-display); font-weight: 600; font-size: 1rem; margin: 0; }
-.sub { color: var(--muted); margin: 0; }
 .conn { display: flex; gap: 6px; flex-wrap: wrap; }
-.chip { font-size: 12px; padding: 2px 9px; border-radius: 999px; background: var(--sunk); color: var(--muted); border: 1px solid var(--line); }
+.chip { font-size: 12px; padding: 2px 9px; border-radius: 999px; background: var(--sunk); color: var(--muted); border: 1px solid var(--line); white-space: nowrap; }
 .chip.ok { background: var(--ok-bg); color: var(--ok); border-color: transparent; }
 .chip.warn { background: var(--warn-bg); color: var(--warn); border-color: transparent; }
 .chip.bad { background: var(--bad-bg); color: var(--bad); border-color: transparent; }
 
-nav.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); display: flex; gap: 4px; margin-block: 16px; padding-block: 6px; border-bottom: 1px solid var(--line); overflow-x: auto; }
-nav.tabs button { font: 600 14px var(--font-body); background: none; border: 0; color: var(--muted); padding: 8px 14px; border-radius: 8px; cursor: pointer; white-space: nowrap; }
-nav.tabs button[aria-selected="true"] { background: var(--sunk); color: var(--ink); box-shadow: inset 0 -2px 0 var(--accent); }
+/* home */
+.menu { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 620px) { .menu { grid-template-columns: 1fr; } }
+.tile { display: grid; gap: 6px; text-align: left; font: inherit; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px 20px; cursor: pointer; position: relative; overflow: hidden; }
+.tile::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 6px; background: var(--cream); }
+.tile:hover { border-color: var(--accent); }
+.tile:hover::before { background: var(--accent); }
+.tile .name { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; margin-top: 4px; }
+.tile .big { font-family: var(--font-display); font-weight: 600; font-size: 2rem; color: var(--accent); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.tile .cap { font-size: 13px; color: var(--muted); }
+.tile .desc { font-size: 14px; }
+.home-extra { margin-top: 18px; }
+
+.sechead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.sechead .left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.back { font: 600 14px var(--font-body); background: var(--sunk); border: 1px solid var(--line); color: var(--ink); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.back:hover { border-color: var(--accent); }
 
 section.panel { display: grid; gap: 16px; }
 .box { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.box.soft { background: var(--sunk); }
 .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+.row.between { justify-content: space-between; align-items: center; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
 label.f { display: grid; gap: 4px; font-size: 13px; color: var(--muted); font-weight: 500; min-width: 0; }
 label.f.wide { grid-column: 1 / -1; }
@@ -55,7 +72,6 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
 .btn { font: 600 14px var(--font-body); border-radius: 8px; padding: 10px 16px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
 .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .btn:not(.primary):hover { background: var(--sunk); }
-header.top { border-bottom: 3px solid var(--cream); padding-bottom: 14px; }
 .btn:disabled { opacity: .55; cursor: progress; }
 .btn.small { padding: 6px 10px; font-size: 13px; }
 a { color: var(--accent); }
@@ -82,47 +98,86 @@ a { color: var(--accent); }
 
 .tablewrap { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: 14px; }
-th { text-align: left; font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+th { text-align: left; font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
 th, td { padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
-td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.click { cursor: pointer; }
+tr.click:hover td { background: var(--sunk); }
 
 .lots { display: grid; gap: 10px; }
 .lotcard { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 14px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; cursor: pointer; text-align: left; font: inherit; color: inherit; width: 100%; }
 .lotcard:hover { border-color: var(--accent); }
 .lotcard .meta { color: var(--muted); font-size: 13px; }
 @media (max-width: 560px) { .lotcard { grid-template-columns: 1fr; } }
-.kv { display: grid; grid-template-columns: minmax(140px, 220px) 1fr; gap: 6px 14px; font-size: 14px; }
+.kv { display: grid; grid-template-columns: minmax(140px, 220px) 1fr; gap: 6px 14px; font-size: 14px; margin: 0; }
 .kv dt { color: var(--muted); }
 .kv dd { margin: 0; overflow-wrap: anywhere; }
 @media (max-width: 480px) { .kv { grid-template-columns: 1fr; } .kv dd { margin-bottom: 6px; } }
 .empty { color: var(--muted); padding: 18px; text-align: center; border: 1px dashed var(--line); border-radius: 10px; }
 .hint { font-size: 13px; color: var(--muted); margin: 0; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.stat { background: var(--sunk); border-radius: 10px; padding: 12px 14px; }
+.stat b { display: block; font-family: var(--font-display); font-size: 1.4rem; font-variant-numeric: tabular-nums; color: var(--ink); }
+.stat span { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.bars { display: grid; gap: 6px; }
+.barrow { display: grid; grid-template-columns: minmax(120px, 200px) 1fr auto; gap: 10px; align-items: center; font-size: 14px; }
+.bartrack { height: 10px; background: var(--sunk); border-radius: 999px; overflow: hidden; }
+.barfill { height: 100%; background: var(--accent); border-radius: 999px; }
+@media (max-width: 480px) { .barrow { grid-template-columns: 1fr auto; } .bartrack { grid-column: 1 / -1; grid-row: 2; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
 <div class="wrap">
   <header class="top">
-    <div>
-      <h1>Mood Matcha <span>· Trazabilidad</span></h1>
-      <p class="sub">Recepciones, lotes y ventas. Los informes se guardan en tu Drive, carpeta TRAZABILIDAD MOOD MATCHA.</p>
-    </div>
-    <div class="conn" id="conn">
+    <button class="brand" type="button" id="go-home" aria-label="Volver al menú">
+      <span class="leaf" aria-hidden="true"></span>
+      <h1>Mood Matcha<small>Trazabilidad y gastos</small></h1>
+    </button>
+    <div class="conn">
       <span class="chip" id="c-drive">Drive: comprobando…</span>
       <span class="chip" id="c-shop">Shopify: comprobando…</span>
       <span class="chip" id="c-ai">Claude: comprobando…</span>
     </div>
   </header>
 
-  <nav class="tabs" role="tablist">
-    <button role="tab" id="t-rec" aria-selected="true" data-tab="rec">Nueva recepción</button>
-    <button role="tab" id="t-lotes" aria-selected="false" data-tab="lotes">Lotes</button>
-    <button role="tab" id="t-ventas" aria-selected="false" data-tab="ventas">Ventas</button>
-  </nav>
+  <!-- MENÚ -->
+  <section id="v-home">
+    <div class="menu">
+      <button class="tile" type="button" data-go="recepciones">
+        <span class="name">Recepciones</span>
+        <span class="big" id="h-rec">0</span>
+        <span class="cap" id="h-rec-cap">este mes</span>
+        <span class="desc">Registra lo que te llega de Alibaba, con sus documentos y el informe en Drive.</span>
+      </button>
+      <button class="tile" type="button" data-go="lotes">
+        <span class="name">Lotes</span>
+        <span class="big" id="h-lot">0</span>
+        <span class="cap" id="h-lot-cap">lotes registrados</span>
+        <span class="desc">Busca un lote, mira de dónde viene y a quién se ha vendido.</span>
+      </button>
+      <button class="tile" type="button" data-go="ventas">
+        <span class="name">Ventas</span>
+        <span class="big" id="h-ven">0</span>
+        <span class="cap">unidades vendidas este mes</span>
+        <span class="desc">Pedidos de Shopify y ventas directas, cada uno con su lote.</span>
+      </button>
+      <button class="tile" type="button" data-go="gastos">
+        <span class="name">Gastos</span>
+        <span class="big" id="h-gas">0,00 €</span>
+        <span class="cap">gastado este mes</span>
+        <span class="desc">Sube una factura, Claude la lee y la guarda en tu carpeta de contabilidad.</span>
+      </button>
+    </div>
+    <div class="box home-extra" id="h-pend" hidden></div>
+  </section>
 
-  <!-- RECEPCIÓN -->
-  <section class="panel" id="p-rec">
-    <form class="box" id="rec-form">
-      <div class="row" style="justify-content:space-between">
+  <!-- RECEPCIONES -->
+  <section class="panel" id="v-recepciones" hidden>
+    <div class="sechead"><div class="left"><button class="back" type="button" data-go="home">← Menú</button><h2>Recepciones</h2></div>
+      <button class="btn primary" type="button" id="btn-new-rec">Nueva recepción</button></div>
+
+    <form class="box" id="rec-form" hidden>
+      <div class="row between">
         <h2>1 · Qué ha llegado</h2>
         <span class="hint">Lote que se asignará: <span class="lot" id="next-lot">—</span></span>
       </div>
@@ -130,7 +185,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
         <label class="f">Fecha de recepción<input type="date" id="r-fecha" required></label>
         <label class="f">Producto<input id="r-producto" placeholder="Matcha ceremonial" list="dl-productos"></label>
         <label class="f">Proveedor (tienda de Alibaba)<input id="r-proveedor" placeholder="Nombre del proveedor" list="dl-proveedores"></label>
-        <label class="f">Cantidad recibida<input id="r-cantidad" placeholder="20 kg"></label>
+        <label class="f">Cantidad recibida<input id="r-cantidad" placeholder="115 latas de 30 g"></label>
         <label class="f wide">Lo que quieras añadir<textarea id="r-notas" placeholder="Nº de pedido de Alibaba, lote, transportista, DUA, dónde lo has guardado… Lo que no pongas aquí lo busco en los documentos."></textarea></label>
       </div>
       <datalist id="dl-productos"><option>Matcha ceremonial</option><option>Matcha culinario</option></datalist>
@@ -138,26 +193,24 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 
       <h2>2 · Documentos recibidos</h2>
       <div class="drop" id="drop">
-        <p class="hint">Factura, certificado de análisis (COA), ficha técnica, DUA, packing list… PDF o foto. Se suben a Drive, a TRAZABILIDAD MOOD MATCHA › año › mes.</p>
-        <div class="row"><input type="file" id="r-files" multiple accept=".pdf,image/png,image/jpeg,.docx,.xlsx" style="max-width:100%"></div>
+        <p class="hint">Factura, certificado de análisis (COA), ficha técnica, DUA, packing list… PDF (también escaneado) o foto. Se guardan en Drive, en TRAZABILIDAD MOOD MATCHA › año › mes.</p>
+        <div class="row"><input type="file" id="r-files" multiple accept=".pdf,image/png,image/jpeg,image/webp,.docx,.xlsx" style="max-width:100%"></div>
         <ul class="files" id="file-list"></ul>
       </div>
 
       <h2>3 · Control al recibir</h2>
       <div class="grid" id="ctrl-grid"></div>
-      <div class="grid">
-        <label class="f">Responsable<input id="r-resp" placeholder="Tu nombre"></label>
-      </div>
+      <div class="grid"><label class="f">Responsable<input id="r-resp" placeholder="Tu nombre"></label></div>
       <div class="row">
-        <button class="btn primary" id="btn-analyze" type="submit">Subir documentos y preparar informe</button>
-        <span class="hint" id="analyze-hint"></span>
+        <button class="btn primary" id="btn-analyze" type="submit">Leer documentos y preparar informe</button>
+        <button class="btn" id="btn-rec-close" type="button">Cancelar</button>
       </div>
       <ul class="progress" id="progress" hidden></ul>
       <div id="rec-msg"></div>
     </form>
 
     <form class="box" id="review" hidden>
-      <div class="row" style="justify-content:space-between">
+      <div class="row between">
         <h2>4 · Revisa y crea el informe</h2>
         <span class="lot big" id="rv-lot"></span>
       </div>
@@ -177,24 +230,28 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       </div>
       <div id="rv-msg"></div>
     </form>
+
+    <div class="box">
+      <h2>Historial</h2>
+      <div class="tablewrap" id="rec-table"></div>
+    </div>
   </section>
 
   <!-- LOTES -->
-  <section class="panel" id="p-lotes" hidden>
+  <section class="panel" id="v-lotes" hidden>
+    <div class="sechead"><div class="left"><button class="back" type="button" data-go="home">← Menú</button><h2>Lotes</h2></div></div>
     <div class="box">
-      <div class="row" style="justify-content:space-between">
-        <h2>Lotes</h2>
-        <label class="f" style="flex:1;min-width:200px;max-width:360px">Buscar<input id="q" placeholder="Lote, lote proveedor, cliente, pedido…"></label>
-      </div>
+      <label class="f">Buscar<input id="q" placeholder="Lote, lote del proveedor, producto, cliente, pedido…"></label>
       <div class="lots" id="lot-list"></div>
     </div>
     <div class="box" id="lot-detail" hidden></div>
   </section>
 
   <!-- VENTAS -->
-  <section class="panel" id="p-ventas" hidden>
+  <section class="panel" id="v-ventas" hidden>
+    <div class="sechead"><div class="left"><button class="back" type="button" data-go="home">← Menú</button><h2>Ventas</h2></div></div>
     <div class="box">
-      <div class="row" style="justify-content:space-between">
+      <div class="row between">
         <h2>Pedidos de Shopify</h2>
         <button class="btn" id="btn-shop" type="button">Cargar pedidos</button>
       </div>
@@ -218,14 +275,70 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       <div class="tablewrap" id="sales-table"></div>
     </div>
   </section>
+
+  <!-- GASTOS -->
+  <section class="panel" id="v-gastos" hidden>
+    <div class="sechead"><div class="left"><button class="back" type="button" data-go="home">← Menú</button><h2>Gastos</h2></div>
+      <button class="btn primary" type="button" id="btn-new-gasto">Nuevo gasto</button></div>
+
+    <form class="box" id="gasto-form" hidden>
+      <h2>Nuevo gasto</h2>
+      <div class="drop" id="g-drop">
+        <p class="hint">Sube la factura o el ticket (PDF o foto). Claude la lee y rellena los datos. Se guarda en Contabilidad › MOOD MATCHA › trimestre › mes › Gastos.</p>
+        <div class="row"><input type="file" id="g-file" accept=".pdf,image/png,image/jpeg,image/webp" style="max-width:100%">
+          <button class="btn" type="button" id="btn-g-read">Leer factura</button></div>
+        <ul class="files" id="g-file-list"></ul>
+      </div>
+      <div class="grid">
+        <label class="f">Fecha de la factura<input type="date" id="g-fecha" required></label>
+        <label class="f">Proveedor<input id="g-proveedor" required list="dl-gproveedores"></label>
+        <label class="f">NIF / CIF del proveedor<input id="g-nif"></label>
+        <label class="f">Nº de factura<input id="g-num"></label>
+        <label class="f wide">Concepto<input id="g-concepto" placeholder="Latas de 30 g, suscripción Canva…" required></label>
+        <label class="f">Categoría<select id="g-categoria"></select></label>
+        <label class="f">Base imponible<input id="g-base" inputmode="decimal" placeholder="0,00"></label>
+        <label class="f">IVA %<select id="g-ivapct"><option value="21">21 %</option><option value="10">10 %</option><option value="4">4 %</option><option value="0">0 % / exento</option></select></label>
+        <label class="f">Cuota IVA<input id="g-iva" inputmode="decimal" placeholder="0,00"></label>
+        <label class="f">Total<input id="g-total" inputmode="decimal" placeholder="0,00" required></label>
+        <label class="f">Moneda<select id="g-moneda"><option>EUR</option><option>USD</option><option>CNY</option><option>GBP</option></select></label>
+        <label class="f">Forma de pago<select id="g-pago"><option value="">—</option><option>Tarjeta</option><option>Transferencia</option><option>PayPal</option><option>Alibaba Trade Assurance</option><option>Domiciliación</option><option>Efectivo</option></select></label>
+        <label class="f">Lote relacionado (opcional)<select id="g-lote"></select></label>
+        <label class="f wide">Notas<input id="g-notas"></label>
+      </div>
+      <datalist id="dl-gproveedores"></datalist>
+      <div class="row">
+        <button class="btn primary" type="submit" id="btn-g-save">Guardar gasto</button>
+        <button class="btn" type="button" id="btn-g-cancel">Cancelar</button>
+      </div>
+      <div id="g-msg"></div>
+    </form>
+
+    <div class="box">
+      <div class="row between">
+        <h2>Resumen</h2>
+        <div class="row">
+          <label class="f" style="width:auto">Mes<input type="month" id="g-mes"></label>
+          <button class="btn" type="button" id="btn-g-csv">Descargar CSV del mes</button>
+        </div>
+      </div>
+      <div class="stats" id="g-stats"></div>
+      <div class="bars" id="g-bars"></div>
+      <div class="tablewrap" id="g-table"></div>
+      <p class="hint" id="g-csv-msg"></p>
+    </div>
+  </section>
 </div>
 
 <script>
-// Carpeta "TRAZABILIDAD MOOD MATCHA" en Mi unidad. Dentro: una carpeta por año y, dentro, una por mes.
+/* ---------- configuración ---------- */
+// Trazabilidad: "TRAZABILIDAD MOOD MATCHA" en Mi unidad › año › mes.
 const ROOT_FOLDER = "1cZ5NlM-Myd8lNdO8eKnzxGtla61bS8y4";
+// Gastos: "Contabilidad AAAA" en Mi unidad › MOOD MATCHA › nT › mes › Gastos.
+const CONTA_MM = { "2026": "1ArwBkjiOO7990luJ7dK9kjWkvldrf1eR" };
 const MESES = ["", "01 Enero", "02 Febrero", "03 Marzo", "04 Abril", "05 Mayo", "06 Junio", "07 Julio", "08 Agosto", "09 Septiembre", "10 Octubre", "11 Noviembre", "12 Diciembre"];
 const folderCache = { "2026": "1TtALKtuZOrPbIkixKYZ-sJtbKGW-hxaa", "2026-10": "1xlBYNyOAaX-JGzyO7aPfljbOso9SpbxA" };
 const DRIVE = "Google Drive", SHOP = "Shopify";
+const CATEGORIAS = ["Materia prima (matcha)", "Envases y etiquetas", "Transporte y aduanas", "Marketing y publicidad", "Web y suscripciones", "Comisiones (Shopify, pagos)", "Material y equipamiento", "Servicios profesionales", "Otros"];
 const CONTROLS = [
   ["embalaje", "Embalaje íntegro y precintado"],
   ["etiqueta", "Etiqueta del proveedor legible (producto, lote, fecha)"],
@@ -260,13 +373,17 @@ const FIELDS = [
   ["ubicacion", "Ubicación en almacén"], ["responsable", "Responsable"]
 ];
 
-let db = null, mcp = null, sample = null, fileArgs = false;
-const state = { recepciones: [], ventas: [], files: [], draft: null, orders: null, selected: null };
+let db = null, mcp = null, sample = null, downloads = null, fileArgs = false, imgLimit = 0;
+const state = { recepciones: [], ventas: [], gastos: [], files: [], gfile: null, draft: null, orders: null, selected: null };
 const $ = (id) => document.getElementById(id);
 const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const todayISO = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
 const fmtDate = (iso) => (iso && /^\d{4}-\d{2}-\d{2}/.test(iso)) ? iso.slice(8, 10) + "/" + iso.slice(5, 7) + "/" + iso.slice(0, 4) : (iso || "");
 const pend = (v) => (v === undefined || v === null || String(v).trim() === "") ? "PENDIENTE" : String(v);
+const toNum = (v) => { if (typeof v === "number") return v; const s = String(v ?? "").replace(/[^\d,.\-]/g, ""); if (!s) return NaN; const n = s.includes(",") ? s.replace(/\./g, "").replace(",", ".") : s; return parseFloat(n); };
+const money = (n, cur = "EUR") => isFinite(n) ? n.toLocaleString("es-ES", { style: "currency", currency: cur || "EUR" }) : "—";
+const fmt2 = (n) => isFinite(n) ? n.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "";
+const sortDesc = (arr, k) => arr.slice().sort((a, b) => String(b[k] || "").localeCompare(String(a[k] || "")));
 
 function mcpError(e, server) {
   switch (e && e.code) {
@@ -276,68 +393,105 @@ function mcpError(e, server) {
     case "not_in_manifest": case "consent_required": return `No has dado permiso a esta app para usar ${server}. Puedes darlo en el menú Permisos del artefacto.`;
     case "server_unavailable": return `${server} no responde ahora mismo. Inténtalo de nuevo en un momento.`;
     case "tool_error": return `${server} ha devuelto un error: ${e.message}`;
+    case "too_big": return e.message;
     default: return `Error con ${server}: ${(e && e.message) || "desconocido"}`;
   }
 }
 function sampleError(e) {
   switch (e && e.code) {
-    case "not_granted": return "No has permitido que la app use Claude, así que no puedo leer los documentos. Rellena los datos a mano abajo.";
-    case "sampling_disabled": return "Claude no está disponible en esta cuenta. Rellena los datos a mano abajo.";
+    case "not_granted": return "No has permitido que la app use Claude, así que no puedo leer los documentos. Rellena los datos a mano.";
+    case "sampling_disabled": return "Claude no está disponible en esta cuenta. Rellena los datos a mano.";
     case "rate_limited": return "Has llegado al límite de uso de Claude por ahora. Rellena los datos a mano o inténtalo más tarde.";
-    case "prompt_too_large": return "Los documentos son demasiado largos para leerlos de una vez. Rellena los datos a mano abajo.";
-    case "invalid_json": return "No he podido interpretar la respuesta de Claude. Rellena los datos a mano abajo.";
-    default: return "No he podido leer los documentos con Claude (" + ((e && e.code) || "error") + "). Rellena los datos a mano abajo.";
+    case "prompt_too_large": return "Los documentos son demasiado largos para leerlos de una vez. Rellena los datos a mano.";
+    case "invalid_json": return "No he podido interpretar la respuesta de Claude. Rellena los datos a mano.";
+    case "image_rejected": return "Alguna imagen no se ha podido enviar a Claude. Rellena los datos a mano.";
+    default: return "No he podido leer los documentos con Claude (" + ((e && e.code) || "error") + "). Rellena los datos a mano.";
   }
 }
 
-/* ---------- tabs ---------- */
-document.querySelectorAll("nav.tabs button").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
-function showTab(t) {
-  document.querySelectorAll("nav.tabs button").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === t)));
-  $("p-rec").hidden = t !== "rec"; $("p-lotes").hidden = t !== "lotes"; $("p-ventas").hidden = t !== "ventas";
+/* ---------- navegación ---------- */
+const VIEWS = ["home", "recepciones", "lotes", "ventas", "gastos"];
+function go(v) { if (!VIEWS.includes(v)) v = "home"; try { history.replaceState(null, "", v === "home" ? location.pathname : "#" + v); } catch {} show(v); }
+function show(v) {
+  for (const x of VIEWS) $("v-" + x).hidden = x !== v;
+  window.scrollTo(0, 0);
+  if (v === "home") renderHome();
+}
+document.addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); });
+$("go-home").addEventListener("click", () => go("home"));
+window.addEventListener("hashchange", () => show(VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home"));
+
+/* ---------- menú ---------- */
+function renderHome() {
+  const ym = todayISO().slice(0, 7);
+  const recMes = state.recepciones.filter((r) => String(r.fecha || "").startsWith(ym)).length;
+  $("h-rec").textContent = recMes;
+  $("h-rec-cap").textContent = recMes === 1 ? "recepción este mes" : "recepciones este mes";
+  $("h-lot").textContent = state.recepciones.length;
+  $("h-lot-cap").textContent = state.recepciones.length === 1 ? "lote registrado" : "lotes registrados";
+  $("h-ven").textContent = state.ventas.filter((v) => String(v.fecha || "").startsWith(ym)).reduce((s, v) => s + (Number(v.unidades) || 0), 0);
+  const gm = state.gastos.filter((g) => String(g.fecha || "").startsWith(ym) && (g.moneda || "EUR") === "EUR");
+  $("h-gas").textContent = money(gm.reduce((s, g) => s + (Number(g.total) || 0), 0));
+  const pendientes = state.recepciones.filter((r) => r.checks && ["coa", "factura"].some((k) => r.checks[k] && r.checks[k].estado !== "ok" && r.checks[k].estado !== "na"));
+  const box = $("h-pend");
+  if (!pendientes.length) { box.hidden = true; return; }
+  box.hidden = false;
+  box.innerHTML = `<h3>Documentación pendiente</h3><p class="hint">A estos lotes les falta el certificado de análisis o la factura, o hay algo que revisar.</p>
+    <div class="lots">${sortDesc(pendientes, "id").slice(0, 5).map((r) => `<button class="lotcard" type="button" data-open-lot="${esc(r.id)}"><span class="lot">${esc(r.id)}</span><span><b>${esc(r.producto || "")}</b><br><span class="meta">${esc(r.proveedor || "")} · recibido ${esc(fmtDate(r.fecha))}</span></span><span class="chip warn">Revisar</span></button>`).join("")}</div>`;
+}
+document.addEventListener("click", (e) => { const b = e.target.closest("[data-open-lot]"); if (b) { state.selected = b.dataset.openLot; go("lotes"); renderDetail(state.selected); } });
+
+/* ---------- lectura de documentos (PDF con texto o escaneado, fotos) ---------- */
+function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = () => rej(new Error("No se pudo cargar " + src)); document.head.appendChild(s); }); }
+let pdfReady = null;
+function loadPdfJs() {
+  if (!pdfReady) pdfReady = (async () => {
+    await loadScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js");
+    await loadScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js");
+    return window.pdfjsLib;
+  })().catch((e) => { pdfReady = null; throw e; });
+  return pdfReady;
+}
+function withImages(opts, imgs) { if (imgs && imgs.length) opts.images = imgs; return opts; }
+function canvasToBlob(c) { return new Promise((res) => c.toBlob((b) => res(b), "image/jpeg", 0.85)); }
+// Devuelve el texto del documento y, si hace falta, imágenes de sus páginas para que Claude las vea.
+async function readLocal(file, maxPages = 3) {
+  const type = file.type || "";
+  if (type.startsWith("image/")) return { texto: "", images: [file] };
+  if (type !== "application/pdf" && !/\.pdf$/i.test(file.name)) return { texto: "", images: [] };
+  const pdfjs = await loadPdfJs();
+  const pdf = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()), isEvalSupported: false }).promise;
+  let texto = ""; const images = [];
+  const n = Math.min(pdf.numPages, 6);
+  for (let i = 1; i <= n; i++) {
+    const page = await pdf.getPage(i);
+    const tc = await page.getTextContent();
+    texto += tc.items.map((it) => it.str).join(" ") + "\n";
+  }
+  // Si el PDF casi no tiene texto (escaneado), mandamos fotos de las primeras páginas.
+  if (texto.replace(/\s+/g, "").length < 80 * Math.min(n, 2)) {
+    for (let i = 1; i <= Math.min(pdf.numPages, maxPages); i++) {
+      const page = await pdf.getPage(i);
+      const v1 = page.getViewport({ scale: 1 });
+      const vp = page.getViewport({ scale: Math.min(2.2, 1500 / v1.width) });
+      const c = document.createElement("canvas"); c.width = vp.width; c.height = vp.height;
+      await page.render({ canvasContext: c.getContext("2d"), viewport: vp }).promise;
+      const b = await canvasToBlob(c); if (b) images.push(b);
+    }
+  }
+  return { texto: texto.slice(0, 14000), images };
 }
 
-/* ---------- lote interno ---------- */
-function lotPrefix(iso) { return "MM-" + iso.slice(2, 4) + iso.slice(5, 7) + iso.slice(8, 10); }
-function nextLot(iso) {
-  const p = lotPrefix(iso);
-  let max = 0;
-  for (const r of state.recepciones) if (r.id.startsWith(p + "-")) max = Math.max(max, parseInt(r.id.slice(p.length + 1), 10) || 0);
-  return p + "-" + String(max + 1).padStart(2, "0");
-}
-function refreshNextLot() { const d = $("r-fecha").value; $("next-lot").textContent = d ? nextLot(d) : "—"; }
-
-/* ---------- reception form ---------- */
-$("r-fecha").value = todayISO();
-$("s-fecha").value = todayISO();
-$("r-fecha").addEventListener("change", refreshNextLot);
-$("ctrl-grid").innerHTML = CONTROLS.map(([k, l]) => `<label class="f">${esc(l)}<select id="ctrl-${k}"><option value="">Sin revisar</option><option>Sí</option><option>No</option></select></label>`).join("");
-
-function renderFiles() {
-  $("file-list").innerHTML = state.files.map((f, i) => `<li><span>${esc(f.name)} · ${(f.size / 1024).toFixed(0)} KB</span><button class="btn small" type="button" data-rm="${i}">Quitar</button></li>`).join("");
-}
-$("file-list").addEventListener("click", (e) => { const i = e.target.dataset.rm; if (i !== undefined) { state.files.splice(+i, 1); renderFiles(); } });
-$("r-files").addEventListener("change", (e) => { state.files.push(...e.target.files); e.target.value = ""; renderFiles(); });
-const drop = $("drop");
-drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("over"); });
-drop.addEventListener("dragleave", () => drop.classList.remove("over"));
-drop.addEventListener("drop", (e) => { e.preventDefault(); drop.classList.remove("over"); state.files.push(...e.dataTransfer.files); renderFiles(); });
-
-function setProgress(steps) {
-  const ul = $("progress"); ul.hidden = false;
-  ul.innerHTML = steps.map((s) => `<li class="${s.st || ""}">${esc(s.t)}</li>`).join("");
-}
-function toB64(file) {
-  return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(",")[1]); r.onerror = () => rej(r.error); r.readAsDataURL(file); });
-}
-function safeName(n) { return n.replace(/[\\/:*?"<>|]+/g, "_"); }
-
+/* ---------- Drive ---------- */
+function toB64(file) { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(",")[1]); r.onerror = () => rej(r.error); r.readAsDataURL(file); }); }
+function safeName(n) { return String(n).replace(/[\\/:*?"<>|]+/g, "_").replace(/\s+/g, " ").trim(); }
+function extOf(f) { const m = /\.([a-z0-9]{2,5})$/i.exec(f.name || ""); return m ? m[1].toLowerCase() : (f.type === "application/pdf" ? "pdf" : (f.type || "").split("/")[1] || "pdf"); }
 async function uploadToDrive(file, title, parentId) {
   const type = file.type || "application/pdf";
   let base64Content;
-  if (fileArgs) base64Content = { $file: { data: file, name: safeName(file.name), type } };
+  if (fileArgs) base64Content = { $file: { data: file, name: safeName(file.name) || ("documento." + extOf(file)), type } };
   else {
-    if (file.size > 700 * 1024) throw { code: "too_big", message: `${file.name} pesa demasiado para subirlo desde aquí (máx. 700 KB en esta vista). Súbelo tú a Drive.` };
+    if (file.size > 700 * 1024) throw { code: "too_big", message: `${file.name} pesa ${(file.size / 1048576).toFixed(1)} MB y desde esta vista solo puedo subir hasta 0,7 MB. Súbelo tú a la carpeta de Drive.` };
     base64Content = await toB64(file);
   }
   const r = await mcp.callTool(DRIVE, "create_file", { title, parentId, contentMimeType: type, base64Content, disableConversionToGoogleType: true });
@@ -348,73 +502,16 @@ async function readFromDrive(fileId) {
   const p = r.payload;
   return (p && typeof p === "object" ? p.fileContent : p) || "";
 }
-
-$("rec-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const fecha = $("r-fecha").value;
-  if (!fecha) return;
-  const lote = nextLot(fecha);
-  const month = parseInt(fecha.slice(5, 7), 10);
-  let folder = ROOT_FOLDER;
-  const btn = $("btn-analyze"); btn.disabled = true; $("rec-msg").innerHTML = "";
-  const form = {
-    fecha, producto: $("r-producto").value.trim(), proveedor: $("r-proveedor").value.trim(),
-    cantidad: $("r-cantidad").value.trim(), notas: $("r-notas").value.trim(), responsable: $("r-resp").value.trim(),
-    controles: Object.fromEntries(CONTROLS.map(([k]) => [k, $("ctrl-" + k).value]))
-  };
-  const docs = []; const warnings = [];
-  const steps = [
-    { t: `Subir ${state.files.length} documento(s) a Drive (${folderName(month)})` },
-    { t: "Leer los documentos" },
-    { t: "Extraer datos y revisar certificados con Claude" }
-  ];
-  try {
-    // 1. upload
-    steps[0].st = "now"; setProgress(steps);
-    if (mcp) {
-      try { folder = await monthFolder(fecha); }
-      catch (err) { warnings.push("No he podido preparar la carpeta del mes; guardo en la carpeta principal. " + mcpError(err, DRIVE)); }
-    }
-    if (state.files.length && !mcp) warnings.push("Drive no está disponible en esta vista: los documentos no se han subido.");
-    if (mcp) for (const f of state.files) {
-      try {
-        const p = await uploadToDrive(f, `${lote} · ${f.name}`, folder);
-        docs.push({ nombre: f.name, id: p.id || "", url: p.viewUrl || "", mime: f.type });
-      } catch (err) {
-        warnings.push(err.code === "too_big" ? err.message : `${f.name}: ${mcpError(err, DRIVE)}`);
-        docs.push({ nombre: f.name, id: "", url: "", mime: f.type, error: true });
-      }
-    }
-    steps[0].st = "done"; steps[1].st = "now"; setProgress(steps);
-    // 2. read
-    const texts = [];
-    for (const d of docs) {
-      if (!d.id) continue;
-      try { texts.push({ nombre: d.nombre, texto: String(await readFromDrive(d.id)).slice(0, 14000) }); }
-      catch (err) { warnings.push(`No he podido leer ${d.nombre}: ${mcpError(err, DRIVE)}`); }
-    }
-    steps[1].st = "done"; steps[2].st = "now"; setProgress(steps);
-    // 3. extract
-    let ai = null;
-    if (sample) {
-      try { ai = await sample.json(buildPrompt(form, texts), { modelTier: "default", cache: false }); }
-      catch (err) { warnings.push(sampleError(err)); }
-    } else warnings.push("Claude no está disponible en esta vista. Rellena los datos a mano abajo.");
-    steps[2].st = ai ? "done" : "err"; setProgress(steps);
-    state.draft = buildDraft(lote, folder, form, docs, ai);
-    renderReview(warnings);
-  } catch (err) {
-    $("rec-msg").innerHTML = `<div class="msg bad">${esc(err.message || String(err))}</div>`;
-  } finally { btn.disabled = false; }
-});
-
-function folderName(m) { return MESES[m] || "TRAZABILIDAD MOOD MATCHA"; }
-
-async function findOrCreateFolder(title, parentId) {
-  const query = `parentId = '${parentId}' and title = '${title}' and mimeType = 'application/vnd.google-apps.folder'`;
+const qq = (s) => String(s).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+async function findFolder(title, parentId) {
+  const query = `parentId = '${qq(parentId)}' and title = '${qq(title)}' and mimeType = 'application/vnd.google-apps.folder'`;
   const r = await mcp.callTool(DRIVE, "search_files", { query, excludeContentSnippets: true, pageSize: 5 }, { cache: false });
-  const found = (r.payload && r.payload.files) || [];
-  if (found.length && found[0].id) return found[0].id;
+  const found = ((r.payload && r.payload.files) || []).filter((f) => !f.trashed);
+  return found.length ? found[0].id : null;
+}
+async function findOrCreateFolder(title, parentId) {
+  const id = await findFolder(title, parentId);
+  if (id) return id;
   const c = await mcp.callTool(DRIVE, "create_file", { title, parentId, contentMimeType: "application/vnd.google-apps.folder" });
   if (!c.payload || !c.payload.id) throw { code: "tool_error", message: "Drive no ha devuelto la carpeta creada." };
   return c.payload.id;
@@ -426,19 +523,134 @@ async function monthFolder(iso) {
   folderCache[key] = await findOrCreateFolder(MESES[parseInt(iso.slice(5, 7), 10)], folderCache[y]);
   return folderCache[key];
 }
+async function gastosFolder(iso) {
+  const y = iso.slice(0, 4), m = parseInt(iso.slice(5, 7), 10), key = "g-" + y + "-" + iso.slice(5, 7);
+  if (folderCache[key]) return folderCache[key];
+  let mm = CONTA_MM[y];
+  if (!mm) {
+    const conta = await findOrCreateFolder("Contabilidad " + y, "root");
+    mm = CONTA_MM[y] = await findOrCreateFolder("MOOD MATCHA", conta);
+  }
+  const t = await findOrCreateFolder(Math.ceil(m / 3) + "T", mm);
+  const mes = await findOrCreateFolder(MESES[m], t);
+  folderCache[key] = await findOrCreateFolder("Gastos", mes);
+  return folderCache[key];
+}
 
-function buildPrompt(form, texts) {
+/* ---------- recepciones ---------- */
+function lotPrefix(iso) { return "MM-" + iso.slice(2, 4) + iso.slice(5, 7) + iso.slice(8, 10); }
+function nextLot(iso) {
+  const p = lotPrefix(iso); let max = 0;
+  for (const r of state.recepciones) if (r.id.startsWith(p + "-")) max = Math.max(max, parseInt(r.id.slice(p.length + 1), 10) || 0);
+  return p + "-" + String(max + 1).padStart(2, "0");
+}
+function refreshNextLot() { const d = $("r-fecha").value; $("next-lot").textContent = d ? nextLot(d) : "—"; }
+$("r-fecha").value = todayISO();
+$("s-fecha").value = todayISO();
+$("r-fecha").addEventListener("change", refreshNextLot);
+$("ctrl-grid").innerHTML = CONTROLS.map(([k, l]) => `<label class="f">${esc(l)}<select id="ctrl-${k}"><option value="">Sin revisar</option><option>Sí</option><option>No</option></select></label>`).join("");
+$("btn-new-rec").addEventListener("click", () => { $("rec-form").hidden = false; $("review").hidden = true; refreshNextLot(); $("rec-form").scrollIntoView({ behavior: "smooth", block: "start" }); });
+$("btn-rec-close").addEventListener("click", () => { $("rec-form").hidden = true; $("progress").hidden = true; });
+
+function renderFiles() {
+  $("file-list").innerHTML = state.files.map((f, i) => `<li><span>${esc(f.name)} · ${(f.size / 1024).toFixed(0)} KB</span><button class="btn small" type="button" data-rm="${i}">Quitar</button></li>`).join("");
+}
+$("file-list").addEventListener("click", (e) => { const i = e.target.dataset.rm; if (i !== undefined) { state.files.splice(+i, 1); renderFiles(); } });
+$("r-files").addEventListener("change", (e) => { state.files.push(...e.target.files); e.target.value = ""; renderFiles(); });
+function wireDrop(el, onFiles) {
+  el.addEventListener("dragover", (e) => { e.preventDefault(); el.classList.add("over"); });
+  el.addEventListener("dragleave", () => el.classList.remove("over"));
+  el.addEventListener("drop", (e) => { e.preventDefault(); el.classList.remove("over"); onFiles([...e.dataTransfer.files]); });
+}
+wireDrop($("drop"), (fs) => { state.files.push(...fs); renderFiles(); });
+
+function setProgress(steps) {
+  const ul = $("progress"); ul.hidden = false;
+  ul.innerHTML = steps.map((s) => `<li class="${s.st || ""}">${esc(s.t)}</li>`).join("");
+}
+
+$("rec-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const fecha = $("r-fecha").value; if (!fecha) return;
+  const lote = nextLot(fecha);
+  const month = parseInt(fecha.slice(5, 7), 10);
+  let folder = ROOT_FOLDER;
+  const btn = $("btn-analyze"); btn.disabled = true; $("rec-msg").innerHTML = "";
+  const form = {
+    fecha, producto: $("r-producto").value.trim(), proveedor: $("r-proveedor").value.trim(),
+    cantidad: $("r-cantidad").value.trim(), notas: $("r-notas").value.trim(), responsable: $("r-resp").value.trim(),
+    controles: Object.fromEntries(CONTROLS.map(([k]) => [k, $("ctrl-" + k).value]))
+  };
+  const docs = []; const warnings = []; const texts = []; let images = [];
+  const steps = [
+    { t: `Guardar ${state.files.length} documento(s) en Drive (${MESES[month]})` },
+    { t: "Leer los documentos" },
+    { t: "Extraer datos y revisar certificados con Claude" }
+  ];
+  try {
+    steps[0].st = "now"; setProgress(steps);
+    if (mcp) {
+      try { folder = await monthFolder(fecha); }
+      catch (err) { warnings.push("No he podido preparar la carpeta del mes; guardo en la carpeta principal. " + mcpError(err, DRIVE)); }
+    } else if (state.files.length) warnings.push("Drive no está disponible en esta vista: los documentos no se han guardado.");
+    if (mcp) for (const f of state.files) {
+      try {
+        const p = await uploadToDrive(f, `${lote} · ${f.name}`, folder);
+        docs.push({ nombre: f.name, id: p.id || "", url: p.viewUrl || "", mime: f.type });
+      } catch (err) {
+        warnings.push(`${f.name} no se ha guardado en Drive: ${mcpError(err, DRIVE)}`);
+        docs.push({ nombre: f.name, id: "", url: "", mime: f.type, error: true });
+      }
+    }
+    steps[0].st = "done"; steps[1].st = "now"; setProgress(steps);
+    for (let i = 0; i < state.files.length; i++) {
+      const f = state.files[i];
+      try {
+        const r = await readLocal(f);
+        if (r.texto.trim() || r.images.length) {
+          texts.push({ nombre: f.name, texto: r.texto.trim() || "(documento escaneado: lo tienes en las imágenes adjuntas)" });
+          images.push(...r.images.map((b) => ({ b, nombre: f.name })));
+        } else if (docs[i] && docs[i].id) {
+          texts.push({ nombre: f.name, texto: String(await readFromDrive(docs[i].id)).slice(0, 14000) });
+        }
+      } catch (err) {
+        if (docs[i] && docs[i].id) {
+          try { texts.push({ nombre: f.name, texto: String(await readFromDrive(docs[i].id)).slice(0, 14000) }); continue; } catch {}
+        }
+        warnings.push(`No he podido leer ${f.name}: ${err.code ? mcpError(err, DRIVE) : (err.message || "error")}`);
+      }
+    }
+    if (images.length > imgLimit) {
+      if (imgLimit === 0) warnings.push("En esta vista no puedo enviar imágenes a Claude, así que los documentos escaneados no se han leído.");
+      else warnings.push(`Hay muchas páginas escaneadas; Claude solo ha mirado las ${imgLimit} primeras.`);
+      images = images.slice(0, imgLimit);
+    }
+    steps[1].st = "done"; steps[2].st = "now"; setProgress(steps);
+    let ai = null;
+    if (sample) {
+      try { ai = await sample.json(buildPrompt(form, texts, images), withImages({ modelTier: "default", cache: false }, images.map((x) => x.b))); }
+      catch (err) { warnings.push(sampleError(err)); }
+    } else warnings.push("Claude no está disponible en esta vista. Rellena los datos a mano abajo.");
+    steps[2].st = ai ? "done" : "err"; setProgress(steps);
+    state.draft = buildDraft(lote, folder, form, docs, ai);
+    renderReview(warnings);
+  } catch (err) {
+    $("rec-msg").innerHTML = `<div class="msg bad">${esc(err.message || String(err))}</div>`;
+  } finally { btn.disabled = false; }
+});
+
+function buildPrompt(form, texts, images) {
   return `Eres el responsable de calidad de Mood Matcha, una marca española que importa matcha (té verde en polvo) de proveedores de Alibaba.
-Te paso los datos que ha escrito la usuaria al recibir un pedido y el texto de los documentos que ha recibido (factura, certificado de análisis, etc.).
+Te paso los datos que ha escrito la usuaria al recibir un pedido, el texto de los documentos recibidos (factura, certificado de análisis, etc.)${images.length ? ` y ${images.length} imagen(es) de páginas escaneadas o fotos (en el mismo orden: ${images.map((x) => x.nombre).join(", ")})` : ""}.
 Extrae los datos para el informe de recepción y revisa la documentación.
 
 REGLAS:
 - No inventes nada. Si un dato no aparece, pon null.
 - Lo que ha escrito la usuaria tiene prioridad sobre los documentos, salvo que sea claramente un error (dilo en incidencias).
 - Fechas en formato AAAA-MM-DD si puedes.
-- Para cada documento de la lista "checks", estado: "ok" (está y es correcto), "pendiente" (no lo han enviado), "revisar" (está pero hay algo raro: lote que no coincide, resultado fuera de límite, plaguicida detectado, caducado, no es de este producto), "na" (no aplica, p. ej. ecológico si el producto no es ecológico).
+- Para cada documento de "checks", estado: "ok" SOLO si el documento está entre los recibidos y es correcto; "pendiente" si NO lo han enviado o no se puede leer; "revisar" si está pero hay algo raro (lote que no coincide, resultado fuera de límite, plaguicida detectado, caducado, no es de este producto); "na" si no aplica (p. ej. ecológico si el producto no es ecológico). Si no hay documento, NUNCA pongas "ok".
 - En la nota de cada check: qué documento es y el dato clave (p. ej. "COA nº 123, plomo 0,3 mg/kg"). Si no estás seguro de si un valor cumple el límite legal, escribe "revisar con Reglamento (CE) 396/2005 / (UE) 2023/915" y estado "revisar".
-- "coincide": compara el lote del certificado con el lote de la mercancía / factura.
+- "coincide": compara el lote del certificado con el lote de la mercancía / factura. Sin certificado, "pendiente".
 - resultado: "ACEPTADO", "ACEPTADO CON OBSERVACIONES" o "RECHAZADO". Si falta el COA o algo está en "revisar", como mucho "ACEPTADO CON OBSERVACIONES".
 
 Responde SOLO con un objeto JSON con esta forma:
@@ -462,15 +674,12 @@ function buildDraft(lote, folder, form, docs, ai) {
   if (form.cantidad) f.cantidad = form.cantidad;
   if (form.responsable) f.responsable = form.responsable;
   const checks = {};
-  for (const [k] of CHECKS) {
-    const c = ai.checks && ai.checks[k];
-    checks[k] = { estado: normEstado(c && c.estado), nota: (c && c.nota) || "" };
-  }
+  for (const [k] of CHECKS) { const c = ai.checks && ai.checks[k]; checks[k] = { estado: normEstado(c && c.estado), nota: (c && c.nota) || "" }; }
   const controlNo = CONTROLS.filter(([k]) => form.controles[k] === "No").map(([, l]) => l);
   const inc = Array.isArray(ai.incidencias) ? ai.incidencias.slice() : [];
   if (controlNo.length) inc.push("Control en recepción NO conforme: " + controlNo.join("; "));
   let resultado = ["ACEPTADO", "ACEPTADO CON OBSERVACIONES", "RECHAZADO"].includes(ai.resultado) ? ai.resultado : "ACEPTADO CON OBSERVACIONES";
-  if (controlNo.length && resultado === "ACEPTADO") resultado = "ACEPTADO CON OBSERVACIONES";
+  if ((controlNo.length || checks.coa.estado !== "ok") && resultado === "ACEPTADO") resultado = "ACEPTADO CON OBSERVACIONES";
   return { lote, folder, fecha: form.fecha, notas: form.notas, controles: form.controles, docs, fields: f, checks, incidencias: inc.join("\n"), resultado };
 }
 
@@ -488,7 +697,6 @@ function renderReview(warnings) {
   $("review").hidden = false;
   $("review").scrollIntoView({ behavior: "smooth", block: "start" });
 }
-
 $("btn-cancel").addEventListener("click", () => { state.draft = null; $("review").hidden = true; $("progress").hidden = true; });
 
 $("review").addEventListener("submit", async (e) => {
@@ -502,10 +710,7 @@ $("review").addEventListener("submit", async (e) => {
   let informe = { id: "", url: "" }; let driveErr = "";
   if (mcp) {
     try {
-      const r = await mcp.callTool(DRIVE, "create_file", {
-        title: `Recepción ${d.lote} · ${d.fields.producto || "Matcha"} · ${fmtDate(d.fecha).replace(/\//g, "-")}`,
-        parentId: d.folder, contentMimeType: "text/html", textContent: reportHTML(d)
-      });
+      const r = await mcp.callTool(DRIVE, "create_file", { title: `Recepción ${d.lote} · ${d.fields.producto || "Matcha"} · ${fmtDate(d.fecha).replace(/\//g, "-")}`, parentId: d.folder, contentMimeType: "text/html", textContent: reportHTML(d) });
       informe = { id: (r.payload && r.payload.id) || "", url: (r.payload && r.payload.viewUrl) || "" };
     } catch (err) { driveErr = mcpError(err, DRIVE); }
   } else driveErr = "Drive no está disponible en esta vista.";
@@ -515,24 +720,34 @@ $("review").addEventListener("submit", async (e) => {
       lote: d.lote, fecha: d.fecha, ...d.fields, notas: d.notas, controles: d.controles, checks: d.checks,
       incidencias: d.incidencias, resultado: d.resultado, docs: d.docs, informeUrl: informe.url, informeId: informe.id, creado: new Date().toISOString()
     });
-    $("rv-msg").innerHTML = (informe.url
+    const msg = informe.url
       ? `<div class="msg ok">Lote <b>${esc(d.lote)}</b> registrado. <a href="${esc(informe.url)}" target="_blank" rel="noopener">Abrir informe en Drive</a></div>`
-      : `<div class="msg warn">Lote <b>${esc(d.lote)}</b> guardado en la app, pero el informe no se ha creado en Drive: ${esc(driveErr)} Puedes crearlo más tarde desde la pestaña Lotes.</div>`);
+      : `<div class="msg warn">Lote <b>${esc(d.lote)}</b> guardado en la app, pero el informe no se ha creado en Drive: ${esc(driveErr)} Puedes crearlo desde Lotes.</div>`;
     state.files = []; renderFiles(); $("rec-form").reset(); $("r-fecha").value = todayISO();
-    $("progress").hidden = true; state.draft = null; btn.hidden = true;
-    setTimeout(() => { $("review").hidden = true; btn.hidden = false; $("rec-msg").innerHTML = $("rv-msg").innerHTML; refreshNextLot(); }, 2500);
+    $("progress").hidden = true; state.draft = null;
+    $("review").hidden = true; $("rec-form").hidden = true;
+    $("rec-hist-msg") && $("rec-hist-msg").remove();
+    $("rec-table").insertAdjacentHTML("beforebegin", `<div id="rec-hist-msg">${msg}</div>`);
   } catch (err) {
     $("rv-msg").innerHTML = `<div class="msg bad">${esc(err.message || "No se ha podido guardar.")}</div>`;
   } finally { btn.disabled = false; }
 });
 
-/* ---------- report HTML (becomes a Google Doc) ---------- */
-const H = 'style="color:#46682c;font-family:Arial,sans-serif"';
+function renderRecTable() {
+  const list = sortDesc(state.recepciones, "id");
+  $("rec-table").innerHTML = list.length ? `<table><thead><tr><th>Lote</th><th>Recibido</th><th>Producto</th><th>Proveedor</th><th>Cantidad</th><th>Resultado</th><th>Informe</th></tr></thead><tbody>${list.map((r) => {
+    const cls = r.resultado === "ACEPTADO" ? "ok" : r.resultado === "RECHAZADO" ? "bad" : "warn";
+    return `<tr class="click" data-open-lot="${esc(r.id)}"><td><span class="lot">${esc(r.id)}</span></td><td>${esc(fmtDate(r.fecha))}</td><td>${esc(r.producto)}</td><td>${esc(r.proveedor)}</td><td>${esc(r.cantidad)}</td><td><span class="chip ${cls}">${esc(r.resultado || "—")}</span></td><td>${r.informeUrl ? `<a href="${esc(r.informeUrl)}" target="_blank" rel="noopener">Abrir</a>` : "—"}</td></tr>`;
+  }).join("")}</tbody></table>` : `<div class="empty">Aún no hay recepciones. Pulsa «Nueva recepción» cuando te llegue un pedido.</div>`;
+}
+
+/* ---------- informes (se convierten en Google Docs) ---------- */
+const H = 'style="color:#4a7a2c;font-family:Arial,sans-serif"';
 const T = 'border="1" cellpadding="6" style="border-collapse:collapse;width:100%;font-family:Arial,sans-serif;font-size:10.5pt"';
 function rows(pairs) { return pairs.map(([l, v]) => `<tr><td width="38%"><b>${esc(l)}</b></td><td>${esc(pend(v))}</td></tr>`).join(""); }
 function reportHTML(d) {
   const f = d.fields;
-  const docsList = d.docs.length ? d.docs.map((x) => `<li>${x.url ? `<a href="${esc(x.url)}">${esc(x.nombre)}</a>` : esc(x.nombre) + " (no subido)"}</li>`).join("") : "<li>Ningún documento adjuntado</li>";
+  const docsList = d.docs.length ? d.docs.map((x) => `<li>${x.url ? `<a href="${esc(x.url)}">${esc(x.nombre)}</a>` : esc(x.nombre) + " (no guardado en Drive)"}</li>`).join("") : "<li>Ningún documento adjuntado</li>";
   return `<html><body style="font-family:Arial,sans-serif;font-size:11pt">
 <h1 ${H}>MOOD MATCHA · Informe de recepción de mercancía</h1>
 <p><b>Lote interno:</b> ${esc(d.lote)} &nbsp;·&nbsp; <b>Fecha de recepción:</b> ${esc(fmtDate(d.fecha))} &nbsp;·&nbsp; <b>Resultado:</b> ${esc(d.resultado)}</p>
@@ -542,7 +757,7 @@ function reportHTML(d) {
 <table ${T}>${rows([["Producto", f.producto], ["Lote del proveedor", f.loteProveedor], ["Lote interno Mood Matcha", d.lote], ["Cantidad recibida", f.cantidad], ["Formato / envase de llegada", f.formato], ["Fecha de producción", fmtDate(f.fechaProduccion)], ["Consumo preferente", fmtDate(f.consumoPreferente)], ["Ubicación en almacén", f.ubicacion]])}</table>
 <h2 ${H}>3. Documentación del proveedor</h2>
 <table ${T}><tr><th align="left">Documento</th><th align="left">Estado</th><th align="left">Observaciones</th></tr>
-${CHECKS.map(([k, l]) => `<tr><td>${esc(l)}</td><td>${esc(ESTADOS[d.checks[k].estado])}</td><td>${esc(d.checks[k].nota)}</td></tr>`).join("")}</table>
+${CHECKS.map(([k, l]) => `<tr><td>${esc(l)}</td><td>${esc(ESTADOS[d.checks[k].estado] || ESTADOS.pendiente)}</td><td>${esc(d.checks[k].nota)}</td></tr>`).join("")}</table>
 <p><b>Documentos adjuntos (Drive):</b></p><ul>${docsList}</ul>
 <h2 ${H}>4. Control en recepción</h2>
 <table ${T}>${CONTROLS.map(([k, l]) => `<tr><td width="62%">${esc(l)}</td><td>${esc(d.controles[k] || "Sin revisar")}</td></tr>`).join("")}
@@ -554,7 +769,6 @@ ${d.notas ? `<p><b>Notas de la recepción:</b> ${esc(d.notas)}</p>` : ""}
 <p style="font-size:8.5pt;color:#777">Generado con la app de trazabilidad Mood Matcha el ${esc(fmtDate(todayISO()))}. Registro conforme al art. 18 del Reglamento (CE) 178/2002. Conservar al menos 5 años.</p>
 </body></html>`;
 }
-
 function traceHTML(r, ventas) {
   const total = ventas.reduce((s, v) => s + (Number(v.unidades) || 0), 0);
   return `<html><body style="font-family:Arial,sans-serif;font-size:11pt">
@@ -575,40 +789,39 @@ ${ventas.length ? ventas.map((v) => `<tr><td>${esc(fmtDate(v.fecha))}</td><td>${
 /* ---------- lotes ---------- */
 $("q").addEventListener("input", renderLots);
 function ventasDe(lote) { return state.ventas.filter((v) => v.lote === lote); }
+function lotOptions(first) { return `<option value="">${first}</option>` + sortDesc(state.recepciones, "id").map((r) => `<option value="${esc(r.id)}">${esc(r.id)} · ${esc(r.producto || "")}</option>`).join(""); }
 function renderLots() {
   const q = $("q").value.trim().toLowerCase();
-  const list = state.recepciones.slice().sort((a, b) => (b.id > a.id ? 1 : -1)).filter((r) => {
+  const list = sortDesc(state.recepciones, "id").filter((r) => {
     if (!q) return true;
-    const hay = [r.id, r.loteProveedor, r.producto, r.proveedor, r.pedido, r.facturaNum, ...ventasDe(r.id).map((v) => v.cliente + " " + v.referencia)].join(" ").toLowerCase();
-    return hay.includes(q);
+    return [r.id, r.loteProveedor, r.producto, r.proveedor, r.pedido, r.facturaNum, ...ventasDe(r.id).map((v) => v.cliente + " " + v.referencia)].join(" ").toLowerCase().includes(q);
   });
   $("lot-list").innerHTML = list.length ? list.map((r) => {
-    const v = ventasDe(r.id); const u = v.reduce((s, x) => s + (Number(x.unidades) || 0), 0);
+    const u = ventasDe(r.id).reduce((s, x) => s + (Number(x.unidades) || 0), 0);
     const cls = r.resultado === "ACEPTADO" ? "ok" : r.resultado === "RECHAZADO" ? "bad" : "warn";
-    return `<button class="lotcard" type="button" data-lot="${esc(r.id)}"><span class="lot">${esc(r.id)}</span>
+    return `<button class="lotcard" type="button" data-open-lot="${esc(r.id)}"><span class="lot">${esc(r.id)}</span>
       <span><b>${esc(r.producto || "Producto sin nombre")}</b> · ${esc(r.cantidad || "")}<br><span class="meta">${esc(r.proveedor || "")} · lote prov. ${esc(r.loteProveedor || "—")} · recibido ${esc(fmtDate(r.fecha))}</span></span>
       <span class="conn"><span class="chip ${cls}">${esc(r.resultado || "—")}</span><span class="chip">${u} ud. vendidas</span></span></button>`;
-  }).join("") : `<div class="empty">${state.recepciones.length ? "Ningún lote coincide con la búsqueda." : "Aún no hay lotes. Registra tu primera recepción en «Nueva recepción» y aparecerá aquí."}</div>`;
-  const sel = $("s-lote"); const cur = sel.value;
-  sel.innerHTML = `<option value="">Elige lote</option>` + state.recepciones.slice().sort((a, b) => (b.id > a.id ? 1 : -1)).map((r) => `<option value="${esc(r.id)}">${esc(r.id)} · ${esc(r.producto || "")}</option>`).join("");
-  sel.value = cur;
+  }).join("") : `<div class="empty">${state.recepciones.length ? "Ningún lote coincide con la búsqueda." : "Aún no hay lotes. Registra una recepción y aparecerá aquí."}</div>`;
+  for (const id of ["s-lote", "g-lote"]) { const sel = $(id), cur = sel.value; sel.innerHTML = lotOptions(id === "s-lote" ? "Elige lote" : "Ninguno"); sel.value = cur; }
   $("dl-proveedores").innerHTML = [...new Set(state.recepciones.map((r) => r.proveedor).filter(Boolean))].map((p) => `<option>${esc(p)}</option>`).join("");
   if (state.selected) renderDetail(state.selected);
 }
-$("lot-list").addEventListener("click", (e) => { const b = e.target.closest("[data-lot]"); if (b) { state.selected = b.dataset.lot; renderDetail(b.dataset.lot); $("lot-detail").scrollIntoView({ behavior: "smooth", block: "start" }); } });
 
 function renderDetail(id) {
   const r = state.recepciones.find((x) => x.id === id); const box = $("lot-detail");
   if (!r) { box.hidden = true; return; }
-  const v = ventasDe(id).sort((a, b) => (a.fecha < b.fecha ? 1 : -1));
+  const v = sortDesc(ventasDe(id), "fecha");
+  const g = state.gastos.filter((x) => x.lote === id);
   const clientes = [...new Set(v.map((x) => x.cliente).filter(Boolean))];
   box.hidden = false;
-  box.innerHTML = `<div class="row" style="justify-content:space-between"><h2>Lote <span class="lot big">${esc(r.id)}</span></h2>
+  box.innerHTML = `<div class="row between"><h2>Lote <span class="lot big">${esc(r.id)}</span></h2>
     <div class="row">${r.informeUrl ? `<a class="btn" href="${esc(r.informeUrl)}" target="_blank" rel="noopener">Informe de recepción</a>` : `<button class="btn" type="button" id="btn-redo">Crear informe de recepción</button>`}
     <button class="btn primary" type="button" id="btn-trace">Informe de trazabilidad a Drive</button></div></div>
     <div id="detail-msg"></div>
     <dl class="kv">${[["Producto", r.producto], ["Proveedor", r.proveedor], ["País", r.pais], ["Lote del proveedor", r.loteProveedor], ["Pedido Alibaba", r.pedido], ["Factura", r.facturaNum], ["DUA", r.dua], ["Recibido", fmtDate(r.fecha)], ["Cantidad", r.cantidad], ["Consumo preferente", fmtDate(r.consumoPreferente)], ["Ubicación", r.ubicacion], ["Resultado", r.resultado], ["Incidencias", r.incidencias || "Ninguna"]].map(([l, x]) => `<dt>${esc(l)}</dt><dd>${esc(pend(x))}</dd>`).join("")}
-    <dt>Documentos</dt><dd>${(r.docs || []).length ? r.docs.map((d) => d.url ? `<a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.nombre)}</a>` : esc(d.nombre)).join(" · ") : "PENDIENTE"}</dd></dl>
+    <dt>Documentos</dt><dd>${(r.docs || []).length ? r.docs.map((d) => d.url ? `<a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.nombre)}</a>` : esc(d.nombre)).join(" · ") : "PENDIENTE"}</dd>
+    ${g.length ? `<dt>Gastos de este lote</dt><dd>${g.map((x) => `${esc(x.proveedor)} · ${esc(money(Number(x.total), x.moneda))}`).join(" · ")}</dd>` : ""}</dl>
     <h3>Ventas de este lote</h3>
     <div class="tablewrap">${salesTable(v, false)}</div>
     <p class="hint"><b>Si hubiera que retirar este lote, avisar a:</b> ${clientes.length ? clientes.map(esc).join(", ") : "nadie todavía (no hay ventas registradas)"}.</p>`;
@@ -638,20 +851,18 @@ function renderDetail(id) {
 /* ---------- ventas ---------- */
 function salesTable(v, withLot) {
   if (!v.length) return `<div class="empty">Sin ventas registradas.</div>`;
-  return `<table><thead><tr><th>Fecha</th>${withLot ? "<th>Lote</th>" : ""}<th>Canal</th><th>Cliente</th><th>Referencia</th><th>Producto</th><th class="num">Ud.</th><th></th></tr></thead><tbody>${v.map((x) => `<tr><td>${esc(fmtDate(x.fecha))}</td>${withLot ? `<td><span class="lot">${esc(x.lote)}</span></td>` : ""}<td>${esc(x.canal)}</td><td>${esc(x.cliente)}</td><td>${esc(x.referencia)}</td><td>${esc(x.formato)}</td><td class="num">${esc(x.unidades)}</td><td><button class="btn small" type="button" data-del-sale="${esc(x.id)}">Borrar</button></td></tr>`).join("")}</tbody></table>`;
+  return `<table><thead><tr><th>Fecha</th>${withLot ? "<th>Lote</th>" : ""}<th>Canal</th><th>Cliente</th><th>Referencia</th><th>Producto</th><th class="num">Ud.</th><th></th></tr></thead><tbody>${v.map((x) => `<tr><td>${esc(fmtDate(x.fecha))}</td>${withLot ? `<td><span class="lot">${esc(x.lote)}</span></td>` : ""}<td>${esc(x.canal)}</td><td>${esc(x.cliente)}</td><td>${esc(x.referencia)}</td><td>${esc(x.formato)}</td><td class="num">${esc(x.unidades)}</td><td><button class="btn small" type="button" data-del="ventas" data-id="${esc(x.id)}">Borrar</button></td></tr>`).join("")}</tbody></table>`;
 }
 function renderSales() {
-  const v = state.ventas.slice().sort((a, b) => (a.fecha < b.fecha ? 1 : -1)).slice(0, 50);
-  $("sales-table").innerHTML = salesTable(v, true);
+  $("sales-table").innerHTML = salesTable(sortDesc(state.ventas, "fecha").slice(0, 50), true);
   if (state.orders) renderOrders();
 }
 document.addEventListener("click", async (e) => {
-  const b = e.target.closest("[data-del-sale]"); if (!b || !db) return;
+  const b = e.target.closest("[data-del]"); if (!b || !db) return;
   if (b.dataset.confirm !== "1") { b.dataset.confirm = "1"; b.textContent = "¿Seguro?"; return; }
   b.disabled = true;
-  try { await db.collection("ventas").doc(b.dataset.delSale).delete(); } catch { b.textContent = "Error"; }
+  try { await db.collection(b.dataset.del).doc(b.dataset.id).delete(); } catch { b.textContent = "Error"; }
 });
-
 $("sale-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!db) { $("sale-msg").textContent = "La base de datos no está disponible."; return; }
@@ -659,7 +870,6 @@ $("sale-form").addEventListener("submit", async (e) => {
   try { await db.collection("ventas").add(data); $("sale-msg").textContent = "Venta guardada."; ["s-cliente", "s-formato", "s-unidades", "s-ref"].forEach((i) => ($(i).value = "")); }
   catch (err) { $("sale-msg").textContent = "No se ha podido guardar: " + (err.message || err.code); }
 });
-
 const pick = (o, ks) => { for (const k of ks) { const v = k.split(".").reduce((a, p) => (a == null ? a : a[p]), o); if (v != null && v !== "" && typeof v !== "object") return v; } return ""; };
 $("btn-shop").addEventListener("click", async () => {
   const out = $("shop-out");
@@ -677,15 +887,15 @@ function orderKey(o) { return String(pick(o, ["name", "id"])).replace(/[^A-Za-z0
 function renderOrders() {
   const out = $("shop-out"); const orders = state.orders || [];
   if (!orders.length) { out.innerHTML = `<div class="empty">No hay pedidos en Shopify todavía. Cuando entren, aparecerán aquí.</div>`; return; }
-  const lotOpts = `<option value="">Lote…</option>` + state.recepciones.slice().sort((a, b) => (b.id > a.id ? 1 : -1)).map((r) => `<option value="${esc(r.id)}">${esc(r.id)}</option>`).join("");
+  const opts = lotOptions("Lote…");
   out.innerHTML = `<div class="tablewrap"><table><thead><tr><th>Pedido</th><th>Fecha</th><th>Cliente</th><th class="num">Total</th><th>Lote</th><th>Ud.</th><th></th></tr></thead><tbody>${orders.map((o) => {
     const key = orderKey(o); const done = state.ventas.filter((v) => v.shopifyKey === key);
-    const name = pick(o, ["name", "id"]); const fecha = String(pick(o, ["createdAt", "created_at", "processedAt", "date"])).slice(0, 10);
+    const fecha = String(pick(o, ["createdAt", "created_at", "processedAt", "date"])).slice(0, 10);
     const cliente = pick(o, ["customer.displayName", "customer.name", "customerName", "customer", "email"]);
     const total = pick(o, ["totalPrice", "total", "totalPriceSet.shopMoney.amount", "totalPriceSet.amount", "total_price"]);
-    return `<tr><td>${esc(name)}</td><td>${esc(fmtDate(fecha))}</td><td>${esc(cliente)}</td><td class="num">${esc(total)}</td>
+    return `<tr><td>${esc(pick(o, ["name", "id"]))}</td><td>${esc(fmtDate(fecha))}</td><td>${esc(cliente)}</td><td class="num">${esc(total)}</td>
       ${done.length ? `<td colspan="3">${done.map((d) => `<span class="lot">${esc(d.lote)}</span> ${esc(d.unidades)} ud.`).join(" ")}</td>`
-      : `<td><select id="ol-${esc(key)}">${lotOpts}</select></td><td><input id="ou-${esc(key)}" type="number" min="1" value="1" style="width:70px"></td><td><button class="btn small" type="button" data-assign="${esc(key)}">Asignar</button></td>`}</tr>`;
+      : `<td><select id="ol-${esc(key)}">${opts}</select></td><td><input id="ou-${esc(key)}" type="number" min="1" value="1" style="width:70px"></td><td><button class="btn small" type="button" data-assign="${esc(key)}">Asignar</button></td>`}</tr>`;
   }).join("")}</tbody></table></div>`;
 }
 $("shop-out").addEventListener("click", async (e) => {
@@ -700,22 +910,155 @@ $("shop-out").addEventListener("click", async (e) => {
       cliente: String(pick(o, ["customer.displayName", "customer.name", "customerName", "customer", "email"])) || "Cliente online",
       referencia: String(pick(o, ["name", "id"])), formato: "", unidades, shopifyKey: key, creado: new Date().toISOString()
     });
-  } catch (err) { b.disabled = false; b.textContent = "Error"; }
+  } catch { b.disabled = false; b.textContent = "Error"; }
 });
 
-/* ---------- boot ---------- */
+/* ---------- gastos ---------- */
+$("g-categoria").innerHTML = CATEGORIAS.map((c) => `<option>${esc(c)}</option>`).join("");
+$("g-mes").value = todayISO().slice(0, 7);
+$("g-fecha").value = todayISO();
+$("g-mes").addEventListener("change", renderGastos);
+function resetGasto() {
+  $("gasto-form").reset(); state.gfile = null; $("g-file-list").innerHTML = ""; $("g-msg").innerHTML = "";
+  $("g-fecha").value = todayISO(); $("g-categoria").value = CATEGORIAS[0]; $("g-ivapct").value = "21";
+}
+$("btn-new-gasto").addEventListener("click", () => { resetGasto(); $("gasto-form").hidden = false; $("gasto-form").scrollIntoView({ behavior: "smooth", block: "start" }); });
+$("btn-g-cancel").addEventListener("click", () => { $("gasto-form").hidden = true; });
+function setGFile(f) {
+  state.gfile = f || null;
+  $("g-file-list").innerHTML = f ? `<li><span>${esc(f.name)} · ${(f.size / 1024).toFixed(0)} KB</span><button class="btn small" type="button" id="g-rm">Quitar</button></li>` : "";
+  const rm = $("g-rm"); if (rm) rm.onclick = () => setGFile(null);
+}
+$("g-file").addEventListener("change", (e) => { setGFile(e.target.files[0]); e.target.value = ""; });
+wireDrop($("g-drop"), (fs) => setGFile(fs[0]));
+// Si el usuario cambia base o IVA, recalculamos la cuota y el total.
+function recalc(from) {
+  const base = toNum($("g-base").value), pct = Number($("g-ivapct").value), iva = toNum($("g-iva").value), total = toNum($("g-total").value);
+  if (from === "total" && isFinite(total) && !isFinite(base)) { const b = total / (1 + pct / 100); $("g-base").value = fmt2(b); $("g-iva").value = fmt2(total - b); return; }
+  if ((from === "base" || from === "pct") && isFinite(base)) { const i = base * pct / 100; $("g-iva").value = fmt2(i); $("g-total").value = fmt2(base + i); }
+  if (from === "iva" && isFinite(base) && isFinite(iva)) $("g-total").value = fmt2(base + iva);
+}
+$("g-base").addEventListener("change", () => recalc("base"));
+$("g-ivapct").addEventListener("change", () => recalc("pct"));
+$("g-iva").addEventListener("change", () => recalc("iva"));
+$("g-total").addEventListener("change", () => recalc("total"));
+
+$("btn-g-read").addEventListener("click", async () => {
+  const f = state.gfile, m = $("g-msg");
+  if (!f) { m.innerHTML = `<div class="msg warn">Primero elige la factura.</div>`; return; }
+  if (!sample) { m.innerHTML = `<div class="msg warn">Claude no está disponible en esta vista. Rellena los datos a mano.</div>`; return; }
+  const btn = $("btn-g-read"); btn.disabled = true; m.innerHTML = `<div class="msg warn">Leyendo la factura…</div>`;
+  try {
+    const r = await readLocal(f, 2);
+    let images = r.images;
+    if (images.length > imgLimit) images = images.slice(0, imgLimit);
+    if (!r.texto.trim() && !images.length) throw { code: "unreadable" };
+    const prompt = `Lee esta factura o ticket de un gasto de Mood Matcha (marca española de matcha) y extrae los datos para la contabilidad.
+No inventes nada: si un dato no aparece, pon null. Importes como números con punto decimal. Fecha AAAA-MM-DD.
+Categoría: elige UNA de esta lista exacta: ${CATEGORIAS.join(" | ")}.
+ivaPct: el tipo de IVA aplicado (21, 10, 4 o 0). Si la factura es de fuera de España o no lleva IVA, 0.
+Responde SOLO con JSON: {"fecha":string|null,"proveedor":string|null,"nif":string|null,"numFactura":string|null,"concepto":string|null,"categoria":string,"base":number|null,"ivaPct":number|null,"iva":number|null,"total":number|null,"moneda":"EUR"|"USD"|"CNY"|"GBP"|null}
+${r.texto.trim() ? "TEXTO DE LA FACTURA:\n" + r.texto : "La factura va en la(s) imagen(es) adjunta(s)."}`;
+    const g = await sample.json(prompt, withImages({ modelTier: "default", cache: false }, images));
+    if (g && typeof g === "object") {
+      const set = (id, v) => { if (v !== null && v !== undefined && v !== "") $(id).value = v; };
+      if (/^\d{4}-\d{2}-\d{2}$/.test(String(g.fecha || ""))) $("g-fecha").value = g.fecha;
+      set("g-proveedor", g.proveedor); set("g-nif", g.nif); set("g-num", g.numFactura); set("g-concepto", g.concepto);
+      if (CATEGORIAS.includes(g.categoria)) $("g-categoria").value = g.categoria;
+      if ([21, 10, 4, 0].includes(Number(g.ivaPct))) $("g-ivapct").value = String(Number(g.ivaPct));
+      if (isFinite(toNum(g.base))) $("g-base").value = fmt2(toNum(g.base));
+      if (isFinite(toNum(g.iva))) $("g-iva").value = fmt2(toNum(g.iva));
+      if (isFinite(toNum(g.total))) $("g-total").value = fmt2(toNum(g.total));
+      if (["EUR", "USD", "CNY", "GBP"].includes(g.moneda)) $("g-moneda").value = g.moneda;
+      if (!$("g-iva").value && $("g-base").value) recalc("base");
+      m.innerHTML = `<div class="msg ok">Datos rellenados. Revísalos antes de guardar.</div>`;
+    }
+  } catch (err) {
+    m.innerHTML = `<div class="msg warn">${esc(err.code === "unreadable" ? "No he podido leer este archivo. Rellena los datos a mano." : err.code ? sampleError(err) : (err.message || "No he podido leer la factura."))}</div>`;
+  } finally { btn.disabled = false; }
+});
+
+$("gasto-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const m = $("g-msg");
+  if (!db) { m.innerHTML = `<div class="msg bad">La base de datos de la app no está disponible.</div>`; return; }
+  const total = toNum($("g-total").value);
+  if (!isFinite(total)) { m.innerHTML = `<div class="msg warn">Pon el total de la factura.</div>`; $("g-total").focus(); return; }
+  const data = {
+    fecha: $("g-fecha").value, proveedor: $("g-proveedor").value.trim(), nif: $("g-nif").value.trim(), numFactura: $("g-num").value.trim(),
+    concepto: $("g-concepto").value.trim(), categoria: $("g-categoria").value, base: toNum($("g-base").value), ivaPct: Number($("g-ivapct").value),
+    iva: toNum($("g-iva").value), total, moneda: $("g-moneda").value, pago: $("g-pago").value, lote: $("g-lote").value, notas: $("g-notas").value.trim(),
+    fileUrl: "", fileId: "", creado: new Date().toISOString()
+  };
+  for (const k of ["base", "iva"]) if (!isFinite(data[k])) data[k] = null;
+  const btn = $("btn-g-save"); btn.disabled = true; m.innerHTML = `<div class="msg warn">Guardando…</div>`;
+  let warn = "";
+  if (state.gfile) {
+    if (!mcp) warn = "Drive no está disponible: la factura no se ha guardado en tu carpeta de contabilidad.";
+    else {
+      try {
+        const folder = await gastosFolder(data.fecha);
+        const title = safeName(`Gasto ${data.fecha} - ${data.proveedor || "PROVEEDOR"} - ${data.concepto || "GASTO"}`).toUpperCase().replace(/^GASTO/, "Gasto").slice(0, 150) + "." + extOf(state.gfile);
+        const p = await uploadToDrive(state.gfile, title, folder);
+        data.fileUrl = p.viewUrl || ""; data.fileId = p.id || "";
+      } catch (err) { warn = "La factura no se ha guardado en Drive: " + mcpError(err, DRIVE); }
+    }
+  }
+  try {
+    await db.collection("gastos").add(data);
+    $("g-mes").value = data.fecha.slice(0, 7); renderGastos();
+    resetGasto(); $("gasto-form").hidden = true;
+    $("g-csv-msg").innerHTML = warn ? `<span style="color:var(--warn)">Gasto guardado. ${esc(warn)}</span>` : `Gasto guardado${data.fileUrl ? ` y factura archivada en Drive (<a href="${esc(data.fileUrl)}" target="_blank" rel="noopener">abrir</a>)` : ""}.`;
+  } catch (err) { m.innerHTML = `<div class="msg bad">No se ha podido guardar: ${esc(err.message || err.code)}</div>`; }
+  finally { btn.disabled = false; }
+});
+
+function gastosDelMes() { const ym = $("g-mes").value; return sortDesc(state.gastos.filter((g) => String(g.fecha || "").startsWith(ym)), "fecha"); }
+function renderGastos() {
+  const list = gastosDelMes();
+  const eur = list.filter((g) => (g.moneda || "EUR") === "EUR");
+  const total = eur.reduce((s, g) => s + (Number(g.total) || 0), 0);
+  const iva = eur.reduce((s, g) => s + (Number(g.iva) || 0), 0);
+  const base = eur.reduce((s, g) => s + (Number(g.base) || 0), 0);
+  const otras = list.length - eur.length;
+  $("g-stats").innerHTML = `<div class="stat"><span>Total del mes</span><b>${money(total)}</b></div><div class="stat"><span>Base imponible</span><b>${money(base)}</b></div><div class="stat"><span>IVA soportado</span><b>${money(iva)}</b></div><div class="stat"><span>Facturas</span><b>${list.length}</b></div>`;
+  const byCat = {}; for (const g of eur) byCat[g.categoria || "Otros"] = (byCat[g.categoria || "Otros"] || 0) + (Number(g.total) || 0);
+  const cats = Object.entries(byCat).sort((a, b) => b[1] - a[1]); const max = cats.length ? cats[0][1] : 0;
+  $("g-bars").innerHTML = cats.length ? cats.map(([c, v]) => `<div class="barrow"><span>${esc(c)}</span><span class="bartrack"><span class="barfill" style="display:block;width:${max ? Math.max(2, v / max * 100) : 0}%"></span></span><span class="num" style="font-variant-numeric:tabular-nums">${money(v)}</span></div>`).join("") + (otras ? `<p class="hint">${otras} factura(s) en otra moneda no están sumadas.</p>` : "") : "";
+  $("g-table").innerHTML = list.length ? `<table><thead><tr><th>Fecha</th><th>Proveedor</th><th>Concepto</th><th>Categoría</th><th class="num">Base</th><th class="num">IVA</th><th class="num">Total</th><th>Factura</th><th></th></tr></thead><tbody>${list.map((g) => `<tr><td>${esc(fmtDate(g.fecha))}</td><td>${esc(g.proveedor)}</td><td>${esc(g.concepto)}${g.lote ? ` <span class="lot">${esc(g.lote)}</span>` : ""}</td><td>${esc(g.categoria)}</td><td class="num">${g.base != null ? esc(money(Number(g.base), g.moneda)) : "—"}</td><td class="num">${g.iva != null ? esc(money(Number(g.iva), g.moneda)) : "—"}</td><td class="num"><b>${esc(money(Number(g.total), g.moneda))}</b></td><td>${g.fileUrl ? `<a href="${esc(g.fileUrl)}" target="_blank" rel="noopener">Abrir</a>` : "—"}</td><td><button class="btn small" type="button" data-del="gastos" data-id="${esc(g.id)}">Borrar</button></td></tr>`).join("")}</tbody></table>`
+    : `<div class="empty">No hay gastos en este mes. Pulsa «Nuevo gasto» y sube una factura.</div>`;
+  $("dl-gproveedores").innerHTML = [...new Set(state.gastos.map((g) => g.proveedor).filter(Boolean))].map((p) => `<option>${esc(p)}</option>`).join("");
+}
+$("btn-g-csv").addEventListener("click", async () => {
+  const msg = $("g-csv-msg");
+  if (!downloads) { msg.textContent = "Descargar archivos no está disponible en esta vista."; return; }
+  const list = gastosDelMes();
+  if (!list.length) { msg.textContent = "No hay gastos en este mes."; return; }
+  const cell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const num = (v) => (v == null || !isFinite(Number(v))) ? "" : String(Number(v).toFixed(2)).replace(".", ",");
+  const lines = [["Fecha", "Proveedor", "NIF", "Nº factura", "Concepto", "Categoría", "Base", "IVA %", "Cuota IVA", "Total", "Moneda", "Forma de pago", "Lote", "Factura (Drive)", "Notas"].map(cell).join(";")]
+    .concat(list.map((g) => [fmtDate(g.fecha), g.proveedor, g.nif, g.numFactura, g.concepto, g.categoria, num(g.base), g.ivaPct, num(g.iva), num(g.total), g.moneda, g.pago, g.lote, g.fileUrl, g.notas].map(cell).join(";")));
+  try {
+    const r = await downloads.save({ filename: `gastos-mood-matcha-${$("g-mes").value}.csv`, data: "﻿" + lines.join("\r\n") });
+    msg.textContent = r && r.status === "saved" ? "CSV descargado." : "";
+  } catch (err) { msg.textContent = err && err.code === "cancelled" ? "" : "No se ha podido descargar el CSV."; }
+});
+
+/* ---------- arranque ---------- */
 function chip(id, cls, text) { const c = $(id); c.className = "chip " + cls; c.textContent = text; }
-refreshNextLot(); renderLots(); renderSales();
+function renderAll() { refreshNextLot(); renderRecTable(); renderLots(); renderSales(); renderGastos(); if (!$("v-home").hidden) renderHome(); }
+renderAll();
+show(VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home");
 (async () => {
   const use = (n) => (window.claude && window.claude.use) ? window.claude.use(n).catch(() => null) : Promise.resolve(null);
-  [db, mcp, sample] = await Promise.all([use("db"), use("mcp"), use("sample")]);
+  [db, mcp, sample, downloads] = await Promise.all([use("db"), use("mcp"), use("sample"), use("downloads")]);
+  $("btn-g-csv").hidden = !downloads;
   if (db) {
-    db.collection("recepciones").onSnapshot((s) => { state.recepciones = s.docs.map((d) => ({ id: d.id, ...d.data() })); refreshNextLot(); renderLots(); if (state.orders) renderOrders(); },
-      () => { $("rec-msg").innerHTML = `<div class="msg bad">No se pueden leer los lotes guardados. Recarga la página.</div>`; });
-    db.collection("ventas").onSnapshot((s) => { state.ventas = s.docs.map((d) => ({ id: d.id, ...d.data() })); renderSales(); renderLots(); }, () => {});
-  } else {
-    $("rec-msg").innerHTML = `<div class="msg warn">Abre esta app con tu cuenta de Claude para guardar lotes y ventas.</div>`;
+    const sub = (col, key) => db.collection(col).onSnapshot((s) => { state[key] = s.docs.map((d) => ({ id: d.id, ...d.data() })); renderAll(); },
+      () => { chip("c-drive", "bad", "Datos: error al leer"); });
+    sub("recepciones", "recepciones"); sub("ventas", "ventas"); sub("gastos", "gastos");
   }
+  if (sample) { try { const l = await sample.limits(); imgLimit = (l && l.images && l.images.maxCount) || 0; } catch { imgLimit = 0; } }
   chip("c-ai", sample ? "ok" : "bad", sample ? "Claude: listo" : "Claude: no disponible");
   if (mcp) {
     try {
