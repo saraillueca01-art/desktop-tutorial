@@ -446,8 +446,8 @@ details.box[open] > summary::before { content: "–"; }
     <!-- Coste por producto -->
     <div class="gpane" id="gp-prod" hidden>
       <div class="box">
-        <div class="row between"><h2>Tus productos</h2><button class="btn primary" type="button" id="btn-new-prod"><svg class="i"><use href="#i-plus"/></svg>Nuevo producto</button></div>
-        <p class="hint">Apunta lo que te cuesta cada unidad (el matcha, la lata, la etiqueta…) y el precio al que la vendes. Así se calcula el margen de cada pedido.</p>
+        <div class="row between"><h2>Tus productos</h2><button class="btn" type="button" id="btn-new-prod"><svg class="i"><use href="#i-plus"/></svg>Añadir otro producto</button></div>
+        <p class="hint">Se calculan solos: cada recepción crea su producto con el coste del matcha por unidad, y cada gasto que unas a un producto (latas, etiquetas, cajas…) se reparte entre las unidades que cubre. Tú solo pones el precio de venta.</p>
         <div class="prods" id="prod-list"></div>
       </div>
       <form class="box" id="prod-form" hidden>
@@ -458,7 +458,8 @@ details.box[open] > summary::before { content: "–"; }
           <label class="f">IVA de venta<select id="pf-iva"><option value="10">10 % (matcha y alimentación)</option><option value="21">21 % (accesorios: batidor, cuenco…)</option><option value="4">4 %</option></select></label>
         </div>
         <h3>Qué te cuesta cada unidad</h3>
-        <label class="f">Usar el coste por unidad de un lote<select id="pf-fromlot"></select></label>
+        <div id="pf-auto"></div>
+        <p class="hint">Costes extra por unidad que no vengan de un lote ni de un gasto (opcional):</p>
         <div class="costs" id="pf-costs"></div>
         <div class="row"><button class="btn small" type="button" id="pf-add" data-addcost="pf-costs">+ Añadir coste</button></div>
         <div class="msg ok" id="pf-preview"></div>
@@ -475,7 +476,7 @@ details.box[open] > summary::before { content: "–"; }
       <div class="box">
         <div class="row between"><h2>Facturas del mes</h2>
           <div class="actions"><button class="btn" type="button" id="btn-g-csv">Descargar CSV</button><button class="btn primary" type="button" id="btn-new-gasto"><svg class="i"><use href="#i-plus"/></svg>Nuevo gasto</button></div></div>
-        <p class="hint">Publicidad, suscripciones, gestoría… Se restan del beneficio del mes. Las facturas de matcha y envases, y los gastos unidos a un lote, no se restan aquí porque ya están dentro del coste de cada producto o lote.</p>
+        <p class="hint">Si unes un gasto a un producto (latas, etiquetas…) o a un lote (envío, aduanas…), se reparte en el coste de cada unidad. Si no, como la publicidad o las suscripciones, se resta del beneficio del mes.</p>
         <div class="bars" id="g-bars"></div>
         <div class="tablewrap" id="g-table"></div>
         <p class="hint" id="g-csv-msg"></p>
@@ -495,7 +496,9 @@ details.box[open] > summary::before { content: "–"; }
           <label class="f">Categoría<select id="g-categoria"></select></label>
           <label class="f">Total pagado<input id="g-total" inputmode="decimal" placeholder="0,00" required></label>
           <label class="f">Moneda<select id="g-moneda"><option>EUR</option><option>USD</option><option>CNY</option><option>GBP</option></select></label>
-          <label class="f">Lote relacionado (opcional)<select id="g-lote"></select></label>
+          <label class="f">¿Es para un producto?<select id="g-producto"></select></label>
+          <label class="f" id="g-uds-w" hidden>¿Para cuántas unidades da?<input id="g-uds" type="number" min="1" step="1" placeholder="500 etiquetas, 200 latas…"></label>
+          <label class="f">¿Es de un lote? (envío, aduanas…)<select id="g-lote"></select></label>
           <label class="f wide">Notas<input id="g-notas"></label>
         </div>
         <input type="hidden" id="g-nif"><input type="hidden" id="g-num"><input type="hidden" id="g-ivapct" value="21">
@@ -1267,16 +1270,40 @@ ${texts.map((t, i) => `--- ${i + 1}: ${t.nombre} ---\n${t.texto}`).join("\n\n") 
 /* ---------- productos y costes ---------- */
 const CFG_DEFAULT = { iva: 10, comPct: 0, comFix: 0, envio: 0, emb: 0 };
 const cfg = () => ({ ...CFG_DEFAULT, ...(state.config || {}) });
-const SIN_RESTAR = ["Materia prima (matcha)", "Envases y etiquetas"]; // ya están en el coste de cada producto
 const nz = (v, d = 0) => (v === null || v === undefined || v === "" || !isFinite(Number(v))) ? d : Number(v);
-function unitCost(p) { return (p && Array.isArray(p.costes) ? p.costes : []).reduce((s, c) => s + nz(c.importe) / (1 + nz(c.ivaIncl) / 100), 0); }
+const slug = (t) => String(t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+// Costes que se calculan solos: matcha desde los lotes de ese producto y gastos unidos al producto.
+function autoCosts(key) {
+  const out = [];
+  const lots = state.recepciones.filter((r) => slug(r.producto) === key);
+  let tot = 0, uds = 0; const usados = [];
+  for (const r of lots) { const u = lotUnits(r), ci = lotCostInfo(r.costes, u, r.id); if (isFinite(u) && u > 0 && ci.total > 0) { tot += ci.total; uds += u; usados.push(r.id); } }
+  if (uds > 0) out.push({ concepto: usados.length === 1 ? `Matcha · lote ${usados[0]}` : `Matcha · media de ${usados.length} lotes`, importe: tot / uds, ivaIncl: 0, auto: true });
+  const byCat = {};
+  for (const g of state.gastos) {
+    if (g.producto !== key || (g.moneda || "EUR") !== "EUR" || !(nz(g.unidades) > 0)) continue;
+    const c = g.categoria || "Otros"; byCat[c] = byCat[c] || { b: 0, u: 0, n: 0 };
+    byCat[c].b += gastoBase(g); byCat[c].u += nz(g.unidades); byCat[c].n++;
+  }
+  for (const [c, v] of Object.entries(byCat)) out.push({ concepto: `${c} · ${v.n} factura${v.n > 1 ? "s" : ""}, ${v.u} ud.`, importe: v.b / v.u, ivaIncl: 0, auto: true });
+  return out;
+}
+function allProducts() {
+  const map = new Map();
+  for (const r of state.recepciones) { const k = slug(r.producto); if (k && !map.has(k)) map.set(k, { id: k, nombre: r.producto }); }
+  for (const g of state.gastos) if (g.producto && !map.has(g.producto)) map.set(g.producto, { id: g.producto, nombre: g.productoNombre || g.producto });
+  for (const p of state.productos) map.set(p.id, { ...(map.get(p.id) || {}), ...p });
+  return [...map.values()].map((p) => { const auto = autoCosts(p.id); return { ...p, nombre: p.nombre || p.id, iva: p.iva == null ? 10 : p.iva, auto, desdeRecepcion: state.recepciones.some((r) => slug(r.producto) === p.id), costesTodos: [...auto, ...(p.costes || [])] }; })
+    .sort((a, b) => String(a.nombre).localeCompare(String(b.nombre)));
+}
+function unitCost(p) { return (p && Array.isArray(p.costesTodos) ? p.costesTodos : (p && p.costes) || []).reduce((s, c) => s + nz(c.importe) / (1 + nz(c.ivaIncl) / 100), 0); }
 function precioNeto(p) { return nz(p && p.precio) / (1 + nz(p && p.iva, 10) / 100); }
 function findProduct(key) {
   if (!key) return null;
-  const k = String(key).toLowerCase().trim();
-  return state.productos.find((p) => p.id === key) || state.productos.find((p) => String(p.nombre || "").toLowerCase().trim() === k) || null;
+  const list = allProducts(), k = String(key);
+  return list.find((p) => p.id === k) || list.find((p) => p.id === slug(k)) || list.find((p) => slug(p.nombre) === slug(k)) || null;
 }
-function productOptions(first) { return `<option value="">${first}</option>` + state.productos.slice().sort((a, b) => String(a.nombre).localeCompare(String(b.nombre))).map((p) => `<option value="${esc(p.id)}">${esc(p.nombre)}</option>`).join(""); }
+function productOptions(first) { return `<option value="">${first}</option>` + allProducts().map((p) => `<option value="${esc(p.id)}">${esc(p.nombre)}</option>`).join(""); }
 const pct = (n) => isFinite(n) ? (n * 100).toLocaleString("es-ES", { maximumFractionDigits: 0 }) + " %" : "—";
 
 // Cálculo de un pedido: lo cobrado sin IVA menos lo que cuesta servirlo.
@@ -1299,7 +1326,7 @@ function resumenMes(ym) {
   const ventas = state.ventas.filter((v) => String(v.fecha || "").startsWith(ym));
   const calc = ventas.map((v) => ({ v, r: calcVenta(v) }));
   const sum = (k) => calc.reduce((s, x) => s + (isFinite(x.r[k]) ? x.r[k] : 0), 0);
-  const otros = state.gastos.filter((g) => String(g.fecha || "").startsWith(ym) && (g.moneda || "EUR") === "EUR" && !SIN_RESTAR.includes(g.categoria) && !g.lote).reduce((s, g) => s + gastoBase(g), 0);
+  const otros = state.gastos.filter((g) => String(g.fecha || "").startsWith(ym) && (g.moneda || "EUR") === "EUR" && !g.lote && !g.producto).reduce((s, g) => s + gastoBase(g), 0);
   const neto = sum("neto"), coste = sum("coste"), envio = sum("envio"), com = sum("comision") + sum("emb");
   const beneficio = neto - coste - envio - com - otros;
   return { calc, cobrado: sum("cobrado"), neto, coste, envio, com, otros, beneficio, margen: neto ? beneficio / neto : NaN, sinProducto: calc.filter((x) => x.r.sinProducto).length, uds: sum("uds") };
@@ -1315,7 +1342,7 @@ function salesTable(v, withLot) {
 }
 function renderSales() {
   $("sales-table").innerHTML = salesTable(sortDesc(state.ventas, "fecha").slice(0, 50), true);
-  const sp = $("s-producto"), cur = sp.value; sp.innerHTML = productOptions(state.productos.length ? "Elige producto" : "Crea tus productos en Gastos y márgenes"); sp.value = cur;
+  const sp = $("s-producto"), cur = sp.value; sp.innerHTML = productOptions(allProducts().length ? "Elige producto" : "Aún no hay productos"); sp.value = cur;
   if (state.orders) renderOrders();
 }
 document.addEventListener("click", async (e) => {
@@ -1414,7 +1441,8 @@ function renderMargenes() {
   const c = cfg(), notas = [];
   if (r.sinProducto) notas.push(`${r.sinProducto} venta(s) no tienen producto asignado y no restan coste.`);
   if (!c.comPct && !c.comFix && !c.envio) notas.push("Aún no has puesto comisiones ni coste de envío en «Ajustes del cálculo».");
-  if (!state.productos.length) notas.push("Crea tus productos en «Coste por producto» para que se calcule lo que te cuesta cada pedido.");
+  const sinPrecio = allProducts().filter((x) => x.precio == null).length;
+  if (sinPrecio) notas.push(`${sinPrecio} producto(s) sin precio de venta: ponlo en «Coste por producto».`);
   $("m-note").textContent = notas.join(" ");
   const rows = r.calc.sort((a, b) => String(b.v.fecha || "").localeCompare(String(a.v.fecha || "")));
   $("m-table").innerHTML = rows.length ? `<table><thead><tr><th>Pedido</th><th>Producto</th><th class="num">Cobrado</th><th class="num">Sin IVA</th><th class="num">Coste</th><th class="num">Envío pagado</th><th class="num">Comisión</th><th class="num">Ganas</th><th class="num">Margen</th></tr></thead><tbody>${rows.map(({ v, r: x }) => `<tr>
@@ -1443,37 +1471,36 @@ function costRow(c = {}) {
 function readProdForm() {
   const costes = [...$("pf-costs").querySelectorAll(".costrow")].map((r) => ({ concepto: r.querySelector(".c-con").value.trim(), importe: toNum(r.querySelector(".c-imp").value), ivaIncl: Number(r.querySelector(".c-iva").value) }))
     .filter((c) => c.concepto || isFinite(c.importe)).map((c) => ({ ...c, importe: isFinite(c.importe) ? c.importe : 0 }));
-  return { nombre: $("pf-nombre").value.trim(), precio: toNum($("pf-precio").value), iva: Number($("pf-iva").value), costes };
+  const nombre = $("pf-nombre").value.trim();
+  const id = editingProd || slug(nombre);
+  const auto = id ? autoCosts(id) : [];
+  return { id, nombre, precio: toNum($("pf-precio").value), iva: Number($("pf-iva").value), costes, costesTodos: [...auto, ...costes], auto };
 }
 function prodLine(p) {
   const cu = unitCost(p), pn = precioNeto(p), m = pn - cu;
   return { cu, pn, m, pct: pn ? m / pn : NaN };
 }
+function autoListHTML(auto) {
+  return auto.length ? `<div class="costs">${auto.map((c) => `<div class="msg" style="background:var(--sunk);display:flex;justify-content:space-between;gap:10px"><span>${esc(c.concepto)}</span><b style="font-variant-numeric:tabular-nums">${money(nz(c.importe))}</b></div>`).join("")}</div>`
+    : `<p class="hint">Todavía no hay costes automáticos: apunta el coste del lote en Lotes o une un gasto a este producto.</p>`;
+}
 function updatePreview() {
   const p = readProdForm(), l = prodLine(p);
-  $("pf-preview").className = "msg " + (l.m >= 0 ? "ok" : "bad");
-  $("pf-preview").innerHTML = isFinite(p.precio) ? `Te cuesta <b>${money(l.cu)}</b> por unidad · la vendes a ${money(p.precio)} (<b>${money(l.pn)}</b> sin IVA) · ganas <b>${money(l.m)}</b> por unidad (${pct(l.pct)}), antes de envío y comisiones.` : "Pon el precio de venta para ver el margen.";
+  $("pf-auto").innerHTML = autoListHTML(p.auto);
+  $("pf-preview").className = "msg " + (!isFinite(p.precio) ? "warn" : l.m >= 0 ? "ok" : "bad");
+  $("pf-preview").innerHTML = isFinite(p.precio) ? `Te cuesta <b>${money(l.cu)}</b> por unidad · la vendes a ${money(p.precio)} (<b>${money(l.pn)}</b> sin IVA) · ganas <b>${money(l.m)}</b> por unidad (${pct(l.pct)}), antes de envío y comisiones.` : `Te cuesta <b>${money(l.cu)}</b> por unidad. Pon el precio de venta para ver lo que ganas.`;
 }
 function openProd(p) {
   editingProd = p ? p.id : null;
-  $("pf-title").textContent = p ? "Editar producto" : "Nuevo producto";
+  $("pf-title").textContent = p ? p.nombre : "Añadir otro producto";
   $("pf-nombre").value = p ? p.nombre || "" : ""; $("pf-precio").value = p && p.precio != null ? fmt2(nz(p.precio)) : ""; $("pf-iva").value = String(p ? nz(p.iva, 10) : 10);
-  $("pf-costs").innerHTML = (p && p.costes && p.costes.length ? p.costes : [{ concepto: "Matcha" }, { concepto: "Lata" }, { concepto: "Etiqueta" }]).map(costRow).join("");
-  $("pf-fromlot").innerHTML = `<option value="">Elegir lote…</option>` + sortDesc(state.recepciones, "id").map((r) => { const ci = lotCostInfo(r.costes, lotUnits(r), r.id); return isFinite(ci.perUnit) ? `<option value="${esc(r.id)}">${esc(r.id)} · ${esc(r.producto || "")} · ${money(ci.perUnit)}/ud.</option>` : ""; }).join("");
-  $("pf-delete").hidden = !p; $("pf-delete").textContent = "Borrar producto"; delete $("pf-delete").dataset.confirm;
+  $("pf-costs").innerHTML = (p && p.costes && p.costes.length ? p.costes : []).map(costRow).join("");
+  const borrable = p && !p.desdeRecepcion && state.productos.some((x) => x.id === p.id);
+  $("pf-delete").hidden = !borrable; $("pf-delete").textContent = "Borrar producto"; delete $("pf-delete").dataset.confirm;
   $("prod-form").hidden = false; updatePreview(); $("prod-form").scrollIntoView({ behavior: "smooth", block: "start" });
+  if (p && p.precio == null) $("pf-precio").focus();
 }
 $("btn-new-prod").addEventListener("click", () => openProd(null));
-$("pf-fromlot").addEventListener("change", () => {
-  const r = state.recepciones.find((x) => x.id === $("pf-fromlot").value); if (!r) return;
-  const ci = lotCostInfo(r.costes, lotUnits(r), r.id); if (!isFinite(ci.perUnit)) return;
-  const label = `Matcha (lote ${r.id})`;
-  const rows = [...$("pf-costs").querySelectorAll(".costrow")];
-  const target = rows.find((x) => /^matcha/i.test(x.querySelector(".c-con").value.trim()) || x.querySelector(".c-con").value.includes(r.id));
-  if (target) { target.querySelector(".c-con").value = label; target.querySelector(".c-imp").value = fmt2(ci.perUnit); target.querySelector(".c-iva").value = "0"; }
-  else $("pf-costs").insertAdjacentHTML("afterbegin", costRow({ concepto: label, importe: ci.perUnit, ivaIncl: 0 }));
-  $("pf-fromlot").value = ""; updatePreview();
-});
 $("prod-form").addEventListener("input", updatePreview);
 $("pf-cancel").addEventListener("click", () => { $("prod-form").hidden = true; });
 $("pf-delete").addEventListener("click", async () => {
@@ -1484,28 +1511,32 @@ $("pf-delete").addEventListener("click", async () => {
 $("prod-form").addEventListener("submit", async (e) => {
   e.preventDefault(); if (!db) return;
   const p = readProdForm();
+  if (!p.id) { $("pf-nombre").focus(); return; }
   if (!isFinite(p.precio)) { $("pf-precio").focus(); return; }
   try {
-    if (editingProd) await db.collection("productos").doc(editingProd).set({ ...p, actualizado: new Date().toISOString() });
-    else await db.collection("productos").add({ ...p, actualizado: new Date().toISOString() });
+    await db.collection("productos").doc(p.id).set({ nombre: p.nombre, precio: p.precio, iva: p.iva, costes: p.costes, actualizado: new Date().toISOString() });
     $("prod-form").hidden = true;
   } catch (err) { $("pf-preview").className = "msg bad"; $("pf-preview").textContent = "No se ha podido guardar: " + (err.message || err.code); }
 });
-$("prod-list").addEventListener("click", (e) => { const c = e.target.closest("[data-prod]"); if (c) openProd(state.productos.find((p) => p.id === c.dataset.prod)); });
+$("prod-list").addEventListener("click", (e) => { const c = e.target.closest("[data-prod]"); if (c) openProd(allProducts().find((p) => p.id === c.dataset.prod)); });
 function renderProductos() {
-  const list = state.productos.slice().sort((a, b) => String(a.nombre).localeCompare(String(b.nombre)));
+  const list = allProducts();
   $("prod-list").innerHTML = list.length ? list.map((p) => {
-    const l = prodLine(p);
-    return `<button class="prod" type="button" data-prod="${esc(p.id)}"><span class="pn">${esc(p.nombre)}</span>
-      <span class="pm"><span><small>Te cuesta</small>${money(l.cu)}</span><span><small>Vendes a</small>${money(nz(p.precio))}</span><span><small>Ganas / ud.</small><b style="color:${l.m >= 0 ? "var(--ok)" : "var(--bad)"}">${money(l.m)}</b></span><span><small>Margen</small>${pct(l.pct)}</span></span></button>`;
-  }).join("") : `<div class="empty">Aún no hay productos. Crea el primero, por ejemplo «Matcha ceremonial 30 g».</div>`;
+    const l = prodLine(p), hasPrice = p.precio != null;
+    const desg = p.costesTodos.map((c) => `${esc(String(c.concepto).split(" · ")[0])} ${money(nz(c.importe) / (1 + nz(c.ivaIncl) / 100))}`).join(" + ");
+    return `<button class="prod" type="button" data-prod="${esc(p.id)}"><span><span class="pn">${esc(p.nombre)}</span><br><span class="hint">${desg || "Sin costes todavía"}</span></span>
+      <span class="pm"><span><small>Te cuesta</small>${money(l.cu)}</span><span><small>Vendes a</small>${hasPrice ? money(nz(p.precio)) : `<span class="chip warn">Pon el precio</span>`}</span>${hasPrice ? `<span><small>Ganas / ud.</small><b style="color:${l.m >= 0 ? "var(--ok)" : "var(--bad)"}">${money(l.m)}</b></span><span><small>Margen</small>${pct(l.pct)}</span>` : ""}</span></button>`;
+  }).join("") : `<div class="empty">Aún no hay productos. Aparecerán solos cuando registres una recepción.</div>`;
 }
 
 /* ---------- otros gastos (facturas) ---------- */
 $("g-categoria").innerHTML = CATEGORIAS.map((c) => `<option>${esc(c)}</option>`).join("");
+function fillGProductos() { const sel = $("g-producto"), cur = sel.value; sel.innerHTML = productOptions("No, es un gasto general"); sel.value = cur; $("g-uds-w").hidden = !sel.value; }
+$("g-producto").addEventListener("change", () => { $("g-uds-w").hidden = !$("g-producto").value; if ($("g-producto").value) $("g-uds").focus(); });
 $("g-fecha").value = todayISO();
 function resetGasto() {
   $("gasto-form").reset(); state.gfile = null; $("g-file-list").innerHTML = ""; $("g-msg").innerHTML = "";
+  fillGProductos(); $("g-uds-w").hidden = true;
   $("g-fecha").value = todayISO(); $("g-categoria").value = "Marketing y publicidad"; $("g-ivapct").value = "21"; $("g-nif").value = ""; $("g-num").value = "";
 }
 $("btn-new-gasto").addEventListener("click", () => {
@@ -1534,7 +1565,8 @@ $("btn-g-read").addEventListener("click", async () => {
 No inventes nada: si un dato no aparece, pon null. Importes como números con punto decimal. Fecha AAAA-MM-DD.
 Categoría: elige UNA de esta lista exacta: ${CATEGORIAS.join(" | ")}.
 ivaPct: el tipo de IVA aplicado en la factura (21, 10, 4 o 0). Si es de fuera de España o no lleva IVA, 0.
-Responde SOLO con JSON: {"fecha":string|null,"proveedor":string|null,"nif":string|null,"numFactura":string|null,"concepto":string|null,"categoria":string,"ivaPct":number|null,"total":number|null,"moneda":"EUR"|"USD"|"CNY"|"GBP"|null}
+unidades: si la factura es de material que se reparte por producto (latas, etiquetas, cajas, bolsas…), cuántas unidades se compran en total; si no, null.
+Responde SOLO con JSON: {"fecha":string|null,"proveedor":string|null,"nif":string|null,"numFactura":string|null,"concepto":string|null,"categoria":string,"ivaPct":number|null,"total":number|null,"moneda":"EUR"|"USD"|"CNY"|"GBP"|null,"unidades":number|null}
 ${r.texto.trim() ? "TEXTO DE LA FACTURA:\n" + r.texto : "La factura va en la(s) imagen(es) adjunta(s)."}`;
     const g = await sample.json(prompt, withImages({ modelTier: "default", cache: false }, images));
     if (g && typeof g === "object") {
@@ -1545,7 +1577,9 @@ ${r.texto.trim() ? "TEXTO DE LA FACTURA:\n" + r.texto : "La factura va en la(s) 
       if ([21, 10, 4, 0].includes(Number(g.ivaPct))) $("g-ivapct").value = String(Number(g.ivaPct));
       if (isFinite(toNum(g.total))) $("g-total").value = fmt2(toNum(g.total));
       if (["EUR", "USD", "CNY", "GBP"].includes(g.moneda)) $("g-moneda").value = g.moneda;
-      m.innerHTML = `<div class="msg ok">Datos rellenados. Revísalos antes de guardar.</div>`;
+      if (isFinite(toNum(g.unidades)) && toNum(g.unidades) > 0) $("g-uds").value = Math.round(toNum(g.unidades));
+      const sugiereProducto = ["Envases y etiquetas", "Materia prima (matcha)"].includes(g.categoria);
+      m.innerHTML = `<div class="msg ok">Datos rellenados. Revísalos antes de guardar.${sugiereProducto && !$("g-producto").value ? " Si es para un producto, elígelo y pon cuántas unidades da, para que se sume a su coste." : ""}</div>`;
     }
   } catch (err) {
     m.innerHTML = `<div class="msg warn">${esc(err.code === "unreadable" ? "No he podido leer este archivo. Rellena los datos a mano." : err.code ? sampleError(err) : (err.message || "No he podido leer la factura."))}</div>`;
@@ -1563,8 +1597,10 @@ $("gasto-form").addEventListener("submit", async (e) => {
   const data = {
     fecha: $("g-fecha").value, proveedor: $("g-proveedor").value.trim(), nif: $("g-nif").value.trim(), numFactura: $("g-num").value.trim(),
     concepto: $("g-concepto").value.trim(), categoria: $("g-categoria").value, base, ivaPct, iva: total - base, total,
-    moneda: $("g-moneda").value, lote: $("g-lote").value, notas: $("g-notas").value.trim(), fileUrl: "", fileId: "", creado: new Date().toISOString()
+    moneda: $("g-moneda").value, lote: $("g-lote").value, notas: $("g-notas").value.trim(), fileUrl: "", fileId: "", creado: new Date().toISOString(),
+    producto: $("g-producto").value, productoNombre: (findProduct($("g-producto").value) || {}).nombre || "", unidades: isFinite(toNum($("g-uds").value)) ? toNum($("g-uds").value) : null
   };
+  if (data.producto && !(data.unidades > 0)) { m.innerHTML = `<div class="msg warn">Pon para cuántas unidades da este gasto, para repartirlo en el coste del producto.</div>`; $("g-uds").focus(); return; }
   const btn = $("btn-g-save"); btn.disabled = true; m.innerHTML = `<div class="msg warn">Guardando…</div>`;
   let warn = "";
   if (state.gfile) {
@@ -1594,8 +1630,8 @@ function renderGastos() {
   const byCat = {}; for (const g of eur) byCat[g.categoria || "Otros"] = (byCat[g.categoria || "Otros"] || 0) + (Number(g.total) || 0);
   const cats = Object.entries(byCat).sort((a, b) => b[1] - a[1]); const max = cats.length ? cats[0][1] : 0;
   const otras = list.length - eur.length;
-  $("g-bars").innerHTML = cats.length ? cats.map(([c, v]) => `<div class="barrow"><span>${esc(c)}${SIN_RESTAR.includes(c) ? ` <span class="hint">(en coste de producto)</span>` : ""}</span><span class="bartrack"><span class="barfill" style="display:block;width:${max ? Math.max(2, v / max * 100) : 0}%"></span></span><span class="num" style="font-variant-numeric:tabular-nums">${money(v)}</span></div>`).join("") + (otras ? `<p class="hint">${otras} factura(s) en otra moneda no están sumadas.</p>` : "") : "";
-  $("g-table").innerHTML = list.length ? `<table><thead><tr><th>Fecha</th><th>Proveedor</th><th>Concepto</th><th>Categoría</th><th class="num">Total</th><th>Factura</th><th></th></tr></thead><tbody>${list.map((g) => `<tr><td>${esc(fmtDate(g.fecha))}</td><td>${esc(g.proveedor)}</td><td>${esc(g.concepto)}${g.lote ? ` <span class="lot">${esc(g.lote)}</span>` : ""}</td><td>${esc(g.categoria)}</td><td class="num"><b>${esc(money(Number(g.total), g.moneda))}</b></td><td>${g.fileUrl ? `<a href="${esc(g.fileUrl)}" target="_blank" rel="noopener">Abrir</a>` : "—"}</td><td><button class="btn small" type="button" data-del="gastos" data-id="${esc(g.id)}">Borrar</button></td></tr>`).join("")}</tbody></table>`
+  $("g-bars").innerHTML = cats.length ? cats.map(([c, v]) => `<div class="barrow"><span>${esc(c)}</span><span class="bartrack"><span class="barfill" style="display:block;width:${max ? Math.max(2, v / max * 100) : 0}%"></span></span><span class="num" style="font-variant-numeric:tabular-nums">${money(v)}</span></div>`).join("") + (otras ? `<p class="hint">${otras} factura(s) en otra moneda no están sumadas.</p>` : "") : "";
+  $("g-table").innerHTML = list.length ? `<table><thead><tr><th>Fecha</th><th>Proveedor</th><th>Concepto</th><th>Categoría</th><th class="num">Total</th><th>Factura</th><th></th></tr></thead><tbody>${list.map((g) => `<tr><td>${esc(fmtDate(g.fecha))}</td><td>${esc(g.proveedor)}</td><td>${esc(g.concepto)}${g.lote ? ` <span class="lot">${esc(g.lote)}</span>` : ""}${g.producto ? `<br><span class="hint">${esc(g.productoNombre || g.producto)} · ${esc(g.unidades)} ud. · ${money(gastoBase(g) / nz(g.unidades, 1))}/ud.</span>` : ""}</td><td>${esc(g.categoria)}</td><td class="num"><b>${esc(money(Number(g.total), g.moneda))}</b></td><td>${g.fileUrl ? `<a href="${esc(g.fileUrl)}" target="_blank" rel="noopener">Abrir</a>` : "—"}</td><td><button class="btn small" type="button" data-del="gastos" data-id="${esc(g.id)}">Borrar</button></td></tr>`).join("")}</tbody></table>`
     : `<div class="empty">No hay gastos este mes. Pulsa «Nuevo gasto» y sube una factura.</div>`;
   $("dl-gproveedores").innerHTML = [...new Set(state.gastos.map((g) => g.proveedor).filter(Boolean))].map((p) => `<option>${esc(p)}</option>`).join("");
 }
@@ -1623,7 +1659,7 @@ function chip(id, cls, text) {
   else if (all.some((x) => x.includes("warn"))) { m.className = "chip warn"; m.textContent = "Revisar conexiones"; }
   else if (all.every((x) => x.includes("ok"))) { m.className = "chip ok"; m.textContent = "Todo conectado"; }
 }
-function renderAll() { refreshNextLot(); renderRecTable(); renderLots(); renderSales(); renderGastos(); renderProductos(); renderMargenes(); if (!$("v-home").hidden) renderHome(); }
+function renderAll() { fillGProductos(); refreshNextLot(); renderRecTable(); renderLots(); renderSales(); renderGastos(); renderProductos(); renderMargenes(); if (!$("v-home").hidden) renderHome(); }
 fillConfig();
 renderAll();
 show(VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home");
