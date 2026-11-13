@@ -454,7 +454,7 @@ details.box[open] > summary::before { content: "–"; }
         <h2 id="pf-title">Nuevo producto</h2>
         <div class="grid">
           <label class="f">Nombre (como en Shopify)<input id="pf-nombre" required placeholder="Matcha ceremonial Uji 30 g"></label>
-          <label class="f">Precio de venta (con IVA)<input id="pf-precio" inputmode="decimal" placeholder="0,00" required></label>
+          <label class="f">Precio normal (con IVA)<input id="pf-precio" inputmode="decimal" placeholder="0,00" required></label>
           <label class="f">IVA de venta<select id="pf-iva"><option value="10">10 % (matcha y alimentación)</option><option value="21">21 % (accesorios: batidor, cuenco…)</option><option value="4">4 %</option></select></label>
         </div>
         <h3>Qué te cuesta cada unidad</h3>
@@ -1370,6 +1370,38 @@ const O_TOTAL = ["totalPrice", "total", "totalPriceSet.shopMoney.amount", "curre
 const O_ENVIO = ["totalShippingPrice", "shippingPrice", "totalShippingPriceSet.shopMoney.amount", "shippingLine.originalPriceSet.shopMoney.amount", "shipping"];
 const O_FECHA = ["createdAt", "created_at", "processedAt", "date"];
 const O_CLIENTE = ["customer.displayName", "customer.name", "customerName", "customer", "email"];
+// Líneas de un pedido de Shopify (la forma exacta depende del conector: se leen varias variantes).
+function lineItems(o) {
+  for (const k of ["lineItems", "line_items", "items", "products"]) {
+    let v = o && o[k]; if (!v) continue;
+    if (Array.isArray(v.nodes)) v = v.nodes; else if (Array.isArray(v.edges)) v = v.edges.map((e) => e.node);
+    if (Array.isArray(v)) return v.map((li) => ({ titulo: String(pick(li, ["title", "name", "product.title", "variant.product.title", "productTitle"]) || ""), variante: String(pick(li, ["variantTitle", "variant.title", "variant_title"]) || ""), uds: toNum(pick(li, ["quantity", "currentQuantity", "qty"])) })).filter((x) => x.titulo || isFinite(x.uds));
+  }
+  return null;
+}
+function matchProduct(titulo) {
+  const list = allProducts(), t = slug(titulo);
+  if (!t) return null;
+  return list.find((p) => p.id === t) || list.find((p) => t.includes(p.id) || p.id.includes(t)) || list.find((p) => p.id.split("-").filter((w) => w.length > 2).every((w) => t.includes(w))) || null;
+}
+// "Pack 3", "pack de 2", "3 latas", "x3" → unidades por línea.
+function packSize(t) {
+  const m = /(?:pack|lote|caja|set)\s*(?:de\s*)?(\d{1,2})\b|\b(\d{1,2})\s*(?:latas|uds?\.?|unidades)\b|\bx\s?(\d{1,2})\b|\b(\d{1,2})\s?x\b/i.exec(String(t || ""));
+  const n = m ? Number(m[1] || m[2] || m[3] || m[4]) : 1;
+  return n >= 1 && n <= 24 ? n : 1;
+}
+function latestLot(productId) { return sortDesc(state.recepciones.filter((r) => slug(r.producto) === productId), "fecha")[0] || null; }
+// Propuesta para un pedido: producto, lote y unidades a partir de sus líneas.
+function suggest(o) {
+  const items = lineItems(o._detail || o) || [];
+  const all = allProducts();
+  let prod = null, uds = 0;
+  const udsDe = (li) => (isFinite(li.uds) ? li.uds : 1) * packSize(li.titulo + " " + li.variante);
+  for (const li of items) { const m = matchProduct(li.titulo); if (m && (!prod || prod.id === m.id)) { prod = m; uds += udsDe(li); } }
+  if (!prod && all.length === 1) { prod = all[0]; uds = items.reduce((s, li) => s + udsDe(li), 0); }
+  const lot = prod ? latestLot(prod.id) : null;
+  return { items, producto: prod ? prod.id : "", lote: lot ? lot.id : "", uds: uds || 1 };
+}
 $("btn-shop").addEventListener("click", async () => {
   const out = $("shop-out");
   if (!mcp) { out.innerHTML = `<div class="msg bad">Shopify no está disponible en esta vista.</div>`; return; }
@@ -1379,38 +1411,62 @@ $("btn-shop").addEventListener("click", async () => {
     const p = r.payload || {};
     state.orders = Array.isArray(p.orders) ? p.orders : (Array.isArray(p) ? p : []);
     renderOrders();
+    // Para los pedidos sin asignar, pedimos el detalle (líneas con cantidades) si la lista no lo trae.
+    const pendientes = state.orders.filter((o) => !state.ventas.some((v) => v.shopifyKey === orderKey(o)) && !lineItems(o));
+    let i = 0;
+    for (const o of pendientes) {
+      i++; out.querySelector(".hint.loading") || out.insertAdjacentHTML("afterbegin", `<p class="hint loading"></p>`);
+      out.querySelector(".hint.loading").textContent = `Leyendo productos de los pedidos… ${i}/${pendientes.length}`;
+      try { const d = await mcp.callTool(SHOP, "get-order", { id: String(pick(o, ["name", "id"])) }, { cache: false }); const pd = d.payload || {}; o._detail = pd.order || pd; }
+      catch (err) { if (err.code !== "tool_error") break; }
+    }
+    renderOrders();
   } catch (err) { out.innerHTML = `<div class="msg bad">${esc(mcpError(err, SHOP))}</div>`; }
   finally { $("btn-shop").disabled = false; }
 });
 function orderKey(o) { return String(pick(o, ["name", "id"])).replace(/[^A-Za-z0-9_-]/g, ""); }
+function orderTotal(o) { const t = toNum(pick(o, O_TOTAL)); return isFinite(t) ? t : toNum(pick(o._detail || {}, O_TOTAL)); }
 function renderOrders() {
   const out = $("shop-out"); const orders = state.orders || [];
   if (!orders.length) { out.innerHTML = `<div class="empty">No hay pedidos en Shopify todavía. Cuando entren, aparecerán aquí.</div>`; return; }
+  const sel = (opts, v) => opts.replace(`value="${esc(v)}"`, `value="${esc(v)}" selected`);
   const lots = lotOptions("Lote…"), prods = productOptions("Producto…");
-  out.innerHTML = `<div class="tablewrap"><table><thead><tr><th>Pedido</th><th>Fecha</th><th>Cliente</th><th class="num">Cobrado</th><th>Producto</th><th>Lote</th><th>Ud.</th><th></th></tr></thead><tbody>${orders.map((o) => {
+  const sinAsignar = orders.filter((o) => !state.ventas.some((v) => v.shopifyKey === orderKey(o)));
+  out.innerHTML = (sinAsignar.length ? `<div class="row between"><p class="hint">${sinAsignar.length} pedido(s) sin guardar. He puesto el producto, el lote más reciente y las unidades de cada uno; revisa y guarda.</p><button class="btn primary small" type="button" id="btn-save-all">Guardar todos</button></div>` : `<p class="hint">Todos los pedidos están guardados.</p>`)
+    + `<div class="tablewrap"><table><thead><tr><th>Pedido</th><th>Fecha</th><th>Cliente</th><th class="num">Cobrado</th><th>Producto</th><th>Lote</th><th>Ud.</th><th></th></tr></thead><tbody>${orders.map((o) => {
     const key = orderKey(o); const done = state.ventas.filter((v) => v.shopifyKey === key);
-    const total = toNum(pick(o, O_TOTAL));
-    return `<tr><td>${esc(pick(o, ["name", "id"]))}</td><td>${esc(fmtDate(String(pick(o, O_FECHA)).slice(0, 10)))}</td><td>${esc(pick(o, O_CLIENTE))}</td>
-      ${done.length ? `<td class="num">${money(total)}</td><td colspan="4">${done.map((d) => `${esc((findProduct(d.producto) || {}).nombre || "")} <span class="lot">${esc(d.lote)}</span> ${esc(d.unidades)} ud.`).join(" ")}</td>`
-      : `<td class="num"><input id="oc-${esc(key)}" inputmode="decimal" value="${isFinite(total) ? fmt2(total) : ""}" style="width:90px;text-align:right"></td><td><select id="op-${esc(key)}">${prods}</select></td><td><select id="ol-${esc(key)}">${lots}</select></td><td><input id="ou-${esc(key)}" type="number" min="1" value="1" style="width:64px"></td><td><button class="btn small primary" type="button" data-assign="${esc(key)}">Guardar</button></td>`}</tr>`;
+    const total = orderTotal(o), sg = suggest(o);
+    const lineas = sg.items.length ? `<br><span class="hint">${sg.items.map((li) => `${esc(li.uds)}× ${esc(li.titulo)}${li.variante && li.variante !== "Default Title" ? ` (${esc(li.variante)})` : ""}`).join(", ")}</span>` : "";
+    return `<tr><td><b>${esc(pick(o, ["name", "id"]))}</b>${lineas}</td><td>${esc(fmtDate(String(pick(o, O_FECHA)).slice(0, 10)))}</td><td>${esc(pick(o, O_CLIENTE))}</td>
+      ${done.length ? `<td class="num">${money(total)}</td><td colspan="4">${done.map((d) => `${esc((findProduct(d.producto) || {}).nombre || "")} <span class="lot">${esc(d.lote)}</span> ${esc(d.unidades)} ud.`).join(" ")} <span class="chip ok">Guardado</span></td>`
+      : `<td class="num"><input id="oc-${esc(key)}" inputmode="decimal" value="${isFinite(total) ? fmt2(total) : ""}" style="width:90px;text-align:right"></td><td><select id="op-${esc(key)}">${sel(prods, sg.producto)}</select></td><td><select id="ol-${esc(key)}">${sel(lots, sg.lote)}</select></td><td><input id="ou-${esc(key)}" type="number" min="1" value="${esc(sg.uds)}" style="width:64px"></td><td><button class="btn small primary" type="button" data-assign="${esc(key)}">Guardar</button></td>`}</tr>`;
   }).join("")}</tbody></table></div>`;
 }
-$("shop-out").addEventListener("click", async (e) => {
-  const b = e.target.closest("[data-assign]"); if (!b || !db) return;
-  const key = b.dataset.assign; const o = (state.orders || []).find((x) => orderKey(x) === key); if (!o) return;
+async function saveOrder(key) {
+  const o = (state.orders || []).find((x) => orderKey(x) === key); if (!o || !db) return false;
   const lote = $("ol-" + key).value, producto = $("op-" + key).value, unidades = Number($("ou-" + key).value);
-  if (!producto) { $("op-" + key).focus(); return; }
-  if (!lote) { $("ol-" + key).focus(); return; }
+  if (!producto) { $("op-" + key).focus(); return false; }
+  if (!lote) { $("ol-" + key).focus(); return false; }
+  const p = findProduct(producto); const src = o._detail ? { ...o._detail, ...o } : o;
+  const envioCobrado = toNum(pick(src, O_ENVIO)); const cobrado = toNum($("oc-" + key).value);
+  await db.collection("ventas").doc("shopify-" + key).set({
+    fecha: String(pick(o, O_FECHA)).slice(0, 10) || todayISO(), lote, canal: "Shopify", producto, formato: p ? p.nombre : "",
+    cliente: String(pick(src, O_CLIENTE)) || "Cliente online", referencia: String(pick(o, ["name", "id"])), unidades,
+    cobrado: isFinite(cobrado) ? cobrado : null, envioCobrado: isFinite(envioCobrado) ? envioCobrado : null, envioPagado: null,
+    lineas: (lineItems(src) || []).map((li) => `${li.uds}× ${li.titulo}`).join(", "), shopifyKey: key, creado: new Date().toISOString()
+  });
+  return true;
+}
+$("shop-out").addEventListener("click", async (e) => {
+  const all = e.target.closest("#btn-save-all");
+  if (all) {
+    all.disabled = true;
+    for (const btn of [...$("shop-out").querySelectorAll("[data-assign]")]) { try { await saveOrder(btn.dataset.assign); } catch {} }
+    return;
+  }
+  const b = e.target.closest("[data-assign]"); if (!b) return;
   b.disabled = true;
-  const p = findProduct(producto); const envioCobrado = toNum(pick(o, O_ENVIO)); const cobrado = toNum($("oc-" + key).value);
-  try {
-    await db.collection("ventas").doc("shopify-" + key).set({
-      fecha: String(pick(o, O_FECHA)).slice(0, 10) || todayISO(), lote, canal: "Shopify", producto, formato: p ? p.nombre : "",
-      cliente: String(pick(o, O_CLIENTE)) || "Cliente online", referencia: String(pick(o, ["name", "id"])), unidades,
-      cobrado: isFinite(cobrado) ? cobrado : null, envioCobrado: isFinite(envioCobrado) ? envioCobrado : null, envioPagado: null,
-      shopifyKey: key, creado: new Date().toISOString()
-    });
-  } catch { b.disabled = false; b.textContent = "Error"; }
+  try { if (!(await saveOrder(b.dataset.assign))) b.disabled = false; } catch { b.disabled = false; b.textContent = "Error"; }
 });
 
 /* ---------- gastos y márgenes: pestañas y mes ---------- */
@@ -1524,8 +1580,12 @@ function renderProductos() {
   $("prod-list").innerHTML = list.length ? list.map((p) => {
     const l = prodLine(p), hasPrice = p.precio != null;
     const desg = p.costesTodos.map((c) => `${esc(String(c.concepto).split(" · ")[0])} ${money(nz(c.importe) / (1 + nz(c.ivaIncl) / 100))}`).join(" + ");
+    const vv = state.ventas.filter((v) => v.producto === p.id && isFinite(toNum(v.cobrado)) && nz(v.unidades) > 0);
+    const uv = vv.reduce((a, v) => a + nz(v.unidades), 0);
+    const real = uv ? vv.reduce((a, v) => a + toNum(v.cobrado), 0) / uv : NaN;
+    const gan = uv ? vv.reduce((a, v) => a + calcVenta(v).beneficio, 0) / uv : NaN;
     return `<button class="prod" type="button" data-prod="${esc(p.id)}"><span><span class="pn">${esc(p.nombre)}</span><br><span class="hint">${desg || "Sin costes todavía"}</span></span>
-      <span class="pm"><span><small>Te cuesta</small>${money(l.cu)}</span><span><small>Vendes a</small>${hasPrice ? money(nz(p.precio)) : `<span class="chip warn">Pon el precio</span>`}</span>${hasPrice ? `<span><small>Ganas / ud.</small><b style="color:${l.m >= 0 ? "var(--ok)" : "var(--bad)"}">${money(l.m)}</b></span><span><small>Margen</small>${pct(l.pct)}</span>` : ""}</span></button>`;
+      <span class="pm"><span><small>Te cuesta</small>${money(l.cu)}</span><span><small>Precio normal</small>${hasPrice ? money(nz(p.precio)) : `<span class="chip warn">Pon el precio</span>`}</span>${uv ? `<span><small>Cobras de media / ud.</small>${money(real)}</span><span><small>Ganas de media / ud.</small><b style="color:${gan >= 0 ? "var(--ok)" : "var(--bad)"}">${money(gan)}</b></span>` : ""}${hasPrice && !uv ? `<span><small>Ganas / ud. a precio normal</small><b style="color:${l.m >= 0 ? "var(--ok)" : "var(--bad)"}">${money(l.m)}</b></span><span><small>Margen</small>${pct(l.pct)}</span>` : ""}</span></button>`;
   }).join("") : `<div class="empty">Aún no hay productos. Aparecerán solos cuando registres una recepción.</div>`;
 }
 
