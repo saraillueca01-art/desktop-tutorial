@@ -179,6 +179,25 @@ tr.click:hover td { background: var(--sunk); }
 .bartrack { height: 8px; background: var(--sunk); border-radius: 999px; overflow: hidden; }
 .barfill { height: 100%; background: var(--accent); border-radius: 999px; }
 @media (max-width: 480px) { .barrow { grid-template-columns: 1fr auto; } .bartrack { grid-column: 1 / -1; grid-row: 2; } }
+/* gastos y márgenes */
+.seg { display: inline-flex; gap: 4px; background: var(--sunk); border-radius: 999px; padding: 4px; justify-self: start; max-width: 100%; overflow-x: auto; }
+.seg button { white-space: nowrap; font: 700 13.5px var(--font); border: 0; background: none; color: var(--muted); padding: 8px 16px; border-radius: 999px; cursor: pointer; }
+.seg button.on { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+.gpane { display: grid; gap: 16px; }
+details.box > summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+details.box > summary::-webkit-details-marker { display: none; }
+details.box > summary::before { content: "+"; font-weight: 800; color: var(--accent); width: 14px; }
+details.box[open] > summary::before { content: "–"; }
+.prods { display: grid; gap: 10px; }
+.prod { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 18px; align-items: center; text-align: left; font: inherit; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; cursor: pointer; }
+.prod:hover { border-color: #cfe1bb; }
+.prod .pn { font-weight: 700; }
+.prod .pm { display: flex; flex-wrap: wrap; gap: 6px 22px; font-variant-numeric: tabular-nums; }
+.prod .pm small { display: block; font-size: 11.5px; color: var(--muted); font-weight: 600; }
+@media (max-width: 640px) { .prod { grid-template-columns: 1fr; } }
+.costs { display: grid; gap: 8px; }
+.costrow { display: grid; grid-template-columns: minmax(0, 2fr) minmax(90px, 1fr) minmax(120px, 1fr) auto; gap: 8px; align-items: center; }
+@media (max-width: 560px) { .costrow { grid-template-columns: 1fr 1fr; } .costrow .c-con { grid-column: 1 / -1; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
@@ -201,7 +220,7 @@ tr.click:hover td { background: var(--sunk); }
       <a data-go="recepciones"><svg class="i"><use href="#i-truck"/></svg>Recepciones</a>
       <a data-go="lotes"><svg class="i"><use href="#i-box"/></svg>Lotes</a>
       <a data-go="ventas"><svg class="i"><use href="#i-bag"/></svg>Ventas</a>
-      <a data-go="gastos"><svg class="i"><use href="#i-receipt"/></svg>Gastos</a>
+      <a data-go="gastos"><svg class="i"><use href="#i-receipt"/></svg>Gastos y márgenes</a>
     </nav>
     <div class="side-foot">
       <span class="lbl">Conexiones</span>
@@ -232,8 +251,8 @@ tr.click:hover td { background: var(--sunk); }
     <div class="kpis">
       <button class="kpi" type="button" data-go="recepciones"><span class="ico"><svg class="i"><use href="#i-truck"/></svg></span><span class="lbl">Recepciones</span><span class="big" id="h-rec">0</span><span class="cap" id="h-rec-cap">este mes</span></button>
       <button class="kpi" type="button" data-go="lotes"><span class="ico"><svg class="i"><use href="#i-box"/></svg></span><span class="lbl">Lotes</span><span class="big" id="h-lot">0</span><span class="cap" id="h-lot-cap">registrados</span></button>
-      <button class="kpi" type="button" data-go="ventas"><span class="ico"><svg class="i"><use href="#i-bag"/></svg></span><span class="lbl">Ventas</span><span class="big" id="h-ven">0</span><span class="cap">uds. este mes</span></button>
-      <button class="kpi" type="button" data-go="gastos"><span class="ico"><svg class="i"><use href="#i-receipt"/></svg></span><span class="lbl">Gastos</span><span class="big" id="h-gas">0,00 €</span><span class="cap">este mes</span></button>
+      <button class="kpi" type="button" data-go="ventas"><span class="ico"><svg class="i"><use href="#i-bag"/></svg></span><span class="lbl">Ventas</span><span class="big" id="h-ven">0,00 €</span><span class="cap" id="h-ven-cap">vendido este mes</span></button>
+      <button class="kpi" type="button" data-go="gastos"><span class="ico"><svg class="i"><use href="#i-receipt"/></svg></span><span class="lbl">Beneficio</span><span class="big" id="h-gas">0,00 €</span><span class="cap" id="h-gas-cap">este mes</span></button>
     </div>
     <div class="cols">
       <div class="box"><h2>Actividad reciente</h2><div class="feed" id="h-activity"></div></div>
@@ -319,23 +338,25 @@ tr.click:hover td { background: var(--sunk); }
 
   <!-- VENTAS -->
   <section class="panel" id="v-ventas" hidden>
-    <div class="pagehead"><div><h1 class="ptitle">Ventas</h1><p class="psub">Pedidos de Shopify y ventas directas, cada uno con su lote.</p></div></div>
+    <div class="pagehead"><div><h1 class="ptitle">Ventas</h1><p class="psub">Pedidos de Shopify y ventas directas, cada uno con su lote, su producto y lo que te han pagado.</p></div></div>
     <div class="box">
       <div class="row between">
         <h2>Pedidos de Shopify</h2>
         <button class="btn" id="btn-shop" type="button">Cargar pedidos</button>
       </div>
-      <p class="hint">Elige de qué lote ha salido cada pedido. Así sabrás a quién avisar si un lote tiene un problema.</p>
+      <p class="hint">Para cada pedido elige el producto y el lote del que ha salido. El importe cobrado y el envío cobrado vienen de Shopify; puedes corregirlos.</p>
       <div id="shop-out"><div class="empty">Pulsa «Cargar pedidos» para ver los últimos pedidos de moodmatcha.es.</div></div>
     </div>
     <form class="box" id="sale-form">
       <h2>Venta directa (tiendas, cafeterías, ferias)</h2>
       <div class="grid">
         <label class="f">Fecha<input type="date" id="s-fecha" required></label>
-        <label class="f">Lote<select id="s-lote" required></select></label>
         <label class="f">Cliente<input id="s-cliente" placeholder="Cafetería…" required></label>
-        <label class="f">Producto / formato<input id="s-formato" placeholder="Lata 30 g"></label>
+        <label class="f">Producto<select id="s-producto"></select></label>
+        <label class="f">Lote<select id="s-lote" required></select></label>
         <label class="f">Unidades<input id="s-unidades" type="number" min="1" step="1" required></label>
+        <label class="f">Total cobrado (con IVA)<input id="s-cobrado" inputmode="decimal" placeholder="0,00"></label>
+        <label class="f">Envío que pagas tú<input id="s-envio" inputmode="decimal" placeholder="0,00"></label>
         <label class="f">Factura / albarán<input id="s-ref"></label>
       </div>
       <div class="row"><button class="btn primary" type="submit">Guardar venta</button><span id="sale-msg" class="hint"></span></div>
@@ -346,55 +367,104 @@ tr.click:hover td { background: var(--sunk); }
     </div>
   </section>
 
-  <!-- GASTOS -->
+  <!-- GASTOS Y MÁRGENES -->
   <section class="panel" id="v-gastos" hidden>
-    <div class="pagehead"><div><h1 class="ptitle">Gastos</h1><p class="psub">Facturas leídas por Claude y archivadas en tu contabilidad.</p></div>
-      <button class="btn primary" type="button" id="btn-new-gasto"><svg class="i"><use href="#i-plus"/></svg>Nuevo gasto</button></div>
+    <div class="pagehead"><div><h1 class="ptitle">Gastos y márgenes</h1><p class="psub">Cuánto te cuesta cada cosa y cuánto ganas de verdad con cada pedido.</p></div>
+      <div class="actions"><label class="f" style="width:auto">Mes<input type="month" id="g-mes"></label></div></div>
+    <div class="seg" role="tablist">
+      <button type="button" class="on" data-gtab="ben">Beneficio</button>
+      <button type="button" data-gtab="prod">Coste por producto</button>
+      <button type="button" data-gtab="fact">Otros gastos</button>
+    </div>
 
-    <form class="box" id="gasto-form" hidden>
-      <h2>Nuevo gasto</h2>
-      <div class="drop" id="g-drop">
-        <p class="hint">Sube la factura o el ticket (PDF o foto). Claude la lee y rellena los datos. Se guarda en Contabilidad › MOOD MATCHA › trimestre › mes › Gastos.</p>
-        <div class="row"><input type="file" id="g-file" accept=".pdf,image/png,image/jpeg,image/webp" style="max-width:100%">
-          <button class="btn" type="button" id="btn-g-read">Leer factura</button></div>
-        <ul class="files" id="g-file-list"></ul>
+    <!-- Beneficio -->
+    <div class="gpane" id="gp-ben">
+      <div class="box">
+        <div class="stats" id="m-stats"></div>
+        <div class="bars" id="m-bars"></div>
+        <p class="hint" id="m-note"></p>
       </div>
-      <div class="grid">
-        <label class="f">Fecha de la factura<input type="date" id="g-fecha" required></label>
-        <label class="f">Proveedor<input id="g-proveedor" required list="dl-gproveedores"></label>
-        <label class="f">NIF / CIF del proveedor<input id="g-nif"></label>
-        <label class="f">Nº de factura<input id="g-num"></label>
-        <label class="f wide">Concepto<input id="g-concepto" placeholder="Latas de 30 g, suscripción Canva…" required></label>
-        <label class="f">Categoría<select id="g-categoria"></select></label>
-        <label class="f">Base imponible<input id="g-base" inputmode="decimal" placeholder="0,00"></label>
-        <label class="f">IVA %<select id="g-ivapct"><option value="21">21 %</option><option value="10">10 %</option><option value="4">4 %</option><option value="0">0 % / exento</option></select></label>
-        <label class="f">Cuota IVA<input id="g-iva" inputmode="decimal" placeholder="0,00"></label>
-        <label class="f">Total<input id="g-total" inputmode="decimal" placeholder="0,00" required></label>
-        <label class="f">Moneda<select id="g-moneda"><option>EUR</option><option>USD</option><option>CNY</option><option>GBP</option></select></label>
-        <label class="f">Forma de pago<select id="g-pago"><option value="">—</option><option>Tarjeta</option><option>Transferencia</option><option>PayPal</option><option>Alibaba Trade Assurance</option><option>Domiciliación</option><option>Efectivo</option></select></label>
-        <label class="f">Lote relacionado (opcional)<select id="g-lote"></select></label>
-        <label class="f wide">Notas<input id="g-notas"></label>
+      <div class="box">
+        <h2>Pedidos del mes</h2>
+        <p class="hint">Puedes cambiar el envío que pagaste en cada pedido; se guarda solo.</p>
+        <div class="tablewrap" id="m-table"></div>
       </div>
-      <datalist id="dl-gproveedores"></datalist>
-      <div class="row">
-        <button class="btn primary" type="submit" id="btn-g-save">Guardar gasto</button>
-        <button class="btn" type="button" id="btn-g-cancel">Cancelar</button>
-      </div>
-      <div id="g-msg"></div>
-    </form>
-
-    <div class="box">
-      <div class="row between">
-        <h2>Resumen</h2>
-        <div class="row">
-          <label class="f" style="width:auto">Mes<input type="month" id="g-mes"></label>
-          <button class="btn" type="button" id="btn-g-csv">Descargar CSV del mes</button>
+      <details class="box soft" id="m-config">
+        <summary><b>Ajustes del cálculo</b> <span class="hint">IVA de venta, comisiones de pago, envío y embalaje</span></summary>
+        <div class="grid">
+          <label class="f">IVA con el que vendes (%)<input id="cf-iva" inputmode="decimal"></label>
+          <label class="f">Comisión de pago (%)<input id="cf-compct" inputmode="decimal"></label>
+          <label class="f">Comisión fija por pedido (€)<input id="cf-comfix" inputmode="decimal"></label>
+          <label class="f">Envío que pagas por pedido, si no lo apuntas (€)<input id="cf-envio" inputmode="decimal"></label>
+          <label class="f">Embalaje por pedido: caja, relleno… (€)<input id="cf-emb" inputmode="decimal"></label>
         </div>
+        <div class="row"><button class="btn primary" type="button" id="btn-cf-save">Guardar ajustes</button><span class="hint" id="cf-msg"></span></div>
+        <p class="hint">La comisión depende de tu plan de Shopify y de cómo pague el cliente: mira el porcentaje real en Shopify → Configuración → Pagos y ponlo aquí.</p>
+      </details>
+    </div>
+
+    <!-- Coste por producto -->
+    <div class="gpane" id="gp-prod" hidden>
+      <div class="box">
+        <div class="row between"><h2>Tus productos</h2><button class="btn primary" type="button" id="btn-new-prod"><svg class="i"><use href="#i-plus"/></svg>Nuevo producto</button></div>
+        <p class="hint">Apunta lo que te cuesta cada unidad (el matcha, la lata, la etiqueta…) y el precio al que la vendes. Así se calcula el margen de cada pedido.</p>
+        <div class="prods" id="prod-list"></div>
       </div>
-      <div class="stats" id="g-stats"></div>
-      <div class="bars" id="g-bars"></div>
-      <div class="tablewrap" id="g-table"></div>
-      <p class="hint" id="g-csv-msg"></p>
+      <form class="box" id="prod-form" hidden>
+        <h2 id="pf-title">Nuevo producto</h2>
+        <div class="grid">
+          <label class="f">Nombre (como en Shopify)<input id="pf-nombre" required placeholder="Matcha ceremonial Uji 30 g"></label>
+          <label class="f">Precio de venta (con IVA)<input id="pf-precio" inputmode="decimal" placeholder="0,00" required></label>
+          <label class="f">IVA de venta<select id="pf-iva"><option value="10">10 % (matcha y alimentación)</option><option value="21">21 % (accesorios: batidor, cuenco…)</option><option value="4">4 %</option></select></label>
+        </div>
+        <h3>Qué te cuesta cada unidad</h3>
+        <div class="costs" id="pf-costs"></div>
+        <div class="row"><button class="btn small" type="button" id="pf-add">+ Añadir coste</button></div>
+        <div class="msg ok" id="pf-preview"></div>
+        <div class="row">
+          <button class="btn primary" type="submit">Guardar producto</button>
+          <button class="btn" type="button" id="pf-cancel">Cancelar</button>
+          <button class="btn" type="button" id="pf-delete" hidden>Borrar producto</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Otros gastos -->
+    <div class="gpane" id="gp-fact" hidden>
+      <div class="box">
+        <div class="row between"><h2>Facturas del mes</h2>
+          <div class="actions"><button class="btn" type="button" id="btn-g-csv">Descargar CSV</button><button class="btn primary" type="button" id="btn-new-gasto"><svg class="i"><use href="#i-plus"/></svg>Nuevo gasto</button></div></div>
+        <p class="hint">Publicidad, suscripciones, gestoría… Se restan del beneficio del mes. Las facturas de matcha y envases no se restan aquí porque ya están dentro del coste de cada producto.</p>
+        <div class="bars" id="g-bars"></div>
+        <div class="tablewrap" id="g-table"></div>
+        <p class="hint" id="g-csv-msg"></p>
+      </div>
+      <form class="box" id="gasto-form" hidden>
+        <h2>Nuevo gasto</h2>
+        <div class="drop" id="g-drop">
+          <p class="hint">Sube la factura o el ticket (PDF o foto) y Claude rellena los datos. Se guarda en Contabilidad › MOOD MATCHA › trimestre › mes › Gastos.</p>
+          <div class="row"><input type="file" id="g-file" accept=".pdf,image/png,image/jpeg,image/webp" style="max-width:100%">
+            <button class="btn" type="button" id="btn-g-read">Leer factura</button></div>
+          <ul class="files" id="g-file-list"></ul>
+        </div>
+        <div class="grid">
+          <label class="f">Fecha<input type="date" id="g-fecha" required></label>
+          <label class="f">Proveedor<input id="g-proveedor" required list="dl-gproveedores"></label>
+          <label class="f wide">Concepto<input id="g-concepto" placeholder="Campaña Instagram, Canva…" required></label>
+          <label class="f">Categoría<select id="g-categoria"></select></label>
+          <label class="f">Total pagado<input id="g-total" inputmode="decimal" placeholder="0,00" required></label>
+          <label class="f">Moneda<select id="g-moneda"><option>EUR</option><option>USD</option><option>CNY</option><option>GBP</option></select></label>
+          <label class="f">Lote relacionado (opcional)<select id="g-lote"></select></label>
+          <label class="f wide">Notas<input id="g-notas"></label>
+        </div>
+        <input type="hidden" id="g-nif"><input type="hidden" id="g-num"><input type="hidden" id="g-ivapct" value="21">
+        <datalist id="dl-gproveedores"></datalist>
+        <div class="row">
+          <button class="btn primary" type="submit" id="btn-g-save">Guardar gasto</button>
+          <button class="btn" type="button" id="btn-g-cancel">Cancelar</button>
+        </div>
+        <div id="g-msg"></div>
+      </form>
     </div>
   </section>
   </div></main>
@@ -454,7 +524,7 @@ const FIELDS = [
 ];
 
 let db = null, mcp = null, sample = null, downloads = null, fileArgs = false, imgLimit = 0;
-const state = { recepciones: [], ventas: [], gastos: [], files: [], gfile: null, draft: null, orders: null, selected: null };
+const state = { recepciones: [], ventas: [], gastos: [], productos: [], config: null, files: [], gfile: null, draft: null, orders: null, selected: null };
 const $ = (id) => document.getElementById(id);
 const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const todayISO = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
@@ -517,9 +587,12 @@ function renderHome() {
   $("h-rec-cap").textContent = "este mes";
   $("h-lot").textContent = state.recepciones.length;
   $("h-lot-cap").textContent = "en total";
-  $("h-ven").textContent = state.ventas.filter((v) => String(v.fecha || "").startsWith(ym)).reduce((s, v) => s + (Number(v.unidades) || 0), 0);
-  const gm = state.gastos.filter((g) => String(g.fecha || "").startsWith(ym) && (g.moneda || "EUR") === "EUR");
-  $("h-gas").textContent = money(gm.reduce((s, g) => s + (Number(g.total) || 0), 0));
+  const rm = resumenMes(ym);
+  $("h-ven").textContent = money(rm.neto);
+  $("h-ven-cap").textContent = `sin IVA · ${rm.uds} ud. este mes`;
+  $("h-gas").textContent = money(rm.beneficio);
+  $("h-gas").style.color = rm.beneficio < 0 ? "var(--bad)" : "";
+  $("h-gas-cap").textContent = isFinite(rm.margen) ? `margen ${pct(rm.margen)} este mes` : "este mes";
   // actividad reciente
   const items = [
     ...state.recepciones.map((r) => ({ f: r.fecha, ico: "i-truck", t: `Recepción <span class="lot">${esc(r.id)}</span>`, s: [r.producto, r.proveedor].filter(Boolean).join(" · "), lot: r.id })),
@@ -943,13 +1016,58 @@ function renderDetail(id) {
   };
 }
 
+/* ---------- productos y costes ---------- */
+const CFG_DEFAULT = { iva: 10, comPct: 0, comFix: 0, envio: 0, emb: 0 };
+const cfg = () => ({ ...CFG_DEFAULT, ...(state.config || {}) });
+const SIN_RESTAR = ["Materia prima (matcha)", "Envases y etiquetas"]; // ya están en el coste de cada producto
+const nz = (v, d = 0) => (v === null || v === undefined || v === "" || !isFinite(Number(v))) ? d : Number(v);
+function unitCost(p) { return (p && Array.isArray(p.costes) ? p.costes : []).reduce((s, c) => s + nz(c.importe) / (1 + nz(c.ivaIncl) / 100), 0); }
+function precioNeto(p) { return nz(p && p.precio) / (1 + nz(p && p.iva, 10) / 100); }
+function findProduct(key) {
+  if (!key) return null;
+  const k = String(key).toLowerCase().trim();
+  return state.productos.find((p) => p.id === key) || state.productos.find((p) => String(p.nombre || "").toLowerCase().trim() === k) || null;
+}
+function productOptions(first) { return `<option value="">${first}</option>` + state.productos.slice().sort((a, b) => String(a.nombre).localeCompare(String(b.nombre))).map((p) => `<option value="${esc(p.id)}">${esc(p.nombre)}</option>`).join(""); }
+const pct = (n) => isFinite(n) ? (n * 100).toLocaleString("es-ES", { maximumFractionDigits: 0 }) + " %" : "—";
+
+// Cálculo de un pedido: lo cobrado sin IVA menos lo que cuesta servirlo.
+function calcVenta(v) {
+  const c = cfg(), p = findProduct(v.producto);
+  const uds = nz(v.unidades, 0);
+  let cobrado = toNum(v.cobrado), estimado = false;
+  if (!isFinite(cobrado)) { cobrado = p ? nz(p.precio) * uds : NaN; estimado = true; }
+  const iva = p ? nz(p.iva, c.iva) : c.iva;
+  const neto = isFinite(cobrado) ? cobrado / (1 + iva / 100) : 0;
+  const coste = p ? unitCost(p) * uds : 0;
+  const envio = isFinite(toNum(v.envioPagado)) ? toNum(v.envioPagado) : (v.canal === "Shopify" ? c.envio : 0);
+  const comision = v.canal === "Shopify" && isFinite(cobrado) ? cobrado * c.comPct / 100 + c.comFix : 0;
+  const emb = v.canal === "Shopify" ? c.emb : 0;
+  const beneficio = neto - coste - envio - comision - emb;
+  return { p, uds, cobrado, estimado, neto, coste, envio, comision, emb, beneficio, margen: neto ? beneficio / neto : NaN, sinProducto: !p };
+}
+function gastoBase(g) { return g.base != null && isFinite(Number(g.base)) ? Number(g.base) : nz(g.total) / (1 + nz(g.ivaPct, 21) / 100); }
+function resumenMes(ym) {
+  const ventas = state.ventas.filter((v) => String(v.fecha || "").startsWith(ym));
+  const calc = ventas.map((v) => ({ v, r: calcVenta(v) }));
+  const sum = (k) => calc.reduce((s, x) => s + (isFinite(x.r[k]) ? x.r[k] : 0), 0);
+  const otros = state.gastos.filter((g) => String(g.fecha || "").startsWith(ym) && (g.moneda || "EUR") === "EUR" && !SIN_RESTAR.includes(g.categoria)).reduce((s, g) => s + gastoBase(g), 0);
+  const neto = sum("neto"), coste = sum("coste"), envio = sum("envio"), com = sum("comision") + sum("emb");
+  const beneficio = neto - coste - envio - com - otros;
+  return { calc, cobrado: sum("cobrado"), neto, coste, envio, com, otros, beneficio, margen: neto ? beneficio / neto : NaN, sinProducto: calc.filter((x) => x.r.sinProducto).length, uds: sum("uds") };
+}
+
 /* ---------- ventas ---------- */
 function salesTable(v, withLot) {
   if (!v.length) return `<div class="empty">Sin ventas registradas.</div>`;
-  return `<table><thead><tr><th>Fecha</th>${withLot ? "<th>Lote</th>" : ""}<th>Canal</th><th>Cliente</th><th>Referencia</th><th>Producto</th><th class="num">Ud.</th><th></th></tr></thead><tbody>${v.map((x) => `<tr><td>${esc(fmtDate(x.fecha))}</td>${withLot ? `<td><span class="lot">${esc(x.lote)}</span></td>` : ""}<td>${esc(x.canal)}</td><td>${esc(x.cliente)}</td><td>${esc(x.referencia)}</td><td>${esc(x.formato)}</td><td class="num">${esc(x.unidades)}</td><td><button class="btn small" type="button" data-del="ventas" data-id="${esc(x.id)}">Borrar</button></td></tr>`).join("")}</tbody></table>`;
+  return `<table><thead><tr><th>Fecha</th>${withLot ? "<th>Lote</th>" : ""}<th>Canal</th><th>Cliente</th><th>Producto</th><th class="num">Ud.</th><th class="num">Cobrado</th><th class="num">Ganas</th><th></th></tr></thead><tbody>${v.map((x) => {
+    const r = calcVenta(x);
+    return `<tr><td>${esc(fmtDate(x.fecha))}</td>${withLot ? `<td><span class="lot">${esc(x.lote)}</span></td>` : ""}<td>${esc(x.canal)}${x.referencia ? `<br><span class="hint">${esc(x.referencia)}</span>` : ""}</td><td>${esc(x.cliente)}</td><td>${r.p ? esc(r.p.nombre) : `<span class="chip warn">Sin producto</span>`}</td><td class="num">${esc(x.unidades)}</td><td class="num">${isFinite(r.cobrado) ? money(r.cobrado) : "—"}</td><td class="num"><b style="color:${r.beneficio >= 0 ? "var(--ok)" : "var(--bad)"}">${r.p ? money(r.beneficio) : "—"}</b></td><td><button class="btn small" type="button" data-del="ventas" data-id="${esc(x.id)}">Borrar</button></td></tr>`;
+  }).join("")}</tbody></table>`;
 }
 function renderSales() {
   $("sales-table").innerHTML = salesTable(sortDesc(state.ventas, "fecha").slice(0, 50), true);
+  const sp = $("s-producto"), cur = sp.value; sp.innerHTML = productOptions(state.productos.length ? "Elige producto" : "Crea tus productos en Gastos y márgenes"); sp.value = cur;
   if (state.orders) renderOrders();
 }
 document.addEventListener("click", async (e) => {
@@ -958,14 +1076,25 @@ document.addEventListener("click", async (e) => {
   b.disabled = true;
   try { await db.collection(b.dataset.del).doc(b.dataset.id).delete(); } catch { b.textContent = "Error"; }
 });
+$("s-producto").addEventListener("change", () => {
+  const p = findProduct($("s-producto").value), u = nz($("s-unidades").value, 0);
+  if (p && u && !$("s-cobrado").value) $("s-cobrado").value = fmt2(nz(p.precio) * u);
+});
 $("sale-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!db) { $("sale-msg").textContent = "La base de datos no está disponible."; return; }
-  const data = { fecha: $("s-fecha").value, lote: $("s-lote").value, canal: "Venta directa", cliente: $("s-cliente").value.trim(), formato: $("s-formato").value.trim(), unidades: Number($("s-unidades").value), referencia: $("s-ref").value.trim(), creado: new Date().toISOString() };
-  try { await db.collection("ventas").add(data); $("sale-msg").textContent = "Venta guardada."; ["s-cliente", "s-formato", "s-unidades", "s-ref"].forEach((i) => ($(i).value = "")); }
+  const p = findProduct($("s-producto").value);
+  const data = { fecha: $("s-fecha").value, lote: $("s-lote").value, canal: "Venta directa", cliente: $("s-cliente").value.trim(), producto: p ? p.id : "", formato: p ? p.nombre : "",
+    unidades: Number($("s-unidades").value), cobrado: isFinite(toNum($("s-cobrado").value)) ? toNum($("s-cobrado").value) : null,
+    envioPagado: isFinite(toNum($("s-envio").value)) ? toNum($("s-envio").value) : null, referencia: $("s-ref").value.trim(), creado: new Date().toISOString() };
+  try { await db.collection("ventas").add(data); $("sale-msg").textContent = "Venta guardada."; ["s-cliente", "s-unidades", "s-ref", "s-cobrado", "s-envio"].forEach((i) => ($(i).value = "")); }
   catch (err) { $("sale-msg").textContent = "No se ha podido guardar: " + (err.message || err.code); }
 });
 const pick = (o, ks) => { for (const k of ks) { const v = k.split(".").reduce((a, p) => (a == null ? a : a[p]), o); if (v != null && v !== "" && typeof v !== "object") return v; } return ""; };
+const O_TOTAL = ["totalPrice", "total", "totalPriceSet.shopMoney.amount", "currentTotalPriceSet.shopMoney.amount", "totalPriceSet.amount", "total_price"];
+const O_ENVIO = ["totalShippingPrice", "shippingPrice", "totalShippingPriceSet.shopMoney.amount", "shippingLine.originalPriceSet.shopMoney.amount", "shipping"];
+const O_FECHA = ["createdAt", "created_at", "processedAt", "date"];
+const O_CLIENTE = ["customer.displayName", "customer.name", "customerName", "customer", "email"];
 $("btn-shop").addEventListener("click", async () => {
   const out = $("shop-out");
   if (!mcp) { out.innerHTML = `<div class="msg bad">Shopify no está disponible en esta vista.</div>`; return; }
@@ -982,42 +1111,150 @@ function orderKey(o) { return String(pick(o, ["name", "id"])).replace(/[^A-Za-z0
 function renderOrders() {
   const out = $("shop-out"); const orders = state.orders || [];
   if (!orders.length) { out.innerHTML = `<div class="empty">No hay pedidos en Shopify todavía. Cuando entren, aparecerán aquí.</div>`; return; }
-  const opts = lotOptions("Lote…");
-  out.innerHTML = `<div class="tablewrap"><table><thead><tr><th>Pedido</th><th>Fecha</th><th>Cliente</th><th class="num">Total</th><th>Lote</th><th>Ud.</th><th></th></tr></thead><tbody>${orders.map((o) => {
+  const lots = lotOptions("Lote…"), prods = productOptions("Producto…");
+  out.innerHTML = `<div class="tablewrap"><table><thead><tr><th>Pedido</th><th>Fecha</th><th>Cliente</th><th class="num">Cobrado</th><th>Producto</th><th>Lote</th><th>Ud.</th><th></th></tr></thead><tbody>${orders.map((o) => {
     const key = orderKey(o); const done = state.ventas.filter((v) => v.shopifyKey === key);
-    const fecha = String(pick(o, ["createdAt", "created_at", "processedAt", "date"])).slice(0, 10);
-    const cliente = pick(o, ["customer.displayName", "customer.name", "customerName", "customer", "email"]);
-    const total = pick(o, ["totalPrice", "total", "totalPriceSet.shopMoney.amount", "totalPriceSet.amount", "total_price"]);
-    return `<tr><td>${esc(pick(o, ["name", "id"]))}</td><td>${esc(fmtDate(fecha))}</td><td>${esc(cliente)}</td><td class="num">${esc(total)}</td>
-      ${done.length ? `<td colspan="3">${done.map((d) => `<span class="lot">${esc(d.lote)}</span> ${esc(d.unidades)} ud.`).join(" ")}</td>`
-      : `<td><select id="ol-${esc(key)}">${opts}</select></td><td><input id="ou-${esc(key)}" type="number" min="1" value="1" style="width:70px"></td><td><button class="btn small" type="button" data-assign="${esc(key)}">Asignar</button></td>`}</tr>`;
+    const total = toNum(pick(o, O_TOTAL));
+    return `<tr><td>${esc(pick(o, ["name", "id"]))}</td><td>${esc(fmtDate(String(pick(o, O_FECHA)).slice(0, 10)))}</td><td>${esc(pick(o, O_CLIENTE))}</td>
+      ${done.length ? `<td class="num">${money(total)}</td><td colspan="4">${done.map((d) => `${esc((findProduct(d.producto) || {}).nombre || "")} <span class="lot">${esc(d.lote)}</span> ${esc(d.unidades)} ud.`).join(" ")}</td>`
+      : `<td class="num"><input id="oc-${esc(key)}" inputmode="decimal" value="${isFinite(total) ? fmt2(total) : ""}" style="width:90px;text-align:right"></td><td><select id="op-${esc(key)}">${prods}</select></td><td><select id="ol-${esc(key)}">${lots}</select></td><td><input id="ou-${esc(key)}" type="number" min="1" value="1" style="width:64px"></td><td><button class="btn small primary" type="button" data-assign="${esc(key)}">Guardar</button></td>`}</tr>`;
   }).join("")}</tbody></table></div>`;
 }
 $("shop-out").addEventListener("click", async (e) => {
   const b = e.target.closest("[data-assign]"); if (!b || !db) return;
   const key = b.dataset.assign; const o = (state.orders || []).find((x) => orderKey(x) === key); if (!o) return;
-  const lote = $("ol-" + key).value; const unidades = Number($("ou-" + key).value);
+  const lote = $("ol-" + key).value, producto = $("op-" + key).value, unidades = Number($("ou-" + key).value);
+  if (!producto) { $("op-" + key).focus(); return; }
   if (!lote) { $("ol-" + key).focus(); return; }
   b.disabled = true;
+  const p = findProduct(producto); const envioCobrado = toNum(pick(o, O_ENVIO)); const cobrado = toNum($("oc-" + key).value);
   try {
     await db.collection("ventas").doc("shopify-" + key).set({
-      fecha: String(pick(o, ["createdAt", "created_at", "processedAt", "date"])).slice(0, 10) || todayISO(), lote, canal: "Shopify",
-      cliente: String(pick(o, ["customer.displayName", "customer.name", "customerName", "customer", "email"])) || "Cliente online",
-      referencia: String(pick(o, ["name", "id"])), formato: "", unidades, shopifyKey: key, creado: new Date().toISOString()
+      fecha: String(pick(o, O_FECHA)).slice(0, 10) || todayISO(), lote, canal: "Shopify", producto, formato: p ? p.nombre : "",
+      cliente: String(pick(o, O_CLIENTE)) || "Cliente online", referencia: String(pick(o, ["name", "id"])), unidades,
+      cobrado: isFinite(cobrado) ? cobrado : null, envioCobrado: isFinite(envioCobrado) ? envioCobrado : null, envioPagado: null,
+      shopifyKey: key, creado: new Date().toISOString()
     });
   } catch { b.disabled = false; b.textContent = "Error"; }
 });
 
-/* ---------- gastos ---------- */
-$("g-categoria").innerHTML = CATEGORIAS.map((c) => `<option>${esc(c)}</option>`).join("");
+/* ---------- gastos y márgenes: pestañas y mes ---------- */
+document.querySelectorAll("[data-gtab]").forEach((b) => b.addEventListener("click", () => {
+  document.querySelectorAll("[data-gtab]").forEach((x) => x.classList.toggle("on", x === b));
+  for (const t of ["ben", "prod", "fact"]) $("gp-" + t).hidden = t !== b.dataset.gtab;
+}));
 $("g-mes").value = todayISO().slice(0, 7);
+$("g-mes").addEventListener("change", () => { renderMargenes(); renderGastos(); });
+
+/* ---------- beneficio ---------- */
+function fillConfig() { const c = cfg(); $("cf-iva").value = c.iva; $("cf-compct").value = fmt2(c.comPct); $("cf-comfix").value = fmt2(c.comFix); $("cf-envio").value = fmt2(c.envio); $("cf-emb").value = fmt2(c.emb); }
+$("btn-cf-save").addEventListener("click", async () => {
+  if (!db) { $("cf-msg").textContent = "La base de datos no está disponible."; return; }
+  const v = (id) => { const n = toNum($(id).value); return isFinite(n) ? n : 0; };
+  try { await db.doc("config/margenes").set({ iva: v("cf-iva") || 10, comPct: v("cf-compct"), comFix: v("cf-comfix"), envio: v("cf-envio"), emb: v("cf-emb") }); $("cf-msg").textContent = "Ajustes guardados."; }
+  catch (err) { $("cf-msg").textContent = "No se han podido guardar: " + (err.message || err.code); }
+});
+function renderMargenes() {
+  const ym = $("g-mes").value, r = resumenMes(ym);
+  const col = r.beneficio >= 0 ? "var(--ok)" : "var(--bad)";
+  $("m-stats").innerHTML = `<div class="stat"><span>Beneficio</span><b style="color:${col}">${money(r.beneficio)}</b></div>
+    <div class="stat"><span>Margen</span><b>${pct(r.margen)}</b></div>
+    <div class="stat"><span>Vendido (sin IVA)</span><b>${money(r.neto)}</b></div>
+    <div class="stat"><span>Pedidos</span><b>${r.calc.length}</b></div>`;
+  const parts = [["Coste de producto", r.coste], ["Envíos que pagas", r.envio], ["Comisiones y embalaje", r.com], ["Otros gastos", r.otros], ["Te queda", Math.max(0, r.beneficio)]];
+  $("m-bars").innerHTML = r.neto ? `<h3>De cada venta, a dónde va el dinero</h3>` + parts.map(([l, v]) => `<div class="barrow"><span>${esc(l)}</span><span class="bartrack"><span class="barfill" style="display:block;width:${Math.min(100, Math.max(0, v / r.neto * 100))}%${l === "Te queda" ? "" : ";background:#c9b892"}"></span></span><span class="num" style="font-variant-numeric:tabular-nums">${money(v)} · ${pct(v / r.neto)}</span></div>`).join("") : "";
+  const c = cfg(), notas = [];
+  if (r.sinProducto) notas.push(`${r.sinProducto} venta(s) no tienen producto asignado y no restan coste.`);
+  if (!c.comPct && !c.comFix && !c.envio) notas.push("Aún no has puesto comisiones ni coste de envío en «Ajustes del cálculo».");
+  if (!state.productos.length) notas.push("Crea tus productos en «Coste por producto» para que se calcule lo que te cuesta cada pedido.");
+  $("m-note").textContent = notas.join(" ");
+  const rows = r.calc.sort((a, b) => String(b.v.fecha || "").localeCompare(String(a.v.fecha || "")));
+  $("m-table").innerHTML = rows.length ? `<table><thead><tr><th>Pedido</th><th>Producto</th><th class="num">Cobrado</th><th class="num">Sin IVA</th><th class="num">Coste</th><th class="num">Envío pagado</th><th class="num">Comisión</th><th class="num">Ganas</th><th class="num">Margen</th></tr></thead><tbody>${rows.map(({ v, r: x }) => `<tr>
+      <td><b>${esc(v.referencia || v.cliente || "")}</b><br><span class="hint">${esc(fmtDate(v.fecha))} · ${esc(v.canal)}</span></td>
+      <td>${x.p ? esc(x.p.nombre) : `<span class="chip warn">Sin producto</span>`}<br><span class="hint">${esc(v.unidades)} ud.</span></td>
+      <td class="num">${isFinite(x.cobrado) ? money(x.cobrado) : "—"}${x.estimado && isFinite(x.cobrado) ? `<br><span class="hint">estimado</span>` : ""}</td>
+      <td class="num">${money(x.neto)}</td><td class="num">${money(x.coste)}</td>
+      <td class="num"><input data-envio="${esc(v.id)}" inputmode="decimal" value="${isFinite(toNum(v.envioPagado)) ? fmt2(toNum(v.envioPagado)) : ""}" placeholder="${fmt2(x.envio)}" style="width:84px;text-align:right"></td>
+      <td class="num">${money(x.comision + x.emb)}</td>
+      <td class="num"><b style="color:${x.beneficio >= 0 ? "var(--ok)" : "var(--bad)"}">${money(x.beneficio)}</b></td><td class="num">${pct(x.margen)}</td></tr>`).join("")}</tbody></table>`
+    : `<div class="empty">No hay ventas en este mes. Las ventas de Shopify y las directas aparecerán aquí con lo que ganas en cada una.</div>`;
+}
+$("m-table").addEventListener("change", async (e) => {
+  const i = e.target.closest("[data-envio]"); if (!i || !db) return;
+  const n = toNum(i.value);
+  try { await db.collection("ventas").doc(i.dataset.envio).update({ envioPagado: isFinite(n) ? n : null }); } catch { i.style.borderColor = "var(--bad)"; }
+});
+
+/* ---------- coste por producto ---------- */
+let editingProd = null;
+function costRow(c = {}) {
+  return `<div class="costrow"><input class="c-con" placeholder="Matcha, lata, etiqueta…" value="${esc(c.concepto || "")}"><input class="c-imp" inputmode="decimal" placeholder="0,00 €" value="${c.importe != null && c.importe !== "" ? fmt2(nz(c.importe)) : ""}">
+    <select class="c-iva" title="¿Ese precio lleva IVA?"><option value="0"${nz(c.ivaIncl) === 0 ? " selected" : ""}>Sin IVA</option><option value="10"${nz(c.ivaIncl) === 10 ? " selected" : ""}>Con IVA 10 %</option><option value="21"${nz(c.ivaIncl) === 21 ? " selected" : ""}>Con IVA 21 %</option></select>
+    <button class="btn small" type="button" data-rmcost>Quitar</button></div>`;
+}
+function readProdForm() {
+  const costes = [...$("pf-costs").querySelectorAll(".costrow")].map((r) => ({ concepto: r.querySelector(".c-con").value.trim(), importe: toNum(r.querySelector(".c-imp").value), ivaIncl: Number(r.querySelector(".c-iva").value) }))
+    .filter((c) => c.concepto || isFinite(c.importe)).map((c) => ({ ...c, importe: isFinite(c.importe) ? c.importe : 0 }));
+  return { nombre: $("pf-nombre").value.trim(), precio: toNum($("pf-precio").value), iva: Number($("pf-iva").value), costes };
+}
+function prodLine(p) {
+  const cu = unitCost(p), pn = precioNeto(p), m = pn - cu;
+  return { cu, pn, m, pct: pn ? m / pn : NaN };
+}
+function updatePreview() {
+  const p = readProdForm(), l = prodLine(p);
+  $("pf-preview").className = "msg " + (l.m >= 0 ? "ok" : "bad");
+  $("pf-preview").innerHTML = isFinite(p.precio) ? `Te cuesta <b>${money(l.cu)}</b> por unidad · la vendes a ${money(p.precio)} (<b>${money(l.pn)}</b> sin IVA) · ganas <b>${money(l.m)}</b> por unidad (${pct(l.pct)}), antes de envío y comisiones.` : "Pon el precio de venta para ver el margen.";
+}
+function openProd(p) {
+  editingProd = p ? p.id : null;
+  $("pf-title").textContent = p ? "Editar producto" : "Nuevo producto";
+  $("pf-nombre").value = p ? p.nombre || "" : ""; $("pf-precio").value = p && p.precio != null ? fmt2(nz(p.precio)) : ""; $("pf-iva").value = String(p ? nz(p.iva, 10) : 10);
+  $("pf-costs").innerHTML = (p && p.costes && p.costes.length ? p.costes : [{ concepto: "Matcha" }, { concepto: "Lata" }, { concepto: "Etiqueta" }]).map(costRow).join("");
+  $("pf-delete").hidden = !p; $("pf-delete").textContent = "Borrar producto"; delete $("pf-delete").dataset.confirm;
+  $("prod-form").hidden = false; updatePreview(); $("prod-form").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+$("btn-new-prod").addEventListener("click", () => openProd(null));
+$("pf-add").addEventListener("click", () => { $("pf-costs").insertAdjacentHTML("beforeend", costRow()); });
+$("pf-costs").addEventListener("click", (e) => { if (e.target.closest("[data-rmcost]")) { e.target.closest(".costrow").remove(); updatePreview(); } });
+$("prod-form").addEventListener("input", updatePreview);
+$("pf-cancel").addEventListener("click", () => { $("prod-form").hidden = true; });
+$("pf-delete").addEventListener("click", async () => {
+  const b = $("pf-delete"); if (!editingProd || !db) return;
+  if (b.dataset.confirm !== "1") { b.dataset.confirm = "1"; b.textContent = "¿Seguro? Pulsa otra vez"; return; }
+  try { await db.collection("productos").doc(editingProd).delete(); $("prod-form").hidden = true; } catch { b.textContent = "Error"; }
+});
+$("prod-form").addEventListener("submit", async (e) => {
+  e.preventDefault(); if (!db) return;
+  const p = readProdForm();
+  if (!isFinite(p.precio)) { $("pf-precio").focus(); return; }
+  try {
+    if (editingProd) await db.collection("productos").doc(editingProd).set({ ...p, actualizado: new Date().toISOString() });
+    else await db.collection("productos").add({ ...p, actualizado: new Date().toISOString() });
+    $("prod-form").hidden = true;
+  } catch (err) { $("pf-preview").className = "msg bad"; $("pf-preview").textContent = "No se ha podido guardar: " + (err.message || err.code); }
+});
+$("prod-list").addEventListener("click", (e) => { const c = e.target.closest("[data-prod]"); if (c) openProd(state.productos.find((p) => p.id === c.dataset.prod)); });
+function renderProductos() {
+  const list = state.productos.slice().sort((a, b) => String(a.nombre).localeCompare(String(b.nombre)));
+  $("prod-list").innerHTML = list.length ? list.map((p) => {
+    const l = prodLine(p);
+    return `<button class="prod" type="button" data-prod="${esc(p.id)}"><span class="pn">${esc(p.nombre)}</span>
+      <span class="pm"><span><small>Te cuesta</small>${money(l.cu)}</span><span><small>Vendes a</small>${money(nz(p.precio))}</span><span><small>Ganas / ud.</small><b style="color:${l.m >= 0 ? "var(--ok)" : "var(--bad)"}">${money(l.m)}</b></span><span><small>Margen</small>${pct(l.pct)}</span></span></button>`;
+  }).join("") : `<div class="empty">Aún no hay productos. Crea el primero, por ejemplo «Matcha ceremonial 30 g».</div>`;
+}
+
+/* ---------- otros gastos (facturas) ---------- */
+$("g-categoria").innerHTML = CATEGORIAS.map((c) => `<option>${esc(c)}</option>`).join("");
 $("g-fecha").value = todayISO();
-$("g-mes").addEventListener("change", renderGastos);
 function resetGasto() {
   $("gasto-form").reset(); state.gfile = null; $("g-file-list").innerHTML = ""; $("g-msg").innerHTML = "";
-  $("g-fecha").value = todayISO(); $("g-categoria").value = CATEGORIAS[0]; $("g-ivapct").value = "21";
+  $("g-fecha").value = todayISO(); $("g-categoria").value = "Marketing y publicidad"; $("g-ivapct").value = "21"; $("g-nif").value = ""; $("g-num").value = "";
 }
-$("btn-new-gasto").addEventListener("click", () => { resetGasto(); $("gasto-form").hidden = false; $("gasto-form").scrollIntoView({ behavior: "smooth", block: "start" }); });
+$("btn-new-gasto").addEventListener("click", () => {
+  document.querySelector('[data-gtab="fact"]').click();
+  resetGasto(); $("gasto-form").hidden = false; $("gasto-form").scrollIntoView({ behavior: "smooth", block: "start" });
+});
 $("btn-g-cancel").addEventListener("click", () => { $("gasto-form").hidden = true; });
 function setGFile(f) {
   state.gfile = f || null;
@@ -1026,17 +1263,6 @@ function setGFile(f) {
 }
 $("g-file").addEventListener("change", (e) => { setGFile(e.target.files[0]); e.target.value = ""; });
 wireDrop($("g-drop"), (fs) => setGFile(fs[0]));
-// Si el usuario cambia base o IVA, recalculamos la cuota y el total.
-function recalc(from) {
-  const base = toNum($("g-base").value), pct = Number($("g-ivapct").value), iva = toNum($("g-iva").value), total = toNum($("g-total").value);
-  if (from === "total" && isFinite(total) && !isFinite(base)) { const b = total / (1 + pct / 100); $("g-base").value = fmt2(b); $("g-iva").value = fmt2(total - b); return; }
-  if ((from === "base" || from === "pct") && isFinite(base)) { const i = base * pct / 100; $("g-iva").value = fmt2(i); $("g-total").value = fmt2(base + i); }
-  if (from === "iva" && isFinite(base) && isFinite(iva)) $("g-total").value = fmt2(base + iva);
-}
-$("g-base").addEventListener("change", () => recalc("base"));
-$("g-ivapct").addEventListener("change", () => recalc("pct"));
-$("g-iva").addEventListener("change", () => recalc("iva"));
-$("g-total").addEventListener("change", () => recalc("total"));
 
 $("btn-g-read").addEventListener("click", async () => {
   const f = state.gfile, m = $("g-msg");
@@ -1045,14 +1271,13 @@ $("btn-g-read").addEventListener("click", async () => {
   const btn = $("btn-g-read"); btn.disabled = true; m.innerHTML = `<div class="msg warn">Leyendo la factura…</div>`;
   try {
     const r = await readLocal(f, 2);
-    let images = r.images;
-    if (images.length > imgLimit) images = images.slice(0, imgLimit);
+    let images = r.images; if (images.length > imgLimit) images = images.slice(0, imgLimit);
     if (!r.texto.trim() && !images.length) throw { code: "unreadable" };
-    const prompt = `Lee esta factura o ticket de un gasto de Mood Matcha (marca española de matcha) y extrae los datos para la contabilidad.
+    const prompt = `Lee esta factura o ticket de un gasto de Mood Matcha (marca española de matcha) y extrae los datos.
 No inventes nada: si un dato no aparece, pon null. Importes como números con punto decimal. Fecha AAAA-MM-DD.
 Categoría: elige UNA de esta lista exacta: ${CATEGORIAS.join(" | ")}.
-ivaPct: el tipo de IVA aplicado (21, 10, 4 o 0). Si la factura es de fuera de España o no lleva IVA, 0.
-Responde SOLO con JSON: {"fecha":string|null,"proveedor":string|null,"nif":string|null,"numFactura":string|null,"concepto":string|null,"categoria":string,"base":number|null,"ivaPct":number|null,"iva":number|null,"total":number|null,"moneda":"EUR"|"USD"|"CNY"|"GBP"|null}
+ivaPct: el tipo de IVA aplicado en la factura (21, 10, 4 o 0). Si es de fuera de España o no lleva IVA, 0.
+Responde SOLO con JSON: {"fecha":string|null,"proveedor":string|null,"nif":string|null,"numFactura":string|null,"concepto":string|null,"categoria":string,"ivaPct":number|null,"total":number|null,"moneda":"EUR"|"USD"|"CNY"|"GBP"|null}
 ${r.texto.trim() ? "TEXTO DE LA FACTURA:\n" + r.texto : "La factura va en la(s) imagen(es) adjunta(s)."}`;
     const g = await sample.json(prompt, withImages({ modelTier: "default", cache: false }, images));
     if (g && typeof g === "object") {
@@ -1061,11 +1286,8 @@ ${r.texto.trim() ? "TEXTO DE LA FACTURA:\n" + r.texto : "La factura va en la(s) 
       set("g-proveedor", g.proveedor); set("g-nif", g.nif); set("g-num", g.numFactura); set("g-concepto", g.concepto);
       if (CATEGORIAS.includes(g.categoria)) $("g-categoria").value = g.categoria;
       if ([21, 10, 4, 0].includes(Number(g.ivaPct))) $("g-ivapct").value = String(Number(g.ivaPct));
-      if (isFinite(toNum(g.base))) $("g-base").value = fmt2(toNum(g.base));
-      if (isFinite(toNum(g.iva))) $("g-iva").value = fmt2(toNum(g.iva));
       if (isFinite(toNum(g.total))) $("g-total").value = fmt2(toNum(g.total));
       if (["EUR", "USD", "CNY", "GBP"].includes(g.moneda)) $("g-moneda").value = g.moneda;
-      if (!$("g-iva").value && $("g-base").value) recalc("base");
       m.innerHTML = `<div class="msg ok">Datos rellenados. Revísalos antes de guardar.</div>`;
     }
   } catch (err) {
@@ -1078,14 +1300,14 @@ $("gasto-form").addEventListener("submit", async (e) => {
   const m = $("g-msg");
   if (!db) { m.innerHTML = `<div class="msg bad">La base de datos de la app no está disponible.</div>`; return; }
   const total = toNum($("g-total").value);
-  if (!isFinite(total)) { m.innerHTML = `<div class="msg warn">Pon el total de la factura.</div>`; $("g-total").focus(); return; }
+  if (!isFinite(total)) { m.innerHTML = `<div class="msg warn">Pon el total pagado.</div>`; $("g-total").focus(); return; }
+  const ivaPct = Number($("g-ivapct").value) || 0;
+  const base = total / (1 + ivaPct / 100);
   const data = {
     fecha: $("g-fecha").value, proveedor: $("g-proveedor").value.trim(), nif: $("g-nif").value.trim(), numFactura: $("g-num").value.trim(),
-    concepto: $("g-concepto").value.trim(), categoria: $("g-categoria").value, base: toNum($("g-base").value), ivaPct: Number($("g-ivapct").value),
-    iva: toNum($("g-iva").value), total, moneda: $("g-moneda").value, pago: $("g-pago").value, lote: $("g-lote").value, notas: $("g-notas").value.trim(),
-    fileUrl: "", fileId: "", creado: new Date().toISOString()
+    concepto: $("g-concepto").value.trim(), categoria: $("g-categoria").value, base, ivaPct, iva: total - base, total,
+    moneda: $("g-moneda").value, lote: $("g-lote").value, notas: $("g-notas").value.trim(), fileUrl: "", fileId: "", creado: new Date().toISOString()
   };
-  for (const k of ["base", "iva"]) if (!isFinite(data[k])) data[k] = null;
   const btn = $("btn-g-save"); btn.disabled = true; m.innerHTML = `<div class="msg warn">Guardando…</div>`;
   let warn = "";
   if (state.gfile) {
@@ -1101,7 +1323,7 @@ $("gasto-form").addEventListener("submit", async (e) => {
   }
   try {
     await db.collection("gastos").add(data);
-    $("g-mes").value = data.fecha.slice(0, 7); renderGastos();
+    $("g-mes").value = data.fecha.slice(0, 7); renderGastos(); renderMargenes();
     resetGasto(); $("gasto-form").hidden = true;
     $("g-csv-msg").innerHTML = warn ? `<span style="color:var(--warn)">Gasto guardado. ${esc(warn)}</span>` : `Gasto guardado${data.fileUrl ? ` y factura archivada en Drive (<a href="${esc(data.fileUrl)}" target="_blank" rel="noopener">abrir</a>)` : ""}.`;
   } catch (err) { m.innerHTML = `<div class="msg bad">No se ha podido guardar: ${esc(err.message || err.code)}</div>`; }
@@ -1112,16 +1334,12 @@ function gastosDelMes() { const ym = $("g-mes").value; return sortDesc(state.gas
 function renderGastos() {
   const list = gastosDelMes();
   const eur = list.filter((g) => (g.moneda || "EUR") === "EUR");
-  const total = eur.reduce((s, g) => s + (Number(g.total) || 0), 0);
-  const iva = eur.reduce((s, g) => s + (Number(g.iva) || 0), 0);
-  const base = eur.reduce((s, g) => s + (Number(g.base) || 0), 0);
-  const otras = list.length - eur.length;
-  $("g-stats").innerHTML = `<div class="stat"><span>Total del mes</span><b>${money(total)}</b></div><div class="stat"><span>Base imponible</span><b>${money(base)}</b></div><div class="stat"><span>IVA soportado</span><b>${money(iva)}</b></div><div class="stat"><span>Facturas</span><b>${list.length}</b></div>`;
   const byCat = {}; for (const g of eur) byCat[g.categoria || "Otros"] = (byCat[g.categoria || "Otros"] || 0) + (Number(g.total) || 0);
   const cats = Object.entries(byCat).sort((a, b) => b[1] - a[1]); const max = cats.length ? cats[0][1] : 0;
-  $("g-bars").innerHTML = cats.length ? cats.map(([c, v]) => `<div class="barrow"><span>${esc(c)}</span><span class="bartrack"><span class="barfill" style="display:block;width:${max ? Math.max(2, v / max * 100) : 0}%"></span></span><span class="num" style="font-variant-numeric:tabular-nums">${money(v)}</span></div>`).join("") + (otras ? `<p class="hint">${otras} factura(s) en otra moneda no están sumadas.</p>` : "") : "";
-  $("g-table").innerHTML = list.length ? `<table><thead><tr><th>Fecha</th><th>Proveedor</th><th>Concepto</th><th>Categoría</th><th class="num">Base</th><th class="num">IVA</th><th class="num">Total</th><th>Factura</th><th></th></tr></thead><tbody>${list.map((g) => `<tr><td>${esc(fmtDate(g.fecha))}</td><td>${esc(g.proveedor)}</td><td>${esc(g.concepto)}${g.lote ? ` <span class="lot">${esc(g.lote)}</span>` : ""}</td><td>${esc(g.categoria)}</td><td class="num">${g.base != null ? esc(money(Number(g.base), g.moneda)) : "—"}</td><td class="num">${g.iva != null ? esc(money(Number(g.iva), g.moneda)) : "—"}</td><td class="num"><b>${esc(money(Number(g.total), g.moneda))}</b></td><td>${g.fileUrl ? `<a href="${esc(g.fileUrl)}" target="_blank" rel="noopener">Abrir</a>` : "—"}</td><td><button class="btn small" type="button" data-del="gastos" data-id="${esc(g.id)}">Borrar</button></td></tr>`).join("")}</tbody></table>`
-    : `<div class="empty">No hay gastos en este mes. Pulsa «Nuevo gasto» y sube una factura.</div>`;
+  const otras = list.length - eur.length;
+  $("g-bars").innerHTML = cats.length ? cats.map(([c, v]) => `<div class="barrow"><span>${esc(c)}${SIN_RESTAR.includes(c) ? ` <span class="hint">(en coste de producto)</span>` : ""}</span><span class="bartrack"><span class="barfill" style="display:block;width:${max ? Math.max(2, v / max * 100) : 0}%"></span></span><span class="num" style="font-variant-numeric:tabular-nums">${money(v)}</span></div>`).join("") + (otras ? `<p class="hint">${otras} factura(s) en otra moneda no están sumadas.</p>` : "") : "";
+  $("g-table").innerHTML = list.length ? `<table><thead><tr><th>Fecha</th><th>Proveedor</th><th>Concepto</th><th>Categoría</th><th class="num">Total</th><th>Factura</th><th></th></tr></thead><tbody>${list.map((g) => `<tr><td>${esc(fmtDate(g.fecha))}</td><td>${esc(g.proveedor)}</td><td>${esc(g.concepto)}${g.lote ? ` <span class="lot">${esc(g.lote)}</span>` : ""}</td><td>${esc(g.categoria)}</td><td class="num"><b>${esc(money(Number(g.total), g.moneda))}</b></td><td>${g.fileUrl ? `<a href="${esc(g.fileUrl)}" target="_blank" rel="noopener">Abrir</a>` : "—"}</td><td><button class="btn small" type="button" data-del="gastos" data-id="${esc(g.id)}">Borrar</button></td></tr>`).join("")}</tbody></table>`
+    : `<div class="empty">No hay gastos este mes. Pulsa «Nuevo gasto» y sube una factura.</div>`;
   $("dl-gproveedores").innerHTML = [...new Set(state.gastos.map((g) => g.proveedor).filter(Boolean))].map((p) => `<option>${esc(p)}</option>`).join("");
 }
 $("btn-g-csv").addEventListener("click", async () => {
@@ -1131,8 +1349,8 @@ $("btn-g-csv").addEventListener("click", async () => {
   if (!list.length) { msg.textContent = "No hay gastos en este mes."; return; }
   const cell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
   const num = (v) => (v == null || !isFinite(Number(v))) ? "" : String(Number(v).toFixed(2)).replace(".", ",");
-  const lines = [["Fecha", "Proveedor", "NIF", "Nº factura", "Concepto", "Categoría", "Base", "IVA %", "Cuota IVA", "Total", "Moneda", "Forma de pago", "Lote", "Factura (Drive)", "Notas"].map(cell).join(";")]
-    .concat(list.map((g) => [fmtDate(g.fecha), g.proveedor, g.nif, g.numFactura, g.concepto, g.categoria, num(g.base), g.ivaPct, num(g.iva), num(g.total), g.moneda, g.pago, g.lote, g.fileUrl, g.notas].map(cell).join(";")));
+  const lines = [["Fecha", "Proveedor", "NIF", "Nº factura", "Concepto", "Categoría", "Base", "IVA %", "Cuota IVA", "Total", "Moneda", "Lote", "Factura (Drive)", "Notas"].map(cell).join(";")]
+    .concat(list.map((g) => [fmtDate(g.fecha), g.proveedor, g.nif, g.numFactura, g.concepto, g.categoria, num(g.base), g.ivaPct, num(g.iva), num(g.total), g.moneda, g.lote, g.fileUrl, g.notas].map(cell).join(";")));
   try {
     const r = await downloads.save({ filename: `gastos-mood-matcha-${$("g-mes").value}.csv`, data: "﻿" + lines.join("\r\n") });
     msg.textContent = r && r.status === "saved" ? "CSV descargado." : "";
@@ -1148,7 +1366,8 @@ function chip(id, cls, text) {
   else if (all.some((x) => x.includes("warn"))) { m.className = "chip warn"; m.textContent = "Revisar conexiones"; }
   else if (all.every((x) => x.includes("ok"))) { m.className = "chip ok"; m.textContent = "Todo conectado"; }
 }
-function renderAll() { refreshNextLot(); renderRecTable(); renderLots(); renderSales(); renderGastos(); if (!$("v-home").hidden) renderHome(); }
+function renderAll() { refreshNextLot(); renderRecTable(); renderLots(); renderSales(); renderGastos(); renderProductos(); renderMargenes(); if (!$("v-home").hidden) renderHome(); }
+fillConfig();
 renderAll();
 show(VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home");
 (async () => {
@@ -1158,7 +1377,8 @@ show(VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home");
   if (db) {
     const sub = (col, key) => db.collection(col).onSnapshot((s) => { state[key] = s.docs.map((d) => ({ id: d.id, ...d.data() })); renderAll(); },
       () => { chip("c-drive", "bad", "Datos · error al leer"); });
-    sub("recepciones", "recepciones"); sub("ventas", "ventas"); sub("gastos", "gastos");
+    sub("recepciones", "recepciones"); sub("ventas", "ventas"); sub("gastos", "gastos"); sub("productos", "productos");
+    db.doc("config/margenes").onSnapshot((d) => { state.config = d.exists ? d.data() : null; fillConfig(); renderAll(); }, () => {});
   }
   if (sample) { try { const l = await sample.limits(); imgLimit = (l && l.images && l.images.maxCount) || 0; } catch { imgLimit = 0; } }
   chip("c-ai", sample ? "ok" : "bad", sample ? "Claude" : "Claude · no disponible");
