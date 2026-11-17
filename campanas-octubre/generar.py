@@ -747,7 +747,137 @@ def email_bienvenida_adri():
 """
 
 
+# ---------- Bons Consum Benissa (Navidad 2026, paleta crema) ----------
+WA_BONS = wa('Hola, vengo del email y quiero usar mis Bons Consum 😊')
+BONS_WEB = 'https://bonsconsum.benissa.com'
+
+
+def email_bons_consum():
+    """Los Bons Consum de Benissa se pueden gastar en Chakra, Espai Pilates y Espai Vital."""
+    BG = '#efe6d6'; CR = '#f8f2e7'; CR2 = '#efe4d0'; LN = '#e3d5bd'
+    T = '#3b3631'; S = '#7a7066'; G = '#b8955a'; GT = '#8c6c38'; R = '#a8322d'
+    serif = "Georgia,'Times New Roman',serif"
+    sans = "'Helvetica Neue',Helvetica,Arial,sans-serif"
+    def btn(texto, url, fondo=T, color=CR):
+        return f'<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr><td align="center" bgcolor="{fondo}" style="background:{fondo};border-radius:40px;"><a href="{url}" style="display:inline-block;padding:16px 34px;font-family:{sans};font-size:12px;font-weight:bold;letter-spacing:3px;text-transform:uppercase;color:{color};text-decoration:none;">{texto}</a></td></tr></table>'
+    def centro(logo, w, h, alt, nombre, texto, color):
+        return (f'<tr><td class="px" style="padding:0 40px 16px;background:{CR};">'
+                f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>'
+                f'<td align="center" bgcolor="#ffffff" style="background:#ffffff;border:1px solid {LN};border-top:3px solid {color};padding:26px 24px 26px;">'
+                f'<img src="{logo}" width="{w}" height="{h}" alt="{alt}" style="display:block;border:0;width:{w}px;height:{h}px;margin:0 auto;">'
+                f'<p style="margin:12px 0 0;font-family:{serif};font-size:21px;color:{T};">{nombre}</p>'
+                f'<p style="margin:8px 0 0;font-family:{sans};font-size:14px;line-height:1.6;color:{S};">{texto}</p>'
+                f'</td></tr></table></td></tr>')
+    centros = (centro(BASE + '/facial-luminus/media/logo-chakra.png', 62, 70, 'Chakra Wellness Center', 'Chakra Wellness Center',
+                      'Tratamientos faciales y corporales para cuidarte por dentro y por fuera.', G)
+               + centro(BASE + '/campanas-octubre/media/logo-espai-pilates.png', 176, 75, 'Espai Pilates Reformer', 'Espai Pilates Reformer',
+                        'Tus clases y planes de Pilates Reformer.', '#7db7a3')
+               + centro(BASE + '/campanas-octubre/media/logo-espai-vital.png', 190, 62, 'Espai Vital', 'Espai Vital',
+                        'Fisioterapia y estética.', '#8fcdee'))
+    def paso(n, titulo, texto):
+        return (f'<tr><td width="46" valign="top" style="padding:14px 0;">'
+                f'<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>'
+                f'<td width="32" height="32" align="center" bgcolor="{G}" style="background:{G};border-radius:16px;font-family:{sans};font-size:14px;font-weight:bold;color:#ffffff;">{n}</td></tr></table></td>'
+                f'<td valign="top" style="padding:14px 0;border-bottom:1px solid {LN};font-family:{sans};">'
+                f'<strong style="font-size:15px;color:{T};">{titulo}</strong><br>'
+                f'<span style="font-size:14px;line-height:1.6;color:{S};">{texto}</span></td></tr>')
+    pasos = (paso('1', 'Por cada bono de 25 €, gasta al menos 50 €', 'Por ejemplo, con 1 bono de 25 € la compra mínima es de 50 €.')
+             + paso('2', 'Puedes juntar varios bonos en una misma compra', 'Sin límite de compras: hasta 6 bonos, 150 € en total.')
+             + paso('3', 'Para mayores de edad empadronados en Benissa', 'Consulta todas las condiciones en bonsconsum.benissa.com.'))
+    return f"""<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="x-apple-disable-message-reformatting">
+  <title>Usa tus Bons Consum en Chakra, Espai Pilates y Espai Vital</title>
+  <style>
+    body {{ margin: 0; padding: 0; background: {BG}; }}
+    @media (max-width: 620px) {{
+      .container {{ width: 100% !important; }}
+      .px {{ padding-left: 24px !important; padding-right: 24px !important; }}
+      .big {{ font-size: 40px !important; }}
+      .huge {{ font-size: 64px !important; }}
+      .col {{ display: block !important; width: 100% !important; box-sizing: border-box; }}
+      .gap {{ display: block !important; width: 100% !important; height: 12px !important; }}
+      .logo-p {{ width: 130px !important; height: auto !important; }}
+    }}
+  </style>
+</head>
+<body style="margin:0;padding:0;background:{BG};">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">Del 16 de noviembre al 10 de diciembre, hasta 150 € en Bons Consum para cuidarte en Chakra, Espai Pilates y Espai Vital.&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:{BG};">
+    <tr><td align="center" style="padding:24px 12px;">
+      <table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;background:{CR};">
+
+        <tr><td align="center" style="padding:0 0 10px;background:{BG};font-family:{sans};font-size:11px;color:{S};">¿No ves bien este email? <a href="*|ARCHIVE|*" style="color:{S};">Ábrelo en el navegador</a></td></tr>
+
+        <tr><td align="center" style="padding:34px 12px 28px;background:#ffffff;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr>
+            <td valign="middle" style="padding:0 22px;"><img src="{BASE}/campanas-octubre/media/logo-espai-pilates.png" width="176" height="75" alt="Espai Pilates Reformer" class="logo-p" style="display:block;border:0;width:176px;height:75px;"></td>
+            <td valign="middle" style="border-left:1px solid {LN};padding:0 22px;"><img src="{BASE}/facial-luminus/media/logo-chakra.png" width="80" height="90" alt="Chakra Wellness Center by Espai Vital" style="display:block;border:0;width:80px;height:90px;"></td>
+          </tr></table>
+        </td></tr>
+
+        <!-- Hero -->
+        <tr><td class="px" align="center" bgcolor="{CR2}" style="background:{CR2};padding:52px 44px 50px;">
+          <p style="margin:0;font-family:{sans};font-size:12px;font-weight:bold;letter-spacing:6px;text-transform:uppercase;color:{R};">✦ Bons Consum Benissa ✦</p>
+          <p class="big" style="margin:18px 0 0;font-family:{serif};font-size:44px;line-height:1.15;color:{T};">Esta Navidad,<br><em style="color:{G};">cuídate con tus bonos</em></p>
+          <p style="margin:20px 0 0;font-family:{sans};font-size:17px;line-height:1.7;color:{S};">Puedes gastar tus <strong style="color:{T};">Bons Consum</strong> en <strong style="color:{T};">Chakra Wellness Center</strong>, <strong style="color:{T};">Espai Pilates Reformer</strong> y <strong style="color:{T};">Espai Vital</strong>.</p>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:30px auto 0;"><tr><td align="center" bgcolor="{CR}" style="background:{CR};border:1px solid {G};padding:22px 40px 24px;">
+            <p style="margin:0;font-family:{sans};font-size:11px;font-weight:bold;letter-spacing:5px;text-transform:uppercase;color:{GT};">Te damos hasta</p>
+            <p class="huge" style="margin:6px 0 0;font-family:{serif};font-size:80px;line-height:1;color:{R};">150&nbsp;€</p>
+            <p style="margin:8px 0 0;font-family:{sans};font-size:13px;font-weight:bold;letter-spacing:4px;text-transform:uppercase;color:{T};">En 6 bonos de 25 €</p>
+          </td></tr></table>
+          <p style="margin:26px 0 0;font-family:{sans};font-size:15px;color:{T};">📅 Del <strong>16 de noviembre</strong> al <strong>10 de diciembre</strong></p>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:28px auto 0;"><tr><td>{btn('Reservar con mis bonos', WA_BONS)}</td></tr></table>
+        </td></tr>
+
+        <!-- Dónde -->
+        <tr><td class="px" align="center" style="padding:46px 44px 22px;background:{CR};">
+          <p style="margin:0;font-family:{sans};font-size:11px;font-weight:bold;letter-spacing:5px;text-transform:uppercase;color:{GT};">Úsalos en nuestros tres centros</p>
+        </td></tr>
+        {centros}
+
+        <!-- Ejemplo -->
+        <tr><td class="px" style="padding:26px 40px 0;background:{CR};">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+            <td align="center" bgcolor="{CR2}" style="background:{CR2};padding:30px 24px;">
+              <p style="margin:0;font-family:{sans};font-size:11px;font-weight:bold;letter-spacing:5px;text-transform:uppercase;color:{GT};">Un ejemplo</p>
+              <p style="margin:12px 0 0;font-family:{serif};font-size:22px;line-height:1.5;color:{T};">Tratamiento o plan de <strong>100&nbsp;€</strong><br>+ 2 bonos de 25&nbsp;€<br>= pagas solo <strong style="color:{R};">50&nbsp;€</strong></p>
+            </td>
+          </tr></table>
+        </td></tr>
+
+        <!-- Cómo funciona -->
+        <tr><td class="px" style="padding:40px 56px 10px;background:{CR};">
+          <p style="margin:0 0 4px;font-family:{sans};font-size:11px;font-weight:bold;letter-spacing:4px;text-transform:uppercase;color:{GT};">Cómo funcionan</p>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">{pasos}</table>
+        </td></tr>
+
+        <tr><td class="px" align="center" style="padding:38px 48px 48px;background:{CR};">
+          <p style="margin:0 0 24px;font-family:{serif};font-style:italic;font-size:21px;line-height:1.5;color:{T};">Date ese capricho que llevas tiempo pensando.<br>Solo hasta el 10 de diciembre.</p>
+          {btn('Reservar con mis bonos', WA_BONS)}
+          <p style="margin:14px 0 0;font-family:{sans};font-size:14px;color:{S};">WhatsApp <a href="{WA_BONS}" style="color:{T};font-weight:bold;text-decoration:none;">648 79 59 83</a> · <a href="{BONS_WEB}" style="color:{S};">Condiciones de los bonos</a></p>
+        </td></tr>
+
+        <tr><td align="center" style="padding:28px 24px 32px;font-family:{sans};font-size:12px;line-height:1.7;color:{S};background:{CR};border-top:1px solid {LN};">
+          <strong style="color:{T};">Chakra Wellness Center · Espai Pilates Reformer · Espai Vital</strong><br>
+          C/ Benidoleig 31, bajo · 03720 Benissa (Alicante)<br>
+          <a href="tel:+34633388152" style="color:{S};">+34 633 38 81 52</a> · <a href="mailto:info@chakracenterbenissa.com" style="color:{S};">info@chakracenterbenissa.com</a><br><br>
+          Recibes este email porque eres cliente o aceptaste recibir novedades de nuestro centro.<br>
+          <a href="*|UPDATE_PROFILE|*" style="color:{S};">Actualizar mis datos</a> · <a href="*|UNSUB|*" style="color:{S};">Darme de baja</a>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
+"""
+
+
 EMAILS = {
+    'email-bons-consum': email_bons_consum(),
     'email-bienvenida-adri': email_bienvenida_adri(),
     'email-gracias': email_gracias(),
     'email-recordatorio': email_recordatorio(),
